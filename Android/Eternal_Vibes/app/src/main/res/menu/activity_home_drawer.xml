@@ -7,17 +7,17 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Import" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_setttings"
+            android:id="@+id/nav_settings"
             android:icon="@drawable/ic_menu_manage"
             android:title="Settings" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@android:drawable/ic_lock_power_off"
+            android:icon="@android:drawable/btn_dialog"
             android:title="Logout" />
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@android:drawable/ic_lock_power_off"
+            android:title="Exit" />
     </group>
 
 </menu>
