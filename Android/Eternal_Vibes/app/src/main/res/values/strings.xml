@@ -1,7 +1,9 @@
 <resources>
+    <string name="viewSettings">za.ac.uj.the_overclockers_25_vSettings</string>
+    <string name="seenDash">seenDashboard</string>
     <string name="app_name">Eternal Vibes</string>
     <string name="title_activity_menu">MenuActivity</string>
-
+    <string name = "StartbtnMessage">Get Started</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="team_details">The Overclockers #25</string>
