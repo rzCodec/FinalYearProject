@@ -7,8 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-import android.content.SharedPreferences.Editor;
 
 public class Dashboard extends AppCompatActivity {
     private Button loginb;
@@ -32,10 +30,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void Go() {
-        SharedPreferences sp = this.getSharedPreferences(getString(R.string.seenDash), Context.MODE_PRIVATE);
-        SharedPreferences.Editor e = sp.edit();
-        e.putBoolean(getString(R.string.seenDash), true);
-        e.commit();
         nextActivity();
     }
 

@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -73,9 +74,9 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            Utilities.MakeToast(getApplicationContext(),"Error 204");
         } else if (id == R.id.nav_settings) {
-            Intent i = new Intent(this, SettingActivity.class);
+            Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_logout) {
             SharedPreferences sp = this.getSharedPreferences(getString(R.string.seenDash), Context.MODE_PRIVATE);
