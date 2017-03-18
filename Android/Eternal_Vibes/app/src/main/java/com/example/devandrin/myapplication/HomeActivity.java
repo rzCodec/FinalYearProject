@@ -35,7 +35,7 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if(Utilities.isServicesEnabled(getApplicationContext()))
+        if(Utilities.isServicesEnabled(getApplicationContext()) == false)
         {
             Utilities.MakeSnack(findViewById(R.id.cLayout),"Unable to get Location");
         }
@@ -91,6 +91,7 @@ public class HomeActivity extends AppCompatActivity
                     .getLaunchIntentForPackage(getBaseContext().getPackageName());
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
+            finish();
         } else if (id == R.id.nav_exit) {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
