@@ -1,0 +1,29 @@
+06-03-2017
+* Briefly discussed the iterative prototpye with the team about each members tasks * (Team)
+
+07-03-2017
+* Started to design the iterative prototype for the website and the app * (Team)
+* Power Point slides presentation is completed * (Team)
+
+08-03-2017
+* Designed a basic GUI using paint for the mobile app * (Ron and Marc)
+* Created a website and database for our system* (David)
+
+09-03-2017
+* Group meeting with Mr Greaves *
+* Feedback was provided and notes were taken *
+
+15-03-2017
+* Testing and experimenting with GUI elements in android * (DV)
+
+17-03-2017
+* Designing a simple client and server * (Ron)
+* Planning a newsfeed that shows which artists are being followed and
+  which artists have become friends with each other. * (Marc)
+* Designing basic class diagrams and activity diagrams * (Team) 
+
+
+
+
+
+
