@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:key="location_services"
+        android:title="@string/loc_title"
+        android:summary="@string/loc_descrip"
+        android:defaultValue="false"
+        />
+    <ListPreference
+        android:key="location_services_range"
+        android:title="@string/loc_range"
+        android:summary="@string/loc_range_desc"
+        android:defaultValue="5"
+        android:entries="@array/loc_title"
+        android:entryValues="@array/loc_values"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:dependency="location_services"
+        />
+</PreferenceScreen>
