@@ -35,6 +35,10 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if(Utilities.isServicesEnabled(getApplicationContext()))
+        {
+            Utilities.MakeSnack(findViewById(R.id.cLayout),"Unable to get Location");
+        }
     }
 
     @Override

@@ -25,18 +25,21 @@ public class Dashboard extends AppCompatActivity {
             loginb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Go();
+                    nextActivity();
                 }
             });
         }
 
     }
 
-    private void Go() {
-        nextActivity();
-    }
-
     private void nextActivity() {
+        if(!seenPage())
+        {
+            SharedPreferences sp = this.getSharedPreferences(getString(R.string.seenDash), Context.MODE_PRIVATE);
+            SharedPreferences.Editor e = sp.edit();
+            e.putBoolean(getString(R.string.seenDash),true);
+            e.commit();
+        }
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();
@@ -44,8 +47,6 @@ public class Dashboard extends AppCompatActivity {
 
     private boolean seenPage() {
         SharedPreferences sp = this.getSharedPreferences(getString(R.string.seenDash), Context.MODE_PRIVATE);
-        boolean value = false;
-        boolean isSeen = sp.getBoolean(getString(R.string.seenDash), value);
-        return isSeen;
+        return sp.getBoolean(getString(R.string.seenDash), false);
     }
 }
