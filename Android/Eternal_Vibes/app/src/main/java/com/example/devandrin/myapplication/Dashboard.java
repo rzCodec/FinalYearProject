@@ -3,6 +3,7 @@ package com.example.devandrin.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +16,8 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        PreferenceManager.setDefaultValues(this,R.xml.pref_location_services,true);
+        PreferenceManager.setDefaultValues(this,R.xml.pref_general,true);
         if (seenPage()) {
             nextActivity();
         } else {
