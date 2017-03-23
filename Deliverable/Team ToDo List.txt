@@ -3,3 +3,4 @@ Team ToDo List
 Simple Chat Implementation - Ron
 Newsfeed for the mobile app - Marc
 Digital Ocean setup - Ron & David
+Design Class and Activity Diagrams - Team 
