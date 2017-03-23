@@ -1,0 +1,67 @@
+============
+Mentor Notes
+============
+
+- When a user is looking at their profile, there might be multiple genres that a person wants to listen to.
+- Something more relevant to the recent activity like a news feed such as following artists.
+- For the website, as soon as the user logins in they have a feel for a social aspect.
+- Contrast the dark colours in the website by using lighter colors.
+- The home menu is too dark and should be lighter or contrast with other brighter colours.
+
+
+=========== What the users should experience the first time they visit the website ===========================================
+
+- What is the first thing a user wants to experience?
+  An example such as real up to date information.
+- Some info-graphic like a real world statistic.
+- You can include small sounds snippets on the website for people to listen.
+- Be a little bit less business orientated and more music themed. Have more variety with the color theme.
+- Give a good first impression on the website so users will feel inclined to use it. 
+- Does not need many pages and keep users on one page.
+- It should have less text and more visuals such as color codes for specific sections such as the statistics section is color coded blue.
+
+
+
+* Feedback on the PowerPoint Presentation *
+
+====== Slides ==========
+- Team details on the cover page.
+- Don't have 5 lines per slide with no more than 7 words per line.
+- Only have the key points and talk about those particular points in detail.
+
+
+The Problems
+============
+- Summarise the problems, don't give too much detail but make sure to get the problem addressed
+
+The solution
+============
+- Quick breakdown of the solution like website for stats and mobile app does the locating.
+
+===== Implementation =========
+- Think of the user as if they are completely clueless about how the website works.
+- Use of github
+- A snapshot what the system looked it at that particular point.
+- For important presentations like Alpha and Beta
+  Use a 3G card if you need to connect to the internet, because the wifi internet connection at UJ is unstable
+- Marks on Functionality & User Experience
+- Keep your use cases, class diagrams and activity diagrams up to date as you work together on the project.
+
+
+
+
+
+
+* 23-03-2017 *
+- Prototype Interface
+- Page Description : Who and What will use it
+- Show the GUI using paint or other
+- Tell and show what happens for each button, etc
+- Does it do it on the current page or does it take it elsewhere
+- If it is from another site you don't need to redraw it. 
+- The most important pages related to those processes 
+  such as home pages, login pages, collaborating pages
+- The mobile app will need to have more user interfaces diagrams.
+
+Designing classes to store, model, process data
+Interacting actors with the subsystems go on the right 
