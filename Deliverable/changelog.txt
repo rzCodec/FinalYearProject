@@ -23,3 +23,13 @@
   which artists have become friends with each other. * (Marc)
 * Designing basic class diagrams and activity diagrams * (Team) 
 
+18-03-2017
+* Completed a simple GUI for the mobile app * (DV)
+
+23-03-2017
+* Received mentor advice on the Prototype Interfaces *
+* The details have been updated in the mentor notes *
+* Making changes to the use case diagrams, descriptions and requirements for deliverable 1 * (Team)
+* Started to disucss in more detail about the class and activity diagrams * (Team)
+
+
