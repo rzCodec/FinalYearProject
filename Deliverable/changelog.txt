@@ -32,4 +32,7 @@
 * Making changes to the use case diagrams, descriptions and requirements for deliverable 1 * (Team)
 * Started to disucss in more detail about the class and activity diagrams * (Team)
 
+25-03-2017
+* Completed the LoginActivity Diagram - I will need some feedback * (Ron)
+
 
