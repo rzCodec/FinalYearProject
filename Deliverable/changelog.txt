@@ -32,7 +32,22 @@
 * Making changes to the use case diagrams, descriptions and requirements for deliverable 1 * (Team)
 * Started to disucss in more detail about the class and activity diagrams * (Team)
 
+24-03-2017
+* Discussed the use case diagrams about which sub systems it will include * (Team)
+
 25-03-2017
-* Completed the LoginActivity Diagram - I will need some feedback * (Ron)
+* Completed the Login Activity Diagram - I will need some feedback * (Ron)
+
+26-03-2017
+* Drafted a Messaging Activity Diagram * (Ron)
+* Updated the website with more functionality and used styling * (David)
+* Updated the use case diagrams with more use cases and sub-systems * (Marc)
+
+27-03-2017
+* Obtained feedback from the team on the actvity diagrams * (Ron)
+* Edited the updated use case diagrams * (Team)
+* Editing and adding more information to the activity diagrams * (Marc)
+* Designing UML Class Diagrams * (DV)
+* Designing Prototype Interface for the website * (David)
 
 
