@@ -49,5 +49,16 @@
 * Editing and adding more information to the activity diagrams * (Marc)
 * Designing UML Class Diagrams * (DV)
 * Designing Prototype Interface for the website * (David)
+* Emailed the mentor on the locating users activity diagram * (Ron)
+
+28-03-2017
+* Completed Prototype Interface for the mobile app and class diagrams * (DV and Ron)
+* Completed the Activity Diagram for the mobile app and website * (Marc)
+* Completed Prototype Interface for the website (David)
+* Submitted draft deliverable to the supervisor * (Ron)
+
+29-03-2017
+* Received feedback on the drafted deliverable and on the locating users Activity Diagram * (Team)
+* Re-designing the Messenger Activity Diagram * (Ron)
 
 
