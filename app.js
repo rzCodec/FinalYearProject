@@ -2,62 +2,53 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var users = require('./routes/users');
-
 var async = require('async');
-var mysql = require('mysql');
 var request = require('request');
 var http = require('http');
-var fs = require('fs');
-
+var compression = require('compression');
+var monk = require('monk');
+//require('request-debug')(request);
 var app = express();
+app.use(compression());
 
-var pool;
+var DB;
+
 
 //Production();
-Testing();
+//Testing();
 
 function Production() {
-    db = monk('Djinnes:need4speed@10.129.24.135:23456/TimeLineJSON');
-    pool = mysql.createPool({
-        connectionLimit: 100, //important
-        host: '10.129.24.135',
-        user: 'david',
-        password: 'Innes381!need4speed',
-        database: 'proplayers',
-        debug: false
-    });
-    poolError = mysql.createPool({
-        connectionLimit: 100, //important
-        host: '10.129.24.135',
-        user: 'david',
-        password: 'Innes381!need4speed',
-        database: 'errors',
-        debug: false
+    MongoDB = monk('TeamOverClock:password@10.129.24.135:23456/Users', function (err) {
+        if (!err) {
+            console.log('Connected correctly to server');
+        } else {
+            console.log(err)
+        }
     });
 }
 function Testing() {
-
-    pool = mysql.createPool({
-        connectionLimit: 1, //important
-        host: 'localhost',
-        user: 'root',
-        password: 'innes381!need4speed',
-        database: 'informatics',
-        debug: false
+    MongoDB = monk('TeamOverClock:password@localhost/Users', function (err) {
+        if (!err) {
+            console.log('Connected correctly to server');
+        } else {
+            console.log(err)
+        }
     });
-
 }
-var routes = require('./routes/index')(pool);
+
+var routes = require('./routes/index')();
+app.use('/', routes);
+
+//<editor-fold desc="Description">
+// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(favicon(path.join(__dirname, 'public', 'favicon/favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser());
 var options = {
     dotfiles: 'ignore',
     etag: false,
@@ -70,8 +61,7 @@ var options = {
     }
 };
 app.use(express.static(path.join(__dirname, 'public'),options));
-app.use('/', routes);
+
 app.use('/users', users);
 
 module.exports = app;
-
