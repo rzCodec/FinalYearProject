@@ -61,4 +61,9 @@
 * Received feedback on the drafted deliverable and on the locating users Activity Diagram * (Team)
 * Re-designing the Messenger Activity Diagram * (Ron)
 
+05-04-2017
+* Updated the UI for the website and mobile app * (DV and David)
+* Created a release for Deliverable 2 called D2 * (Ron)
+* Finished discussing the content of the presentation with the group * (Marc)
+
 
