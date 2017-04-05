@@ -1,0 +1,12 @@
+Description- Shows a template list of Feeds within the tab
+
+A- Normal Status or post
+B- User uploaded a new Song
+C- User Checked into a new Area
+
+A1-Status MEssage
+B1- Users can Like The post
+C1- Time the Post was posted
+D1- Users can Report Insulting Posts
+E1- Song URL to sound cloud where user can listen to the song
+F1- General location of the user

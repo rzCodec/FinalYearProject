@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/backgroundcoloralt"
+            >
+
+            <TextView
+                android:id="@+id/nf_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:text="TextView"
+                android:textSize="36sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="16dp" />
+            <TextView
+                android:id="@+id/nf_timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="TextView"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/nfi_status"
+                app:layout_constraintRight_toLeftOf="@+id/btnLike"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/nfi_status"
+                android:layout_width="wrap_content"
+                android:layout_height="66dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="TextView"
+                android:textSize="30sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nf_profile_name"
+                android:layout_marginStart="16dp" />
+
+            <Button
+                android:id="@+id/btnLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Like"
+                android:layout_marginTop="8dp"
+                app:layout_constraintRight_toLeftOf="@+id/btnflag"
+                android:layout_marginRight="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/nfi_status"
+                android:layout_marginEnd="16dp" />
+
+            <Button
+                android:id="@+id/btnflag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report"
+                android:layout_marginRight="16dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/nfi_status"
+                android:layout_marginEnd="16dp" />
+
+
+        </android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/nf_profile_name1"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:text="TextView"
+                android:textSize="36sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="16dp" />
+            <TextView
+                android:id="@+id/nf_timestamp1"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="TextView"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/nfi_status1"
+                app:layout_constraintRight_toLeftOf="@+id/btnLike1"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/nfi_status1"
+                android:layout_width="wrap_content"
+                android:layout_height="66dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="TextView"
+                android:textSize="30sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nf_profile_name1"
+                android:layout_marginStart="16dp" />
+
+            <Button
+                android:id="@+id/btnLike1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Like"
+                android:layout_marginTop="8dp"
+                app:layout_constraintRight_toLeftOf="@+id/btnflag1"
+                android:layout_marginRight="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/nfi_status1"
+                android:layout_marginEnd="16dp" />
+
+            <Button
+                android:id="@+id/btnflag1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report"
+                android:layout_marginRight="16dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/nfi_status1"
+                android:layout_marginEnd="16dp" />
+
+
+        </android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+            android:background="@drawable/backgroundcoloralt"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/nf_profile_name2"
+            android:layout_width="wrap_content"
+            android:layout_height="46dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif"
+            android:text="TextView"
+            android:textSize="36sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="16dp" />
+        <TextView
+            android:id="@+id/nf_timestamp2"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="TextView"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/nfi_status2"
+            app:layout_constraintRight_toLeftOf="@+id/btnLike2"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/nfi_status2"
+            android:layout_width="wrap_content"
+            android:layout_height="66dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="TextView"
+            android:textSize="30sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nf_profile_name2"
+            android:layout_marginStart="16dp" />
+
+        <Button
+            android:id="@+id/btnLike2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Like"
+            android:layout_marginTop="8dp"
+            app:layout_constraintRight_toLeftOf="@+id/btnflag2"
+            android:layout_marginRight="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/nfi_status2"
+            android:layout_marginEnd="16dp" />
+
+        <Button
+            android:id="@+id/btnflag2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Report"
+            android:layout_marginRight="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/nfi_status2"
+            android:layout_marginEnd="16dp" />
+
+
+    </android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/nf_profile_name3"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:text="TextView"
+                android:textSize="36sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="16dp" />
+            <TextView
+                android:id="@+id/nf_timestamp3"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="TextView"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/nfi_status3"
+                app:layout_constraintRight_toLeftOf="@+id/btnLike3"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/nfi_status3"
+                android:layout_width="wrap_content"
+                android:layout_height="66dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="TextView"
+                android:textSize="30sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nf_profile_name3"
+                android:layout_marginStart="16dp" />
+
+            <Button
+                android:id="@+id/btnLike3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Like"
+                android:layout_marginTop="8dp"
+                app:layout_constraintRight_toLeftOf="@+id/btnflag3"
+                android:layout_marginRight="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/nfi_status3"
+                android:layout_marginEnd="16dp" />
+
+            <Button
+                android:id="@+id/btnflag3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report"
+                android:layout_marginRight="16dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/nfi_status3"
+                android:layout_marginEnd="16dp" />
+
+
+        </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+</ScrollView>
