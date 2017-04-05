@@ -29,9 +29,24 @@ public class MessengerUtil extends Content
 
     @Override
     public View displayContent() {
-        View view = inflater.inflate(R.layout.fragment_page, container, false);
-        TextView textView = (TextView) view;
-        textView.setText("Messenger");
+        View view = inflater.inflate(R.layout.messenger_frag, container, false);
+        TextView temp = (TextView) view.findViewById(R.id.m_profile_name);
+        temp.setText("Han Solo");
+        temp = (TextView) view.findViewById(R.id.m_message);
+        temp.setText("Where you at Bro??");
+        temp = (TextView) view.findViewById(R.id.m_profile_name1);
+        temp.setText("NewTon");
+        temp = (TextView) view.findViewById(R.id.m_message1);
+        temp.setText("I hope you become a null");
+        temp = (TextView) view.findViewById(R.id.m_profile_name2);
+        temp.setText("DvdK01");
+        temp = (TextView) view.findViewById(R.id.m_message2);
+        temp.setText("Dude Wanna meet up? I got great idea for a new hit");
+        temp = (TextView) view.findViewById(R.id.m_profile_name3);
+        temp.setText("SUperNull");
+        temp = (TextView) view.findViewById(R.id.m_message3);
+        temp.setText("How now brown cow?");
+
         return view;
     }
 }

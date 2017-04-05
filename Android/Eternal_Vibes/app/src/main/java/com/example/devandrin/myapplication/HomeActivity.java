@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity   implements NavigationView.
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(1);
     }
 
     @Override
