@@ -10,7 +10,7 @@ router.use(bodyParser.urlencoded({
 }));
 /* GET home page. */
 
-module.exports = function () {
+module.exports = function (pool) {
     router.get('/', function (req, res) {
         res.render('pages/HomePage/Landing.ejs',  function (err, html) {
             res.send(html);
@@ -51,6 +51,159 @@ module.exports = function () {
             res.send(html);
         });
     });
+    router.get('/addStudio', function (req, res) {
+        res.render('pages/AdminDashboard/AddStudio.ejs',  function (err, html) {
+            res.send(html);
+        });
+    });
+
+    router.get('/getUserInfo/:userID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//
+    router.get('/setUserLocation/:userID/:latitude/:longitude', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//
+    router.get('/clearUserLocation/:userID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//
+    router.get('/setUserGenre/:userID/:genreName', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//
+    router.get('/setSong/:userID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//SongUrl in body
+    router.get('/setSearchDistance/:userID/:latitude/:longitude', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//
+    router.get('/flagUser/:ActiveUser/:UserToFlagID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//
+    router.get('/followUser/:userID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });
+
+    router.get('/getStatus/:userID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });
+    router.get('/setStatus/:userID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//req.query.Status And req.query.ExtraInfo
+    router.get('/flagStatus/:statusID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });
+    router.get('/likeStatus/:statusID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });
+
+
+    router.get('/CreateChat/:UserID1/:UserID2', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });
+    router.get('/sendMessage/:userID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//And UserID to send to
+    router.get('/getMessages/:chatID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//
+    router.get('/getChats/:userID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//
     return router;
 };
 

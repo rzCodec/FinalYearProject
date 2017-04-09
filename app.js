@@ -8,37 +8,39 @@ var async = require('async');
 var request = require('request');
 var http = require('http');
 var compression = require('compression');
-var monk = require('monk');
 //require('request-debug')(request);
+var mysql = require('mysql');
 var app = express();
 app.use(compression());
 
-var DB;
+var pool;
 
 
 //Production();
-//Testing();
+Testing();
 
 function Production() {
-    MongoDB = monk('TeamOverClock:password@10.129.24.135:23456/Users', function (err) {
-        if (!err) {
-            console.log('Connected correctly to server');
-        } else {
-            console.log(err)
-        }
+    pool  = mysql.createPool({
+        connectionLimit : 10,
+        host            : 'localhost',
+        user            : 'root',
+        password        : 'innes381!need4speed',
+        database        : 'informatics',
+        debug: false
     });
 }
 function Testing() {
-    MongoDB = monk('TeamOverClock:password@localhost/Users', function (err) {
-        if (!err) {
-            console.log('Connected correctly to server');
-        } else {
-            console.log(err)
-        }
+    pool  = mysql.createPool({
+        connectionLimit : 10,
+        host            : 'localhost',
+        user            : 'root',
+        password        : 'innes381!need4speed',
+        database        : 'informatics',
+        debug: false
     });
 }
 
-var routes = require('./routes/index')();
+var routes = require('./routes/index')(pool);
 app.use('/', routes);
 
 //<editor-fold desc="Description">
@@ -60,7 +62,7 @@ var options = {
         res.set('x-timestamp', Date.now())
     }
 };
-app.use(express.static(path.join(__dirname, 'public'),options));
+app.use(express.static(path.join(__dirname, 'public'), options));
 
 app.use('/users', users);
 
