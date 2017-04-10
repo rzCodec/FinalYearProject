@@ -1,13 +1,12 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -18,12 +17,14 @@ import java.util.ArrayList;
 
 public class MessengerAdapter extends ArrayAdapter<Chat>
 {
+    final Context ct ;
     public MessengerAdapter(Context context, ArrayList<Chat> objects) {
         super(context, 0, objects);
+        ct = context;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position,View convertView, ViewGroup parent) {
         final Chat c = getItem(position);
         if(convertView == null)
         {
@@ -35,19 +36,14 @@ public class MessengerAdapter extends ArrayAdapter<Chat>
         temp.setText(c.getLastMessage());
         temp = (TextView) convertView.findViewById(R.id.txtTimestamp);
         temp.setText(c.getTimestamp()+"");
-        convertView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getContext(),c.getName(),Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        /*convertView.setOnClickListener(new View.OnClickListener() {
+        convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(),c.getName(),Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(HomeActivity.getInstance(),ChatActivity.class);
+                i.putExtra("Name",c.getName());
+                HomeActivity.getInstance().startActivity(i);
             }
-        });*/
+        });
         return convertView;
     }
 }

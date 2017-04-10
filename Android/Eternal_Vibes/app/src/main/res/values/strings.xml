@@ -74,4 +74,5 @@
     <string name="pref_location_services">Location Services</string>
     <string name="loc_title">Discovery</string>
     <string name="loc_descrip">Allows other users to view your location within a certain range</string>
+    <string name="title_activity_chat">ChatActivity</string>
 </resources>
