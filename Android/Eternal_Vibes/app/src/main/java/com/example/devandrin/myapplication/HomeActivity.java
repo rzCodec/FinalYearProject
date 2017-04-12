@@ -15,8 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class HomeActivity extends AppCompatActivity   implements NavigationView.OnNavigationItemSelectedListener {
-    private  static HomeActivity instance = null;
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static HomeActivity instance = null;
 
     public static HomeActivity getInstance() {
         return instance;
@@ -37,9 +37,8 @@ public class HomeActivity extends AppCompatActivity   implements NavigationView.
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if(Utilities.isServicesEnabled(getApplicationContext()) == false)
-        {
-            Utilities.MakeSnack(findViewById(R.id.cLayout),"Unable to get Location");
+        if (Utilities.isServicesEnabled(getApplicationContext()) == false) {
+            Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to get Location");
         }
         ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
         viewPager.setAdapter(new TabAdapter(getSupportFragmentManager(),
@@ -89,7 +88,7 @@ public class HomeActivity extends AppCompatActivity   implements NavigationView.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            Utilities.MakeToast(getApplicationContext(),"Error 204");
+            Utilities.MakeToast(getApplicationContext(), "Error 204");
         } else if (id == R.id.nav_settings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);

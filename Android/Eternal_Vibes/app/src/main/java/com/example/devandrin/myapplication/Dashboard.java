@@ -16,8 +16,8 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        PreferenceManager.setDefaultValues(this,R.xml.pref_location_services,true);
-        PreferenceManager.setDefaultValues(this,R.xml.pref_general,true);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_location_services, true);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, true);
         if (seenPage()) {
             nextActivity();
         } else {
@@ -33,11 +33,10 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void nextActivity() {
-        if(!seenPage())
-        {
+        if (!seenPage()) {
             SharedPreferences sp = this.getSharedPreferences(getString(R.string.seenDash), Context.MODE_PRIVATE);
             SharedPreferences.Editor e = sp.edit();
-            e.putBoolean(getString(R.string.seenDash),true);
+            e.putBoolean(getString(R.string.seenDash), true);
             e.commit();
         }
         Intent i = new Intent(this, HomeActivity.class);
