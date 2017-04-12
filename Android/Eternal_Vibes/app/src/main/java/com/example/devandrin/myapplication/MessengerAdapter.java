@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,10 +18,9 @@ import java.util.ArrayList;
 
 public class MessengerAdapter extends ArrayAdapter<Chat>
 {
-    final Context ct ;
+
     public MessengerAdapter(Context context, ArrayList<Chat> objects) {
         super(context, 0, objects);
-        ct = context;
     }
 
     @Override

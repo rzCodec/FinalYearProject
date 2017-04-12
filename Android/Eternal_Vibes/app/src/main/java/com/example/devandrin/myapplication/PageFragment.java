@@ -45,6 +45,7 @@ public class PageFragment extends Fragment {
             case 3:
                 view =RenderFactory.getClass("Radar",inflater,container).displayContent();
                 break;
+
         }
         return view;
     }

@@ -17,15 +17,24 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent i = getIntent();
-        setTitle(i.getStringExtra("Name"));
+        Initialize();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+    private void Initialize()
+    {
+        Intent i = getIntent();
+        setTitle(i.getStringExtra("Name"));
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
