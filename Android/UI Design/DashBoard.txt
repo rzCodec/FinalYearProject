@@ -1,0 +1,9 @@
+Description: This is the first page that the users see, they can view basic information and then proceed to an external Login Page
+
+A- It is the information bar, contains nothing but text
+B- Text content for basic information
+C- Other content, for buttons
+
+A1- Text Label, gonna be seen on Home View also
+A2- Text Content for basic information
+A3- Get Started Button to let the user log in

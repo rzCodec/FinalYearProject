@@ -1,0 +1,7 @@
+Description- Displays a list of users near by to user of the app, User can touch and view profile of the selected user
+
+A- Template of the list
+
+A1- User name 
+B1- Distance between the two users, Location is refreshed at certain long intervals
+C1- Time stamp of the last time the users location was updated

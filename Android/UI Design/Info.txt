@@ -1,0 +1,15 @@
+A1-Possiblitity of an Icon or Button being placed here
+A2- Menu Button for Current Page
+A3- Container for Content of Pages
+
+B1- Allows user to login and User the application
+
+C1- Just a place holder for possible menus
+C2- Goes to Settings Activity so user can Change preferences of the app
+C3- Logout takes user back to start of the app
+C4- Completely takes user out of the application
+
+D1- Tab for Notifications
+D2- Tab for News Feed
+D3- Tab for Messenger
+D4- Tab for Radar

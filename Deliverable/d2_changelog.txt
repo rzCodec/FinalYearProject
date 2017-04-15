@@ -1,0 +1,15 @@
+30-04-2017
+
+* Added more pages to the website such as admin, flagging and banning * (David)
+* Drew Class Diagrams and Activity Diagrams * (Ron, DV and Marc)
+
+01-04-2017
+
+* Completed UI Interfaces * (DV and David)
+* Worked on Class Diagrams * (DV and Ron)
+* Worked on Activity Diagrams * (Marc)
+* Edited Activity Diagrams * (Ron)
+
+02-04-2017
+
+* Uploaded Deliverable#2  @4:25pm * (Ron)
