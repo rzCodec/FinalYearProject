@@ -10,9 +10,17 @@ router.use(bodyParser.urlencoded({
 }));
 /* GET home page. */
 
+
+
 module.exports = function (pool) {
     router.get('/', function (req, res) {
         res.render('pages/HomePage/Landing.ejs',  function (err, html) {
+            res.send(html);
+        });
+    });
+
+    router.get('/SoundAuthen', function (req, res) {
+        res.render('Pages/temporary/callback.ejs', { name: "sad" }, function(err, html) {
             res.send(html);
         });
     });
@@ -47,7 +55,7 @@ module.exports = function (pool) {
         });
     });
     router.get('/soundcloud', function (req, res) {
-        res.render('pages/temporary/Soundcloud.ejs',  function (err, html) {
+        res.render('pages/temporary/userInfo.ejs',  function (err, html) {
             res.send(html);
         });
     });

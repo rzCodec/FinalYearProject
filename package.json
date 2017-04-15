@@ -18,7 +18,9 @@
     "monk": "^4.0.0",
     "morgan": "~1.7.0",
     "mysql": "^2.13.0",
+    "node-soundcloud": "0.0.6",
     "request": "^2.80.0",
-    "serve-favicon": "~2.3.2"
+    "serve-favicon": "~2.3.2",
+    "soundclouder": "^0.8.1"
   }
 }

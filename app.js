@@ -8,6 +8,8 @@ var async = require('async');
 var request = require('request');
 var http = require('http');
 var compression = require('compression');
+
+var sc = require("soundclouder");
 //require('request-debug')(request);
 var mysql = require('mysql');
 var app = express();
@@ -43,8 +45,6 @@ function Testing() {
 var routes = require('./routes/index')(pool);
 app.use('/', routes);
 
-//<editor-fold desc="Description">
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(favicon(path.join(__dirname, 'public', 'favicon/favicon.ico')));
