@@ -4,8 +4,7 @@ package com.example.devandrin.myapplication;
  * Created by Devandrin on 2017/04/09.
  */
 
-public class Chat
-{
+public class Chat {
     private long TimeStamp;
     private String Name;
     private String LastMessage;

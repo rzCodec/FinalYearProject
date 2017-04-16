@@ -33,17 +33,16 @@ public class PageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = null;
-        switch(p)
-        {
+        switch (p) {
             case 1:
-                view =RenderFactory.getClass("Messenger",inflater,container).displayContent();
+                view = RenderFactory.getClass("Messenger", inflater, container).displayContent();
                 break;
             case 2:
 
-                view =RenderFactory.getClass("NewsFeed",inflater,container).displayContent();
+                view = RenderFactory.getClass("NewsFeed", inflater, container).displayContent();
                 break;
             case 3:
-                view =RenderFactory.getClass("Radar",inflater,container).displayContent();
+                view = RenderFactory.getClass("Radar", inflater, container).displayContent();
                 break;
 
         }

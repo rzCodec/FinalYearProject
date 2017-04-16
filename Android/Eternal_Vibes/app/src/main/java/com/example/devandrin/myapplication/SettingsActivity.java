@@ -5,22 +5,16 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
-import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 
 import java.util.List;
 
@@ -36,8 +30,8 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
-    public static final String LOCATIONKEY="location_services";
-    public static final String LOCATIONRANGE="location_services_range";
+    public static final String LOCATIONKEY = "location_services";
+    public static final String LOCATIONRANGE = "location_services_range";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -59,7 +53,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                                 ? listPreference.getEntries()[index]
                                 : null);
 
-            }  else {
+            } else {
                 /*
                 For all other preferences, set the summary to the value's
                 simple string representation.
@@ -96,15 +90,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         Trigger the listener immediately with the preference's
         current value.
         */
-        try
-        {
+        try {
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                     PreferenceManager
                             .getDefaultSharedPreferences(preference.getContext())
                             .getBoolean(preference.getKey(), true));
-        }
-        catch(ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                     PreferenceManager
                             .getDefaultSharedPreferences(preference.getContext())
@@ -207,7 +198,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class LocationServicesPreferenceFragment extends PreferenceFragment{
+    public static class LocationServicesPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -215,6 +206,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             setHasOptionsMenu(true);
             bindPreferenceSummaryToValue(findPreference("location_services"));
         }
+
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();

@@ -3,7 +3,6 @@ package com.example.devandrin.myapplication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;

@@ -6,5 +6,5 @@
     <header
         android:fragment="com.example.devandrin.myapplication.SettingsActivity$LocationServicesPreferenceFragment"
         android:icon="@drawable/ic_Location"
-        android:title="@string/pref_location_services"/>
+        android:title="@string/pref_location_services" />
 </preference-headers>
