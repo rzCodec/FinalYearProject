@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    public static ArrayList<NewsFeedItem> arrTemp = new ArrayList<>();
     private static HomeActivity instance = null;
 
     public static HomeActivity getInstance() {
@@ -38,17 +41,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         if (Utilities.isServicesEnabled(getApplicationContext()) == false) {
+
             Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to get Location");
         }
         ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
-        viewPager.setAdapter(new TabAdapter(getSupportFragmentManager(),
-                HomeActivity.this));
+        TabAdapter ta = new TabAdapter(getSupportFragmentManager(), HomeActivity.this);
+        viewPager.setAdapter(ta);
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);
-
     }
 
     @Override

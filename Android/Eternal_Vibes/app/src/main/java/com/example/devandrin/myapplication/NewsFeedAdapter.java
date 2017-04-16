@@ -16,30 +16,18 @@ import java.util.ArrayList;
  * Created by Devandrin on 2017/04/11.
  */
 
-public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem>
-{
-    public NewsFeedAdapter( Context context, ArrayList<NewsFeedItem> objects) {
+public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
+    public NewsFeedAdapter(Context context, ArrayList<NewsFeedItem> objects) {
         super(context, 0, objects);
-    }
-    private static class viewComponents
-    {
-        TextView name;
-        TextView status;
-        TextView timestamp;
-        TextView likes;
-        TextView flags;
-        ImageButton like;
-        ImageButton flag;
     }
 
     @Override
-    public View getView(int position,  View convertView,  ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         final NewsFeedItem item = getItem(position);//Get Data To display
         viewComponents nfi;
-        if(convertView == null)
-        {
-            nfi= new viewComponents();
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.news_feed_item,parent,false);
+        if (convertView == null) {
+            nfi = new viewComponents();
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.news_feed_item, parent, false);
             nfi.name = (TextView) convertView.findViewById(R.id.nfi_name);
             nfi.status = (TextView) convertView.findViewById(R.id.nfi_status);
             nfi.timestamp = (TextView) convertView.findViewById(R.id.nfi_timestamp);
@@ -48,35 +36,43 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem>
             nfi.flag = (ImageButton) convertView.findViewById(R.id.nfi_btnFlag);
             nfi.like = (ImageButton) convertView.findViewById(R.id.nfi_btnLike);
             convertView.setTag(nfi);
-        }
-        else
-        {
+        } else {
             nfi = (viewComponents) convertView.getTag();
         }
         nfi.name.setText(item.getUserID());
         nfi.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(HomeActivity.getInstance(),ProfileActivity.class);
+                Intent i = new Intent(HomeActivity.getInstance(), ProfileActivity.class);
                 HomeActivity.getInstance().startActivity(i);
             }
         });
         nfi.status.setText(item.getStatus());
-        nfi.timestamp.setText(item.getTimestamp()+"");
-        nfi.likes.setText(item.getLikes()+"");
-        nfi.flags.setText(item.getFlags()+"");
+        nfi.timestamp.setText(item.getTimestamp() + "");
+        nfi.likes.setText(item.getLikes() + "");
+        nfi.flags.setText(item.getFlags() + "");
         nfi.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(HomeActivity.getInstance().getApplicationContext(),"Liked "+item.getUserID()+"'s post",Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.getInstance().getApplicationContext(), "Liked " + item.getUserID() + "'s post", Toast.LENGTH_SHORT).show();
             }
         });
         nfi.flag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(HomeActivity.getInstance().getApplicationContext(),"Flagged "+item.getUserID()+"'s post",Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.getInstance().getApplicationContext(), "Flagged " + item.getUserID() + "'s post", Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;
+    }
+
+    private static class viewComponents {
+        TextView name;
+        TextView status;
+        TextView timestamp;
+        TextView likes;
+        TextView flags;
+        ImageButton like;
+        ImageButton flag;
     }
 }
