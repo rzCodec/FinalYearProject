@@ -26,7 +26,7 @@ function Production() {
         connectionLimit : 10,
         host            : 'localhost',
         user            : 'root',
-        password        : 'innes381!need4speed',
+        password        : 'need4speed',
         database        : 'informatics',
         debug: false
     });

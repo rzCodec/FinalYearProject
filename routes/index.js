@@ -5,12 +5,10 @@ var async = require('async');
 var app = express();
 var bodyParser = require('body-parser');
 app.set('view engine', 'ejs');
+router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({
     extended: true
 }));
-/* GET home page. */
-
-
 
 module.exports = function (pool) {
     router.get('/', function (req, res) {
@@ -19,11 +17,6 @@ module.exports = function (pool) {
         });
     });
 
-    router.get('/SoundAuthen', function (req, res) {
-        res.render('Pages/temporary/callback.ejs', { name: "sad" }, function(err, html) {
-            res.send(html);
-        });
-    });
     router.get('/appinfo', function (req, res) {
         res.render('pages/HomePage/AppInfo.ejs',  function (err, html) {
             res.send(html);
@@ -54,11 +47,7 @@ module.exports = function (pool) {
             res.send(html);
         });
     });
-    router.get('/soundcloud', function (req, res) {
-        res.render('pages/temporary/userInfo.ejs',  function (err, html) {
-            res.send(html);
-        });
-    });
+
     router.get('/addStudio', function (req, res) {
         res.render('pages/AdminDashboard/AddStudio.ejs',  function (err, html) {
             res.send(html);
@@ -75,7 +64,7 @@ module.exports = function (pool) {
         });
     });//
     router.get('/setUserLocation/:userID/:latitude/:longitude', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+        pool.query('UPDATE users SET longitude=?, latitude=? WHERE userID=?',[req.params.longitude,req.params.latitude,req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -84,7 +73,7 @@ module.exports = function (pool) {
         });
     });//
     router.get('/clearUserLocation/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+        pool.query('UPDATE users SET longitude=NULL, latitude=NULL  WHERE userID=?',[req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -92,8 +81,8 @@ module.exports = function (pool) {
             }
         });
     });//
-    router.get('/setUserGenre/:userID/:genreName', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+    router.get('/getGenres', function (req,res) {
+        pool.query('SELECT * FROM `genres`', function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -101,8 +90,17 @@ module.exports = function (pool) {
             }
         });
     });//
-    router.get('/setSong/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+    router.get('/setUserGenre/:userID/:genreID', function (req,res) {
+        pool.query('UPDATE users SET genreID=?  WHERE userID=?',[req.params.genreID,req.params.userID], function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//
+    router.post('/setSong/:userID', function (req,res) {
+        pool.query('UPDATE users SET songLink=?  WHERE userID=?',[req.body.songLink,req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -110,8 +108,17 @@ module.exports = function (pool) {
             }
         });
     });//SongUrl in body
-    router.get('/setSearchDistance/:userID/:latitude/:longitude', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+    router.get('/setSearchDistance/:userID/:distance', function (req,res) {
+        pool.query('UPDATE users SET searchDistance=?  WHERE userID=?',[req.params.distance,req.params.userID], function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });//reports
+    router.get('/flagUser/:userToFlagID', function (req,res) {
+        pool.query('UPDATE users SET reports=(reports+1)  WHERE userID=?',[req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -119,17 +126,8 @@ module.exports = function (pool) {
             }
         });
     });//
-    router.get('/flagUser/:ActiveUser/:UserToFlagID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
-            if(error){
-                console.log(error)
-            }else{
-                res.send(results);
-            }
-        });
-    });//
-    router.get('/followUser/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+    router.get('/followUser/:activeuserID/:userIDToFollow', function (req,res) {
+        pool.query('INSERT INTO `followers` (`userID`, `likedID`, `timeStamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',[req.params.activeuserID,req.params.userIDToFollow], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -138,8 +136,8 @@ module.exports = function (pool) {
         });
     });
 
-    router.get('/getStatus/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+    router.get('/getStatuses/:userID', function (req,res) {
+        pool.query('SELECT * FROM `status list` WHERE userID=?',[req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -147,8 +145,8 @@ module.exports = function (pool) {
             }
         });
     });
-    router.get('/setStatus/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+    router.post('/setStatus/:userID', function (req,res) {
+        pool.query('INSERT INTO `status list` (`userID`, `timestamp`, `status`, `extraInfo`) VALUES (?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ?, ?)',[req.params.userID,req.body.status,req.body.extraInfo], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -157,7 +155,7 @@ module.exports = function (pool) {
         });
     });//req.query.Status And req.query.ExtraInfo
     router.get('/flagStatus/:statusID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+        pool.query('UPDATE `status list` SET flagged=(flagged+1)  WHERE statusID=?',[req.params.statusID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -166,7 +164,7 @@ module.exports = function (pool) {
         });
     });
     router.get('/likeStatus/:statusID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+        pool.query('UPDATE `status list` SET liked=(liked+1)  WHERE statusID=?',[req.params.statusID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -174,10 +172,9 @@ module.exports = function (pool) {
             }
         });
     });
-
 
     router.get('/CreateChat/:UserID1/:UserID2', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+        pool.query('INSERT INTO `chats` (`user1ID`, `user2ID`, `startTimeStamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',[req.params.UserID1,req.params.UserID2], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -185,8 +182,8 @@ module.exports = function (pool) {
             }
         });
     });
-    router.get('/sendMessage/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+    router.post('/sendMessage/:chatID/:userID', function (req,res) {
+        pool.query('INSERT INTO `message list` (`message`, `timeStamp`, `isRead`, `senderID`, `chatID`) VALUES (?,  ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 0, ?, ?)',[req.body.message,req.params.userID,req.params.chatID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -195,7 +192,7 @@ module.exports = function (pool) {
         });
     });//And UserID to send to
     router.get('/getMessages/:chatID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+        pool.query('SELECT * FROM `message list` WHERE chatID=? ORDER BY timeStamp ASC',[req.params.chatID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -204,7 +201,7 @@ module.exports = function (pool) {
         });
     });//
     router.get('/getChats/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+        pool.query('SELECT * FROM `chats` WHERE user1ID=? OR user2ID=? ORDER BY startTimeStamp ASC',[req.params.userID,req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{

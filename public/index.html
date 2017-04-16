@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SoundCloud API Examples - JavaScript SDK</title>
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://connect.soundcloud.com/sdk.js"></script>
+    <script src="script.js"></script>
+</head>
+<style>
+    body {
+        font-family: Helvetica;
+    }
+    header {
+        text-align: center;
+    }
+    header.loggedIn h3, header.loggedIn #login {
+        display: none;
+    }
+    main {
+        display: none;
+    }
+    main.loggedIn {
+        display: block;
+    }
+    #ui {
+        background-color: rgba(0, 0, 0, 0.5);
+        height: 225px;
+        padding: 10px;
+    }
+    #ui:after {
+        height: 150px;
+        clear: both;
+    }
+    #ui #avatar {
+        width: 15%;
+        float: left;
+    }
+    #ui #description {
+        width: 75%;
+        float: left;
+        display: inline-block;
+        padding: 15px;
+    }
+
+    #tracklist, #playlists {
+        width: 50%;
+        float: left;
+    }
+    #tracklist ul, #playlists ul {
+        padding: 0;
+        list-style: none;
+    }
+    #tracklist ul li, #playlists ul li {
+        background-color: black;
+        color: white;
+        padding: 5px;
+        transition: 0.5s;
+    }
+    #tracklist ul li:hover, #playlists ul li:hover {
+        background-color: #1A5E8E;
+    }
+</style>
+<body>
+
+<header>
+    <h1>SoundCloud API - Demonstrations</h1>
+    <h3>Login to your SoundCloud account Now.</h3>
+    <img src="images/sc-button.png" id="login" />
+</header>
+
+<main>
+
+    <div id="ui">
+        <h2>Welcome <span></span></h2>
+        <img id="avatar" />
+        <div id="description"></div>
+    </div>
+
+    <!-- TRACKS -->
+    <div id="tracklist">
+        <h3>Your Tracks:</h3>
+        <ul></ul>
+    </div>
+    <!-- PLAYLISTS -->
+    <div id="playlists">
+        <h3>Your Playlists:</h3>
+        <ul></ul>
+    </div>
+
+    <div id="player"></div>
+
+</main>
+
+</body>
+
+</html>
