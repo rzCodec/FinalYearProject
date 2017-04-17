@@ -4,6 +4,7 @@ package com.example.devandrin.myapplication;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,7 +41,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
-
+            if (value instanceof Boolean) {
+                Boolean v = (Boolean) value;
+                stringValue = v.booleanValue() ? "On" : "Off";
+            }
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.
@@ -52,7 +56,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         index >= 0
                                 ? listPreference.getEntries()[index]
                                 : null);
-
             } else {
                 /*
                 For all other preferences, set the summary to the value's
@@ -198,13 +201,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class LocationServicesPreferenceFragment extends PreferenceFragment {
+    public static class LocationServicesPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_location_services);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference("location_services"));
+            bindPreferenceSummaryToValue(findPreference(LOCATIONKEY));
+            bindPreferenceSummaryToValue(findPreference(LOCATIONRANGE));
         }
 
         @Override
@@ -215,6 +219,27 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.contains(LOCATIONKEY)) {
+                Utilities.MakeToast(HomeActivity.getInstance().getApplicationContext(), "Discovery Changed");
+            } else if (key.contains(LOCATIONRANGE)) {
+                Utilities.MakeToast(HomeActivity.getInstance().getApplicationContext(), "Range Changed");
+            }
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         }
     }
 }
