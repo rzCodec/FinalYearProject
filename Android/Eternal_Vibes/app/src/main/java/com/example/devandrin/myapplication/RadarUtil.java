@@ -9,8 +9,7 @@ import android.widget.TextView;
  * Created by Devandrin on 2017/04/01.
  */
 
-public class RadarUtil extends Content
-{
+public class RadarUtil extends Content {
 
     public RadarUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);

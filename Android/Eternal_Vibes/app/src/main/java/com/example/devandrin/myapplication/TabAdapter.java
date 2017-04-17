@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class TabAdapter extends FragmentPagerAdapter {
     private final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[] { "Messenger", "News Feed", "Radar" };
+    private String tabTitles[] = new String[]{"Messenger", "News Feed", "Radar"};
     private Context context;
 
     public TabAdapter(FragmentManager fm, Context context) {
