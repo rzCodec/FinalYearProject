@@ -55,7 +55,7 @@ module.exports = function (pool) {
     });
 
     router.get('/getUserInfo/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID='+ req.params.userID, function (error, results) {
+        pool.query('SELECT * FROM `users` WHERE id='+ req.params.userID, function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -64,7 +64,7 @@ module.exports = function (pool) {
         });
     });//
     router.get('/setUserLocation/:userID/:latitude/:longitude', function (req,res) {
-        pool.query('UPDATE users SET longitude=?, latitude=? WHERE userID=?',[req.params.longitude,req.params.latitude,req.params.userID], function (error, results) {
+        pool.query('UPDATE users SET longitude=?, latitude=? WHERE id=?',[req.params.longitude,req.params.latitude,req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -73,7 +73,7 @@ module.exports = function (pool) {
         });
     });//
     router.get('/clearUserLocation/:userID', function (req,res) {
-        pool.query('UPDATE users SET longitude=NULL, latitude=NULL  WHERE userID=?',[req.params.userID], function (error, results) {
+        pool.query('UPDATE users SET longitude=NULL, latitude=NULL  WHERE id=?',[req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -91,7 +91,7 @@ module.exports = function (pool) {
         });
     });//
     router.get('/setUserGenre/:userID/:genreID', function (req,res) {
-        pool.query('UPDATE users SET genreID=?  WHERE userID=?',[req.params.genreID,req.params.userID], function (error, results) {
+        pool.query('UPDATE users SET genre_id=?  WHERE id=?',[req.params.genreID,req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -100,7 +100,7 @@ module.exports = function (pool) {
         });
     });//
     router.post('/setSong/:userID', function (req,res) {
-        pool.query('UPDATE users SET songLink=?  WHERE userID=?',[req.body.songLink,req.params.userID], function (error, results) {
+        pool.query('UPDATE users SET song_link=?  WHERE id=?',[req.body.songLink,req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -109,7 +109,7 @@ module.exports = function (pool) {
         });
     });//SongUrl in body
     router.get('/setSearchDistance/:userID/:distance', function (req,res) {
-        pool.query('UPDATE users SET searchDistance=?  WHERE userID=?',[req.params.distance,req.params.userID], function (error, results) {
+        pool.query('UPDATE users SET search_distance=?  WHERE id=?',[req.params.distance,req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -118,7 +118,7 @@ module.exports = function (pool) {
         });
     });//reports
     router.get('/flagUser/:userToFlagID', function (req,res) {
-        pool.query('UPDATE users SET reports=(reports+1)  WHERE userID=?',[req.params.userID], function (error, results) {
+        pool.query('UPDATE users SET reports=(reports+1)  WHERE id=?',[req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -127,7 +127,7 @@ module.exports = function (pool) {
         });
     });//
     router.get('/followUser/:activeuserID/:userIDToFollow', function (req,res) {
-        pool.query('INSERT INTO `followers` (`userID`, `likedID`, `timeStamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',[req.params.activeuserID,req.params.userIDToFollow], function (error, results) {
+        pool.query('INSERT INTO `followers` (`user_id`, `liked_id`, `timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',[req.params.activeuserID,req.params.userIDToFollow], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -137,7 +137,7 @@ module.exports = function (pool) {
     });
 
     router.get('/getStatuses/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status list` WHERE userID=?',[req.params.userID], function (error, results) {
+        pool.query('SELECT * FROM `status_list` WHERE user_id=?',[req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -146,7 +146,7 @@ module.exports = function (pool) {
         });
     });
     router.post('/setStatus/:userID', function (req,res) {
-        pool.query('INSERT INTO `status list` (`userID`, `timestamp`, `status`, `extraInfo`) VALUES (?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ?, ?)',[req.params.userID,req.body.status,req.body.extraInfo], function (error, results) {
+        pool.query('INSERT INTO `status_list` (`user_id`, `timestamp`, `status`, `extra_info`) VALUES (?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ?, ?)',[req.params.userID,req.body.status,req.body.extraInfo], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -155,7 +155,7 @@ module.exports = function (pool) {
         });
     });//req.query.Status And req.query.ExtraInfo
     router.get('/flagStatus/:statusID', function (req,res) {
-        pool.query('UPDATE `status list` SET flagged=(flagged+1)  WHERE statusID=?',[req.params.statusID], function (error, results) {
+        pool.query('UPDATE `status_list` SET flagged=(flagged+1)  WHERE id=?',[req.params.statusID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -164,7 +164,7 @@ module.exports = function (pool) {
         });
     });
     router.get('/likeStatus/:statusID', function (req,res) {
-        pool.query('UPDATE `status list` SET liked=(liked+1)  WHERE statusID=?',[req.params.statusID], function (error, results) {
+        pool.query('UPDATE `status_list` SET liked=(liked+1)  WHERE id=?',[req.params.statusID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -174,7 +174,7 @@ module.exports = function (pool) {
     });
 
     router.get('/CreateChat/:UserID1/:UserID2', function (req,res) {
-        pool.query('INSERT INTO `chats` (`user1ID`, `user2ID`, `startTimeStamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',[req.params.UserID1,req.params.UserID2], function (error, results) {
+        pool.query('INSERT INTO `chats` (`user1_id`, `user2_id`, `start_timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',[req.params.UserID1,req.params.UserID2], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -183,7 +183,7 @@ module.exports = function (pool) {
         });
     });
     router.post('/sendMessage/:chatID/:userID', function (req,res) {
-        pool.query('INSERT INTO `message list` (`message`, `timeStamp`, `isRead`, `senderID`, `chatID`) VALUES (?,  ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 0, ?, ?)',[req.body.message,req.params.userID,req.params.chatID], function (error, results) {
+        pool.query('INSERT INTO `message_list` (`message`, `timestamp`, `is_read`, `sender_id`, `chat_id`) VALUES (?,  ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 0, ?, ?)',[req.body.message,req.params.userID,req.params.chatID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -192,7 +192,7 @@ module.exports = function (pool) {
         });
     });//And UserID to send to
     router.get('/getMessages/:chatID', function (req,res) {
-        pool.query('SELECT * FROM `message list` WHERE chatID=? ORDER BY timeStamp ASC',[req.params.chatID], function (error, results) {
+        pool.query('SELECT * FROM `message_list` WHERE 	chat_id=? ORDER BY timestamp ASC',[req.params.chatID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -201,7 +201,7 @@ module.exports = function (pool) {
         });
     });//
     router.get('/getChats/:userID', function (req,res) {
-        pool.query('SELECT * FROM `chats` WHERE user1ID=? OR user2ID=? ORDER BY startTimeStamp ASC',[req.params.userID,req.params.userID], function (error, results) {
+        pool.query('SELECT * FROM `chats` WHERE user1_id=? OR user2_id=? ORDER BY start_timestamp ASC',[req.params.userID,req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
