@@ -14,10 +14,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
+import com.soundcloud.api.ApiWrapper;
+import com.soundcloud.api.Token;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -43,22 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
         t = (TextView) findViewById(R.id.email);
         t.setText("201320596@student.uj.ac.za");
         String url = "https://www.eternalvibes.me/getuserinfo/1";
-        /*StringRequest sr = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Gson g = new Gson();
-                Profile p = g.fromJson(response.substring(1, response.length() - 1), Profile.class);
-                TextView values = (TextView) findViewById(R.id.values);
-                values.setText(p.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                TextView values = (TextView) findViewById(R.id.values);
-                values.setText("Never Work");
-            }
-        });*/
-        JsonArrayRequest sr = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        Response.Listener listener =new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try
@@ -73,15 +62,18 @@ public class ProfileActivity extends AppCompatActivity {
                     values.setText("Never Work");
                 }
             }
-        }, new Response.ErrorListener() {
+        };
+        Response.ErrorListener err =  new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 TextView values = (TextView) findViewById(R.id.values);
                 values.setText("Eish...");
             }
-        });
+        };
+        JsonArrayRequest sr = new JsonArrayRequest(Request.Method.GET, url, null,listener, err);
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(sr);
         
+
     }
 
 
