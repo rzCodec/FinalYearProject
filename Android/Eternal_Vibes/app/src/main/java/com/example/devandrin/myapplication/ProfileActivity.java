@@ -11,8 +11,17 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
+import com.soundcloud.api.ApiWrapper;
+import com.soundcloud.api.Token;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -38,123 +47,35 @@ public class ProfileActivity extends AppCompatActivity {
         t = (TextView) findViewById(R.id.email);
         t.setText("201320596@student.uj.ac.za");
         String url = "https://www.eternalvibes.me/getuserinfo/1";
-        StringRequest sr = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        Response.Listener listener =new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(String response) {
-                /*try
+            public void onResponse(JSONArray response) {
+                try
                 {
-                    JSONObject o = new JSONObject(response.substring(1,response.length()-1));
+                    Profile p = Profile.fromJsonArray(response).get(0);
                     TextView values = (TextView) findViewById(R.id.values);
-                    values.setText(o.toString());
-
-
+                    values.setText(p.toString());
                 }
                 catch(JSONException e)
                 {
                     TextView values = (TextView) findViewById(R.id.values);
-                    values.setText("Eish...");
-                }*/
-                Gson g = new Gson();
-                Profile p = g.fromJson(response.substring(1, response.length() - 1), Profile.class);
-                TextView values = (TextView) findViewById(R.id.values);
-                values.setText(p.toString());
+                    values.setText("Never Work");
+                }
             }
-        }, new Response.ErrorListener() {
+        };
+        Response.ErrorListener err =  new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 TextView values = (TextView) findViewById(R.id.values);
-                values.setText("Never Work");
+                values.setText("Eish...");
             }
-        });
+        };
+        JsonArrayRequest sr = new JsonArrayRequest(Request.Method.GET, url, null,listener, err);
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(sr);
+        
+
     }
 
-    public class Profile {
-        int statusID;
-        int userID;
-        long timestamp;
-        String status;
-        String extraInfo;
-        int flagged;
-        int liked;
 
-        public Profile(int statusID, int userID, long timestamp, String status, String extraInfo, int flagged, int liked) {
-            this.statusID = statusID;
-            this.userID = userID;
-            this.timestamp = timestamp;
-            this.status = status;
-            this.extraInfo = extraInfo;
-            this.flagged = flagged;
-            this.liked = liked;
-        }
-
-        public int getStatusID() {
-            return statusID;
-        }
-
-        public void setStatusID(int statusID) {
-            this.statusID = statusID;
-        }
-
-        public int getUserID() {
-            return userID;
-        }
-
-        public void setUserID(int userID) {
-            this.userID = userID;
-        }
-
-        public long getTimestamp() {
-            return timestamp;
-        }
-
-        public void setTimestamp(long timestamp) {
-            this.timestamp = timestamp;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
-
-        public String getExtraInfo() {
-            return extraInfo;
-        }
-
-        public void setExtraInfo(String extraInfo) {
-            this.extraInfo = extraInfo;
-        }
-
-        public int getFlagged() {
-            return flagged;
-        }
-
-        public void setFlagged(int flagged) {
-            this.flagged = flagged;
-        }
-
-        public int getLiked() {
-            return liked;
-        }
-
-        public void setLiked(int liked) {
-            this.liked = liked;
-        }
-
-        @Override
-        public String toString() {
-            return "Details :\n"
-                    + statusID + "\n"
-                    + userID + "\n"
-                    + timestamp + "\n"
-                    + status + "\n"
-                    + extraInfo + "\n"
-                    + flagged + "\n"
-                    + liked + "\n";
-        }
-    }
 
 }
