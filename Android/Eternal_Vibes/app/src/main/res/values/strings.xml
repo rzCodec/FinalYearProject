@@ -5,14 +5,14 @@
     <string name="seenDash">seenDashboard</string>
     <string name="app_name">Eternal Vibes</string>
     <string name="title_activity_menu">MenuActivity</string>
-    <string name="StartbtnMessage">Get Started</string>
+    <string name="StartbtnMessage">Login</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="team_details">The Overclockers #25</string>
     <string name="action_settings">Settings</string>
     <string name="Welcome_Message">Welcome to Eternal Vibes!</string>
-    <string name="wm_content">Login to view near by artists that is looking to become famous or share your
-    own information and music</string>
+    <string name="wm_content">Login below to view near by artists that is looking to become famous or share your
+    own information and music.</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -40,15 +40,13 @@
     <string name="pref_description_social_recommendations">Recommendations for people to contact
         based on your message history
     </string>
-
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>
 
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string name="pref_title_Genre_type">Genre type</string>
     <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
+        <item>Rock</item>
+        <item>Rap</item>
     </string-array>
     <string-array name="pref_example_list_values">
         <item>1</item>

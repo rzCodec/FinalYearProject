@@ -21,10 +21,10 @@ public class NewsFeedUtil extends Content {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
         ArrayList<NewsFeedItem> arrTemp = HomeActivity.arrTemp;
 
-        arrTemp.add(new NewsFeedItem(0, "Dvdk", 46148, "Im Over here !!", null, 3, 0));
-        arrTemp.add(new NewsFeedItem(10, "DJ CJ", 6553, "Im Over There !!", null, 65, 2));
+        arrTemp.add(new NewsFeedItem(1, "David Innes", 46148, "Im Over here !!", null, 3, 0));
+        arrTemp.add(new NewsFeedItem(2, "D V", 6553, "Im Over There !!", null, 65, 2));
         arrTemp.add(new NewsFeedItem(23, "Ko321", 251125, "Im behind you !!", null, 23, 0));
-        arrTemp.add(new NewsFeedItem(1, "Wannab3Guy", 125125, "I love Java!", null, 1, 30));
+        arrTemp.add(new NewsFeedItem(14, "Wannab3Guy", 125125, "I love Java!", null, 1, 30));
         arrTemp.add(new NewsFeedItem(56, "JoziL", 461251148, "Ain't no mountain high or low!!", null, 164, 0));
         ListView lv = (ListView) view.findViewById(R.id.ArrayList);
         lv.setAdapter(new NewsFeedAdapter(HomeActivity.getInstance().getApplicationContext(), arrTemp));

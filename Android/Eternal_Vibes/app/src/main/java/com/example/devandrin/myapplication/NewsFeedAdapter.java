@@ -44,6 +44,8 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.getInstance(), ProfileActivity.class);
+                i.putExtra("id", item.getStatusID());
+                i.putExtra("name",item.getUserID());
                 HomeActivity.getInstance().startActivity(i);
             }
         });

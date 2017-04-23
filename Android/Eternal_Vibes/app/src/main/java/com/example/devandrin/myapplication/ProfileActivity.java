@@ -1,6 +1,7 @@
 package com.example.devandrin.myapplication;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,17 +13,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.google.gson.Gson;
-import com.soundcloud.api.ApiWrapper;
-import com.soundcloud.api.Token;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
 public class ProfileActivity extends AppCompatActivity {
 
     @Override
@@ -31,7 +24,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Devandrin Kuni");
+        setTitle(getIntent().getStringExtra("name"));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,26 +33,28 @@ public class ProfileActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        TextView t = (TextView) findViewById(R.id.firstName);
-        t.setText("Devandrin");
-        t = (TextView) findViewById(R.id.lastName);
-        t.setText("Kuni");
-        t = (TextView) findViewById(R.id.email);
-        t.setText("201320596@student.uj.ac.za");
-        String url = "https://www.eternalvibes.me/getuserinfo/1";
+        String url = "https://www.eternalvibes.me/getuserinfo/"+ getIntent().getStringExtra("id");
         Response.Listener listener =new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try
                 {
-                    Profile p = Profile.fromJsonArray(response).get(0);
-                    TextView values = (TextView) findViewById(R.id.values);
+                    Profile p = Profile.fromJSONArray(response).get(0);
+                    TextView values =(TextView) findViewById(R.id.firstName);
+                    values.setText(p.getFirstname());
+                    values = (TextView) findViewById(R.id.lastName);
+                    values.setText(p.getSurname());
+                    values = (TextView) findViewById(R.id.email);
+                    values.setText(p.getEmail());
+                    values = (TextView) findViewById(R.id.values);
                     values.setText(p.toString());
+                    values = (TextView) findViewById(R.id.SongLink);
+                    values.setText(p.getSong_link());
                 }
                 catch(JSONException e)
                 {
                     TextView values = (TextView) findViewById(R.id.values);
-                    values.setText("Never Work");
+                    values.setText("Oops, something went wrong...");
                 }
             }
         };
@@ -72,10 +67,12 @@ public class ProfileActivity extends AppCompatActivity {
         };
         JsonArrayRequest sr = new JsonArrayRequest(Request.Method.GET, url, null,listener, err);
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(sr);
-        
 
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

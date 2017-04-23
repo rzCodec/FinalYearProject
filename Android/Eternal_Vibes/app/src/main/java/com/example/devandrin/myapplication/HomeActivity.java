@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -15,12 +16,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.OnConnectionFailedListener {
     public static ArrayList<NewsFeedItem> arrTemp = new ArrayList<>();
     private static HomeActivity instance = null;
-
+    private GoogleApiClient gac  = null;
     public static HomeActivity getInstance() {
         return instance;
     }
@@ -44,6 +52,39 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to get Location");
         }
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean LKey = false;
+        LKey = sp.getBoolean(SettingsActivity.LOCATIONKEY,LKey);
+        if(LKey)
+        {
+            sp = this.getSharedPreferences("Date",MODE_PRIVATE);
+            Date date;
+            GregorianCalendar gc = new GregorianCalendar();
+            if(sp.contains("DatePosted"))
+            {
+                date = new Date(sp.getString("DatePosted",""));
+                Date dateNow = gc.getTime();
+                if(date.getDay()==dateNow.getDay() && date.getMonth()==dateNow.getMonth()&& date.getYear() == dateNow.getYear())
+                {
+                    long time =   dateNow.getTime()-date.getTime();
+                    int Seconds = (int)time /1000;
+                    if(Seconds >= 120)
+                    {
+                        date = postTime(sp);
+                    }
+                }
+                else
+                {
+                    date = postTime(sp);
+                }
+
+            }
+            else
+            {
+                date = postTime(sp);
+            }
+            Utilities.MakeToast(this,date.toString());
+        }
         ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
         TabAdapter ta = new TabAdapter(getSupportFragmentManager(), HomeActivity.this);
         viewPager.setAdapter(ta);
@@ -52,8 +93,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);
-    }
+        gac = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(LocationServices.API)
+                .build();
 
+    }
+    private Date postTime(SharedPreferences sp)
+    {
+        GregorianCalendar gc = new GregorianCalendar();
+        Date date= gc.getTime();
+        SharedPreferences.Editor e = sp.edit();
+        e.putString("DatePosted",date.toString());
+        e.commit();
+        return date;
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -90,15 +144,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            Utilities.MakeToast(getApplicationContext(), "Error 204");
+        if (id == R.id.nav_profile) {
+            SharedPreferences sp = this.getSharedPreferences("userInfo",MODE_PRIVATE);
+            String userID = "";
+            String alias = "";
+            userID = sp.getString("userID",userID);
+            alias = sp.getString("alias",alias);
+            Intent i = new Intent(this,ProfileActivity.class);
+            i.putExtra("id",userID);
+            i.putExtra("name",alias);
+            startActivity(i);
         } else if (id == R.id.nav_settings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_logout) {
-            SharedPreferences sp = this.getSharedPreferences(getString(R.string.seenDash), Context.MODE_PRIVATE);
+            SharedPreferences sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
             SharedPreferences.Editor e = sp.edit();
-            e.putBoolean(getString(R.string.seenDash), false);
+            e.remove("userID");
+            e.remove("alias");
             e.commit();
             Intent i = getBaseContext().getPackageManager()
                     .getLaunchIntentForPackage(getBaseContext().getPackageName());
@@ -118,4 +181,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    public void onConnectionFailed( ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 }
