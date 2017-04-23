@@ -37,7 +37,10 @@ module.exports = function (pool) {
             res.send(html);
         });
     });
-    router.get('/dashboard', function (req, res) {
+    router.post('/dashboard', function (req, res) {
+        console.log(req.body.id);
+        console.log(req.body.avatar_url);
+        console.log(req.body.username);
         res.render('pages/UserDashboard/DashBoard.ejs',  function (err, html) {
             res.send(html);
         });
