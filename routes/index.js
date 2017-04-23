@@ -38,12 +38,65 @@ module.exports = function (pool) {
         });
     });
     router.post('/dashboard', function (req, res) {
-        console.log(req.body.id);
-        console.log(req.body.avatar_url);
-        console.log(req.body.username);
-        res.render('pages/UserDashboard/DashBoard.ejs',  function (err, html) {
-            res.send(html);
+        var id=req.body.id;
+        var avatar_url=req.body.avatar_url;
+        var username=req.body.username;
+        var user_info;
+        var status_info;
+        var genre_info;
+        var top_info;
+
+        async.parallel([
+            function(done){
+                pool.query('SELECT * FROM `users` WHERE id='+ id, function (error, results) {
+                    if(error){
+                        console.log(error)
+                    }else{
+                        user_info=results;
+                        done(null);
+                    }
+                });
+            },//user info
+            function(done){
+                pool.query('SELECT users.alias,users.avatar_url,status_list.* FROM `status_list` INNER Join users On users.id=status_list.user_id WHERE status_list.user_id='+id+' ORDER BY status_list.timestamp', function (error, results) {
+                    if(error){
+                        console.log(error)
+                    }else{
+                        status_info=results;
+                        done(null);
+                    }
+                });
+            },//status list
+            function(done){
+                pool.query('SELECT genres.name,COUNT(*) FROM `users` INNER JOIN genres on genres.id=users.genre_id GROUP by users.genre_id', function (error, results) {
+                    if(error){
+                        console.log(error)
+                    }else{
+                        genre_info=results;
+                        done(null);
+                    }
+                });
+            },//genre count
+            function(done){
+                pool.query('SELECT users.id,COUNT(*) as followerss from users INNER JOin followers on followers.liked_id= users.id GROUP BY users.id ORDER by followerss DESC LIMIT 3', function (error, results) {
+                    if(error){
+                        console.log(error)
+                    }else{
+                        top_info=results;
+                        done(null);
+                    }
+                });
+            }//top artists
+        ], function(err){
+            if(err){
+                console.log(err);
+            }else{
+                res.render('pages/UserDashboard/DashBoard.ejs',{id:id,avatar_url:avatar_url,username:username,user_info:user_info,status_info:status_info,genre_info:genre_info,top_info:top_info},  function (err, html) {
+                    res.send(html);
+                });
+            }
         });
+
     });
     router.get('/settings', function (req, res) {
         res.render('pages/UserDashboard/Settings.ejs',  function (err, html) {
