@@ -55,6 +55,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void Initialize() {
+
         Intent i = getIntent();
         setTitle(i.getStringExtra("Name"));
     }

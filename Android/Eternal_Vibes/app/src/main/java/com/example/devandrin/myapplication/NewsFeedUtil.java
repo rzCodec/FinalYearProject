@@ -1,9 +1,20 @@
 package com.example.devandrin.myapplication;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 
@@ -12,6 +23,8 @@ import java.util.ArrayList;
  */
 
 public class NewsFeedUtil extends Content {
+    private static ArrayList<NewsFeedItem> arrData ;
+    private static NewsFeedAdapter adapter;
     public NewsFeedUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);
     }
@@ -19,15 +32,35 @@ public class NewsFeedUtil extends Content {
     @Override
     public View displayContent() {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
-        ArrayList<NewsFeedItem> arrTemp = HomeActivity.arrTemp;
-
-        arrTemp.add(new NewsFeedItem(0, "Dvdk", 46148, "Im Over here !!", null, 3, 0));
-        arrTemp.add(new NewsFeedItem(10, "DJ CJ", 6553, "Im Over There !!", null, 65, 2));
-        arrTemp.add(new NewsFeedItem(23, "Ko321", 251125, "Im behind you !!", null, 23, 0));
-        arrTemp.add(new NewsFeedItem(1, "Wannab3Guy", 125125, "I love Java!", null, 1, 30));
-        arrTemp.add(new NewsFeedItem(56, "JoziL", 461251148, "Ain't no mountain high or low!!", null, 164, 0));
         ListView lv = (ListView) view.findViewById(R.id.ArrayList);
-        lv.setAdapter(new NewsFeedAdapter(HomeActivity.getInstance().getApplicationContext(), arrTemp));
+        if(arrData == null)
+        {
+            arrData = new ArrayList<>();
+        }
+        adapter=new NewsFeedAdapter(HomeActivity.getInstance().getApplicationContext(), arrData);
+        lv.setAdapter(adapter);
+
         return view;
+    }
+    public static void makeRequest(String id)
+    {
+        String Url = "https://www.eternalvibes.me/getstatuses/"+id;
+        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, Url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                adapter.clear();
+                arrData = NewsFeedItem.ExtractData(response);
+
+                adapter.addAll(arrData);
+                adapter.notifyDataSetChanged();
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("NewsFeedRequest", "onErrorResponse: "+error.getMessage());
+                    }
+                });
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(jar);
     }
 }

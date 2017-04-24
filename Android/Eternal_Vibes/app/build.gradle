@@ -7,6 +7,7 @@ android {
         applicationId "com.example.devandrin.myapplication"
         minSdkVersion 16
         targetSdkVersion 25
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,17 +21,19 @@ android {
     }
 }
 
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
-    compile 'com.android.support:design:25.2.0'
-    compile 'com.android.support:support-v4:25.3.0'
-    compile 'com.android.support:support-vector-drawable:25.3.0'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:support-vector-drawable:25.3.1'
     compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.google.android.gms:play-services:10.2.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.google.code.gson:gson:2.2.4'
 }
