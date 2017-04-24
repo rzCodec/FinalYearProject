@@ -2,7 +2,7 @@ $(document).ready(function () {
     // Initialization of SDK
     SC.initialize({
         client_id: "wUNxKExU8wm7IfN1bIV4qBSh2cpeivmY",
-        redirect_uri: "www.eternalvibes.me/SoundAuthen"
+        redirect_uri: "https://www.eternalvibes.me/SoundAuthen"
     });
 
     // Login handler

@@ -30,25 +30,28 @@
             <li class="" style="transform: translateX(0px); opacity: 0;">
                 <div class="card white darken-1">
                     <div class="card-content">
-                        <span class="card-title">Welcome Kendrick</span>
+                        <span class="card-title">Welcome <%=username%> <img class="circle"
+                                                                            src="<%=avatar_url%>"
+                                                                            width="64" height="64"></span>
 
                     </div>
                 </div>
             </li>
+            <%status_info.forEach(function (output,index) {%>
             <li class="" style="transform: translateX(0px); opacity: 0;">
                 <div class="card white darken-4 black-text">
                     <div class="card-content activator">
                         <div class="valign-wrapper">
                             <div class="col s3"><img class="circle"
-                                                     src="https://centricbeats.com/gallery/image/gallery_image/167/128/crop=square/_v=1466958272"
+                                                     src="<%=output.avatar_url%>"
                                                      width="64" height="64">
                                 <div class="chip">
-                                    Meek
+                                    <%=output.username%>
                                 </div>
                             </div>
 
-                            <div class="col s6"> Just posted a new track</div>
-                            <div class="col s2"> 12 min</div>
+                            <div class="col s6"> <%=output.status%></div>
+                            <div class="col s2"> <%=output.timestamp%></div>
                             <div class="col s1"><i class="material-icons">done</i><i class="material-icons activator">info_outline</i>
                             </div>
                         </div>
@@ -58,133 +61,13 @@
                     <div class="card-reveal">
                         <span class="card-title grey-text text-darken-4">Extra Info<i
                                     class="material-icons right">close</i></span>
-                        <p>let me tell you my story</p>
+                        <p><%=output.extra_info%></p>
                     </div>
 
                 </div>
             </li>
-            <li class="" style="transform: translateX(0px); opacity: 0;">
-                <div class="card white darken-4 black-text">
-                    <div class="card-content activator">
-                        <div class="valign-wrapper">
-                            <div class="col s3"><img class="circle"
-                                                     src="http://static.wixstatic.com/media/82007e_f8457d4d7a2a4884bf23814f0f0a0d3d.jpg_256"
-                                                     width="64" height="64">
-                                <div class="chip">
-                                    Dre
-                                </div>
-                            </div>
-                            <div class="col s6"> is working hard on a new project with kendrick</div>
-                            <div class="col s2"> 14 min</div>
-                            <div class="col s1"><i class="material-icons">done</i><i class="material-icons activator">info_outline</i>
-                            </div>
-                        </div>
+            <%});%>
 
-
-                    </div>
-                    <div class="card-reveal">
-                        <span class="card-title grey-text text-darken-4">Extra Info<i
-                                    class="material-icons right">close</i><i
-                                    class="material-icons right">warning</i></span>
-                        <p>let me tell you my story</p>
-                    </div>
-
-                </div>
-            </li>
-            <li class="" style="transform: translateX(0px); opacity: 0;">
-                <div class="card white darken-4 black-text">
-                    <div class="card-content">
-                        <div class="valign-wrapper">
-                            <div class="col s3"><img class="circle"
-                                                     src="https://s-media-cache-ak0.pinimg.com/236x/33/79/fe/3379fe31009ac2f2c5e925309120bb15.jpg"
-                                                     width="64" height="64">
-                                <div class="chip">
-                                    Eminem
-                                </div>
-                            </div>
-                            <div class="col s6"> set his next song release date</div>
-                            <div class="col s2"> 16 min</div>
-                            <div class="col s1"><i class="material-icons">done</i><i class="material-icons activator">info_outline</i>
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="card-reveal">
-                        <span class="card-title grey-text text-darken-4">Extra Info<i
-                                    class="material-icons right">close</i><i
-                                    class="material-icons right">warning</i></span>
-                        <p>let me tell you my story</p>
-                    </div>
-
-                </div>
-            </li>
-            <li class="" style="transform: translateX(0px); opacity: 0;">
-                <div class="card white darken-4 black-text">
-                    <div class="card-content activator">
-                        <div class="valign-wrapper">
-                            <div class="col s3"><img class="circle"
-                                                     src="https://ichef.bbci.co.uk/images/ic/256x256/p01bqlzy.jpg"
-                                                     width="64" height="64">
-                                <div class="chip">
-                                    Wayne
-                                </div>
-                            </div>
-                            <div class="col s6"> promoted dr Dre.</div>
-                            <div class="col s2"> 20 min</div>
-                            <div class="col s1"><i class="material-icons">done</i><i class="material-icons activator">info_outline</i>
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="card-reveal">
-                        <span class="card-title grey-text text-darken-4">Extra Info<i
-                                    class="material-icons right">close</i><i
-                                    class="material-icons right">warning</i></span>
-                        <p>let me tell you my story</p>
-                    </div>
-
-                </div>
-            </li>
-            <li class="" style="transform: translateX(0px); opacity: 0;">
-                <div class="card white darken-4 black-text">
-                    <div class="card-content activator">
-                        <div class="valign-wrapper">
-                            <div class="col s3"><img class="circle"
-                                                     src="https://s.yimg.com/wv/images/232cc165ee2630ff165c30fd2d6cd8b6_96.jpg"
-                                                     width="64" height="64">
-                                <div class="chip">
-                                    Tom
-                                </div>
-                            </div>
-                            <div class="col s6"> liked this song.</div>
-                            <div class="col s2"> 22 min</div>
-                            <div class="col s1"><i class="material-icons">done</i><i class="material-icons activator">info_outline</i>
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="card-reveal">
-                        <span class="card-title grey-text text-darken-4">Extra Info<i
-                                    class="material-icons right">close</i><i
-                                    class="material-icons right">warning</i></span>
-                        <p>let me tell you my story</p>
-                    </div>
-
-                </div>
-            </li>
-            <li class="" style="transform: translateX(0px); opacity: 0;">
-                <div class="card brown darken-4 valign-wrapper center-align">
-                    <div class="card-content white-text center-align" style='width:100%'>
-
-                        <h5 class="center-align"><i class="material-icons">play_for_work</i>ShowMore <i
-                                    class="material-icons">play_for_work</i></h5>
-                    </div>
-
-                </div>
-            </li>
         </ul>
 
     </div>
@@ -207,31 +90,17 @@
 
                     </div>
                     <ul class="collection">
+                        <%top_info.forEach(function (output) {%>
                         <li class="collection-item avatar">
-                            <img src="http://img2-ak.lst.fm/i/u/64s/bea62ed5b908488fc896efa52311c9ba" alt=""
+
+                            <img src="<%=output.avatar_url%>" alt=""
                                  class="circle">
-                            <span class="title">Kendrick Lamar</span>
+                            <span class="title"><%=output.alias%></span>
                             <p>Swimming Pools
                             </p>
-                            <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                            <a href="#" class="secondary-content"><%=output.liked%></a>
                         </li>
-
-                        <li class="collection-item avatar">
-                            <img src="https://assets.change.org/photos/5/uv/lo/alUvloIhROvPMNc-128x128-noPad.jpg?1466027101"
-                                 alt="" class="circle">
-                            <span class="title">Chance the Rapper</span>
-                            <p>Prom Night
-                            </p>
-                            <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                        </li>
-                        <li class="collection-item avatar">
-                            <img src="http://img2-ak.lst.fm/i/u/64s/2616b7f49624462883e97f51409919b3" alt=""
-                                 class="circle">
-                            <span class="title">Linkin Park</span>
-                            <p>Numb
-                            </p>
-                            <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                        </li>
+                        <% });%>
 
                     </ul>
                 </div>
@@ -284,31 +153,37 @@
     Materialize.showStaggeredList('#staggered-test');
     Materialize.showStaggeredList('#staggered-test2');
     var ctx = document.getElementById("myChart");
+    var label=[];
+    var count=[];
+    var colours=[];
+
+    <%genre_info.forEach(function (output) {%>
+    label.push("<%=output.name%>");
+    count.push(<%=output.count%>);
+    colours.push(getRandomColor());
+    <% });%>
+
     var myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: [
-                "Rap",
-                "Rock",
-                "Jazz"
-            ],
+            labels: label,
             datasets: [
                 {
-                    data: [300, 50, 100],
-                    backgroundColor: [
-                        "#FF6384",
-                        "#36A2EB",
-                        "#FFCE56"
-                    ],
-                    hoverBackgroundColor: [
-                        "#FF6384",
-                        "#36A2EB",
-                        "#FFCE56"
-                    ]
+                    data: count,
+                    backgroundColor:colours
                 }]
         }
     });
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
 </script>
+
 
 </body>
 </html>
