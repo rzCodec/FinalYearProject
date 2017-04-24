@@ -9,7 +9,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="team_details">The Overclockers #25</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">New Post</string>
     <string name="Welcome_Message">Welcome to Eternal Vibes!</string>
     <string name="wm_content">Login below to view near by artists that is looking to become famous or share your
     own information and music.</string>
@@ -44,14 +44,15 @@
     <string name="pref_default_display_name">John Smith</string>
 
     <string name="pref_title_Genre_type">Genre type</string>
-    <string-array name="pref_example_list_titles">
+    <string-array name="pref_titles">
+        <item>Jazz</item>
         <item>Rock</item>
         <item>Rap</item>
     </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
+    <string-array name="pref_title_values">
         <item>0</item>
-        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
     <string name="loc_range">Search Radius</string>
     <string name="loc_range_desc">An integer range that allows users to see you if other users are within range, vice versa</string>

@@ -3,32 +3,51 @@ package com.example.devandrin.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.OnConnectionFailedListener {
-    public static ArrayList<NewsFeedItem> arrTemp = new ArrayList<>();
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+
     private static HomeActivity instance = null;
-    private GoogleApiClient gac  = null;
+
+
     public static HomeActivity getInstance() {
         return instance;
     }
@@ -37,9 +56,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        instance = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        instance = this;
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -48,43 +67,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if (Utilities.isServicesEnabled(getApplicationContext()) == false) {
+        if (!Utilities.isServicesEnabled(getApplicationContext()) ) {
 
-            Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to get Location");
+            Utilities.MakeSnack(findViewById(R.id.cLayout), "Location services disabled");
         }
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean LKey = false;
-        LKey = sp.getBoolean(SettingsActivity.LOCATIONKEY,LKey);
-        if(LKey)
-        {
-            sp = this.getSharedPreferences("Date",MODE_PRIVATE);
-            Date date;
-            GregorianCalendar gc = new GregorianCalendar();
-            if(sp.contains("DatePosted"))
-            {
-                date = new Date(sp.getString("DatePosted",""));
-                Date dateNow = gc.getTime();
-                if(date.getDay()==dateNow.getDay() && date.getMonth()==dateNow.getMonth()&& date.getYear() == dateNow.getYear())
-                {
-                    long time =   dateNow.getTime()-date.getTime();
-                    int Seconds = (int)time /1000;
-                    if(Seconds >= 120)
-                    {
-                        date = postTime(sp);
-                    }
-                }
-                else
-                {
-                    date = postTime(sp);
-                }
 
-            }
-            else
-            {
-                date = postTime(sp);
-            }
-            Utilities.MakeToast(this,date.toString());
-        }
         ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
         TabAdapter ta = new TabAdapter(getSupportFragmentManager(), HomeActivity.this);
         viewPager.setAdapter(ta);
@@ -93,21 +80,115 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);
-        gac = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
-                .addApi(LocationServices.API)
-                .build();
 
     }
-    private Date postTime(SharedPreferences sp)
-    {
-        GregorianCalendar gc = new GregorianCalendar();
-        Date date= gc.getTime();
-        SharedPreferences.Editor e = sp.edit();
-        e.putString("DatePosted",date.toString());
-        e.commit();
-        return date;
+
+    private void UpdateLocation() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean LKey ;
+        LKey = sp.getBoolean(SettingsActivity.LOCATIONKEY, false);
+        if (LKey) {
+            sp = this.getSharedPreferences("Date", MODE_PRIVATE);
+            Date date;
+            GregorianCalendar gc = new GregorianCalendar();
+            if (sp.contains("DatePosted")) {
+                date = new Date(sp.getString("DatePosted", ""));
+                Date dateNow = gc.getTime();
+                if (date.getDay() == dateNow.getDay() && date.getMonth() == dateNow.getMonth() && date.getYear() == dateNow.getYear()) {
+                    long time = dateNow.getTime() - date.getTime();
+                    int Seconds = (int) time / 1000;
+                    if (Seconds <= 1200) {
+                        return;
+                    }
+                }
+            }
+        }
+        postTime(sp);
     }
+
+    private void postTime(final SharedPreferences sp) {
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        boolean GPS;
+        try {
+            GPS = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception e) {
+            GPS = false;
+        }
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        boolean data = info != null;
+        if (!data || !GPS) {
+            Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to get location");
+        } else {
+            try {
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1200, 50, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                });
+                Location l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if(l != null)
+                {
+                    SharedPreferences sharedP = getSharedPreferences("userInfo",MODE_PRIVATE);
+                    String url = "https://www.eternalvibes.me/setuserlocation/" + sharedP.getString("userID", "") +
+                            "/" + l.getLatitude() +
+                            "/" + l.getLongitude();
+                    JsonObjectRequest jar = new JsonObjectRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            GregorianCalendar gc = new GregorianCalendar();
+                            Date date = gc.getTime();
+                            SharedPreferences.Editor e = sp.edit();
+                            e.putString("DatePosted", date.toString());
+                            e.apply();
+                            try
+                            {
+                                Log.d("Location Set", "onResponse: Location has been set with affected rows :"+response.getString("affectedRows"));
+                            }
+                            catch(JSONException je)
+                            {
+                                Log.d("Location Set", "onException: "+je.getMessage());
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("Location Set", "onError: "+error.getMessage());
+                        }
+                    });
+                    RequestQueueSingleton.getInstance(this).getRequestQueue().add(jar);
+                }
+                else
+                {
+                    Utilities.MakeToast(this,"Unable to get location");
+                }
+
+            } catch (SecurityException e) {
+                Log.d("HomeActivity", e.getMessage());
+                ActivityCompat.requestPermissions(this,new String[]{"android.permission.ACCESS_COARSE_LOCATION","android.permission.ACCESS_FINE_LOCATION"}, 1);
+
+            }
+
+        }
+
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -131,10 +212,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_post) {
+
+            startActivity(new Intent(this,PostActivity.class));
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -145,14 +227,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
-            SharedPreferences sp = this.getSharedPreferences("userInfo",MODE_PRIVATE);
+            SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
             String userID = "";
             String alias = "";
-            userID = sp.getString("userID",userID);
-            alias = sp.getString("alias",alias);
-            Intent i = new Intent(this,ProfileActivity.class);
-            i.putExtra("id",userID);
-            i.putExtra("name",alias);
+            userID = sp.getString("userID", userID);
+            alias = sp.getString("alias", alias);
+            Intent i = new Intent(this, ProfileActivity.class);
+            i.putExtra("id", userID);
+            i.putExtra("name", alias);
             startActivity(i);
         } else if (id == R.id.nav_settings) {
             Intent i = new Intent(this, SettingsActivity.class);
@@ -162,7 +244,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             SharedPreferences.Editor e = sp.edit();
             e.remove("userID");
             e.remove("alias");
-            e.commit();
+            e.apply();
             Intent i = getBaseContext().getPackageManager()
                     .getLaunchIntentForPackage(getBaseContext().getPackageName());
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -182,8 +264,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onConnectionFailed( ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to connect to Google Play Services");
+    }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean Result = sp.getBoolean(SettingsActivity.LOCATIONKEY,false);
+        if(Result)
+        {
+            UpdateLocation();
+        }
+        sp = getSharedPreferences("userInfo",MODE_PRIVATE);
+        NewsFeedUtil.makeRequest(sp.getString("userID",""));
     }
 
     @Override
@@ -192,7 +288,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                UpdateLocation();
+            }
+        }
     }
 }

@@ -1,10 +1,9 @@
 package com.example.devandrin.myapplication;
 
-import android.provider.ContactsContract;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -30,6 +29,46 @@ public class Profile {
     private String avatar_url;
     private String permalink_url;
     private String permalink;
+
+    public Profile() {
+    }
+
+    private Profile(JSONObject item) throws JSONException {
+        this.id = item.getInt("id");
+        this.firstname = item.getString("firstname");
+        this.surname = item.getString("surname");
+        this.email = item.getString("email");
+        this.alias = item.getString("alias");
+        this.genre_id = item.getInt("genre_id");
+        this.token = item.getString("token");
+        this.song_link = item.getString("song_link");
+        this.latitude = item.getInt("latitude");
+        this.longitude = item.getInt("longitude");
+        this.pardons = item.getInt("pardons");
+        this.search_distance = item.getInt("search_distance");
+        try
+        {
+            this.join_timestamp = item.getInt("join_timestamp");
+        }
+        catch(JSONException e)
+        {
+            this.join_timestamp=-1;
+        }
+
+        this.is_banned = item.getInt("is_banned");
+        this.last_login_timestamp = item.getInt("last_login_timestamp");
+        this.avatar_url = item.getString("avatar_url");
+        this.permalink_url = item.getString("permalink_url");
+        this.permalink = item.getString("permalink");
+    }
+
+    public static ArrayList<Profile> fromJSONArray(JSONArray arr) throws JSONException {
+        ArrayList<Profile> values = new ArrayList<>();
+        for (int i = 0; i < arr.length(); i++) {
+            values.add(new Profile(arr.getJSONObject(i)));
+        }
+        return (values.size() <= 0) ? null : values;
+    }
 
     public int getId() {
         return id;
@@ -115,6 +154,9 @@ public class Profile {
         return is_banned;
     }
 
+    public void setIs_banned(int is_banned) {
+        this.is_banned = is_banned;
+    }
 
     public int getPardons() {
         return pardons;
@@ -123,7 +165,6 @@ public class Profile {
     public void setPardons(int pardons) {
         this.pardons = pardons;
     }
-
 
     public int getSearch_distance() {
         return search_distance;
@@ -143,10 +184,6 @@ public class Profile {
 
     public int is_banned() {
         return is_banned;
-    }
-
-    public void setIs_banned(int is_banned) {
-        this.is_banned = is_banned;
     }
 
     public int getLast_login_timestamp() {
@@ -181,43 +218,10 @@ public class Profile {
         this.permalink = permalink;
     }
 
-    public Profile() {}
-
-    private Profile(JSONObject item) throws JSONException
-    {
-        this.id = item.getInt("id");
-        this.firstname = item.getString("firstname");
-        this.surname =  item.getString("surname");
-        this.email =  item.getString("email");
-        this.alias =  item.getString("alias");
-        this.genre_id = item.getInt("genre_id");
-        this.token =  item.getString("token");
-        this.song_link =  item.getString("song_link");
-        this.latitude =  item.getInt("latitude");
-        this.longitude =  item.getInt("longitude");
-        this.pardons = item.getInt("pardons");
-        this.search_distance = item.getInt("search_distance");
-        this.join_timestamp =  item.getInt("join_timestamp");
-        this.is_banned =  item.getInt("is_banned");
-        this.last_login_timestamp = item.getInt("last_login_timestamp");
-        this.avatar_url =  item.getString("avatar_url");
-        this.permalink_url =  item.getString("permalink_url");
-        this.permalink =  item.getString("permalink");
-    }
-    public static ArrayList<Profile> fromJSONArray(JSONArray arr) throws JSONException
-    {
-        ArrayList<Profile> values = new ArrayList<>();
-        for(int i =0; i < arr.length(); i++)
-        {
-            values.add(new Profile(arr.getJSONObject(i)));
-        }
-        return (values.size() <= 0) ? null: values;
-    }
-
     @Override
     public String toString() {
-        return  id+"\n"+firstname+"\n"+surname+"\n"+email+"\n"+ alias+"\n"+genre_id+"\n"+token+"\n"+song_link+"\n"+latitude+"\n"
-        +longitude+"\n"+pardons+"\n"+search_distance+"\n"+join_timestamp+"\n"+is_banned+"\n"
-        +last_login_timestamp+"\n"+avatar_url+"\n"+permalink_url+"\n"+ permalink;
+        return id + "\n" + firstname + "\n" + surname + "\n" + email + "\n" + alias + "\n" + genre_id + "\n" + token + "\n" + song_link + "\n" + latitude + "\n"
+                + longitude + "\n" + pardons + "\n" + search_distance + "\n" + join_timestamp + "\n" + is_banned + "\n"
+                + last_login_timestamp + "\n" + avatar_url + "\n" + permalink_url + "\n" + permalink;
     }
 }

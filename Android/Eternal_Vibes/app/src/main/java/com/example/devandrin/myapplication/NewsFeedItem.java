@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Devandrin on 2017/04/11.
@@ -12,14 +13,14 @@ import java.util.ArrayList;
 
 public class NewsFeedItem {
     private int statusID;
-    private String userID;
+    private int userID;
     private long timestamp;
     private String status;
     private String extraInfo;
     private int likes;
     private int flags;
 
-    public NewsFeedItem(int statusID, String userID, long timestamp, String status, String extraInfo, int likes, int flags) {
+    public NewsFeedItem(int statusID, int userID, long timestamp, String status, String extraInfo, int likes, int flags) {
         this.statusID = statusID;
         this.userID = userID;
         this.timestamp = timestamp;
@@ -29,13 +30,13 @@ public class NewsFeedItem {
         this.flags = flags;
     }
 
-    public NewsFeedItem(JSONObject obj) {
+    private NewsFeedItem(JSONObject obj) {
         try {
-            this.statusID = obj.getInt("statusID");
-            this.userID = obj.getString("userID");
-            this.timestamp = obj.getLong("timestamp");
+            this.statusID = obj.getInt("id");
+            this.userID = obj.getInt("user_id");
+            this.timestamp = obj.getInt("timestamp");
             this.status = obj.getString("status");
-            this.extraInfo = obj.getString("extraInfo");
+            this.extraInfo = obj.getString("extra_info");
             this.likes = obj.getInt("liked");
             this.flags = obj.getInt("flagged");
         } catch (JSONException e) {
@@ -52,6 +53,7 @@ public class NewsFeedItem {
                 e.printStackTrace();
             }
         }
+        Collections.reverse(items);
         return items;
     }
 
@@ -59,7 +61,7 @@ public class NewsFeedItem {
         return statusID;
     }
 
-    public String getUserID() {
+    public int getUserID() {
         return userID;
     }
 
@@ -81,5 +83,33 @@ public class NewsFeedItem {
 
     public int getFlags() {
         return flags;
+    }
+
+    public void setStatusID(int statusID) {
+        this.statusID = statusID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setExtraInfo(String extraInfo) {
+        this.extraInfo = extraInfo;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public void setFlags(int flags) {
+        this.flags = flags;
     }
 }
