@@ -3,6 +3,7 @@ package com.example.devandrin.myapplication;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,19 +22,20 @@ import java.util.Map;
 
 public class PostActivity extends AppCompatActivity {
     private EditText et;
+    private Button btnCancel,btnSend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
         et = (EditText) findViewById(R.id.etPost);
-        Button btnCancel = (Button)  findViewById(R.id.btnCancel);
+        btnCancel = (Button)  findViewById(R.id.btnCancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        Button btnSend = (Button) findViewById(R.id.btnSend);
+        btnSend = (Button) findViewById(R.id.btnSend);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,6 +48,19 @@ public class PostActivity extends AppCompatActivity {
                 {
                     Utilities.MakeToast(getApplicationContext(),"Post is too short");
                 }
+            }
+        });
+        et.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    if(keyCode == KeyEvent.KEYCODE_ENTER)
+                    {
+                        btnSend.performClick();
+                    }
+                }
+                return false;
             }
         });
     }

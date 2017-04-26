@@ -10,7 +10,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Devandrin on 2017/04/11.
@@ -18,6 +21,8 @@ import java.util.ArrayList;
 
 public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
 
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
     public NewsFeedAdapter(Context context, ArrayList<NewsFeedItem> objects) {
         super(context, 0, objects);
     }
@@ -51,7 +56,8 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
             }
         });
         nfi.status.setText(item.getStatus());
-        nfi.timestamp.setText(item.getTimestamp() + "");
+        cal.setTimeInMillis(item.getTimestamp());
+        nfi.timestamp.setText(sdf.format(cal.getTime()));
         nfi.likes.setText(item.getLikes() + "");
         nfi.flags.setText(item.getFlags() + "");
         nfi.like.setOnClickListener(new View.OnClickListener() {

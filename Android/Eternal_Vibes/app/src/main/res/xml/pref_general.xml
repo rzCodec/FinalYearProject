@@ -27,6 +27,7 @@
         android:entryValues="@array/pref_title_values"
         android:key="example_list"
         android:negativeButtonText="@null"
+        android:summary="Kind of music you are interested in or producing"
         android:positiveButtonText="@null"
         android:title="@string/pref_title_Genre_type" />
 
