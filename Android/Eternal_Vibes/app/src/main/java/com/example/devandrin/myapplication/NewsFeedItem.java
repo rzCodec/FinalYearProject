@@ -34,7 +34,7 @@ public class NewsFeedItem {
         try {
             this.statusID = obj.getInt("id");
             this.userID = obj.getInt("user_id");
-            this.timestamp = obj.getInt("timestamp");
+            this.timestamp = obj.getLong("timestamp");
             this.status = obj.getString("status");
             this.extraInfo = obj.getString("extra_info");
             this.likes = obj.getInt("liked");
