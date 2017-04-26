@@ -13,21 +13,17 @@ import java.util.ArrayList;
  * Created by Ronnie on 2017-04-13.
  */
 
-public class RadarAdapter extends ArrayAdapter<RadarContent>
-{
-    public RadarAdapter(Context context, ArrayList<RadarContent> radarList)
-    {
+public class RadarAdapter extends ArrayAdapter<RadarContent> {
+    public RadarAdapter(Context context, ArrayList<RadarContent> radarList) {
         super(context, R.layout.radar_item, radarList); //Pass in the custom layout file for the components
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
         final RadarContent RC = getItem(position);
-        if(convertView == null)
-        {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.radar_item,parent,false);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.radar_item, parent, false);
         }
 
         //Find the textviews and set each textview's content with the information from the arrayList

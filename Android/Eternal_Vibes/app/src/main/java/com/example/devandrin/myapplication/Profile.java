@@ -46,13 +46,10 @@ public class Profile {
         this.longitude = item.getInt("longitude");
         this.pardons = item.getInt("pardons");
         this.search_distance = item.getInt("search_distance");
-        try
-        {
+        try {
             this.join_timestamp = item.getInt("join_timestamp");
-        }
-        catch(JSONException e)
-        {
-            this.join_timestamp=-1;
+        } catch (JSONException e) {
+            this.join_timestamp = -1;
         }
 
         this.is_banned = item.getInt("is_banned");

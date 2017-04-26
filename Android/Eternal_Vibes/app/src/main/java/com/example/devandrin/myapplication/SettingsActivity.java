@@ -18,11 +18,9 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -203,33 +201,30 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if(key.contains("example_list"))
-            {
-                SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo",MODE_PRIVATE);
-                String userID = sp.getString("userID","");
-                String value = sharedPreferences.getString(key,"0");
-                String url = "https://www.eternalvibes.me/setusergenre/"+userID+"/"+value;
+            if (key.contains("example_list")) {
+                SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
+                String userID = sp.getString("userID", "");
+                String value = sharedPreferences.getString(key, "0");
+                String url = "https://www.eternalvibes.me/setusergenre/" + userID + "/" + value;
                 JsonObjectRequest jor = new JsonObjectRequest(JsonObjectRequest.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try
-                        {
-                            Log.d("UserGenre", "onResponse: Search Distance set with affected Rows: "+response.getString("affectedRows"));
-                        }
-                        catch(JSONException e )
-                        {
-                            Log.d("UserGenre", "onException: "+e.getMessage());
+                        try {
+                            Log.d("UserGenre", "onResponse: Search Distance set with affected Rows: " + response.getString("affectedRows"));
+                        } catch (JSONException e) {
+                            Log.d("UserGenre", "onException: " + e.getMessage());
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("UserGenre", "onErrorResponse: "+error.getMessage());
+                        Log.d("UserGenre", "onErrorResponse: " + error.getMessage());
                     }
                 });
                 RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(jor);
             }
         }
+
         @Override
         public void onResume() {
             super.onResume();
@@ -271,26 +266,23 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.contains(LOCATIONRANGE)) {
-                SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo",MODE_PRIVATE);
-                String userID = sp.getString("userID","");
-                String value = sharedPreferences.getString(key,"0");
-                String url = "https://www.eternalvibes.me/setsearchdistance/"+userID+"/"+value;
+                SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
+                String userID = sp.getString("userID", "");
+                String value = sharedPreferences.getString(key, "0");
+                String url = "https://www.eternalvibes.me/setsearchdistance/" + userID + "/" + value;
                 JsonObjectRequest jor = new JsonObjectRequest(JsonObjectRequest.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try
-                        {
-                            Log.d("LocationSearchDistance", "onResponse: Search Distance set with affected Rows: "+response.getString("affectedRows"));
-                        }
-                        catch(JSONException e )
-                        {
-                            Log.d("LocationSearchDistance", "onException: "+e.getMessage());
+                        try {
+                            Log.d("LocationSearchDistance", "onResponse: Search Distance set with affected Rows: " + response.getString("affectedRows"));
+                        } catch (JSONException e) {
+                            Log.d("LocationSearchDistance", "onException: " + e.getMessage());
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("LocationSearchDistance", "onErrorResponse: "+error.getMessage());
+                        Log.d("LocationSearchDistance", "onErrorResponse: " + error.getMessage());
                     }
                 });
                 RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(jor);

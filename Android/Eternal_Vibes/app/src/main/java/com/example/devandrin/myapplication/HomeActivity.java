@@ -24,24 +24,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -67,7 +62,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if (!Utilities.isServicesEnabled(getApplicationContext()) ) {
+        if (!Utilities.isServicesEnabled(getApplicationContext())) {
 
             Utilities.MakeSnack(findViewById(R.id.cLayout), "Location services disabled");
         }
@@ -85,14 +80,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void UpdateLocation() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean LKey ;
-        LKey = sp.getBoolean(SettingsActivity.LOCATIONKEY, false);
-        if (LKey) {
+        if (sp.getBoolean(SettingsActivity.LOCATIONKEY, false)) {
             sp = this.getSharedPreferences("Date", MODE_PRIVATE);
             Date date;
             GregorianCalendar gc = new GregorianCalendar();
+            date = gc.getTime();
             if (sp.contains("DatePosted")) {
-                date = new Date(sp.getString("DatePosted", ""));
+                gc.setTimeInMillis(Long.parseLong(sp.getString("DatePosted", "")));
                 Date dateNow = gc.getTime();
                 if (date.getDay() == dateNow.getDay() && date.getMonth() == dateNow.getMonth() && date.getYear() == dateNow.getYear()) {
                     long time = dateNow.getTime() - date.getTime();
@@ -143,9 +137,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 Location l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if(l != null)
-                {
-                    SharedPreferences sharedP = getSharedPreferences("userInfo",MODE_PRIVATE);
+                if (l != null) {
+                    SharedPreferences sharedP = getSharedPreferences("userInfo", MODE_PRIVATE);
                     String url = "https://www.eternalvibes.me/setuserlocation/" + sharedP.getString("userID", "") +
                             "/" + l.getLatitude() +
                             "/" + l.getLongitude();
@@ -153,35 +146,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onResponse(JSONObject response) {
                             GregorianCalendar gc = new GregorianCalendar();
-                            Date date = gc.getTime();
+                            long date = gc.getTimeInMillis();
                             SharedPreferences.Editor e = sp.edit();
-                            e.putString("DatePosted", date.toString());
+                            e.putString("DatePosted", date+"");
                             e.apply();
-                            try
-                            {
-                                Log.d("Location Set", "onResponse: Location has been set with affected rows :"+response.getString("affectedRows"));
-                            }
-                            catch(JSONException je)
-                            {
-                                Log.d("Location Set", "onException: "+je.getMessage());
+                            try {
+                                Log.d("Location Set", "onResponse: Location has been set with affected rows :" + response.getString("affectedRows"));
+                            } catch (JSONException je) {
+                                Log.d("Location Set", "onException: " + je.getMessage());
                             }
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.d("Location Set", "onError: "+error.getMessage());
+                            Log.d("Location Set", "onError: " + error.getMessage());
                         }
                     });
                     RequestQueueSingleton.getInstance(this).getRequestQueue().add(jar);
-                }
-                else
-                {
-                    Utilities.MakeToast(this,"Unable to get location");
+                } else {
+                    Utilities.MakeToast(this, "Unable to get location");
                 }
 
             } catch (SecurityException e) {
                 Log.d("HomeActivity", e.getMessage());
-                ActivityCompat.requestPermissions(this,new String[]{"android.permission.ACCESS_COARSE_LOCATION","android.permission.ACCESS_FINE_LOCATION"}, 1);
+                ActivityCompat.requestPermissions(this, new String[]{"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"}, 1);
 
             }
 
@@ -214,7 +202,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_post) {
 
-            startActivity(new Intent(this,PostActivity.class));
+            startActivity(new Intent(this, PostActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -273,13 +261,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean Result = sp.getBoolean(SettingsActivity.LOCATIONKEY,false);
-        if(Result)
-        {
+        Boolean Result = sp.getBoolean(SettingsActivity.LOCATIONKEY, false);
+        if (Result) {
             UpdateLocation();
         }
-        sp = getSharedPreferences("userInfo",MODE_PRIVATE);
-        NewsFeedUtil.makeRequest(sp.getString("userID",""));
+        sp = getSharedPreferences("userInfo", MODE_PRIVATE);
+        NewsFeedUtil.makeRequest(sp.getString("userID", ""));
     }
 
     @Override

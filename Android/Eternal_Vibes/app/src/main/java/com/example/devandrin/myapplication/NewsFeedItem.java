@@ -61,52 +61,52 @@ public class NewsFeedItem {
         return statusID;
     }
 
-    public int getUserID() {
-        return userID;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getExtraInfo() {
-        return extraInfo;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public int getFlags() {
-        return flags;
-    }
-
     public void setStatusID(int statusID) {
         this.statusID = statusID;
+    }
+
+    public int getUserID() {
+        return userID;
     }
 
     public void setUserID(int userID) {
         this.userID = userID;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
     }
 
+    public String getExtraInfo() {
+        return extraInfo;
+    }
+
     public void setExtraInfo(String extraInfo) {
         this.extraInfo = extraInfo;
     }
 
+    public int getLikes() {
+        return likes;
+    }
+
     public void setLikes(int likes) {
         this.likes = likes;
+    }
+
+    public int getFlags() {
+        return flags;
     }
 
     public void setFlags(int flags) {
