@@ -4,8 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -13,8 +11,7 @@ import java.util.ArrayList;
  * Created by Devandrin on 2017/04/01.
  */
 
-public class RadarUtil extends Content
-{
+public class RadarUtil extends Content {
 
     public RadarUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);

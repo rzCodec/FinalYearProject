@@ -4,15 +4,13 @@ package com.example.devandrin.myapplication;
  * Created by Ronnie on 2017-04-13.
  */
 
-public class RadarContent
-{
+public class RadarContent {
     private String sUsername;
     private String sDistance;
     private String sLocation;
     private long TimeStamp;
 
-    public RadarContent(String sUsername, String sDistance, String sLocation, long timeStamp)
-    {
+    public RadarContent(String sUsername, String sDistance, String sLocation, long timeStamp) {
         this.sUsername = sUsername;
         this.sDistance = sDistance;
         this.sLocation = sLocation;

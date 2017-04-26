@@ -10,7 +10,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,6 +22,7 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
 
     Calendar cal = Calendar.getInstance();
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
+
     public NewsFeedAdapter(Context context, ArrayList<NewsFeedItem> objects) {
         super(context, 0, objects);
     }
@@ -45,13 +45,13 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
         } else {
             nfi = (viewComponents) convertView.getTag();
         }
-        nfi.name.setText(""+item.getUserID());
+        nfi.name.setText("" + item.getUserID());
         nfi.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.getInstance(), ProfileActivity.class);
-                i.putExtra("id", ""+item.getStatusID());
-                i.putExtra("name", ""+item.getUserID());
+                i.putExtra("id", "" + item.getStatusID());
+                i.putExtra("name", "" + item.getUserID());
                 HomeActivity.getInstance().startActivity(i);
             }
         });

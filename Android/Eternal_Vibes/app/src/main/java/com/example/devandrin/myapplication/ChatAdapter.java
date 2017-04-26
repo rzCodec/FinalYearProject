@@ -1,8 +1,6 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +13,17 @@ import java.util.ArrayList;
  * Created by Ronnie on 2017-04-24.
  */
 
-public class ChatAdapter extends ArrayAdapter<MessageContent>
-{
-    public ChatAdapter(Context context, ArrayList<MessageContent> msgList)
-    {
+public class ChatAdapter extends ArrayAdapter<MessageContent> {
+    public ChatAdapter(Context context, ArrayList<MessageContent> msgList) {
         super(context, R.layout.chat_item, msgList);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
         final MessageContent msgObj = getItem(position);
-        if(convertView == null)
-        {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.chat_item,parent,false);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.chat_item, parent, false);
         }
 
         //Find the textviews and set each textview's content with the information from the arrayList

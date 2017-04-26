@@ -1,25 +1,24 @@
 package com.example.devandrin.myapplication;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Ronnie on 2017-04-24.
  */
 
-public class MessageReply
-{
+public class MessageReply {
     private ArrayList<String> msgList;
     private int iSelector;
     private int iChosen;
 
-    public MessageReply()
-    {
+    public MessageReply() {
         msgList = new ArrayList<String>();
         addMessages("");
     }
 
     //Helper function
-    private void addMessages(String sCustomMessage)
-    {
+    private void addMessages(String sCustomMessage) {
         msgList.add("Hello there!");
         msgList.add("The studio is locked.");
         msgList.add("Stuck in heavy traffic, I will be a bit late for the meetup.");
@@ -28,17 +27,13 @@ public class MessageReply
         msgList.add("This is a new song snippet.");
     }
 
-    public String generateReplyMsg()
-    {
+    public String generateReplyMsg() {
         Random rand = new Random();
         iSelector = rand.nextInt(6) + 0;
-        if(iSelector != iChosen)
-        {
+        if (iSelector != iChosen) {
             setChosen(iSelector);
             return msgList.get(iSelector);
-        }
-        else
-        {
+        } else {
             iSelector = rand.nextInt(6) + 0;
         }
 
@@ -46,13 +41,11 @@ public class MessageReply
     }
 
     //Getters
-    public void setSelector(int iSelector)
-    {
+    public void setSelector(int iSelector) {
         this.iSelector = iSelector;
     }
 
-    public void setChosen(int iChosen)
-    {
+    public void setChosen(int iChosen) {
         this.iChosen = iChosen;
     }
 }
