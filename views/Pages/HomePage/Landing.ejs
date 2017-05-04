@@ -199,11 +199,25 @@
                     var id=me.id;
                     var avatar_url=me.avatar_url;
                     var username=me.username;
+                    var first_name=me.first_name;
+                    var surname=me.surname;
+                    var email="temp@gmail.com";
+                    var alias=me.alias;
+                    var genre_id=2;
+                    var permalink_url=me.permalink_url;
+                    var permalink=me.permalink;
                     var url = 'dashboard';
                     var form = $('<form action="' + url + '" method="post">' +
                         '<input type="text" name="id" value="' + id + '" />' +
                         '<input type="text" name="avatar_url" value="' + avatar_url + '" />' +
                         '<input type="text" name="username" value="' + username + '" />' +
+                        '<input type="text" name="first_name" value="' + first_name + '" />' +
+                        '<input type="text" name="surname" value="' + surname + '" />' +
+                        '<input type="text" name="email" value="' + email + '" />' +
+                        '<input type="text" name="alias" value="' + alias + '" />' +
+                        '<input type="text" name="genre_id" value="' + genre_id + '" />' +
+                        '<input type="text" name="permalink_url" value="' + permalink_url + '" />' +
+                        '<input type="text" name="permalink" value="' + permalink + '" />' +
                         '</form>');
                     $('body').append(form);
                     form.submit();

@@ -41,12 +41,32 @@ module.exports = function (pool) {
         var id=req.body.id;
         var avatar_url=req.body.avatar_url;
         var username=req.body.username;
+        var first_name=req.body.first_name;
+        var surname=req.body.surname;
+        var email=req.body.email;
+        var alias=req.body.alias;
+        var genre_id=req.body.genre_id;
+        var permalink_url=req.body.permalink_url;
+        var permalink=req.body.permalink;
+
         var user_info;
         var status_info;
         var genre_info;
         var top_info;
 
-        async.parallel([
+
+        insert_user();
+        function insert_user(){
+            pool.query('INSERT IGNORE INTO `users` (`id`, `firstname`, `surname`, `email`, `alias`, `genre_id`, `token`, `song_link`, `latitude`, `longitude`, `pardons`, `search_distance`, `join_timestamp`, `is_banned`, `last_login_timestamp`, `avatar_url`, `permalink_url`, `permalink`) VALUES ('+id+', '+first_name+', '+surname+', '+email+', '+alias+', '+genre_id+', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '+permalink_url+', '+permalink+')', function (error, results) {
+                if(error){
+                    console.log(error)
+                }else{
+                    render_page();
+                }
+            });
+        }
+        function render_page(){
+            async.parallel([
             function(done){
                 pool.query('SELECT * FROM `users` WHERE id='+ id, function (error, results) {
                     if(error){
@@ -95,8 +115,7 @@ module.exports = function (pool) {
                     res.send(html);
                 });
             }
-        });
-
+        });}
     });
     router.get('/settings', function (req, res) {
         res.render('pages/UserDashboard/Settings.ejs',  function (err, html) {
