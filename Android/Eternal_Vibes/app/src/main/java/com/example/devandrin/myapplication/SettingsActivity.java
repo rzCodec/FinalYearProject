@@ -15,7 +15,15 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.MenuItem;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -41,10 +49,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
-            if (value instanceof Boolean) {
-                Boolean v = (Boolean) value;
-                stringValue = v.booleanValue() ? "On" : "Off";
-            }
+
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.
@@ -169,7 +174,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
+    public static class GeneralPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -193,6 +198,44 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
             return super.onOptionsItemSelected(item);
         }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.contains("example_list")) {
+                SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
+                String userID = sp.getString("userID", "");
+                String value = sharedPreferences.getString(key, "0");
+                String url = "https://www.eternalvibes.me/setusergenre/" + userID + "/" + value;
+                JsonObjectRequest jor = new JsonObjectRequest(JsonObjectRequest.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("UserGenre", "onResponse: Search Distance set with affected Rows: " + response.getString("affectedRows"));
+                        } catch (JSONException e) {
+                            Log.d("UserGenre", "onException: " + e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("UserGenre", "onErrorResponse: " + error.getMessage());
+                    }
+                });
+                RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(jor);
+            }
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        }
     }
 
     /**
@@ -207,7 +250,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_location_services);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference(LOCATIONKEY));
             bindPreferenceSummaryToValue(findPreference(LOCATIONRANGE));
         }
 
@@ -223,10 +265,27 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (key.contains(LOCATIONKEY)) {
-                Utilities.MakeToast(HomeActivity.getInstance().getApplicationContext(), "Discovery Changed");
-            } else if (key.contains(LOCATIONRANGE)) {
-                Utilities.MakeToast(HomeActivity.getInstance().getApplicationContext(), "Range Changed");
+            if (key.contains(LOCATIONRANGE)) {
+                SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
+                String userID = sp.getString("userID", "");
+                String value = sharedPreferences.getString(key, "0");
+                String url = "https://www.eternalvibes.me/setsearchdistance/" + userID + "/" + value;
+                JsonObjectRequest jor = new JsonObjectRequest(JsonObjectRequest.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("LocationSearchDistance", "onResponse: Search Distance set with affected Rows: " + response.getString("affectedRows"));
+                        } catch (JSONException e) {
+                            Log.d("LocationSearchDistance", "onException: " + e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("LocationSearchDistance", "onErrorResponse: " + error.getMessage());
+                    }
+                });
+                RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(jor);
             }
         }
 

@@ -3,6 +3,7 @@ package com.example.devandrin.myapplication;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -10,110 +11,214 @@ import java.util.ArrayList;
  */
 
 public class Profile {
-    int statusID;
-    int userID;
-    long timestamp;
-    String status;
-    String extraInfo;
-    int flagged;
-    int liked;
-    public static Profile fromJsonObject(JSONObject o) throws JSONException
-    {
-        Profile value = new Profile();
-        value.setStatusID(o.getInt("statusID"));
-        value.setUserID(o.getInt("userID"));
-        value.setTimestamp(o.getInt("timestamp"));
-        value.setStatus(o.getString("status"));
-        value.setExtraInfo(o.getString("extraInfo"));
-        value.setLiked(o.getInt("liked"));
-        value.setFlagged(o.getInt("flagged"));
-        return value;
+    private int id;
+    private String firstname;
+    private String surname;
+    private String email;
+    private String alias;
+    private int genre_id;
+    private String token;
+    private String song_link;
+    private int latitude;
+    private int longitude;
+    private int pardons;
+    private int search_distance;
+    private int join_timestamp;
+    private int is_banned;
+    private int last_login_timestamp;
+    private String avatar_url;
+    private String permalink_url;
+    private String permalink;
+
+    public Profile() {
     }
-    public static ArrayList<Profile> fromJsonArray(JSONArray array) throws JSONException
-    {
-        ArrayList<Profile> list = new ArrayList<>();
-        for(int i = 0; i < array.length(); i++)
-        {
-            list.add(Profile.fromJsonObject(array.getJSONObject(i)));
+
+    private Profile(JSONObject item) throws JSONException {
+        this.id = item.getInt("id");
+        this.firstname = item.getString("firstname");
+        this.surname = item.getString("surname");
+        this.email = item.getString("email");
+        this.alias = item.getString("alias");
+        this.genre_id = item.getInt("genre_id");
+        this.token = item.getString("token");
+        this.song_link = item.getString("song_link");
+        this.latitude = item.getInt("latitude");
+        this.longitude = item.getInt("longitude");
+        this.pardons = item.getInt("pardons");
+        this.search_distance = item.getInt("search_distance");
+        try {
+            this.join_timestamp = item.getInt("join_timestamp");
+        } catch (JSONException e) {
+            this.join_timestamp = -1;
         }
-        return list;
-    }
-    public Profile(){}
-    public Profile(int statusID, int userID, long timestamp, String status, String extraInfo, int flagged, int liked) {
-        this.statusID = statusID;
-        this.userID = userID;
-        this.timestamp = timestamp;
-        this.status = status;
-        this.extraInfo = extraInfo;
-        this.flagged = flagged;
-        this.liked = liked;
+
+        this.is_banned = item.getInt("is_banned");
+        this.last_login_timestamp = item.getInt("last_login_timestamp");
+        this.avatar_url = item.getString("avatar_url");
+        this.permalink_url = item.getString("permalink_url");
+        this.permalink = item.getString("permalink");
     }
 
-    public int getStatusID() {
-        return statusID;
+    public static ArrayList<Profile> fromJSONArray(JSONArray arr) throws JSONException {
+        ArrayList<Profile> values = new ArrayList<>();
+        for (int i = 0; i < arr.length(); i++) {
+            values.add(new Profile(arr.getJSONObject(i)));
+        }
+        return (values.size() <= 0) ? null : values;
     }
 
-    public void setStatusID(int statusID) {
-        this.statusID = statusID;
+    public int getId() {
+        return id;
     }
 
-    public int getUserID() {
-        return userID;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public String getSurname() {
+        return surname;
     }
 
-    public String getStatus() {
-        return status;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public String getEmail() {
+        return email;
     }
 
-    public String getExtraInfo() {
-        return extraInfo;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setExtraInfo(String extraInfo) {
-        this.extraInfo = extraInfo;
+    public String getAlias() {
+        return alias;
     }
 
-    public int getFlagged() {
-        return flagged;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
-    public void setFlagged(int flagged) {
-        this.flagged = flagged;
+    public int getGenre_id() {
+        return genre_id;
     }
 
-    public int getLiked() {
-        return liked;
+    public void setGenre_id(int genre_id) {
+        this.genre_id = genre_id;
     }
 
-    public void setLiked(int liked) {
-        this.liked = liked;
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getSong_link() {
+        return song_link;
+    }
+
+    public void setSong_link(String song_link) {
+        this.song_link = song_link;
+    }
+
+    public int getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(int latitude) {
+        this.latitude = latitude;
+    }
+
+    public int getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(int longitude) {
+        this.longitude = longitude;
+    }
+
+    public int getIs_banned() {
+        return is_banned;
+    }
+
+    public void setIs_banned(int is_banned) {
+        this.is_banned = is_banned;
+    }
+
+    public int getPardons() {
+        return pardons;
+    }
+
+    public void setPardons(int pardons) {
+        this.pardons = pardons;
+    }
+
+    public int getSearch_distance() {
+        return search_distance;
+    }
+
+    public void setSearch_distance(int search_distance) {
+        this.search_distance = search_distance;
+    }
+
+    public int getJoin_timestamp() {
+        return join_timestamp;
+    }
+
+    public void setJoin_timestamp(int join_timestamp) {
+        this.join_timestamp = join_timestamp;
+    }
+
+    public int is_banned() {
+        return is_banned;
+    }
+
+    public int getLast_login_timestamp() {
+        return last_login_timestamp;
+    }
+
+    public void setLast_login_timestamp(int last_login_timestamp) {
+        this.last_login_timestamp = last_login_timestamp;
+    }
+
+    public String getAvatar_url() {
+        return avatar_url;
+    }
+
+    public void setAvatar_url(String avatar_url) {
+        this.avatar_url = avatar_url;
+    }
+
+    public String getPermalink_url() {
+        return permalink_url;
+    }
+
+    public void setPermalink_url(String permalink_url) {
+        this.permalink_url = permalink_url;
+    }
+
+    public String getPermalink() {
+        return permalink;
+    }
+
+    public void setPermalink(String permalink) {
+        this.permalink = permalink;
     }
 
     @Override
     public String toString() {
-        return "Details :\n"
-                + statusID + "\n"
-                + userID + "\n"
-                + timestamp + "\n"
-                + status + "\n"
-                + extraInfo + "\n"
-                + flagged + "\n"
-                + liked + "\n";
+        return id + "\n" + firstname + "\n" + surname + "\n" + email + "\n" + alias + "\n" + genre_id + "\n" + token + "\n" + song_link + "\n" + latitude + "\n"
+                + longitude + "\n" + pardons + "\n" + search_distance + "\n" + join_timestamp + "\n" + is_banned + "\n"
+                + last_login_timestamp + "\n" + avatar_url + "\n" + permalink_url + "\n" + permalink;
     }
 }
