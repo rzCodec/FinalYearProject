@@ -5,6 +5,7 @@ package com.example.devandrin.myapplication;
  */
 
 public class Chat {
+	private int iChatID;
     private long TimeStamp;
     private String Name;
     private String LastMessage;

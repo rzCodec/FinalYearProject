@@ -16,7 +16,9 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity 
+{
+	public static int USER_ID = 0; //A user id that will checked and used in Radar and Messenger classes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(JSONArray response) {
                 try {
                     Profile p = Profile.fromJSONArray(response).get(0);
+					USER_ID = p.getId(); //This user id will be used for the messenger and also for the radar
                     TextView values = (TextView) findViewById(R.id.firstName);
                     values.setText(p.getFirstname());
                     values = (TextView) findViewById(R.id.lastName);
