@@ -29,48 +29,53 @@ public class ChatAdapter extends ArrayAdapter<MessageContent>
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-
         final MessageContent msgObj = getItem(position);
+        chatMessageComponent cmComponent;
+
         if(convertView == null)
         {
+            //Make a new text view to show the messages
+            cmComponent = new chatMessageComponent();
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.chat_message_item,parent,false);
+            cmComponent.txtChatMsg = (TextView) convertView.findViewById(R.id.txtChatMessage);
+            convertView.setTag(cmComponent);
+        }
+        else
+        {
+            //Recycle the text view if it already exists to prevent memory overflow exceptions
+            cmComponent = (chatMessageComponent) convertView.getTag();
         }
 
-        //ConstraintLayout cl = (ConstraintLayout) convertView.findViewById(R.id.chatMsg_Layout);
-        //LinearLayout ll = (LinearLayout) convertView.findViewById(R.id.chatMessages_layout);
-
-
-        try {
-            TextView txtChatMsg = (TextView) convertView.findViewById(R.id.txtChatMessage);
-            txtChatMsg.setText(msgObj.getsMessage());
+        try
+        {
+            LinearLayout chatContainer = (LinearLayout) convertView.findViewById(R.id.chatContainer);
+            cmComponent.txtChatMsg.setText(msgObj.getsMessage());
             if(msgObj.getMessageMine() == true)
             {
-                txtChatMsg.setTextColor(Color.BLACK);
-                txtChatMsg.setGravity(Gravity.RIGHT);
+                cmComponent.txtChatMsg.setBackgroundResource(R.drawable.chat_msg_bubble);
+                cmComponent.txtChatMsg.setTextColor(Color.WHITE);
+                chatContainer.setGravity(Gravity.RIGHT);
             }
             else
             {
-                txtChatMsg.setTextColor(Color.BLUE);
-                txtChatMsg.setGravity(Gravity.LEFT);
+                cmComponent.txtChatMsg.setBackgroundResource(R.drawable.chat_msg_bubble_reply);
+                cmComponent.txtChatMsg.setTextColor(Color.BLACK);
+                chatContainer.setGravity(Gravity.LEFT);
             }
             return convertView;
         }
         catch(Exception e)
         {
-            System.out.println(e.toString());
+            System.out.println("Error found : " + e.toString());
         }
 
-
-        //Find the textviews and set each textview's content with the information from the arrayList
-        /*
-        TextView txtViewYourMsg = (TextView) convertView.findViewById(R.id.txtYourMsg);
-        txtViewYourMsg.setText(msgObj.getsYourMessage());
-        txtViewYourMsg.setGravity(Gravity.RIGHT);
-
-        TextView txtViewReplyMsg = (TextView) convertView.findViewById(R.id.txtReplyMsg);
-        txtViewReplyMsg.setText(msgObj.getsReplyMessage());
-        txtViewYourMsg.setGravity(Gravity.LEFT);*/
-
         return convertView;
+    } // end of function
+
+
+    private static class chatMessageComponent
+    {
+        TextView txtChatMsg;
     }
-}
+
+} // end of class

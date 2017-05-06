@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -31,43 +32,54 @@ public class ChatActivity extends AppCompatActivity {
 
         final Random rand = new Random();
         int iChance = 0;
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 12; i++)
         {
             iChance = rand.nextInt(2) + 1;
+            String sTempMessage = msgReplyObj.generateReplyMsg();
             if(iChance == 1) //Simulate a history of your messages
             {
-                msgList.add(new MessageContent(true, "My Previous Message #" + i));
+                msgList.add(new MessageContent(true, sTempMessage));
             }
             else //otherwise, it is a reply from someone else
             {
-                msgList.add(new MessageContent(false, "Reply Message # " + i));
+                msgList.add(new MessageContent(false, sTempMessage));
             }
         }
-
         final ChatAdapter caObj = new ChatAdapter(getApplicationContext(), msgList);
         final ListView lv = (ListView) findViewById(R.id.chatMsgList_layout);
+
         lv.setAdapter(caObj);
         lv.setSelection(lv.getAdapter().getCount() - 1); //Set the focus on the last message
 
-        final EditText msgTextField = (EditText) findViewById(R.id.txtMessage);
+        final EditText msgTextField = (EditText) findViewById(R.id.txtMessage); //Messages are typed here
         ImageButton btnSendMsg = (ImageButton) findViewById(R.id.btnSend);
 
         btnSendMsg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String sYourMessage = msgTextField.getText().toString();
-                MessageContent mcObj = new MessageContent(true, sYourMessage);
-                msgList.add(mcObj);
 
-                int iReplyChance = rand.nextInt(2) + 1;
-                if(iReplyChance == 1)
-                {
-                    MessageContent mcReplyObj = new MessageContent(false, msgReplyObj.generateReplyMsg());
-                    msgList.add(mcReplyObj);
+                String sYourMessage = "";
+                if(!(msgTextField.getText().toString().equals(""))) {
+                    sYourMessage = msgTextField.getText().toString();
+                    MessageContent mcObj = new MessageContent(true, sYourMessage);
+                    msgList.add(mcObj);
+
+                    //Simulate a conversation for now
+                    int iReplyChance = rand.nextInt(3) + 1; //66% chance for a reply
+                    if ((iReplyChance == 1) || (iReplyChance == 2))
+                    {
+                        MessageContent mcReplyObj = new MessageContent(false, msgReplyObj.generateReplyMsg());
+                        msgList.add(mcReplyObj);
+                    }
+                    lv.setAdapter(caObj);
+                    lv.setSelection(lv.getAdapter().getCount() - 1); //Set the focus on the last message received or sent
+                    msgTextField.setText(""); //Clear the message field
                 }
-                lv.setAdapter(caObj);
-                lv.setSelection(lv.getAdapter().getCount() - 1); //Set the focus on the last message
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Please enter a message to send.", Toast.LENGTH_SHORT).show();
+                }
             }
-        });
+        }); // end of seton click listener
 
     }
 
