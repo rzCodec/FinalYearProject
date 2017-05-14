@@ -41,6 +41,7 @@ public class ProfileActivity extends AppCompatActivity
             public void onResponse(JSONArray response) {
                 try {
                     Profile p = Profile.fromJSONArray(response).get(0);
+
 					USER_ID = p.getId(); //This user id will be used for the messenger and also for the radar
                     TextView values = (TextView) findViewById(R.id.firstName);
                     values.setText(p.getFirstname());
@@ -48,21 +49,17 @@ public class ProfileActivity extends AppCompatActivity
                     values.setText(p.getSurname());
                     values = (TextView) findViewById(R.id.email);
                     values.setText(p.getEmail());
-                    values = (TextView) findViewById(R.id.values);
-                    values.setText(p.toString());
                     values = (TextView) findViewById(R.id.SongLink);
                     values.setText(p.getSong_link());
                 } catch (JSONException e) {
-                    TextView values = (TextView) findViewById(R.id.values);
-                    values.setText("Oops, something went wrong...");
+                    System.err.println("Oops, something went wrong...");
                 }
             }
         };
         Response.ErrorListener err = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                TextView values = (TextView) findViewById(R.id.values);
-                values.setText("Eish...");
+                System.err.println("Eish...");
             }
         };
         JsonArrayRequest sr = new JsonArrayRequest(Request.Method.GET, url, null, listener, err);
