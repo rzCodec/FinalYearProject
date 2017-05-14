@@ -7,60 +7,65 @@
 
     <TextView
         android:id="@+id/nfi_status"
-        android:layout_width="wrap_content"
+        android:layout_width="275sp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginEnd="8sp"
+        android:layout_marginLeft="8sp"
+        android:layout_marginRight="8sp"
+        android:layout_marginStart="8sp"
+        android:layout_marginTop="23sp"
         android:text="TextView"
         android:textColor="@color/colorPrimary"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/nfi_timestamp"
         app:layout_constraintTop_toBottomOf="@+id/nfi_name"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1"
-        app:layout_constraintRight_toLeftOf="@+id/nfi_timestamp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintHorizontal_bias="0.0" />
+        tools:layout_constraintTop_creator="1" />
 
     <TextView
         android:id="@+id/nfi_timestamp"
-        android:layout_width="58dp"
+        android:layout_width="60sp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginEnd="8sp"
+        android:layout_marginLeft="8sp"
+        android:layout_marginRight="8sp"
+        android:layout_marginStart="8sp"
         android:text="00:00:00"
         android:textColor="@color/colorPrimary"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintLeft_toRightOf="@+id/nfi_name"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nfi_name" />
 
     <ImageButton
         android:id="@+id/nfi_btnLike"
-        android:layout_width="26dp"
-        android:layout_height="36dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="0dp"
+        android:layout_width="26sp"
+        android:layout_height="36sp"
+        android:layout_marginRight="10sp"
         android:src="@mipmap/ic_rock_on"
         app:layout_constraintRight_toLeftOf="@+id/nfi_flags"
-        app:layout_constraintTop_toTopOf="@+id/nfi_btnFlag" />
+        app:layout_constraintTop_toTopOf="@+id/nfi_btnFlag"
+        android:layout_marginEnd="10sp" />
 
     <ImageButton
         android:id="@+id/nfi_btnFlag"
-        android:layout_width="34dp"
-        android:layout_height="37dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_width="34sp"
+        android:layout_height="37sp"
+        android:layout_marginRight="16sp"
         android:src="@mipmap/ic_stop"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nfi_status" />
+        app:layout_constraintTop_toBottomOf="@+id/nfi_status"
+        android:layout_marginEnd="8sp"
+        android:layout_marginTop="14sp" />
 
     <TextView
         android:id="@+id/nfi_name"
-        android:layout_width="wrap_content"
+        android:layout_width="275sp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="8sp"
+        android:layout_marginStart="8sp"
+        android:layout_marginTop="16sp"
         android:text="TextView"
         android:textColor="@color/colorPrimary"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -68,29 +73,32 @@
 
     <TextView
         android:id="@+id/nfi_likes"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:layout_marginLeft="8sp"
 
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginRight="8sp"
+        android:layout_marginTop="8sp"
         android:background="@drawable/circle"
         android:gravity="center"
         android:text="1"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/nfi_btnLike"
-        app:layout_constraintTop_toTopOf="@+id/nfi_btnLike" />
+        app:layout_constraintTop_toTopOf="@+id/nfi_btnLike"
+        android:layout_marginStart="8sp"
+        android:layout_marginEnd="8sp" />
 
     <TextView
         android:id="@+id/nfi_flags"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:layout_marginRight="8sp"
+        android:layout_marginTop="8sp"
         android:background="@drawable/circle"
         android:gravity="center"
         android:text="2"
         app:layout_constraintRight_toLeftOf="@+id/nfi_btnFlag"
-        app:layout_constraintTop_toTopOf="@+id/nfi_btnFlag" />
+        app:layout_constraintTop_toTopOf="@+id/nfi_btnFlag"
+        android:layout_marginEnd="8sp" />
 </android.support.constraint.ConstraintLayout>

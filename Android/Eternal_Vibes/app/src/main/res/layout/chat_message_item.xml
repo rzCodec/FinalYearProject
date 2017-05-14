@@ -15,6 +15,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:maxEms="12"
+            android:paddingLeft="7.5dp"
+            android:paddingRight="7.5dp"
+            android:paddingTop="2.5dp"
+            android:paddingBottom="2.5dp"
             android:text="blank" />
     </LinearLayout>
 
