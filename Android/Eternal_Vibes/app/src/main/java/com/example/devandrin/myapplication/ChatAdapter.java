@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class ChatAdapter extends ArrayAdapter<MessageContent>
 {
-    public ChatAdapter(Context context, ArrayList<MessageContent> msgList)
+     ChatAdapter(Context context, ArrayList<MessageContent> msgList)
     {
         super(context, R.layout.chat_item, msgList);
     }
@@ -36,8 +36,9 @@ public class ChatAdapter extends ArrayAdapter<MessageContent>
         {
             //Make a new text view to show the messages
             cmComponent = new chatMessageComponent();
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.chat_message_item,parent,false);
-            cmComponent.txtChatMsg = (TextView) convertView.findViewById(R.id.txtChatMessage);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.chat_item,parent,false);
+            cmComponent.txtChatMsg = (TextView) convertView.findViewById(R.id.txtYourMsg);
+            cmComponent.txtChatMsgReply = (TextView) convertView.findViewById(R.id.txtReplyMsg);
             convertView.setTag(cmComponent);
         }
         else
@@ -48,19 +49,18 @@ public class ChatAdapter extends ArrayAdapter<MessageContent>
 
         try
         {
-            LinearLayout chatContainer = (LinearLayout) convertView.findViewById(R.id.chatContainer);
             cmComponent.txtChatMsg.setText(msgObj.getsMessage());
-            if(msgObj.getMessageMine() == true)
+            if(msgObj.getMessageMine() )
             {
-                cmComponent.txtChatMsg.setBackgroundResource(R.drawable.chat_msg_bubble);
-                cmComponent.txtChatMsg.setTextColor(Color.WHITE);
-                chatContainer.setGravity(Gravity.RIGHT);
+                cmComponent.txtChatMsg.setText(msgObj.getsMessage());
+                cmComponent.txtChatMsg.setVisibility(View.VISIBLE);
+                cmComponent.txtChatMsgReply.setVisibility(View.GONE);
             }
             else
             {
-                cmComponent.txtChatMsg.setBackgroundResource(R.drawable.chat_msg_bubble_reply);
-                cmComponent.txtChatMsg.setTextColor(Color.BLACK);
-                chatContainer.setGravity(Gravity.LEFT);
+                cmComponent.txtChatMsgReply.setText(msgObj.getsMessage());
+                cmComponent.txtChatMsg.setVisibility(View.GONE);
+                cmComponent.txtChatMsgReply.setVisibility(View.VISIBLE);
             }
             return convertView;
         }
@@ -76,6 +76,7 @@ public class ChatAdapter extends ArrayAdapter<MessageContent>
     private static class chatMessageComponent
     {
         TextView txtChatMsg;
+        TextView txtChatMsgReply;
     }
 
 } // end of class

@@ -29,10 +29,6 @@ public class Profile {
     private String avatar_url;
     private String permalink_url;
     private String permalink;
-
-    public Profile() {
-    }
-
     private Profile(JSONObject item) throws JSONException {
         this.id = item.getInt("id");
         this.firstname = item.getString("firstname");
