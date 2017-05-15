@@ -212,7 +212,7 @@ module.exports = function (pool) {
     });
 
     router.get('/getStatuses/:userID', function (req,res) {
-        pool.query('SELECT * FROM `status_list` WHERE user_id=?',[req.params.userID], function (error, results) {
+        pool.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.alias,users.avatar_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=?',[req.params.userID], function (error, results) {
             if(error){
                 console.log(error)
             }else{
@@ -220,6 +220,67 @@ module.exports = function (pool) {
             }
         });
     });
+    router.get('/getFollowing/:userID', function (req,res) {
+        pool.query('SELECT * FROM `followers` WHERE followers.user_id = ?',[req.params.userID], function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });
+    router.get('/stopFollowing/:currentUserID/:stopUserID', function (req,res) {
+        pool.query('DELETE FROM followers WHERE user_id=? AND liked_id=?',[req.params.currentUserID,req.params.stopUserID], function (error) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send("Done");
+            }
+        });
+    });
+    router.get('/getFriends/:userID', function (req,res) {
+        var FriendList=[];
+        pool.query('SELECT friends.*,  users.firstname,users.surname,users.email,users.alias,users.avatar_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ?',[req.params.userID], function (error,result) {
+            if(error){
+                console.log(error)
+            }else{
+                FriendList.push(result);
+                pool.query('SELECT friends.*,  users.firstname,users.surname,users.email,users.alias,users.avatar_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ?',[req.params.userID], function (error2,result2) {
+                    if(error){
+                        console.log(error2)
+                    }else{
+                        FriendList.push(result2);
+                        res.send(FriendList);
+                    }
+                });
+            }
+        });
+    });
+    router.get('/login/:userName/:password', function (req,res) {
+        pool.query('SELECT * FROM `users` WHERE users.alias = ? AND users.password = ?',[req.params.userName,req.params.password], function (error, results) {
+            if(error){
+                console.log(error)
+            }else{
+                res.send(results);
+            }
+        });
+    });
+    router.post('/register', function (req,res) {
+        pool.query('INSERT INTO `users` (`id`, `firstname`, `surname`, `email`, `alias`, `genre_id`, `token`, `song_link`, `latitude`, `longitude`, `pardons`, `search_distance`, `join_timestamp`, `is_banned`, `last_login_timestamp`, `avatar_url`, `permalink_url`, `permalink`, `password`) VALUES (NULL, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, 0, NULL, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, NULL, "?")',[req.body.firstname,req.body.surname,req.body.email,req.body.alias,req.body.genre,req.body.pass_word], function (error, results) {
+            if(error){
+                console.log(error);
+            }else{
+                pool.query('SELECT * FROM `users` WHERE users.id=?',[results.insertId], function (error,results2){
+                    if(error){
+                        console.log(error2);
+                    }else{
+                        res.send(results2[0]);
+                    }
+                });
+            }
+        });
+    });
+
     router.post('/setStatus/:userID', function (req,res) {
         pool.query('INSERT INTO `status_list` (`user_id`, `timestamp`, `status`, `extra_info`) VALUES (?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ?, ?)',[req.params.userID,req.body.status,req.body.extraInfo], function (error, results) {
             if(error){

@@ -25,7 +25,6 @@ public class ChatAdapter extends ArrayAdapter<MessageContent>
     {
         super(context, R.layout.chat_item, msgList);
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
