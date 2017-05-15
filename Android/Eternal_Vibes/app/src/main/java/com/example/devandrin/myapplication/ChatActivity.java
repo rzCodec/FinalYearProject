@@ -27,7 +27,7 @@ public class ChatActivity extends AppCompatActivity {
 
         //This part is used to send a message to another user
         //This holds the messages sent and received by the user
-        final ArrayList<MessageContent> msgList = new ArrayList<MessageContent>();
+        final ArrayList<MessageContent> msgList = new ArrayList<>();
         final MessageReply msgReplyObj = new MessageReply(); //Simulates a reply message
 
         final Random rand = new Random();
