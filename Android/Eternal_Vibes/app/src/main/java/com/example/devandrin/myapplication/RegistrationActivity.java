@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -122,25 +123,28 @@ public class RegistrationActivity extends AppCompatActivity {
                     return;
                 }
                 String url = "https://eternalvibes.me/register";
-                Map<String,String> data = new HashMap<>();
-                data.put("firstname",Firstname.getText().toString());
-                data.put("surname",LastName.getText().toString());
-                data.put("alias",Alias.getText().toString());
-                data.put("email",Email.getText().toString());
-                data.put("pass_word",PasswordC.getText().toString());
-                data.put("genre",Genre.getText().toString());
-                JSONObject o = new JSONObject(data);
-                ArrayList<JSONObject> olist = new ArrayList<>();
-                olist.add(o);
-                JSONArray arr = new JSONArray(olist);
-                JsonArrayRequest jar = new JsonArrayRequest(Request.Method.POST, url, arr, new Response.Listener<JSONArray>() {
+                JSONObject data = new JSONObject();
+                try
+                {
+                    data.put("firstname",Firstname.getText());
+                    data.put("surname",LastName.getText());
+                    data.put("alias",Alias.getText());
+                    data.put("email",Email.getText());
+                    data.put("pass_word",PasswordC.getText());
+                    data.put("genre",Genre.getText());
+                }
+                catch(JSONException e)
+                {
+                    e.printStackTrace();
+                }
+                JsonObjectRequest jar = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
                         try {
                             SharedPreferences sp = Dashboard.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
                             SharedPreferences.Editor e = sp.edit();
-                            e.putString("userID", response.getJSONObject(0).getInt("id") + "");
-                            e.putString("alias", response.getJSONObject(0).getString("alias"));
+                            e.putString("userID", response.getInt("id") + "");
+                            e.putString("alias", response.getString("alias"));
                             e.apply();
                             Intent i = new Intent(instance, HomeActivity.class);
                             startActivity(i);
