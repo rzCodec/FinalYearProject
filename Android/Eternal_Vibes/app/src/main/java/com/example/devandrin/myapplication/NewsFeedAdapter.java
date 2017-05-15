@@ -10,6 +10,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,7 +52,7 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
         } else {
             nfi = (viewComponents) convertView.getTag();
         }
-        nfi.name.setText(item.getAlias());
+        nfi.name.setText("" + item.getUserID());
         nfi.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,13 +70,37 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
         nfi.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(HomeActivity.getInstance().getApplicationContext(), "Liked " + item.getUserID() + "'s post", Toast.LENGTH_SHORT).show();
+                String url = "https://www.eternalvibes.me/likestatus/"+item.getStatusID();
+                JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        HomeActivity.getInstance().onResume();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utilities.MakeToast(HomeActivity.getInstance().getApplicationContext(), "Error");
+                    }
+                });
+                RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(jor);
             }
         });
         nfi.flag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(HomeActivity.getInstance().getApplicationContext(), "Flagged " + item.getUserID() + "'s post", Toast.LENGTH_SHORT).show();
+                String url = "https://www.eternalvibes.me/flagstatus/"+item.getStatusID();
+                JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        HomeActivity.getInstance().onResume();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utilities.MakeToast(HomeActivity.getInstance().getApplicationContext(), "Error");
+                    }
+                });
+                RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(jor);
             }
         });
         return convertView;
