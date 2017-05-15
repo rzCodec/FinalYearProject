@@ -21,11 +21,10 @@ import java.util.ArrayList;
 
 public class ChatAdapter extends ArrayAdapter<MessageContent>
 {
-     ChatAdapter(Context context, ArrayList<MessageContent> msgList)
+    ChatAdapter(Context context, ArrayList<MessageContent> msgList)
     {
         super(context, R.layout.chat_item, msgList);
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {

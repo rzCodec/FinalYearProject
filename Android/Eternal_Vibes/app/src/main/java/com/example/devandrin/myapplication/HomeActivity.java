@@ -41,12 +41,9 @@ import java.util.GregorianCalendar;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
     private static HomeActivity instance = null;
-
-
     public static HomeActivity getInstance() {
         return instance;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
