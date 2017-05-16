@@ -1,5 +1,6 @@
 package com.example.devandrin.myapplication;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -69,7 +70,8 @@ public class PostActivity extends AppCompatActivity {
     private void makePost(String PostData) {
         Map<String, String> data = new HashMap<>();
         data.put("status", PostData);
-        String url = "https://www.eternalvibes.me/setstatus/3";
+        SharedPreferences sp = Dashboard.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
+        String url = "https://www.eternalvibes.me/setstatus/"+ sp.getString("userID","");
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

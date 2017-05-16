@@ -19,8 +19,8 @@ public class NewsFeedItem {
     private String extraInfo;
     private int likes;
     private int flags;
-
-    public NewsFeedItem(int statusID, int userID, long timestamp, String status, String extraInfo, int likes, int flags) {
+    private String alias;
+    public NewsFeedItem(int statusID, int userID, long timestamp, String status, String extraInfo, int likes, int flags,String alias) {
         this.statusID = statusID;
         this.userID = userID;
         this.timestamp = timestamp;
@@ -28,6 +28,7 @@ public class NewsFeedItem {
         this.extraInfo = extraInfo;
         this.likes = likes;
         this.flags = flags;
+        this.alias=alias;
     }
 
     private NewsFeedItem(JSONObject obj) {
@@ -39,6 +40,7 @@ public class NewsFeedItem {
             this.extraInfo = obj.getString("extra_info");
             this.likes = obj.getInt("liked");
             this.flags = obj.getInt("flagged");
+            this.alias=obj.getString("alias");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -55,6 +57,14 @@ public class NewsFeedItem {
         }
         Collections.reverse(items);
         return items;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public int getStatusID() {

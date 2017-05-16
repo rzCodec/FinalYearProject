@@ -36,6 +36,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
+
         for(int i = 0; i < 15; i++)
         {
             iChance = rand.nextInt(2) + 1;

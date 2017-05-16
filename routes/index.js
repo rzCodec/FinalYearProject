@@ -268,9 +268,15 @@ module.exports = function (pool) {
     router.post('/register', function (req,res) {
         pool.query('INSERT INTO `users` (`id`, `firstname`, `surname`, `email`, `alias`, `genre_id`, `token`, `song_link`, `latitude`, `longitude`, `pardons`, `search_distance`, `join_timestamp`, `is_banned`, `last_login_timestamp`, `avatar_url`, `permalink_url`, `permalink`, `password`) VALUES (NULL, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, 0, NULL, CURRENT_TIMESTAMP, NULL, NULL, NULL, NULL, NULL, "?")',[req.body.firstname,req.body.surname,req.body.email,req.body.alias,req.body.genre,req.body.pass_word], function (error, results) {
             if(error){
-                console.log(error)
+                console.log(error);
             }else{
-                res.send("Added");
+                pool.query('SELECT * FROM `users` WHERE users.id=?',[results.insertId], function (error,results2){
+                    if(error){
+                        console.log(error2);
+                    }else{
+                        res.send(results2[0]);
+                    }
+                });
             }
         });
     });
