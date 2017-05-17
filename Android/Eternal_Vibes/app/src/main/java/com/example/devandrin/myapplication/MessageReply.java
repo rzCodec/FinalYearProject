@@ -24,7 +24,7 @@ public class MessageReply {
         msgList.add("Stuck in heavy traffic, I will be a bit late for the meetup.");
         msgList.add("Working on a new song today.");
         msgList.add("This beat sounds good!");
-        msgList.add("This is a new song snippet.");
+        msgList.add("This is going to be a very very very long message for some testing purposes when it comes to the wrapping content and also the maximum number of ems in the text view properties.");
     }
 
     public String generateReplyMsg() {

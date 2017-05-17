@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.TimeZone;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -32,7 +33,11 @@ public class ChatActivity extends AppCompatActivity {
 
         final Random rand = new Random();
         int iChance = 0;
-        for(int i = 0; i < 5000; i++)
+
+
+
+
+        for(int i = 0; i < 15; i++)
         {
             iChance = rand.nextInt(2) + 1;
             String sTempMessage = msgReplyObj.generateReplyMsg();

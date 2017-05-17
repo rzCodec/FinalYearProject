@@ -6,9 +6,9 @@ package com.example.devandrin.myapplication;
 
 public class MessageContent
 {
+    private long userID;
+    private long recipientID;
     private String sMessage;
-    private String sYourMessage;
-    private String sReplyMessage;
     private Boolean isMessageMine;
 
     public MessageContent(Boolean isMessageMine, String sMessage)
@@ -17,11 +17,6 @@ public class MessageContent
         this.sMessage = sMessage;
     }
 
-    public MessageContent(String sYourMessage, String sReplyMessage)
-    {
-        this.sYourMessage = sYourMessage;
-        this.sReplyMessage = sReplyMessage;
-    }
 
     //Getters and Setters
 
@@ -43,23 +38,5 @@ public class MessageContent
         this.sMessage = sMessage;
     }
 
-    public String getsYourMessage()
-    {
-        return sYourMessage;
-    }
 
-    public void setsYourMessage(String sYourMessage)
-    {
-        this.sYourMessage = sYourMessage;
-    }
-
-    public String getsReplyMessage()
-    {
-        return sReplyMessage;
-    }
-
-    public void setsReplyMessage(String sReplyMessage)
-    {
-        this.sReplyMessage = sReplyMessage;
-    }
 }
