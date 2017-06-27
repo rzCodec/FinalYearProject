@@ -1,5 +1,0 @@
-* - The home activity displays 3 different tabs, news feed by default and loads the next tab depending on the position the user is.
-[*] - To view a profile, users can select a profile from any of the tabs, News feed, Messenger and Radar, it allows users to do various things, like follow or "Hola" the user
-
-"Hola" - Another way to get the attention of a user from a user
-
