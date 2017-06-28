@@ -5,10 +5,13 @@ package com.example.devandrin.myapplication;
  */
 
 public class Chat {
-	private int iChatID;
+
     private long TimeStamp;
     private String Name;
     private String LastMessage;
+
+    //Values to be used:
+    private int iChatID;
 
     public Chat(long timeStamp, String name, String lastMessage) {
         TimeStamp = timeStamp;
