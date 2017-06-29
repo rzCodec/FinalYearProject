@@ -31,14 +31,20 @@ public final class ContractClass
             Chat._USER2 + " INTEGER NOT NULL)";
     public static final String DELETE_CHAT_TABLE ="DROP TABLE IF EXISTS "+Chat.TABLE_NAME;
     public static final String CREATE_MESSAGE_TABLE ="CREATE TABLE "+Message.TABLE_NAME+" (" +
-            Message._ID + " INTEGER PRIMARY KEY AUTOINCREMENT , "+
+            Message._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
             Message._CHATID + " INTEGER NOT NULL, "+
             Message._SENDER + " INTEGER NOT NULL, "+
-            Message._TIMESTAMP + " INTEGER NOT NULL, "+
-            Message._ISREAD + " INTEGER NOT NULL, "+
+            Message._TIMESTAMP + " LONG NOT NULL, "+
+            Message._ISREAD + " SHORT NOT NULL, "+
             Message._MESSAGE + " TEXT NOT NULL, " +
-            "FOREIGN KEY ( " +Message._CHATID+" ) references "
+            " FOREIGN KEY ( " +Message._CHATID+" ) references "
             +Chat.TABLE_NAME+"("+Chat._CHATID+")"+
             " )";
     public static final String DELETE_MESSAGE_TABLE ="DROP TABLE IF EXISTS "+Message.TABLE_NAME;
+    public static final String GETALLCHATS = "Select * from "+Chat.TABLE_NAME;
+    public static final String GETCHATMESSAGES = "select * from "+ Chat.TABLE_NAME +
+            " inner join "+Message.TABLE_NAME +
+            " on "+Chat.TABLE_NAME +"."+Chat._CHATID+
+            " = "+Message.TABLE_NAME+"."+Message._CHATID+
+            " where "+Chat.TABLE_NAME +"."+Chat._CHATID+" = ";
 }
