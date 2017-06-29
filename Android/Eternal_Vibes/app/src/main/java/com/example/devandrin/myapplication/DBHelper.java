@@ -13,12 +13,10 @@ import java.util.ArrayList;
  */
 
 public class DBHelper extends SQLiteOpenHelper {
-    public class Chat
+    class Chat
     {
-        public int ChatID;
-        public int user1;
-        public int user2;
-        public Chat(int chatID, int user1, int user2) {
+        int ChatID, user1, user2;
+        Chat(int chatID, int user1, int user2) {
             ChatID = chatID;
             this.user1 = user1;
             this.user2 = user2;
@@ -31,11 +29,36 @@ public class DBHelper extends SQLiteOpenHelper {
                     "\nUser 2 ID: "+user2;
         }
     }
-    public final static String DB_NAME = "Testing.db";
-    public final static int V = 1;
+    class Message
+    {
+        int ChatID,SenderID;
+        byte isRead;
+        long timestamp;
+        String Message;
+
+        public Message(int chatID, int senderID, byte isRead, long timestamp, String Message) {
+            ChatID = chatID;
+            SenderID = senderID;
+            this.isRead = isRead;
+            this.timestamp = timestamp;
+            this.Message = Message;
+        }
+
+        @Override
+        public String toString() {
+            return "Chat ID: "+ChatID+
+                    "\nSender ID: "+SenderID+
+                    "\nIs Read: "+isRead+
+                    "\nTimestamp: "+timestamp+
+                    "\nMessage: "+ Message;
+        }
+    }
+    final static String DB_NAME = "Testing.db";
+    final static int V = 3;
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(ContractClass.CREATE_CHAT_TABLE);
+
         db.execSQL(ContractClass.CREATE_MESSAGE_TABLE);
     }
     public DBHelper(Context c)
@@ -48,11 +71,30 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(ContractClass.DELETE_MESSAGE_TABLE);
         onCreate(db);
     }
+    public ArrayList<Message> getMessages(int ChatID)
+    {
+        ArrayList<Message> Messages = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor result = db.rawQuery(ContractClass.GETCHATMESSAGES+ChatID,null);
+        result.moveToFirst();
+        while(!result.isAfterLast())
+        {
+            int chatID = result.getInt(result.getColumnIndex(ContractClass.Message._CHATID));
+            int senderID = result.getInt(result.getColumnIndex(ContractClass.Message._SENDER));
+            byte isread =(byte) result.getShort(result.getColumnIndex(ContractClass.Message._ISREAD));
+            long timestamp = result.getLong(result.getColumnIndex(ContractClass.Message._TIMESTAMP));
+            String message = result.getString(result.getColumnIndex(ContractClass.Message._MESSAGE));
+            Messages.add(new Message(chatID,senderID,isread,timestamp,message));
+            result.moveToNext();
+        }
+        result.close();
+        return Messages;
+    }
     public ArrayList<Chat> getAllChats()
     {
         ArrayList<Chat> chats = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor result = db.rawQuery("Select * from "+ContractClass.Chat.TABLE_NAME,null);
+        Cursor result = db.rawQuery(ContractClass.GETALLCHATS,null);
         result.moveToFirst();
         while(!result.isAfterLast())
         {
@@ -62,7 +104,24 @@ public class DBHelper extends SQLiteOpenHelper {
             chats.add(new Chat(ChatID,u1,u2));
             result.moveToNext();
         }
+        result.close();
         return chats;
+    }
+    public boolean insertMessage(int ChatID, int Sender, short isread, long timestamp, String Message)
+    {
+        ContentValues cv = new ContentValues();
+        cv.put(ContractClass.Message._CHATID,ChatID);
+        cv.put(ContractClass.Message._SENDER,Sender);
+        cv.put(ContractClass.Message._ISREAD,isread);
+        cv.put(ContractClass.Message._TIMESTAMP,timestamp);
+        cv.put(ContractClass.Message._MESSAGE,Message);
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(ContractClass.Message.TABLE_NAME,null,cv);
+        return true;
+    }
+    public boolean insertMessage(Message m)
+    {
+        return insertMessage(m.ChatID,m.SenderID,m.isRead,m.timestamp,m.Message);
     }
     public boolean insertChat(int id, int user1, int user2)
     {
@@ -73,6 +132,10 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.insert(ContractClass.Chat.TABLE_NAME,null,cv);
         return true;
+    }
+    public boolean insertChat(Chat c)
+    {
+        return insertChat(c.ChatID,c.user1,c.user2);
     }
 }
 
