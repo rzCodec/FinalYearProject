@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -19,11 +20,12 @@ import org.json.JSONException;
 public class ProfileActivity extends AppCompatActivity 
 {
 	public static int USER_ID = 0; //A user id that will checked and used in Radar and Messenger classes
-
+    private ProgressBar load = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        load = (ProgressBar) findViewById(R.id.pbloadProfile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(getIntent().getStringExtra("name"));
@@ -51,6 +53,10 @@ public class ProfileActivity extends AppCompatActivity
                     values.setText(p.getEmail());
                     values = (TextView) findViewById(R.id.SongLink);
                     values.setText(p.getSong_link());
+                    if(load.getVisibility() == View.VISIBLE)
+                    {
+                        load.setVisibility(View.GONE);
+                    }
                 } catch (JSONException e) {
                     System.err.println("Oops, something went wrong...");
                 }
