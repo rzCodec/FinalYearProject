@@ -154,7 +154,7 @@ public class Dashboard extends AppCompatActivity {
             err.show();
         }
     }
-    public static Dashboard getInstance() {
+    static Dashboard getInstance() {
         return instance;
     }
 }

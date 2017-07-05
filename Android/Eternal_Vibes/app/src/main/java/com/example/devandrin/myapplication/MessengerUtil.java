@@ -32,6 +32,7 @@ public class MessengerUtil extends Content {
         clist.add(new Chat(19, "NewTon", "I hope you become a null"));
         MessengerAdapter ma = new MessengerAdapter(HomeActivity.getInstance().getApplicationContext(), clist);
         ListView l = (ListView) view.findViewById(R.id.ArrayList);
+
         l.setAdapter(ma);
         return view;
     }
