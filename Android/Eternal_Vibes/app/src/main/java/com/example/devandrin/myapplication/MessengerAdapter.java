@@ -41,6 +41,7 @@ public class MessengerAdapter extends ArrayAdapter<Chat> {
                 HomeActivity.getInstance().startActivity(i);
             }
         });
+
         return convertView;
     }
 }

@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.android.volley.Request;
@@ -28,6 +29,10 @@ public class NewsFeedUtil extends Content {
     }
 
     public static void makeRequest(String id) {
+        if(HomeActivity.load.getVisibility() == View.GONE)
+        {
+            HomeActivity.load.setVisibility(View.VISIBLE);
+        }
         String Url = "https://www.eternalvibes.me/getstatuses/" + id;
         JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, Url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -37,6 +42,10 @@ public class NewsFeedUtil extends Content {
 
                 adapter.addAll(arrData);
                 adapter.notifyDataSetChanged();
+                if(HomeActivity.load.getVisibility() == View.VISIBLE)
+                {
+                    HomeActivity.load.setVisibility(View.GONE);
+                }
             }
         },
                 new Response.ErrorListener() {
@@ -57,7 +66,7 @@ public class NewsFeedUtil extends Content {
         }
         adapter = new NewsFeedAdapter(HomeActivity.getInstance().getApplicationContext(), arrData);
         lv.setAdapter(adapter);
-
+        lv.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         return view;
     }
 }

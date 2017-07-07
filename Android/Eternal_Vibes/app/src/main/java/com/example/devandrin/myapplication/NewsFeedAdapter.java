@@ -52,13 +52,13 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
         } else {
             nfi = (viewComponents) convertView.getTag();
         }
-        nfi.name.setText("" + item.getUserID());
+        nfi.name.setText("" + item.getAlias());
         nfi.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.getInstance(), ProfileActivity.class);
-                i.putExtra("id", "" + item.getStatusID());
-                i.putExtra("name", "" + item.getUserID());
+                i.putExtra("id", "" + item.getUserID());
+                i.putExtra("name", "" + item.getAlias());
                 HomeActivity.getInstance().startActivity(i);
             }
         });
