@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -24,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import com.android.volley.Response;
@@ -43,6 +45,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private static HomeActivity instance = null;
     static ProgressBar load = null;
+    FloatingActionButton newChatFab = null;
     static HomeActivity getInstance() {
         return instance;
     }
@@ -52,6 +55,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_home);
         load = (ProgressBar) findViewById(R.id.pbLoad);
         instance = this;
+        newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -74,8 +78,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        viewPager.setCurrentItem(1);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition() == 0)
+                {
+                    newChatFab.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    newChatFab.setVisibility(View.GONE);
+                }
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        viewPager.setCurrentItem(1);
     }
 
     private void UpdateLocation() {
