@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private static HomeActivity instance = null;
     static ProgressBar load = null;
-    FloatingActionButton newChatFab = null;
+    FloatingActionButton newChatFab, newPostFab;
     static HomeActivity getInstance() {
         return instance;
     }
@@ -56,6 +56,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         load = (ProgressBar) findViewById(R.id.pbLoad);
         instance = this;
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
+        newPostFab = (FloatingActionButton) findViewById(R.id.new_post);
+        newPostFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPostActivity();
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -88,6 +95,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 else
                 {
                     newChatFab.setVisibility(View.GONE);
+                }
+                if(tab.getPosition() == 1)
+                {
+                    newPostFab.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    newPostFab.setVisibility(View.GONE);
                 }
             }
 
@@ -227,13 +242,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_post) {
-
-            startActivity(new Intent(this, PostActivity.class));
+            startPostActivity();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
+    void startPostActivity()
+    {
+        startActivity(new Intent(this, PostActivity.class));
+    }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
