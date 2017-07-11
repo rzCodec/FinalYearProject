@@ -17,7 +17,8 @@ public abstract class RenderFactory {
             return new NewsFeedUtil(inflater, container);
         } else if (s.contains("Radar")) {
             return new RadarUtil(inflater, container);
-        }
+        }else if (s.contains("Events")){
+            return new EventUtil(inflater,container);}
         return null;
     }
 

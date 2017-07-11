@@ -1,7 +1,6 @@
 package com.example.devandrin.myapplication;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +42,6 @@ public class PageFragment extends Fragment {
                 view = RenderFactory.getClass("NewsFeed", inflater, container).displayContent();
                 break;
             case 3:
-
                 view = RenderFactory.getClass("Radar", inflater, container).displayContent();
                 break;
 
