@@ -19,7 +19,7 @@ public class RadarUtil extends Content {
 
     @Override
     public View displayContent() {
-        View view = inflater.inflate(R.layout.radarlist_layout, container, false);
+        View view = inflater.inflate(R.layout.list_fragment, container, false);
         ArrayList<RadarContent> radarList = new ArrayList<>();
 
         radarList.add(new RadarContent("Bob", "8km", "Sandton", 500));
@@ -27,7 +27,7 @@ public class RadarUtil extends Content {
         radarList.add(new RadarContent("Jane", "21km", "Rosebank", 850));
 
         RadarAdapter raObj = new RadarAdapter(HomeActivity.getInstance().getApplicationContext(), radarList);
-        ListView lv = (ListView) view.findViewById(R.id.radarListView);
+        ListView lv = (ListView) view.findViewById(R.id.ArrayList);
         lv.setAdapter(raObj);
         return view;
     }

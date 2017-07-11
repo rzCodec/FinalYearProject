@@ -217,4 +217,5 @@ public class Profile {
                 + longitude + "\n" + pardons + "\n" + search_distance + "\n" + join_timestamp + "\n" + is_banned + "\n"
                 + last_login_timestamp + "\n" + avatar_url + "\n" + permalink_url + "\n" + permalink;
     }
+
 }
