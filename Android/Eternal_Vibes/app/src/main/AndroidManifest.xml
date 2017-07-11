@@ -58,7 +58,8 @@
         <activity android:name=".PostActivity" />
         <activity android:name=".RegistrationActivity" />
         <activity android:name=".CreateEventActivity" />
-        <activity android:name=".NewChatActivity"></activity>
+        <activity android:name=".NewChatActivity"/>
+        <activity android:name=".EventActivity"/>
     </application>
 
 </manifest>

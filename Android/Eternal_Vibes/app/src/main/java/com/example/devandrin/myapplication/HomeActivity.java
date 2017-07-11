@@ -268,7 +268,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             i.putExtra("name", alias);
             startActivity(i);
         } else if(id==R.id.nav_event){
-            startActivity(new Intent(this,CreateEventActivity.class));
+            startActivity(new Intent(this,EventActivity.class));
         } else if (id == R.id.nav_settings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
