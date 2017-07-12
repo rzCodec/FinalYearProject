@@ -23,7 +23,8 @@ public class EventUtil extends Content{
         dataList = new ArrayList<>();
         dataList.add(new EventItem("Hello World","Hello World"));
         dataList.add(new EventItem("Sentence", "The quick brown fox jumped over the lazy dog"));
-        dataList.add(new EventItem("Name", "Info"));
+        dataList.add(new EventItem("Name", "Info 12345678901234567890123456789012345678901234567890" +
+                "12345678901234567890123456789012345678901234567890123456789012345678901234567890"));
         View v = inflater.inflate(R.layout.list_fragment,container,false);
         ListView lv = (ListView)v.findViewById(R.id.ArrayList);
         ea = new EventAdapter(EventActivity.getInstance().getApplicationContext(),dataList);

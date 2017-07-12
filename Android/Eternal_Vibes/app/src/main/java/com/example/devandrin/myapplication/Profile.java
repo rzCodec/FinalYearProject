@@ -29,7 +29,7 @@ public class Profile {
     private String avatar_url;
     private String permalink_url;
     private String permalink;
-    private Profile(JSONObject item) throws JSONException {
+    Profile(JSONObject item) throws JSONException {
         this.id = item.getInt("id");
         this.firstname = item.getString("firstname");
         this.surname = item.getString("surname");

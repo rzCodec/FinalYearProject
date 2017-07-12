@@ -39,7 +39,16 @@ public class EventAdapter extends ArrayAdapter<EventItem>
             components = (viewComponents) convertView.getTag();
         }
         components.name.setText(item.getName());
-        components.info.setText(item.getInfo());
+        String info = item.getInfo();
+        if(info.length() > 100)
+        {
+            components.info.setText(info.subSequence(0,100)+"...");
+        }
+        else
+        {
+            components.info.setText(info);
+        }
+
         return convertView;
     }
     private static class viewComponents
