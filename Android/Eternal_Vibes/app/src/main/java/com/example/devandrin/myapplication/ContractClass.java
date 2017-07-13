@@ -16,6 +16,12 @@ public final class ContractClass
         public static final String _USER1 = "user1";
         public static final String _USER2 = "user2";
     }
+    public static class Users implements BaseColumns
+    {
+        public static final String TABLE_NAME = "UserCredentials";
+        public static final String _ALIAS ="alias";
+
+    }
     public static class Message implements BaseColumns
     {
         public static final String TABLE_NAME = "Message";
@@ -30,8 +36,15 @@ public final class ContractClass
             Chat._USER1 + " INTEGER NOT NULL, "+
             Chat._USER2 + " INTEGER NOT NULL)";
     public static final String DELETE_CHAT_TABLE ="DROP TABLE IF EXISTS "+Chat.TABLE_NAME;
+
+    public static final String CREATE_USERS_TABLE ="CREATE TABLE "+Users.TABLE_NAME+" ( " +
+            Users._ID + " INTEGER PRIMARY KEY UNIQUE NOT NULL, "+
+            Users._ALIAS + " TEXT NOT NULL" +
+            " )";
+    public static final String DELETE_USERS_TABLE ="DROP TABLE IF EXISTS "+Users.TABLE_NAME;
+
     public static final String CREATE_MESSAGE_TABLE ="CREATE TABLE "+Message.TABLE_NAME+" (" +
-            Message._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
+            Message._ID + " INTEGER PRIMARY KEY UNIQUE NOT NULL, "+
             Message._CHATID + " INTEGER NOT NULL, "+
             Message._SENDER + " INTEGER NOT NULL, "+
             Message._TIMESTAMP + " LONG NOT NULL, "+
@@ -47,4 +60,5 @@ public final class ContractClass
             " on "+Chat.TABLE_NAME +"."+Chat._CHATID+
             " = "+Message.TABLE_NAME+"."+Message._CHATID+
             " where "+Chat.TABLE_NAME +"."+Chat._CHATID+" = ";
+    public static final String GETALIAS= "Select * from "+Users.TABLE_NAME + " where "+Users._ID+" =";
 }

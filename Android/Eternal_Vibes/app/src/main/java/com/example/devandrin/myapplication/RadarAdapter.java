@@ -28,7 +28,7 @@ public class RadarAdapter extends ArrayAdapter<RadarContent> {
 
         //Find the textviews and set each textview's content with the information from the arrayList
         TextView txtViewUsername = (TextView) convertView.findViewById(R.id.txtUsername);
-        txtViewUsername.setText("Username :" + RC.getsUsername());
+        txtViewUsername.setText(RC.getsUsername());
 
         TextView txtViewDistance = (TextView) convertView.findViewById(R.id.txtDistance);
         txtViewDistance.setText("Distance :" + RC.getsDistance());

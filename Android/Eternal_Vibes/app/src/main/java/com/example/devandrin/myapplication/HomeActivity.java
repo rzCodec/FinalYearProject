@@ -44,6 +44,7 @@ import java.util.GregorianCalendar;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
     private static HomeActivity instance = null;
+    private static DBHelper dbHelper = null;
     static ProgressBar load = null;
     FloatingActionButton newChatFab, newPostFab;
     static HomeActivity getInstance() {
@@ -54,8 +55,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         load = (ProgressBar) findViewById(R.id.pbLoad);
+        dbHelper = new DBHelper(this);
         instance = this;
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
+        newChatFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StartNewChat();
+            }
+        });
         newPostFab = (FloatingActionButton) findViewById(R.id.new_post);
         newPostFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +126,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
         viewPager.setCurrentItem(1);
     }
-
+    private void StartNewChat()
+    {
+        startActivity(new Intent(this,NewChatActivity.class));
+    }
     private void UpdateLocation() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         if (sp.getBoolean(SettingsActivity.LOCATIONKEY, false)) {
@@ -311,12 +322,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             UpdateLocation();
         }
         sp = getSharedPreferences("userInfo", MODE_PRIVATE);
-        NewsFeedUtil.makeRequest(sp.getString("userID", ""));
+        String id = sp.getString("userID", "");
+        NewsFeedUtil.makeRequest(id);
+        MessengerUtil.makeRequest(id);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        dbHelper.close();
+        super.onDestroy();
     }
 
     @Override
@@ -327,5 +346,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 UpdateLocation();
             }
         }
+    }
+
+    public static DBHelper getDbHelper() {
+        return dbHelper;
     }
 }
