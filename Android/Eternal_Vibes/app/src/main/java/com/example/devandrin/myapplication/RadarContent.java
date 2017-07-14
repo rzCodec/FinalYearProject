@@ -5,14 +5,20 @@ package com.example.devandrin.myapplication;
  */
 
 public class RadarContent {
+    private int userID;
     private String sUsername;
-    private String sDistance;
+    private int Distance;
+    private int Rating;
+    private String Ranking;
     private String sLocation;
     private long TimeStamp;
 
-    public RadarContent(String sUsername, String sDistance, String sLocation, long timeStamp) {
+    public RadarContent(int userID, String sUsername, int distance, int rating, String ranking, String sLocation, long timeStamp) {
+        this.userID = userID;
         this.sUsername = sUsername;
-        this.sDistance = sDistance;
+        Distance = distance;
+        Rating = rating;
+        Ranking = ranking;
         this.sLocation = sLocation;
         TimeStamp = timeStamp;
     }
@@ -23,14 +29,6 @@ public class RadarContent {
 
     public void setsUsername(String sUsername) {
         this.sUsername = sUsername;
-    }
-
-    public String getsDistance() {
-        return sDistance;
-    }
-
-    public void setsDistance(String sDistance) {
-        this.sDistance = sDistance;
     }
 
     public String getsLocation() {
@@ -47,5 +45,37 @@ public class RadarContent {
 
     public void setTimeStamp(long timeStamp) {
         TimeStamp = timeStamp;
+    }
+
+    public int getDistance() {
+        return Distance;
+    }
+
+    public void setDistance(int distance) {
+        Distance = distance;
+    }
+
+    public int getRating() {
+        return Rating;
+    }
+
+    public void setRating(int rating) {
+        Rating = rating;
+    }
+
+    public String getRanking() {
+        return Ranking;
+    }
+
+    public void setRanking(String ranking) {
+        Ranking = ranking;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 }

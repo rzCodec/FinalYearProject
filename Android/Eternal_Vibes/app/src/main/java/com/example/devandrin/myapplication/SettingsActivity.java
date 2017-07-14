@@ -27,6 +27,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -41,6 +43,8 @@ import java.util.List;
 public class SettingsActivity extends AppCompatPreferenceActivity {
     public static final String LOCATIONKEY = "location_services";
     public static final String LOCATIONRANGE = "location_services_range";
+
+    public static int iSEARCH_RADIUS = 0;
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -117,6 +121,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         super.onCreate(savedInstanceState);
         setupActionBar();
 
+
     }
 
     /**
@@ -180,7 +185,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
-
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
@@ -251,6 +255,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_location_services);
             setHasOptionsMenu(true);
             bindPreferenceSummaryToValue(findPreference(LOCATIONRANGE));
+            //Get the search radius so it can be used in the Radar
+            ListPreference lp = (ListPreference) findPreference("location_services_range");
+            iSEARCH_RADIUS = Integer.parseInt(lp.getValue());
         }
 
         @Override
