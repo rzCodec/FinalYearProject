@@ -17,9 +17,11 @@ import java.util.Random;
 public class RadarUtil extends Content {
 
     //Use two different arraylists to prevent clashing
-    ArrayList<RadarContent> unsorted_radarList = new ArrayList<>();
-    ArrayList<RadarContent> sorted_radarList = new ArrayList<>();
-    RadarContent[] arrAPI_Profiles = new RadarContent[5];
+    private static ArrayList<RadarContent> unsorted_radarList;
+    private static ArrayList<RadarContent> sorted_radarList;
+    private RadarContent[] arrAPI_Profiles = new RadarContent[5];
+    private static RadarAdapter raObj;
+    private static View view;
 
     /**
      * @param inflater - Inflates and creates the required xml files
@@ -34,11 +36,10 @@ public class RadarUtil extends Content {
      */
     @Override
     public View displayContent() {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        view = inflater.inflate(R.layout.list_fragment, container, false);
 
         setupProfiles();
-        sortProfiles("DISTANCE", true);
-        setupRadar(view);
+        UpdatedSort_RadarProfiles("DISTANCE", false); //Default sort by shortest distance
 
         return view;
     }
@@ -48,42 +49,49 @@ public class RadarUtil extends Content {
      * Then calculates the distance of each user to check if they are within range
      */
     private void setupProfiles(){
+        //Dummy profiles are used for now until the API to return actual profiles is implemented
+        arrAPI_Profiles[0] = new RadarContent(452, "Jessica Grom", 12, 3, "Intermediate", "Sandton", 2100);
+        arrAPI_Profiles[1] = new RadarContent(89, "Bob Brown", 20, 2, "Beginner", "Houghton", 500);
+        arrAPI_Profiles[2] = new RadarContent(1552, "Tom Yeis", 18, 4, "Advanced", "Randburg", 1500);
+        arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);
+        arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);
 
-        //Dummy profiles are used until the API to return actual profiles is implemented
-        arrAPI_Profiles[0] = new RadarContent(452, "Jessica", 12, 2, "Beginner", "Sandton", 2100);
-        arrAPI_Profiles[1] = new RadarContent(89, "Bob", 20, 3, "Intermediate", "Houghton", 500);
-        arrAPI_Profiles[2] = new RadarContent(1552, "Tom", 18, 5, "Advanced", "Randburg", 1500);
-        arrAPI_Profiles[3] = new RadarContent(452, "Dr. T", 40, 1, "Master", "Pretoria", 4100);
-        arrAPI_Profiles[4] = new RadarContent(842, "Mr. K", 34, 4, "Master", "Soweto", 800);
+        //Calculate distance will be added soon
 
-        int iSearchRadius = 50;
-
+        //Each time the items in the Radar are sorted it must do it with a brand new list and not an existing one
+        unsorted_radarList = new ArrayList<>();
         for(int i = 0; i < arrAPI_Profiles.length; i++){
-            if(arrAPI_Profiles[i].getDistance() <= iSearchRadius) {
+            if(arrAPI_Profiles[i].getDistance() <= 45) {
                 unsorted_radarList.add(arrAPI_Profiles[i]);
             }
         }
     }
 
-    //Sort the profiles based on the user's choice using a prioriy queue
-    private void sortProfiles(String sortType, Boolean isAscending){
+    public static void UpdatedSort_RadarProfiles(String RadarSortType, Boolean isAscending){
 
         ProfileQueue pqObj = new ProfileQueue(unsorted_radarList);
-        pqObj.ProfileSort(sortType, isAscending);
+        pqObj.ProfileSort(RadarSortType, isAscending);
+
+        //Each time the items in the Radar are sorted,
+        //it must do it with a brand new list and not an existing one
+        sorted_radarList = new ArrayList<>();
 
         while(pqObj.iterator().hasNext()){
             sorted_radarList.add(pqObj.poll());
-            //Add the sorted array into an array list so it can be displayed
+            //Remove each Profile from the queue with the highest priority then
+            //add each profile to an arraylist so it can displayed in the RadarAdapter class
         }
 
+        setupRadar(view);
     }
 
     //Setup the variables to display the resulting sorted profiles
-    private void setupRadar(View view){
+    private static void setupRadar(View view){
 
-        RadarAdapter raObj = new RadarAdapter(HomeActivity.getInstance().getApplicationContext(), sorted_radarList);
+        raObj = new RadarAdapter(HomeActivity.getInstance().getApplicationContext(), sorted_radarList);
         ListView lv = (ListView) view.findViewById(R.id.ArrayList);
         lv.setAdapter(raObj);
+        raObj.notifyDataSetChanged();
     }
 
 }//end of class

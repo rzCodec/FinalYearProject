@@ -41,10 +41,9 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+    public static int iSEARCH_DISTANCE = 0;
     public static final String LOCATIONKEY = "location_services";
     public static final String LOCATIONRANGE = "location_services_range";
-
-    public static int iSEARCH_RADIUS = 0;
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -52,8 +51,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
 
+            String stringValue = value.toString();
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.
@@ -255,9 +254,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_location_services);
             setHasOptionsMenu(true);
             bindPreferenceSummaryToValue(findPreference(LOCATIONRANGE));
-            //Get the search radius so it can be used in the Radar
-            ListPreference lp = (ListPreference) findPreference("location_services_range");
-            iSEARCH_RADIUS = Integer.parseInt(lp.getValue());
         }
 
         @Override

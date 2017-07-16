@@ -95,10 +95,10 @@ public class ProfileQueue implements Iterable<RadarContent> {
             }
 
             if (i <= j) {
-                //Swap elements
-                int temp = arrProfiles[i].getDistance();
-                arrProfiles[i].setDistance(arrProfiles[j].getDistance());
-                arrProfiles[j].setDistance(temp);
+                //Swap the profiles based on distance
+                RadarContent temp = arrProfiles[i];
+                arrProfiles[i] = arrProfiles[j];
+                arrProfiles[j] = temp;
                 i++;
                 j--;
             }
@@ -153,10 +153,10 @@ public class ProfileQueue implements Iterable<RadarContent> {
             }
 
             if (i <= j) {
-                //Swap elements
-                int temp = arrProfiles[i].getRating();
-                arrProfiles[i].setRating(arrProfiles[j].getRating());
-                arrProfiles[j].setRating(temp);
+                //Swap the profiles based on rating
+                RadarContent temp = arrProfiles[i];
+                arrProfiles[i] = arrProfiles[j];
+                arrProfiles[j] = temp;
                 i++;
                 j--;
             }
