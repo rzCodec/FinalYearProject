@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -37,6 +39,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -99,6 +102,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if(tab.getPosition() == 0)
                 {
                     newChatFab.setVisibility(View.VISIBLE);
+                    load.setVisibility(View.GONE);
                 }
                 else
                 {
@@ -107,6 +111,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if(tab.getPosition() == 1)
                 {
                     newPostFab.setVisibility(View.VISIBLE);
+                    onResume();
                 }
                 else
                 {
@@ -351,4 +356,5 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static DBHelper getDbHelper() {
         return dbHelper;
     }
+
 }
