@@ -1,7 +1,5 @@
 package com.example.devandrin.myapplication;
 
-import android.content.SharedPreferences;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

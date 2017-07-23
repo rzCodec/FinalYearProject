@@ -282,6 +282,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Intent i = new Intent(this, ProfileActivity.class);
             i.putExtra("id", userID);
             i.putExtra("name", alias);
+            i.putExtra("IsOwner",true);
             startActivity(i);
         } else if(id==R.id.nav_event){
             startActivity(new Intent(this,EventActivity.class));

@@ -16,11 +16,11 @@ public class RadarUtil extends Content {
     public RadarUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);
     }
-
+    private static ArrayList<RadarContent> radarList;
     @Override
     public View displayContent() {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
-        ArrayList<RadarContent> radarList = new ArrayList<>();
+        View view = super.displayContent();
+         radarList = new ArrayList<>();
 
         radarList.add(new RadarContent("Bob", "8km", "Sandton", 500));
         radarList.add(new RadarContent("Tom", "5km", "Randburg", 1500));
