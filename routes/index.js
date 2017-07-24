@@ -344,7 +344,7 @@ module.exports = function (app, passport) {
                 IDsToFetch.forEach(function (ID) {
                     where = where + " OR status_list.user_id=" + ID + " ";
                 });
-                connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.avatar_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' + req.params.userID + ' ' + where, function (error, results) {
+                connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' + req.params.userID + ' ' + where, function (error, results) {
                     if (error) {
                         console.log(error)
                     } else {
