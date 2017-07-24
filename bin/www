@@ -3,8 +3,8 @@ var debug = require('debug')('informatics:server');
 var http = require('http');
 var port = normalizePort(process.env.PORT || '8080');
 
-var ip = process.env.PORT || '127.0.0.1';
-//var ip = process.env.PORT || '37.139.24.181';
+//var ip = process.env.PORT || '127.0.0.1';
+var ip = process.env.PORT || '37.139.24.181';
 app.set('port', port);
 
 var server = http.createServer(app);
