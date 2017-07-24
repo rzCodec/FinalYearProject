@@ -8,23 +8,23 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 /**
- * Created by Devandrin on 2017/07/11.
+ * Created by Devandrin on 2017/07/23.
  */
 
-public class EventUtil extends Content{
-    public EventUtil(LayoutInflater inflater, ViewGroup container) {
+public class PersonalEventUtil extends Content {
+    public PersonalEventUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);
     }
+
     private static ArrayList<EventItem> dataList;
     private EventAdapter ea;
     @Override
     public View displayContent() {
-        //if(dataList == null)
-        dataList = new ArrayList<>();
+        if(dataList == null)
+            dataList = new ArrayList<>();
+        dataList.add(new EventItem("Your events ", "Your own events will be displayed here",1120341241234L));
         dataList.add(new EventItem("Hello World","Hello World",System.currentTimeMillis()));
         dataList.add(new EventItem("Sentence", "The quick brown fox jumped over the lazy dog",109231245125L));
-        dataList.add(new EventItem("Name", "Info 12345678901234567890123456789012345678901234567890" +
-                "12345678901234567890123456789012345678901234567890123456789012345678901234567890",1120341241234L));
         View v = super.displayContent();
         ListView lv = (ListView)v.findViewById(R.id.ArrayList);
         ea = new EventAdapter(EventActivity.getInstance().getApplicationContext(),dataList);
@@ -32,8 +32,7 @@ public class EventUtil extends Content{
         return v;
     }
 
-    public void MakeRequest(String ID)
-    {
-        //DOes request and update data
+    public static void setDataList(ArrayList<EventItem> dataList) {
+        PersonalEventUtil.dataList = dataList;
     }
 }

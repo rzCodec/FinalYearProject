@@ -1,5 +1,6 @@
 package com.example.devandrin.myapplication;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 
 public class MessengerUtil extends Content {
     private static ArrayList<Chat> clist = null;
+
     private static MessengerAdapter adapter = null;
     public MessengerUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);
@@ -27,15 +29,18 @@ public class MessengerUtil extends Content {
 
     @Override
     public View displayContent() {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        View view = super.displayContent();
         clist = new ArrayList<>();
-
+        DBHelper dbh = HomeActivity.getDbHelper();
+        clist = dbh.getAllChats();
         adapter = new MessengerAdapter(HomeActivity.getInstance().getApplicationContext(), clist);
         ListView l = (ListView) view.findViewById(R.id.ArrayList);
-
         l.setAdapter(adapter);
+        srl = (SwipeRefreshLayout) view.findViewById(R.id.refreshView);
+        srl.setOnRefreshListener(srfListener());
         return view;
     }
+
     public static void makeRequest(String id)
     {
         String url = "https://eternalvibes.me/getchats/"+id;
@@ -55,7 +60,8 @@ public class MessengerUtil extends Content {
                         dbh.insertChat(c);
                     }
                     adapter.clear();
-                    adapter.addAll(dbh.getAllChats());
+                    clist = dbh.getAllChats();
+                    adapter.addAll(clist);
                     adapter.notifyDataSetChanged();
                 }
             }

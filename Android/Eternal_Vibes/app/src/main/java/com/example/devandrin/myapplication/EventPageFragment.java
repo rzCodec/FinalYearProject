@@ -40,7 +40,7 @@ public class EventPageFragment extends Fragment
                 v = RenderFactory.getClass("Events",inflater,container).displayContent();
                 break;
             case 2:
-                v = RenderFactory.getClass("Events",inflater,container).displayContent();
+                v = RenderFactory.getClass("PersonalEvents",inflater,container).displayContent();
                 break;
             case 3:
                 v = RenderFactory.getClass("Events",inflater,container).displayContent();

@@ -7,15 +7,29 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:text=""
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_dpicture"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintLeft_toRightOf="@+id/iv_dpicture"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_dpicture"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <ImageView
+        android:id="@+id/iv_dpicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintHorizontal_bias="0.15" />
+        app:srcCompat="@mipmap/jazz_icon" />
 </android.support.constraint.ConstraintLayout>
