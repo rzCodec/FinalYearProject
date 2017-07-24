@@ -4,8 +4,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
     <title>Eternal Vibes</title>
-
-    <!-- CSS  -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="stylesheets/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <link href="stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -30,28 +28,28 @@
             <li class="" style="transform: translateX(0px); opacity: 0;">
                 <div class="card white darken-1">
                     <div class="card-content">
-                        <span class="card-title">Welcome <%=username%> <img class="circle"
-                                                                            src="<%=avatar_url%>"
-                                                                            width="64" height="64"></span>
+                        <span class="card-title">Welcome <%= username %> <img class="circle"
+                                                                              src="<%= avatar_url %>"
+                                                                              width="64" height="64"></span>
 
                     </div>
                 </div>
             </li>
-            <%status_info.forEach(function (output,index) {%>
+            <% status_info.forEach(function (output, index) { %>
             <li class="" style="transform: translateX(0px); opacity: 0;">
                 <div class="card white darken-4 black-text">
                     <div class="card-content activator">
                         <div class="valign-wrapper">
                             <div class="col s3"><img class="circle"
-                                                     src="<%=output.avatar_url%>"
+                                                     src="<%= output.avatar_url %>"
                                                      width="64" height="64">
                                 <div class="chip">
-                                    <%=output.username%>
+                                    <%= output.username %>
                                 </div>
                             </div>
 
-                            <div class="col s6"> <%=output.status%></div>
-                            <div class="col s2"> <%=output.timestamp%></div>
+                            <div class="col s6"> <%= output.status %></div>
+                            <div class="col s2"> <%= output.timestamp %></div>
                             <div class="col s1"><i class="material-icons">done</i><i class="material-icons activator">info_outline</i>
                             </div>
                         </div>
@@ -61,12 +59,12 @@
                     <div class="card-reveal">
                         <span class="card-title grey-text text-darken-4">Extra Info<i
                                     class="material-icons right">close</i></span>
-                        <p><%=output.extra_info%></p>
+                        <p><%= output.extra_info %></p>
                     </div>
 
                 </div>
             </li>
-            <%});%>
+            <% }); %>
 
         </ul>
 
@@ -90,17 +88,17 @@
 
                     </div>
                     <ul class="collection">
-                        <%top_info.forEach(function (output) {%>
+                        <% top_info.forEach(function (output) { %>
                         <li class="collection-item avatar">
 
-                            <img src="<%=output.avatar_url%>" alt=""
+                            <img src="<%= output.avatar_url %>" alt=""
                                  class="circle">
-                            <span class="title"><%=output.alias%></span>
+                            <span class="title"><%= output.alias %></span>
                             <p>Swimming Pools
                             </p>
-                            <a href="#" class="secondary-content"><%=output.liked%></a>
+                            <a href="#" class="secondary-content"><%= output.liked %></a>
                         </li>
-                        <% });%>
+                        <% }); %>
 
                     </ul>
                 </div>
@@ -141,8 +139,6 @@
     </div>
 </footer>
 
-
-<!--  Scripts-->
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
 
@@ -153,15 +149,15 @@
     Materialize.showStaggeredList('#staggered-test');
     Materialize.showStaggeredList('#staggered-test2');
     var ctx = document.getElementById("myChart");
-    var label=[];
-    var count=[];
-    var colours=[];
+    var label = [];
+    var count = [];
+    var colours = [];
 
-    <%genre_info.forEach(function (output) {%>
-    label.push("<%=output.name%>");
-    count.push(<%=output.count%>);
+    <% genre_info.forEach(function (output) { %>
+    label.push("<%= output.name %>");
+    count.push(<%= output.count %>);
     colours.push(getRandomColor());
-    <% });%>
+    <% }); %>
 
     var myChart = new Chart(ctx, {
         type: 'doughnut',
@@ -170,14 +166,15 @@
             datasets: [
                 {
                     data: count,
-                    backgroundColor:colours
+                    backgroundColor: colours
                 }]
         }
     });
+
     function getRandomColor() {
         var letters = '0123456789ABCDEF'.split('');
         var color = '#';
-        for (var i = 0; i < 6; i++ ) {
+        for (var i = 0; i < 6; i++) {
             color += letters[Math.floor(Math.random() * 16)];
         }
         return color;
