@@ -53,7 +53,7 @@ module.exports = function (app, passport) {
         parallel([
                 function (callback) {
                     request({
-                        url: "https://www.eternalvibes.me/" + req.user.id,
+                        url: "https://www.eternalvibes.me/getStatuses/" + req.user.id,
                         json: true
                     }, function (error, response, body) {
                         if(error){
