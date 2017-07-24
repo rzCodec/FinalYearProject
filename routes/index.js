@@ -53,27 +53,36 @@ module.exports = function (app, passport) {
         parallel([
                 function (callback) {
                     request({
-                        url: "http://localhost:8080/getStatuses/" + req.user.id,
+                        url: "https://www.eternalvibes.me/" + req.user.id,
                         json: true
                     }, function (error, response, body) {
+                        if(error){
+                            console.log(error);
+                        }
                         UserInfo.Status=body;
                         callback(null);
                     });
                 },
                 function (callback) {
                     request({
-                        url: "http://localhost:8080/getTopGenres",
+                        url: "https://www.eternalvibes.me/getTopGenres",
                         json: true
                     }, function (error, response, body) {
+                        if(error){
+                            console.log(error);
+                        }
                         UserInfo.TopGenres=body;
                         callback(null);
                     });
                 },
                 function (callback) {
                     request({
-                        url: "http://localhost:8080/getTopArtists",
+                        url: "https://www.eternalvibes.me/getTopArtists",
                         json: true
                     }, function (error, response, body) {
+                        if(error){
+                            console.log(error);
+                        }
                         UserInfo.TopArtists=body;
                         callback(null);
                     });
