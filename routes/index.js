@@ -37,12 +37,12 @@ module.exports = function (app, passport) {
         });
     });
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/profile',
+        successRedirect: '/dashBoard',
         failureRedirect: '/signup',
         failureFlash: true
     }));
     app.get('/profile', isLoggedIn, function (req, res) {
-        res.render('Pages/UserAuth/profile.ejs', {
+        res.render('Pages/UserDashboard/profile.ejs', {
             user: req.user
         });
     });
