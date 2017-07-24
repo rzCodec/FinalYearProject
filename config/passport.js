@@ -30,13 +30,20 @@ module.exports = function(passport) {
                         return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
                     } else {
                         var newUserMysql = {
-                            username: username,
-                            password: bcrypt.hashSync(password, null, null)
+                            username: req.param('realUserName'),
+                            password: bcrypt.hashSync(password, null, null),
+                            email: username,
+                            firstname: req.param('firstname'),
+                            surname: req.param('surname'),
+                            genre_id: req.param('genre'),
+                            distance_id: req.param('distance'),
+                            description: req.param('description')
                         };
 
-                        var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
+                        var insertQuery = "INSERT INTO users ( username, password, email, firstname, surname, genre_id, distance_id, description,join_timestamp,last_login_timestamp ) values (?,?,?,?,?,?,?,?,ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000),ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))";
 
-                        connection.query(insertQuery,[newUserMysql.username, newUserMysql.password],function(err, rows) {
+                        connection.query(insertQuery,[newUserMysql.username, newUserMysql.password, newUserMysql.email, newUserMysql.firstname,newUserMysql.surname,newUserMysql.genre_id,newUserMysql.distance_id,newUserMysql.description],function(err, rows) {
+                            console.log(err)
                             newUserMysql.id = rows.insertId;
                             return done(null, newUserMysql);
                         });
@@ -54,7 +61,7 @@ module.exports = function(passport) {
                 passReqToCallback : true
             },
             function(req, username, password, done) {
-                connection.query("SELECT * FROM users WHERE username = ?",[username], function(err, rows){
+                connection.query("SELECT * FROM informatics.users WHERE email= ? ",[username], function(err, rows){
                     if (err)
                         return done(err);
                     if (!rows.length) {

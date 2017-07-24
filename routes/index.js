@@ -2,6 +2,7 @@ var mysql = require('mysql');
 var parallel = require('async/parallel');
 var dbconfig = require('../config/database');
 var connection = mysql.createConnection(dbconfig.connection);
+var request = require("request");
 connection.query('USE informatics');
 module.exports = function (app, passport) {
     app.get('/', function (req, res) {
@@ -11,7 +12,7 @@ module.exports = function (app, passport) {
         res.render('Pages/UserAuth/login.ejs', {message: req.flash('loginMessage')});
     });
     app.post('/login', passport.authenticate('local-login', {
-            successRedirect: '/profile',
+            successRedirect: '/dashBoard',
             failureRedirect: '/login',
             failureFlash: true
         }),
@@ -26,7 +27,7 @@ module.exports = function (app, passport) {
     app.get('/signup', function (req, res) {
         connection.query('USE informatics');
         connection.query("SELECT * FROM `genres` ", function (err, genres) {
-            connection.query("SELECT * FROM `distances` ", function (err, distances) {
+            connection.query("SELECT * FROM `distances` ORDER By distance ASC", function (err, distances) {
                 res.render('Pages/UserAuth/signup.ejs', {
                     genres: genres,
                     distances: distances,
@@ -45,7 +46,52 @@ module.exports = function (app, passport) {
             user: req.user
         });
     });
-    app.get('/logout', function (req, res) {
+    app.get('/dashBoard', isLoggedIn, function (req, res) {
+        var UserInfo={
+            info:req.user
+        };
+        parallel([
+                function (callback) {
+                    request({
+                        url: "http://localhost:8080/getStatuses/" + req.user.id,
+                        json: true
+                    }, function (error, response, body) {
+                        UserInfo.Status=body;
+                        callback(null);
+                    });
+                },
+                function (callback) {
+                    request({
+                        url: "http://localhost:8080/getTopGenres",
+                        json: true
+                    }, function (error, response, body) {
+                        UserInfo.TopGenres=body;
+                        callback(null);
+                    });
+                },
+                function (callback) {
+                    request({
+                        url: "http://localhost:8080/getTopArtists",
+                        json: true
+                    }, function (error, response, body) {
+                        UserInfo.TopArtists=body;
+                        callback(null);
+                    });
+                }
+            ],
+            function (err, results) {
+                res.render('Pages/UserDashboard/DashBoard.ejs', {
+                    UserInfo: UserInfo
+                });
+            });
+
+    });
+    app.get('/AdminProfile', isLoggedIn, function (req, res) {
+        res.render('Pages/UserAuth/profile.ejs', {
+            user: req.user
+        });
+    });
+    app.get('/logout', isLoggedIn, function (req, res) {
         req.logout();
         res.redirect('/');
     });
@@ -54,35 +100,89 @@ module.exports = function (app, passport) {
             res.send(html);
         });
     });
-    app.get('/broadcast', function (req, res) {
-        res.render('pages/AdminDashboard/Broadcast.ejs', function (err, html) {
+    app.get('/broadcast', isLoggedIn, function (req, res) {
+        res.render('Pages/AdminDashboard/Broadcast.ejs', function (err, html) {
             res.send(html);
         });
     });
-    app.get('/flaggedposts', function (req, res) {
-        res.render('pages/AdminDashboard/FlaggedPosts.ejs', function (err, html) {
+    app.get('/flaggedposts', isLoggedIn, function (req, res) {
+        res.render('Pages/AdminDashboard/FlaggedPosts.ejs', function (err, html) {
             res.send(html);
         });
     });
-    app.get('/flaggedusers', function (req, res) {
-        res.render('pages/AdminDashboard/FlaggedUsers.ejs', function (err, html) {
+    app.get('/flaggedusers', isLoggedIn, function (req, res) {
+        res.render('Pages/AdminDashboard/FlaggedUsers.ejs', function (err, html) {
             res.send(html);
         });
     });
-    app.get('/settings', function (req, res) {
-        res.render('pages/UserDashboard/Settings.ejs', function (err, html) {
+    app.get('/settings', isLoggedIn, function (req, res) {
+        res.render('Pages/UserDashboard/Settings.ejs', function (err, html) {
             res.send(html);
         });
     });
-    app.get('/addStudio', function (req, res) {
-        res.render('pages/AdminDashboard/AddStudio.ejs', function (err, html) {
+    app.get('/addStudio', isLoggedIn, function (req, res) {
+        res.render('Pages/AdminDashboard/AddStudio.ejs', function (err, html) {
             res.send(html);
         });
     });
 
 
+    app.get('/MobileLogin', function (req, res) {
+        if (req.param("status") === "false") {
+            res.status(500).send('BadCredentials!')
+        } else if (req.param("status") === "true") {
+            res.status(200).send('Worked')
+        } else {
+            res.status(400).send('Something broke!')
+        }
+    });
+    app.post('/MobileLogin', passport.authenticate('local-login', {
+            successRedirect: '/MobileLogin?status=true',
+            failureRedirect: '/MobileLogin?status=false',
+            failureFlash: true
+        }),
+        function (req, res) {
+            if (req.body.remember) {
+                req.session.cookie.maxAge = 1000 * 60 * 3;
+            } else {
+                req.session.cookie.expires = false;
+            }
+            res.redirect('/');
+        });
+    app.get('/MobileSignup', function (req, res) {
+        if (req.param("status") === "false") {
+            res.status(500).send('BadCredentials!')
+        } else if (req.param("status") === "true") {
+            res.status(200).send('Worked')
+        } else {
+            res.status(400).send('Something broke!')
+        }
+    });
+    app.post('/MobileSignup', passport.authenticate('local-signup', {
+        successRedirect: '/MobileSignup?status=fail',
+        failureRedirect: '/MobileSignup?status=fail',
+        failureFlash: true
+    }));
 
 
+    app.get('/getTopGenres', function (req, res) {
+        connection.query('SELECT genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC', function (error, results) {
+            if (error) {
+                console.log(error)
+            } else {
+                res.send(results);
+            }
+        });
+    });//
+    app.get('/getTopArtists', function (req, res) {
+        connection.query('SELECT users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id GROUP BY status_list.user_id ORDER BY count DESC', function (error, results) {
+            if (error) {
+                console.log(error)
+            } else {
+                res.send(results);
+            }
+        });
+    });//
     app.get('/getUserInfo/:userID', function (req, res) {
         connection.query('SELECT * FROM `users` WHERE id=' + req.params.userID, function (error, results) {
             if (error) {
@@ -92,6 +192,16 @@ module.exports = function (app, passport) {
             }
         });
     });//
+    app.post('/updateUserInfo/:userID', function (req, res) {
+        connection.query('UPDATE users SET email=?,song_link=?,distance_id=?,last_login_timestamp=?,profilepic_url=?,description=?  WHERE id=?',
+            [req.body.email, req.body.song_link, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.params.userID], function (error, results) {
+                if (error) {
+                    console.log(error)
+                } else {
+                    res.send(results);
+                }
+            });
+    });//SongUrl in body
     app.get('/setUserLocation/:userID/:latitude/:longitude', function (req, res) {
         connection.query('UPDATE users SET longitude=?, latitude=? WHERE id=?', [req.params.longitude, req.params.latitude, req.params.userID], function (error, results) {
             if (error) {
@@ -119,6 +229,15 @@ module.exports = function (app, passport) {
             }
         });
     });//
+    app.get('/getDistances', function (req, res) {
+        connection.query('SELECT * FROM `distances`', function (error, results) {
+            if (error) {
+                console.log(error)
+            } else {
+                res.send(results);
+            }
+        });
+    });//
     app.get('/setUserGenre/:userID/:genreID', function (req, res) {
         connection.query('UPDATE users SET genre_id=?  WHERE id=?', [req.params.genreID, req.params.userID], function (error, results) {
             if (error) {
@@ -128,15 +247,6 @@ module.exports = function (app, passport) {
             }
         });
     });//
-    app.post('/setSong/:userID', function (req, res) {
-        connection.query('UPDATE users SET song_link=?  WHERE id=?', [req.body.songLink, req.params.userID], function (error, results) {
-            if (error) {
-                console.log(error)
-            } else {
-                res.send(results);
-            }
-        });
-    });//SongUrl in body
     app.get('/setSearchDistance/:userID/:distance', function (req, res) {
         connection.query('UPDATE users SET search_distance=?  WHERE id=?', [req.params.distance, req.params.userID], function (error, results) {
             if (error) {
@@ -221,12 +331,11 @@ module.exports = function (app, passport) {
                 }
             ],
             function (err, results) {
-                console.log(IDsToFetch);
                 var where = "";
                 IDsToFetch.forEach(function (ID) {
                     where = where + " OR status_list.user_id=" + ID + " ";
                 });
-                connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.avatar_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id='+req.params.userID+' '+where, function (error, results) {
+                connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.avatar_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' + req.params.userID + ' ' + where, function (error, results) {
                     if (error) {
                         console.log(error)
                     } else {
@@ -446,11 +555,8 @@ function filterDistance(array, distance, longitude, latitude) {
 
         if (km <= distance) {
             EndUsers.push(user);
-        } else {
-            console.log(km)
         }
     });
-    console.log(EndUsers)
     return EndUsers;
 }
 

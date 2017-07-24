@@ -5,5 +5,6 @@ module.exports = {
         'password': 'need4speed'
     },
     'database': 'informatics',
-    'users_table': 'users'
+    'users_table': 'users',
+    'admin_table': 'users'
 };

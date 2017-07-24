@@ -89,13 +89,13 @@
                         <div class="errorTxt22"></div>
                     </div>
                     <div class="input-field col s12">
-                        <label for="username">Username</label>
-                        <input id="username" name="username" type="text" data-error=".errorTxt23">
+                        <label for="realUserName">Username</label>
+                        <input id="realUserName" name="realUserName" type="text" data-error=".errorTxt23">
                         <div class="errorTxt23"></div>
                     </div>
                     <div class="input-field col s12">
-                        <label for="email">Email</label>
-                        <input id="email" name="email" type="email" data-error=".errorTxt24">
+                        <label for="username">Email</label>
+                        <input id="username" name="username" type="email" data-error=".errorTxt24">
                         <div class="errorTxt24"></div>
                     </div>
                     <div class="input-field col s12">
@@ -124,7 +124,7 @@
                     </div>
                     <div class="col s12">
                         <label for="distance">Distance (KM)</label>
-                        <select class="error browser-default" id="distance" name="distance" data-error=".errorTxt6">
+                        <select class="error browser-default" id="distance" name="distance" data-error=".errorTxt68">
                             <option value="" disabled="" selected="">Choose your Search Distance (KM)</option>
                             <% distances.forEach(function(t){
                             %>
@@ -133,13 +133,13 @@
                             }); %>
                         </select>
                         <div class="input-field">
-                            <div class="errorTxt6"></div>
+                            <div class="errorTxt68"></div>
                         </div>
                     </div>
                     <div class="input-field col s12">
-                        <textarea id="status" name="status" class="materialize-textarea validate"
+                        <textarea id="description" name="description" class="materialize-textarea validate"
                                   data-error=".errorTxt7"></textarea>
-                        <label for="status">Status</label>
+                        <label for="description">Description</label>
                         <div class="errorTxt7"></div>
                     </div>
                     <div class="col s12">
@@ -149,7 +149,7 @@
                             <label for="agreee">Please agree to our policy</label>
                         </p>
                         <div class="input-field">
-                            <div class="errorTxt6"></div>
+                            <div class="errorTxt9"></div>
                         </div>
                     </div>
                     <div class="input-field col s12">
@@ -181,11 +181,11 @@
                     required: true,
                     minlength: 2
                 },
-                username: {
+                realUserName: {
                     required: true,
                     minlength: 5
                 },
-                email: {
+                username: {
                     required: true,
                     email: true
                 },

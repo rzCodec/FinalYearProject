@@ -12,11 +12,11 @@
 <body>
 <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-        <a href="/" class="brand-logo brown-text"><i class="material-icons">cloud</i>ETERNAL VIBES</a>
+        <a href="/logout" class="brand-logo brown-text"><i class="material-icons">cloud</i>ETERNAL VIBES</a>
         <ul class="right hide-on-med-and-down">
             <li><a href="/dashboard"><i class="material-icons">refresh</i></a></li>
             <li><a href="/settings"> <i class="material-icons">settings</i></a></li>
-            <li><a href="/"> <i class="material-icons">power_settings_new</i></a></li>
+            <li><a href="/logout"> <i class="material-icons">power_settings_new</i></a></li>
         </ul>
     </div>
 
@@ -28,20 +28,22 @@
             <li class="" style="transform: translateX(0px); opacity: 0;">
                 <div class="card white darken-1">
                     <div class="card-content">
-                        <span class="card-title">Welcome <%= username %> <img class="circle"
-                                                                              src="<%= avatar_url %>"
-                                                                              width="64" height="64"></span>
+                        <span class="card-title">Welcome <%= UserInfo.info.username %> <img class="circle"
+                                                                                            src="<%= UserInfo.info.profilepic_url %>"
+                                                                                            width="64"
+                                                                                            height="64"></span>
 
                     </div>
                 </div>
             </li>
-            <% status_info.forEach(function (output, index) { %>
+            <%
+            UserInfo.Status.forEach(function (output, index) { %>
             <li class="" style="transform: translateX(0px); opacity: 0;">
                 <div class="card white darken-4 black-text">
                     <div class="card-content activator">
                         <div class="valign-wrapper">
                             <div class="col s3"><img class="circle"
-                                                     src="<%= output.avatar_url %>"
+                                                     src="<%= output.profilepic_url %>"
                                                      width="64" height="64">
                                 <div class="chip">
                                     <%= output.username %>
@@ -88,12 +90,12 @@
 
                     </div>
                     <ul class="collection">
-                        <% top_info.forEach(function (output) { %>
+                        <% UserInfo.TopArtists.forEach(function (output) { %>
                         <li class="collection-item avatar">
 
-                            <img src="<%= output.avatar_url %>" alt=""
+                            <img src="<%= output.profilepic_url %>" alt=""
                                  class="circle">
-                            <span class="title"><%= output.alias %></span>
+                            <span class="title"><%= output.username %></span>
                             <p>Swimming Pools
                             </p>
                             <a href="#" class="secondary-content"><%= output.liked %></a>
@@ -153,7 +155,7 @@
     var count = [];
     var colours = [];
 
-    <% genre_info.forEach(function (output) { %>
+    <% UserInfo.TopGenres.forEach(function (output) { %>
     label.push("<%= output.name %>");
     count.push(<%= output.count %>);
     colours.push(getRandomColor());
