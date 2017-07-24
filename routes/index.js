@@ -95,11 +95,6 @@ module.exports = function (app, passport) {
             });
 
     });
-    app.get('/AdminProfile', isLoggedIn, function (req, res) {
-        res.render('Pages/UserAuth/profile.ejs', {
-            user: req.user
-        });
-    });
     app.get('/logout', isLoggedIn, function (req, res) {
         req.logout();
         res.redirect('/');
@@ -202,8 +197,8 @@ module.exports = function (app, passport) {
         });
     });//
     app.post('/updateUserInfo/:userID', function (req, res) {
-        connection.query('UPDATE users SET email=?,song_link=?,distance_id=?,last_login_timestamp=?,profilepic_url=?,description=?  WHERE id=?',
-            [req.body.email, req.body.song_link, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.params.userID], function (error, results) {
+        connection.query('UPDATE users SET email=?,song_link=?,genre_id=?,distance_id=?,last_login_timestamp=?,profilepic_url=?,description=?  WHERE id=?',
+            [req.body.email, req.body.song_link,req.body.genre_id, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.params.userID], function (error, results) {
                 if (error) {
                     console.log(error)
                 } else {
@@ -247,24 +242,6 @@ module.exports = function (app, passport) {
             }
         });
     });//
-    app.get('/setUserGenre/:userID/:genreID', function (req, res) {
-        connection.query('UPDATE users SET genre_id=?  WHERE id=?', [req.params.genreID, req.params.userID], function (error, results) {
-            if (error) {
-                console.log(error)
-            } else {
-                res.send(results);
-            }
-        });
-    });//
-    app.get('/setSearchDistance/:userID/:distance', function (req, res) {
-        connection.query('UPDATE users SET search_distance=?  WHERE id=?', [req.params.distance, req.params.userID], function (error, results) {
-            if (error) {
-                console.log(error)
-            } else {
-                res.send(results);
-            }
-        });
-    });//reports
     app.get('/flagUser/:userToFlagID', function (req, res) {
         connection.query('UPDATE users SET reports=(reports+1)  WHERE id=?', [req.params.userID], function (error, results) {
             if (error) {
@@ -357,15 +334,6 @@ module.exports = function (app, passport) {
     });
     app.get('/getFollowing/:userID', function (req, res) {
         connection.query('SELECT followers.user_id, users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ?', [req.params.userID], function (error, results) {
-            if (error) {
-                console.log(error)
-            } else {
-                res.send(results);
-            }
-        });
-    });
-    app.get('/getLocation/:userID', function (req, res) {
-        connection.query('SELECT followers.liked_id,followers.user_id,followers.timestamp,users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ?', [req.params.userID], function (error, results) {
             if (error) {
                 console.log(error)
             } else {
