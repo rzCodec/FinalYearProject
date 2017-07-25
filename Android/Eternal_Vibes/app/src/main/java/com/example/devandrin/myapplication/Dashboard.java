@@ -68,6 +68,8 @@ public class Dashboard extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                hardcodeLogin(); //Testing purposes
                 if(Password.length() > 0)
                 {
                     if(Alias.length()>0)
@@ -95,9 +97,24 @@ public class Dashboard extends AppCompatActivity {
                 {
                     Utilities.MakeToast(getApplicationContext(),"Credentials empty");
                 }
+
             }
         };
+    }//end of login function
+
+    //Temporary login method for unexpected errors
+    private void hardcodeLogin(){
+        String hardcodeAlias = Alias.getText().toString();
+        String hardcodeEmail = Email.getText().toString();
+        String hardcodePassword = Password.getText().toString();
+
+        if((hardcodeAlias.equals("admin")) || (hardcodeEmail.equals("admin"))){
+            if(hardcodePassword.equals("admin")){
+                nextActivity();
+            }
+        }
     }
+
     private void requestLogin(String username, String password)
     {
         String url = "https://eternalvibes.me/login/"+username+"/"+password;
@@ -122,9 +139,9 @@ public class Dashboard extends AppCompatActivity {
 
         RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jar);
     }
+
     void nextActivity(JSONObject obj)  throws JSONException
     {
-
         SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
         e.putString("userID",obj.getInt("id")+"" );
@@ -135,6 +152,11 @@ public class Dashboard extends AppCompatActivity {
         finish();
     }
     private void nextActivity() {
+        SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
+        SharedPreferences.Editor e = sp.edit();
+        e.putString("userID", 123 +"" );
+        e.putString("alias", "fake alias");
+        e.apply();
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();
