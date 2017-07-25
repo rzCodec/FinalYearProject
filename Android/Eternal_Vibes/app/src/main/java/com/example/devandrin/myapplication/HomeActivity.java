@@ -123,7 +123,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 {
                     newChatFab.setVisibility(View.VISIBLE);
                     btn_sortRadar.setVisibility(View.GONE);
-                    load.setVisibility(View.GONE);
+                    //load.setVisibility(View.GONE);
 
                 }
                 else
@@ -134,7 +134,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 {
                     newPostFab.setVisibility(View.VISIBLE);
                     btn_sortRadar.setVisibility(View.GONE);
-                    onResume();
+                    //onResume();
 
                 }
                 else

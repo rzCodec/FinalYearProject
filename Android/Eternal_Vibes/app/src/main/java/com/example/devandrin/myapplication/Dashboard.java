@@ -128,12 +128,14 @@ public class Dashboard extends AppCompatActivity {
                 catch(JSONException e)
                 {
                     warning.setVisibility(View.VISIBLE);
+                    nextActivity();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 warning.setVisibility(View.VISIBLE);
+                nextActivity();
             }
         });
 
