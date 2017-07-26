@@ -1,6 +1,7 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Context;
+import android.preference.ListPreference;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +32,20 @@ public class RadarAdapter extends ArrayAdapter<RadarContent> {
         txtViewUsername.setText(RC.getsUsername());
 
         TextView txtViewDistance = (TextView) convertView.findViewById(R.id.txtDistance);
-        txtViewDistance.setText("Distance :" + RC.getsDistance());
+        txtViewDistance.setText(RC.getDistance() + " km away");
 
         TextView txtViewLocation = (TextView) convertView.findViewById(R.id.txtLocation);
-        txtViewLocation.setText("Location :" + RC.getsLocation());
+        txtViewLocation.setText("in : " + RC.getsLocation());
 
         TextView txtTimestamp = (TextView) convertView.findViewById(R.id.txtTimestamp);
-        txtTimestamp.setText("Time :" + RC.getTimeStamp() + "");
+        txtTimestamp.setText("Time : " + RC.getTimeStamp() + "");
+
+        TextView txtRating = (TextView) convertView.findViewById(R.id.txtRating);
+        txtRating.setText("Rating : " + RC.getRating() + "/5");
+
+        TextView txtRanking = (TextView) convertView.findViewById(R.id.txtRanking);
+        txtRanking.setText("Rank : " + RC.getRanking());
+
 
         return convertView;
     }
