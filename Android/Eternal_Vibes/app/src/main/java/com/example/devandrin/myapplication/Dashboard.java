@@ -23,6 +23,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
@@ -32,10 +34,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Dashboard extends AppCompatActivity {
     private static Dashboard instance;
     private TextView warning,Register;
-    private EditText Email,Alias,Password;
+    private EditText Email,Password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +61,6 @@ public class Dashboard extends AppCompatActivity {
                 }
             });
             Email = (EditText) findViewById(R.id.EmailAddress);
-            Alias = (EditText) findViewById(R.id.Alias);
             Password = (EditText) findViewById(R.id.Password);
             Button btnLogin = (Button)findViewById(R.id.btnLogin);
             btnLogin.setOnClickListener(login());
@@ -72,11 +76,7 @@ public class Dashboard extends AppCompatActivity {
                 hardcodeLogin(); //Testing purposes
                 if(Password.length() > 0)
                 {
-                    if(Alias.length()>0)
-                    {
-                        requestLogin(Alias.getText().toString(),Password.getText().toString());
-                    }
-                    else if(Email.length()>0)
+                    if(Email.length()>0)
                     {
                         if(Patterns.EMAIL_ADDRESS.matcher(Email.getText()).matches())
                         {
@@ -114,11 +114,35 @@ public class Dashboard extends AppCompatActivity {
             }
         }
     }
-
-    private void requestLogin(String username, String password)
+    private void requestLogin(final String username, final String password)
     {
-        String url = "https://eternalvibes.me/login/"+username+"/"+password;
-        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        String url = "https://www.eternalvibes.me/MobileLogin";
+        Map<String,String> data = new HashMap<>();
+        data.put("username",username);
+        data.put("password",password);
+        JSONObject jo = new JSONObject();
+        try{
+            jo.put("username",username);
+            jo.put("password",password);
+        }catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, jo, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                warning.setText("Password correct");
+                warning.setVisibility(View.VISIBLE);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                warning.setText("Credentials incorrect!, "+username+" , "+password);
+                warning.setVisibility(View.VISIBLE);
+            }
+        });
+        /*JsonArrayRequest jar = new JsonArrayRequest(Request.Method.POST, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try
@@ -134,12 +158,14 @@ public class Dashboard extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                warning.setText(error.getMessage());
                 warning.setVisibility(View.VISIBLE);
                 nextActivity();
             }
-        });
+        });*/
 
-        RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jar);
+
+        RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jor);
     }
 
     void nextActivity(JSONObject obj)  throws JSONException

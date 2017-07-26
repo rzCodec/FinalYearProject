@@ -122,16 +122,18 @@ public class RegistrationActivity extends AppCompatActivity {
                     Email.setBackgroundResource(R.drawable.warningbox);
                     return;
                 }
-                String url = "https://eternalvibes.me/register";
+                String url = "https://www.eternalvibes.me/MobileSignup";
                 JSONObject data = new JSONObject();
                 try
                 {
                     data.put("firstname",Firstname.getText());
                     data.put("surname",LastName.getText());
-                    data.put("alias",Alias.getText());
-                    data.put("email",Email.getText());
-                    data.put("pass_word",PasswordC.getText());
+                    data.put("realUserName",Alias.getText());
+                    data.put("username",Email.getText());
+                    data.put("password",PasswordC.getText());
                     data.put("genre",Genre.getText());
+                    data.put("distance","25");
+                    data.put("description","nothing for now");
                 }
                 catch(JSONException e)
                 {
