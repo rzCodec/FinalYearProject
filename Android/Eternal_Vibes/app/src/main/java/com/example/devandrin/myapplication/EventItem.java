@@ -1,5 +1,7 @@
 package com.example.devandrin.myapplication;
 
+import java.util.Date;
+
 /**
  * Created by Devandrin on 2017/07/11.
  */
@@ -7,10 +9,12 @@ package com.example.devandrin.myapplication;
 public class EventItem {
     private String Name;
     private String Info;
+    private long Date;
 
-    public EventItem(String name, String info) {
+    public EventItem(String name, String info, long date) {
         Name = name;
         Info = info;
+        Date = date;
     }
 
     public String getName() {
@@ -27,5 +31,13 @@ public class EventItem {
 
     public void setInfo(String info) {
         Info = info;
+    }
+
+    public long getDate() {
+        return Date;
+    }
+
+    public void setDate(long date) {
+        Date = date;
     }
 }

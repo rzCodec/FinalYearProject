@@ -14,7 +14,7 @@
     <string name="wm_content">Login below to view near by artists that is looking to become famous or share your
     own information and music.</string>
     <string name="title_activity_login">Sign in</string>
-
+    <string name ="loadErr">Error Loading Items</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>

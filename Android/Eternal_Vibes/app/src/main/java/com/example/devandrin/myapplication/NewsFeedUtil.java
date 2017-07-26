@@ -1,5 +1,7 @@
 package com.example.devandrin.myapplication;
 
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,15 +53,30 @@ public class NewsFeedUtil extends Content {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if(HomeActivity.load.getVisibility() == View.VISIBLE)
+                        {
+                            HomeActivity.load.setVisibility(View.GONE);
+                        }
                         Log.d("NewsFeedRequest", "onErrorResponse: " + error.getMessage());
+                        Snackbar s = Snackbar.make(HomeActivity.getInstance().findViewById(R.id.cLayout),"Connection Error",Snackbar.LENGTH_INDEFINITE);
+                        s.setAction("Try Again",retryCall());
+                        s.show();
                     }
                 });
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(jar);
     }
-
+    private static View.OnClickListener retryCall()
+    {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity.getInstance().onResume();
+            }
+        };
+    }
     @Override
     public View displayContent() {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        View view = super.displayContent();
         ListView lv = (ListView) view.findViewById(R.id.ArrayList);
         if (arrData == null) {
             arrData = new ArrayList<>();
@@ -67,6 +84,8 @@ public class NewsFeedUtil extends Content {
         adapter = new NewsFeedAdapter(HomeActivity.getInstance().getApplicationContext(), arrData);
         lv.setAdapter(adapter);
         lv.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        srl = (SwipeRefreshLayout) view.findViewById(R.id.refreshView);
+        srl.setOnRefreshListener(srfListener());
         return view;
     }
 }

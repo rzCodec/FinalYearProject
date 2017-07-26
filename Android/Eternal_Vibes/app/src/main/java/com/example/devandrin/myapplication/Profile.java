@@ -55,6 +55,12 @@ public class Profile {
         this.permalink = item.getString("permalink");
     }
 
+    public Profile(int id, String alias, int genre_id) {
+        this.id = id;
+        this.alias = alias;
+        this.genre_id = genre_id;
+    }
+
     public static ArrayList<Profile> fromJSONArray(JSONArray arr) throws JSONException {
         ArrayList<Profile> values = new ArrayList<>();
         for (int i = 0; i < arr.length(); i++) {
@@ -62,7 +68,16 @@ public class Profile {
         }
         return (values.size() <= 0) ? null : values;
     }
-
+    public static ArrayList<Profile> fromJSONArrayContacts(JSONArray arr) throws JSONException
+    {
+        ArrayList<Profile> values = new ArrayList<>();
+        JSONObject j = null;
+        for (int i = 0; i < arr.length(); i++) {
+            j=arr.getJSONObject(i) ;
+            values.add(new Profile(j.getInt("id"),j.getString("alias"),j.getInt("genre_id")));
+        }
+        return (values.size() <= 0) ? null : values;
+    }
     public int getId() {
         return id;
     }

@@ -11,14 +11,18 @@ import android.view.ViewGroup;
 public abstract class RenderFactory {
     public static iContent getClass(String s, LayoutInflater inflater, ViewGroup container) {
 
-        if (s.contains("Messenger")) {
+        if (s.equals("Messenger")) {
             return new MessengerUtil(inflater, container);
-        } else if (s.contains("NewsFeed")) {
+        } else if (s.equals("NewsFeed")) {
             return new NewsFeedUtil(inflater, container);
-        } else if (s.contains("Radar")) {
+        } else if (s.equals("Radar")) {
             return new RadarUtil(inflater, container);
-        }else if (s.contains("Events")){
+        }else if (s.equals("Events")){
             return new EventUtil(inflater,container);}
+        else if (s.equals("PersonalEvents")){
+                return new PersonalEventUtil(inflater,container);}
+
+
         return null;
     }
 

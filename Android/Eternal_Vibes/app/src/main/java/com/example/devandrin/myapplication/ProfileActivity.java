@@ -30,13 +30,20 @@ public class ProfileActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         setTitle(getIntent().getStringExtra("name"));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        if(getIntent().hasExtra("IsOwner"))
+        {
+            fab.setVisibility(View.GONE);
+        }
+        else
+        {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
+        }
         String url = "https://www.eternalvibes.me/getuserinfo/" + getIntent().getStringExtra("id");
         Response.Listener listener = new Response.Listener<JSONArray>() {
             @Override
