@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceManager;
@@ -57,6 +58,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private String SortRadarType;
     private Boolean isAscending;
+    private Thread thread;
+    private RadarThread radarThreadObj;
 
     static HomeActivity getInstance() {
         return instance;
@@ -68,6 +71,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         load = (ProgressBar) findViewById(R.id.pbLoad);
         dbHelper = new DBHelper(this);
         instance = this;
+
+        //Find the users when the app starts
+        radarThreadObj = new RadarThread();
+        thread = new Thread(radarThreadObj).start();
 
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
@@ -124,7 +131,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     newChatFab.setVisibility(View.VISIBLE);
                     btn_sortRadar.setVisibility(View.GONE);
                     //load.setVisibility(View.GONE);
-
                 }
                 else
                 {
@@ -160,7 +166,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
+    }
 
+    public RadarThread getRadarThreadObj(){
+        return radarThreadObj;
     }
 
     //Start a new chat activity for the messenger

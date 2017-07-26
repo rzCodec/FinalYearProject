@@ -38,7 +38,8 @@ public class RadarUtil extends Content {
     public View displayContent() {
         view = inflater.inflate(R.layout.list_fragment, container, false);
 
-        setupProfiles();
+        //setupProfiles();
+        unsorted_radarList = HomeActivity.getInstance().getRadarThreadObj().getUnsorted_radarList();
         UpdatedSort_RadarProfiles("DISTANCE", false); //Default sort by shortest distance
 
         return view;
@@ -67,6 +68,12 @@ public class RadarUtil extends Content {
         }
     }
 
+    /**
+     * Sort the radar profiles according to the user's selection from a context menu in HomeActivity
+     * @param RadarSortType - Distance, Rating or Rank
+     * @param isAscending - True or False
+     */
+
     public static void UpdatedSort_RadarProfiles(String RadarSortType, Boolean isAscending){
 
         ProfileQueue pqObj = new ProfileQueue(unsorted_radarList);
@@ -82,7 +89,7 @@ public class RadarUtil extends Content {
             //add each profile to an arraylist so it can displayed in the RadarAdapter class
         }
 
-        setupRadar(view);
+        setupRadar(view); //Invoke this method to keep updating the list of items displayed in the radar
     }
 
     //Setup the variables to display the resulting sorted profiles
@@ -93,5 +100,4 @@ public class RadarUtil extends Content {
         lv.setAdapter(raObj);
         raObj.notifyDataSetChanged();
     }
-
 }//end of class
