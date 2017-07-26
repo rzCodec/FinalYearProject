@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,9 +25,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -49,7 +53,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private static HomeActivity instance = null;
     private static DBHelper dbHelper = null;
     static ProgressBar load = null;
-    FloatingActionButton newChatFab, newPostFab;
+    FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
+
+    private String SortRadarType;
+    private Boolean isAscending;
+
     static HomeActivity getInstance() {
         return instance;
     }
@@ -60,6 +68,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         load = (ProgressBar) findViewById(R.id.pbLoad);
         dbHelper = new DBHelper(this);
         instance = this;
+
+        //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
         newChatFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 StartNewChat();
             }
         });
+
         newPostFab = (FloatingActionButton) findViewById(R.id.new_post);
         newPostFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +85,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startPostActivity();
             }
         });
+
+        btn_sortRadar = (FloatingActionButton) findViewById(R.id.sortRadar);
+        btn_sortRadar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start_SortActivity(v);
+            }
+        });
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -102,6 +122,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if(tab.getPosition() == 0)
                 {
                     newChatFab.setVisibility(View.VISIBLE);
+                    btn_sortRadar.setVisibility(View.GONE);
                     load.setVisibility(View.GONE);
                 }
                 else
@@ -111,11 +132,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if(tab.getPosition() == 1)
                 {
                     newPostFab.setVisibility(View.VISIBLE);
+                    btn_sortRadar.setVisibility(View.GONE);
                     onResume();
                 }
                 else
                 {
                     newPostFab.setVisibility(View.GONE);
+                }
+                if(tab.getPosition() == 2)
+                {
+                    newChatFab.setVisibility(View.GONE);
+                    newPostFab.setVisibility(View.GONE);
+                    btn_sortRadar.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -130,11 +158,69 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
+
     }
-    private void StartNewChat()
-    {
-        startActivity(new Intent(this,NewChatActivity.class));
+
+    //Start a new chat activity for the messenger
+    private void StartNewChat() {
+        startActivity(new Intent(this, NewChatActivity.class));
     }
+
+    /**
+     * The following methods are used to setup a floating context menu.
+     * @param sender - View to be passed to the menu. The menu can also receive
+     *                 a listview
+     */
+    private void start_SortActivity(View sender){
+        registerForContextMenu(sender);
+        openContextMenu(sender);
+        unregisterForContextMenu(sender);
+    }
+
+    /**
+     * Create the menu when the user selects the floating button
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.sort_options_menu, menu);
+    }
+
+    /**
+     * Sort the radar profiles based on the user's selection
+     * The Profile Queue class is then used
+     * @param item - Each item is defined in the res/menu
+     * @return - True or false if the item has been selected
+     */
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.NearestDistance:
+                RadarUtil.UpdatedSort_RadarProfiles("DISTANCE", true);
+                return true;
+
+            case R.id.FurthestDistance:
+                RadarUtil.UpdatedSort_RadarProfiles("DISTANCE", false);
+                return true;
+
+            case R.id.HighestRating:
+                RadarUtil.UpdatedSort_RadarProfiles("RATING", false);
+                return true;
+
+            case R.id.LowestRating:
+                RadarUtil.UpdatedSort_RadarProfiles("RATING", true);
+                return true;
+
+            default: return super.onContextItemSelected(item);
+        }
+
+    }
+
+
     private void UpdateLocation() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         if (sp.getBoolean(SettingsActivity.LOCATIONKEY, false)) {
@@ -199,6 +285,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     String url = "https://www.eternalvibes.me/setuserlocation/" + sharedP.getString("userID", "") +
                             "/" + l.getLatitude() +
                             "/" + l.getLongitude();
+
                     JsonObjectRequest jar = new JsonObjectRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -263,10 +350,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         return super.onOptionsItemSelected(item);
     }
-    void startPostActivity()
-    {
+
+    void startPostActivity() {
         startActivity(new Intent(this, PostActivity.class));
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

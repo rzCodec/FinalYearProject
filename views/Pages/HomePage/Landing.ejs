@@ -31,9 +31,8 @@
             <br><br>
             <h1 class="header center orange-text text-darken-2">We Connect Artists</h1>
             <div class="row center">
-                <a id="download-button" class="btn-large waves-effect waves-light orange darken-2">Login
-                    With Soundcloud</a><br>
-
+                <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
+                <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
             </div>
             <br><br>
 
@@ -185,46 +184,6 @@
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>
-<script src="https://connect.soundcloud.com/sdk/sdk-3.1.2.js"></script>
-<script>
-    SC.initialize({
-        client_id: "wUNxKExU8wm7IfN1bIV4qBSh2cpeivmY",
-        redirect_uri: "https://www.eternalvibes.me/SoundAuthen"
-    });
 
-    $("#download-button").click(function () {
-        SC.connect(function () {
-            if (SC.isConnected) {
-                SC.get("/me", function (me) {
-                    var id=me.id;
-                    var avatar_url=me.avatar_url;
-                    var username=me.username;
-                    var first_name=me.first_name;
-                    var surname=me.surname;
-                    var email="temp@gmail.com";
-                    var alias=me.alias;
-                    var genre_id=2;
-                    var permalink_url=me.permalink_url;
-                    var permalink=me.permalink;
-                    var url = 'dashboard';
-                    var form = $('<form action="' + url + '" method="post">' +
-                        '<input type="text" name="id" value="' + id + '" />' +
-                        '<input type="text" name="avatar_url" value="' + avatar_url + '" />' +
-                        '<input type="text" name="username" value="' + username + '" />' +
-                        '<input type="text" name="first_name" value="' + first_name + '" />' +
-                        '<input type="text" name="surname" value="' + surname + '" />' +
-                        '<input type="text" name="email" value="' + email + '" />' +
-                        '<input type="text" name="alias" value="' + alias + '" />' +
-                        '<input type="text" name="genre_id" value="' + genre_id + '" />' +
-                        '<input type="text" name="permalink_url" value="' + permalink_url + '" />' +
-                        '<input type="text" name="permalink" value="' + permalink + '" />' +
-                        '</form>');
-                    $('body').append(form);
-                    form.submit();
-                });
-            }
-        });
-    });
-</script>
 </body>
 </html>
