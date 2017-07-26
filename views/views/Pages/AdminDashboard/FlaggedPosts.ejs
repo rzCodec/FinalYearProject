@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+  <title>Eternal Vibes</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="stylesheets/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <style>
+ 
+ body{
+ background-color: #fcfcfc;}
+  </style>
+</head>
+<body>
+  <div class="row">
+      <div class="col s3">
+    <ul id="slide-out" class="side-nav fixed">
+      <li><div class="userView">
+      <div class="background">
+        <img src="images/background/background1.jpg">
+      </div>
+      <a href="#!user"><img class="circle" src="https://s.yimg.com/wv/images/232cc165ee2630ff165c30fd2d6cd8b6_96.jpg"></a>
+      <a href="#!name"><span class="white-text name">David Innes</span></a>
+      <a href="#!email"><span class="white-text email">Innes381@gmail.com</span></a>
+     </div></li>
+
+        <li><a class="subheader"><i class="material-icons right">thumbs_up_down</i>Flagged</a></li>
+        <li><a href="/flaggedusers">Users</a></li>
+        <li  class='active'><a href="/flaggedposts">Posts</a></li>
+        <li><div class="divider"></div></li>
+        <li><a class="subheader"><i class="material-icons right">power_settings_new</i>Admin</a></li>
+        <li><a href="/broadcast">Broadcast Message</a></li>
+    </ul>
+    <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
+
+   </div>
+    <div class="col s8">
+ 		  <div class="valign-wrapper" >
+   <h2 class="center-align" style='width:100%;'>Flagged Posts</h2>
+</div>
+	   <ul id="staggered-test">
+	  
+	     <li class="" style="transform: translateX(0px); opacity: 0; ">
+
+		 </li>
+		  <li class="" style="transform: translateX(0px); opacity: 0; margin-top:100px;">
+		  <div class="carousel carousel-slider center" data-indicators="true" >
+    <div class="carousel-fixed-item center">
+      		
+<a id='accept' class="waves-effect waves-light btn"><i class="material-icons left">thumb_up</i>Accept</a>
+<a class="waves-effect waves-light btn"><i class="material-icons right">thumb_down</i>Remove</a>	
+
+    </div>
+    <div class="carousel-item transparent white-text" href="#one!">
+	<div class='container'>
+	 
+      <div class="card white darken-4 black-text">
+            <div class="card-content">
+			  
+              <span class="card-title">Kendrick Lamar </span>
+              <p>Hey i hate all you guys and i am very angry and look at these bad words @#&@^#@ you ^#@*#@#</p>
+			  <p>No. of reports: 2</p>
+            </div>
+      </div>
+	  </div>
+    </div>
+    <div class="carousel-item transparent white-text" href="#two!">
+	 <div class='container'>
+      <div class="card white darken-4 black-text">
+             <div class="card-content">
+			  
+              <span class="card-title">J.Cole </span>
+              <p>Sometimes i just hate songs and the babies that you make man</p>
+			  <p>No. of reports: 3</p>
+            </div>
+      </div>
+	  </div>
+	</div>
+    <div class="carousel-item transparent white-text" href="#three!">
+     <div class='container'>
+      <div class="card white darken-4 black-text">
+            <div class="card-content">
+			  
+              <span class="card-title">Elton John </span>
+               <p>Hey guys! Visit this site to become a instant millionaire</p>
+			  <p>No. of reports: 5</p>
+            </div>
+      </div>
+	  </div>
+    </div>
+    <div class="carousel-item transparent white-text" href="#four!">
+      <div class='container'>
+      <div class="card white darken-4 black-text">
+            <div class="card-content">
+			  
+              <span class="card-title">Joe Jackson </span>
+                <p>Time to blow up trump</p>
+			  <p>No. of reports: 2</p>
+            </div>
+      </div>
+	  </div>
+    </div>
+  </div>
+	   </li>
+        </ul>
+	  </div>
+	  
+		
+     
+    </div>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
+ 
+
+  <script src="javascripts/materialize.min.js"></script>
+  <script src="javascripts/init.js"></script>
+  <script>
+  Materialize.showStaggeredList('#staggered-test');
+
+     // Initialize collapse button
+  $(".button-collapse").sideNav();
+   $('.carousel.carousel-slider').carousel({fullWidth: true});
+   $(document).ready(function() {
+    $(".carousel-fixed-item").on('click', '.btn', function() {
+  $('.carousel').carousel('next');
+   Materialize.toast('Judged!', 2000, 'rounded')
+});
+  });
+   
+  </script>
+
+  </body>
+</html>
