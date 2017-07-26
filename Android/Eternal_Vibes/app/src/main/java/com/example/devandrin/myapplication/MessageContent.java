@@ -17,7 +17,9 @@ public class MessageContent
         this.sMessage = sMessage;
     }
 
+
     //Getters and Setters
+
 
     public Boolean getMessageMine() {
         return isMessageMine;
