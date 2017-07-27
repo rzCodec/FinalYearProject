@@ -73,7 +73,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                hardcodeLogin(); //Testing purposes
+                //hardcodeLogin(); //Testing purposes
                 if(Password.length() > 0)
                 {
                     if(Email.length()>0)
@@ -102,6 +102,7 @@ public class Dashboard extends AppCompatActivity {
         };
     }//end of login function
 
+    /*
     //Temporary login method for unexpected errors
     private void hardcodeLogin(){
         String hardcodeAlias = Alias.getText().toString();
@@ -114,6 +115,8 @@ public class Dashboard extends AppCompatActivity {
             }
         }
     }
+    */
+
     private void requestLogin(final String username, final String password)
     {
         String url = "https://www.eternalvibes.me/MobileLogin";

@@ -46,29 +46,6 @@ public class RadarUtil extends Content {
     }
 
     /**
-     * Sends a request and receives an array of profiles from the API response
-     * Then calculates the distance of each user to check if they are within range
-     */
-    private void setupProfiles(){
-        //Dummy profiles are used for now until the API to return actual profiles is implemented
-        arrAPI_Profiles[0] = new RadarContent(452, "Jessica Grom", 12, 3, "Intermediate", "Sandton", 2100);
-        arrAPI_Profiles[1] = new RadarContent(89, "Bob Brown", 20, 2, "Beginner", "Houghton", 500);
-        arrAPI_Profiles[2] = new RadarContent(1552, "Tom Yeis", 18, 4, "Advanced", "Randburg", 1500);
-        arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);
-        arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);
-
-        //Calculate distance will be added soon
-
-        //Each time the items in the Radar are sorted it must do it with a brand new list and not an existing one
-        unsorted_radarList = new ArrayList<>();
-        for(int i = 0; i < arrAPI_Profiles.length; i++){
-            if(arrAPI_Profiles[i].getDistance() <= 45) {
-                unsorted_radarList.add(arrAPI_Profiles[i]);
-            }
-        }
-    }
-
-    /**
      * Sort the radar profiles according to the user's selection from a context menu in HomeActivity
      * @param RadarSortType - Distance, Rating or Rank
      * @param isAscending - True or False
