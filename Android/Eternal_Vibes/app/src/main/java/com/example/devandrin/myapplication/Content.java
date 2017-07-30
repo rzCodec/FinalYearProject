@@ -13,17 +13,18 @@ public abstract class Content implements iContent {
     protected LayoutInflater inflater;
     protected ViewGroup container;
     protected SwipeRefreshLayout srl;
+
     public Content(LayoutInflater inflater, ViewGroup container) {
         this.inflater = inflater;
         this.container = container;
     }
-    protected void update()
-    {
+
+    protected void update() {
         HomeActivity.getInstance().onResume();
         srl.setRefreshing(false);
     }
-    protected SwipeRefreshLayout.OnRefreshListener srfListener()
-    {
+
+    protected SwipeRefreshLayout.OnRefreshListener srfListener() {
         return new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

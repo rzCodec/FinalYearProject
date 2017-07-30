@@ -1,7 +1,7 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Context;
-import android.media.Image;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,50 +11,43 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.zip.Inflater;
 
 /**
  * Created by Devandrin on 2017/07/12.
  */
 
 public class ContactChatAdapter extends ArrayAdapter<Profile> {
-    public ContactChatAdapter( Context context, ArrayList<Profile> objects) {
-        super(context,0,objects);
-    }
-    class Components
-    {
-        TextView username;
-        ImageView iv;
+    public ContactChatAdapter(Context context, ArrayList<Profile> objects) {
+        super(context, 0, objects);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Components c;
-        if(convertView == null)
-        {
+        if (convertView == null) {
             c = new Components();
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.contact_item, parent, false);
             c.username = (TextView) convertView.findViewById(R.id.userName);
+            c.username.setTextColor(HomeActivity.getInstance().getResources().getColor(R.color.colorPrimary));
             c.iv = (ImageView) convertView.findViewById(R.id.iv_dpicture);
             convertView.setTag(c);
-        }
-        else
-        {
+        } else {
             c = (Components) convertView.getTag();
         }
         final Profile p = getItem(position);
+        convertView.setOnClickListener(contactListener(p.getId()));
         c.username.setText(p.getAlias());
-        c.username.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utilities.MakeToast(getContext(),"Created Chat with user id : "+p.getId());
-            }
-        });
-        switch(p.getGenre_id())
-        {
+        switch (p.getGenre_id()) {
             case 0:
                 c.iv.setImageResource(R.mipmap.jazz_icon);
                 break;
@@ -66,5 +59,43 @@ public class ContactChatAdapter extends ArrayAdapter<Profile> {
                 break;
         }
         return convertView;
+    }
+
+    class Components {
+        TextView username;
+        ImageView iv;
+    }
+    private View.OnClickListener contactListener(final int ID)
+    {
+        SharedPreferences sp = NewChatActivity.getInstance().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        final String userID = sp.getString("userID", "");
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //303346729
+                String url = "https://eternalvibes.me/createchat/"+userID+"/"+ID;
+                JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try
+                        {
+                            if(response.getInt("affectedRows") == 1)
+                            {
+                                NewChatActivity.getInstance().onBackPressed();
+                            }
+                        }catch(JSONException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utilities.MakeToast(NewChatActivity.getInstance().getApplicationContext(),"Eish");
+                    }
+                });
+                RequestQueueSingleton.getInstance(NewChatActivity.getInstance()).addToQ(jor);
+            }
+        };
     }
 }

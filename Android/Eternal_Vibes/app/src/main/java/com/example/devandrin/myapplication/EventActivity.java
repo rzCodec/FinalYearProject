@@ -1,15 +1,20 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 
 public class EventActivity extends AppCompatActivity {
 
     private static EventActivity instance;
+
+    public static EventActivity getInstance() {
+        return instance;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,13 +28,9 @@ public class EventActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.eventtab);
         tabLayout.setupWithViewPager(viewPager);
     }
-    public void createEvent(View v)
-    {
-        startActivity(new Intent(this,CreateEventActivity.class));
-    }
 
-    public static EventActivity getInstance() {
-        return instance;
+    public void createEvent(View v) {
+        startActivity(new Intent(this, CreateEventActivity.class));
     }
 
     @Override

@@ -31,8 +31,7 @@ public class NewsFeedUtil extends Content {
     }
 
     public static void makeRequest(String id) {
-        if(HomeActivity.load.getVisibility() == View.GONE)
-        {
+        if (HomeActivity.load.getVisibility() == View.GONE) {
             HomeActivity.load.setVisibility(View.VISIBLE);
         }
         String Url = "https://www.eternalvibes.me/getstatuses/" + id;
@@ -44,8 +43,7 @@ public class NewsFeedUtil extends Content {
 
                 adapter.addAll(arrData);
                 adapter.notifyDataSetChanged();
-                if(HomeActivity.load.getVisibility() == View.VISIBLE)
-                {
+                if (HomeActivity.load.getVisibility() == View.VISIBLE) {
                     HomeActivity.load.setVisibility(View.GONE);
                 }
             }
@@ -53,20 +51,19 @@ public class NewsFeedUtil extends Content {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if(HomeActivity.load.getVisibility() == View.VISIBLE)
-                        {
+                        if (HomeActivity.load.getVisibility() == View.VISIBLE) {
                             HomeActivity.load.setVisibility(View.GONE);
                         }
                         Log.d("NewsFeedRequest", "onErrorResponse: " + error.getMessage());
-                        Snackbar s = Snackbar.make(HomeActivity.getInstance().findViewById(R.id.cLayout),"Connection Error",Snackbar.LENGTH_INDEFINITE);
-                        s.setAction("Try Again",retryCall());
+                        Snackbar s = Snackbar.make(HomeActivity.getInstance().findViewById(R.id.cLayout), "Connection Error", Snackbar.LENGTH_INDEFINITE);
+                        s.setAction("Try Again", retryCall());
                         s.show();
                     }
                 });
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).getRequestQueue().add(jar);
     }
-    private static View.OnClickListener retryCall()
-    {
+
+    private static View.OnClickListener retryCall() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +71,7 @@ public class NewsFeedUtil extends Content {
             }
         };
     }
+
     @Override
     public View displayContent() {
         View view = super.displayContent();

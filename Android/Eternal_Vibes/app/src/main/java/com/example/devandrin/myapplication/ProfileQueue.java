@@ -22,6 +22,7 @@ public class ProfileQueue implements Iterable<RadarContent> {
 
     /**
      * Create a new Priority Queue using an existing array of user profiles
+     *
      * @param arrProfiles - Array of profiles obtained from the API response
      */
     public ProfileQueue(RadarContent[] arrProfiles) {
@@ -31,9 +32,10 @@ public class ProfileQueue implements Iterable<RadarContent> {
 
     /**
      * Create a new Priority Queue using an array list and converting them to an array for optimal sort performance
+     *
      * @param radarContentList
      */
-    public ProfileQueue(ArrayList<RadarContent> radarContentList){
+    public ProfileQueue(ArrayList<RadarContent> radarContentList) {
         this.arrProfiles = new RadarContent[radarContentList.size()];
         radarContentList.toArray(arrProfiles);
         this.length = radarContentList.size();
@@ -41,15 +43,15 @@ public class ProfileQueue implements Iterable<RadarContent> {
 
     /**
      * Invokes the relevant sorting functions based on user selection (Still need to adds this functionality)
-     * @param sortType - Specifies what the Profiles will be sorted by
+     *
+     * @param sortType    - Specifies what the Profiles will be sorted by
      * @param isAscending - Smallest to largest or vice versa
      */
     public void ProfileSort(String sortType, Boolean isAscending) {
-        if(sortType.equals("DISTANCE")) {
+        if (sortType.equals("DISTANCE")) {
             //Sort by distance
             quickSortDistance(arrProfiles, 0, arrProfiles.length - 1, isAscending);
-        }
-        else {
+        } else {
             //Sort by rating
             quickSortRating(arrProfiles, 0, arrProfiles.length - 1, isAscending);
         }
@@ -57,9 +59,10 @@ public class ProfileQueue implements Iterable<RadarContent> {
 
     /**
      * Sort by Distance
+     *
      * @param arrProfiles
-     * @param low - Start value
-     * @param high - Max length of the array
+     * @param low         - Start value
+     * @param high        - Max length of the array
      * @param isAscending - Sort by smallest to largest or vice versa
      */
     private void quickSortDistance(RadarContent[] arrProfiles, int low, int high, Boolean isAscending) {
@@ -74,7 +77,7 @@ public class ProfileQueue implements Iterable<RadarContent> {
         int i = low, j = high;
         while (i <= j) {
 
-            if(isAscending == true) {
+            if (isAscending == true) {
                 while (arrProfiles[i].getDistance() < pivot) {
                     i++;
                 }
@@ -82,8 +85,7 @@ public class ProfileQueue implements Iterable<RadarContent> {
                 while (arrProfiles[j].getDistance() > pivot) {
                     j--;
                 }
-            }
-            else //Sort by largest value to smallest
+            } else //Sort by largest value to smallest
             {
                 while (arrProfiles[i].getDistance() > pivot) {
                     i++;
@@ -114,9 +116,10 @@ public class ProfileQueue implements Iterable<RadarContent> {
 
     /**
      * Sort by Rating
+     *
      * @param arrProfiles
-     * @param low - Start value
-     * @param high - Max length of the array
+     * @param low         - Start value
+     * @param high        - Max length of the array
      * @param isAscending - Sort by smallest to largest or vice versa
      */
     private void quickSortRating(RadarContent[] arrProfiles, int low, int high, Boolean isAscending) {
@@ -132,7 +135,7 @@ public class ProfileQueue implements Iterable<RadarContent> {
         while (i <= j) {
 
             //Sort by smallest value to largest
-            if(isAscending == true) {
+            if (isAscending == true) {
                 while (arrProfiles[i].getRating() < pivot) {
                     i++;
                 }
@@ -140,8 +143,7 @@ public class ProfileQueue implements Iterable<RadarContent> {
                 while (arrProfiles[j].getRating() > pivot) {
                     j--;
                 }
-            }
-            else //Sort by largest value to smallest
+            } else //Sort by largest value to smallest
             {
                 while (arrProfiles[i].getRating() > pivot) {
                     i++;
@@ -175,7 +177,7 @@ public class ProfileQueue implements Iterable<RadarContent> {
      */
     private void shiftElements() {
         RadarContent[] tempArr = new RadarContent[length - 1];
-        for(int i = 0; i < length - 1; i++) {
+        for (int i = 0; i < length - 1; i++) {
             tempArr[i] = arrProfiles[i + 1];
         }
         arrProfiles = tempArr;
@@ -201,7 +203,7 @@ public class ProfileQueue implements Iterable<RadarContent> {
     private void expandArray() {
         RadarContent[] expandedArray = new RadarContent[this.length + 1];
 
-        for(int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
             expandedArray[i] = arrProfiles[i];
         }
 
@@ -211,6 +213,7 @@ public class ProfileQueue implements Iterable<RadarContent> {
 
     /**
      * Expands the array and adds a Profile to end of the Priority Queue
+     *
      * @param p - A profile
      */
     public void add(RadarContent p) {

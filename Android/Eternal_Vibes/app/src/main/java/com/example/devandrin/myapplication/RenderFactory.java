@@ -17,10 +17,11 @@ public abstract class RenderFactory {
             return new NewsFeedUtil(inflater, container);
         } else if (s.equals("Radar")) {
             return new RadarUtil(inflater, container);
-        }else if (s.equals("Events")){
-            return new EventUtil(inflater,container);}
-        else if (s.equals("PersonalEvents")){
-                return new PersonalEventUtil(inflater,container);}
+        } else if (s.equals("Events")) {
+            return new EventUtil(inflater, container);
+        } else if (s.equals("PersonalEvents")) {
+            return new PersonalEventUtil(inflater, container);
+        }
 
 
         return null;
