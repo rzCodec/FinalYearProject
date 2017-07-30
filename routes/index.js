@@ -135,7 +135,7 @@ module.exports = function (app, passport) {
         if (req.param("status") === "false") {
             res.status(500).send('BadCredentials!')
         } else if (req.param("status") === "true") {
-            res.status(200).send('Worked')
+            res.status(200).send(req.user)
         } else {
             res.status(400).send('Something broke!')
         }
@@ -157,7 +157,7 @@ module.exports = function (app, passport) {
         if (req.param("status") === "false") {
             res.status(500).send('BadCredentials!')
         } else if (req.param("status") === "true") {
-            res.status(200).send('Worked')
+            res.status(200).send(req.user)
         } else {
             res.status(400).send('Something broke!')
         }
