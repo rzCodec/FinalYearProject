@@ -25,6 +25,11 @@ public class RadarThread implements Runnable {
     private RadarContent[] arrAPI_Profiles;
     private int distanceInMeters = 0;
     private int userID;
+    private JSONObject jRadarResponse;
+
+    public RadarThread(){
+
+    }
 
     public RadarThread(int userID){
         this.userID = userID;
@@ -53,14 +58,14 @@ public class RadarThread implements Runnable {
         });
         */
 
-        setupProfiles(numProfiles);
+        setupProfiles(numProfiles, jRadarResponse);
     }
 
     /**
      * Sends a request and receives an array of profiles from the API response
      * Then calculates the distance of each user to check if they are within range
      */
-    private void setupProfiles(int numProfiles){
+    private void setupProfiles(int numProfiles, JSONObject jObject){
 
         //Dummy profiles are used for now until the API to return actual profiles is implemented
         numProfiles = 5;
@@ -71,6 +76,13 @@ public class RadarThread implements Runnable {
         arrAPI_Profiles[2] = new RadarContent(1552, "Tom Yeis", 18, 4, "Advanced", "Randburg", 1500);
         arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);
         arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);
+
+        /*
+        for(int i = 0; i < numProfiles; i++){
+           arrAPI_Profiles[i] = new RadarContent();
+
+        }
+         */
 
         //Calculate distance will be added soon
         //Each time the items in the Radar are sorted it must do it with a brand new list and not an existing one

@@ -26,6 +26,7 @@ public class EventPageFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true); //This is allows a context menu to be used
         p = getArguments().getInt(DATA);
     }
 

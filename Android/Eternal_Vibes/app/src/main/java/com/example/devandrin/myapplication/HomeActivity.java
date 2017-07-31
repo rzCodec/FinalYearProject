@@ -162,7 +162,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
-        viewPager.setCurrentItem(1);
     }
 
     public RadarThread getRadarThreadObj(){
@@ -196,6 +195,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Choose a sort option");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.sort_options_menu, menu);
     }
