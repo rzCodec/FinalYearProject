@@ -4,15 +4,13 @@ package com.example.devandrin.myapplication;
  * Created by Ronnie on 2017-04-24.
  */
 
-public class MessageContent
-{
+public class MessageContent {
     private long userID;
     private long recipientID;
     private String sMessage;
     private Boolean isMessageMine;
 
-    public MessageContent(Boolean isMessageMine, String sMessage)
-    {
+    public MessageContent(Boolean isMessageMine, String sMessage) {
         this.isMessageMine = isMessageMine;
         this.sMessage = sMessage;
     }
@@ -27,8 +25,7 @@ public class MessageContent
         isMessageMine = messageMine;
     }
 
-    public String getsMessage()
-    {
+    public String getsMessage() {
         return sMessage;
     }
 

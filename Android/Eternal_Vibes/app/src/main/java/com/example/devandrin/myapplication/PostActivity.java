@@ -71,7 +71,7 @@ public class PostActivity extends AppCompatActivity {
         Map<String, String> data = new HashMap<>();
         data.put("status", PostData);
         SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
-        String url = "https://www.eternalvibes.me/setstatus/"+ sp.getString("userID","");
+        String url = "https://www.eternalvibes.me/setstatus/" + sp.getString("userID", "");
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

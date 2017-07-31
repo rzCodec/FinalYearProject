@@ -30,30 +30,27 @@ public class MessengerAdapter extends ArrayAdapter<Chat> {
         }
         SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String tempS = sp.getString("userID", "-1");
-        int userID = Integer.parseInt(tempS);
+        long userID = Long.parseLong(tempS);
         TextView temp = (TextView) convertView.findViewById(R.id.txtName);
-        String alias="";
-        if(userID != c.user1)
-        {
+        String alias = "";
+        if (userID == c.user2) {
             alias = HomeActivity.getDbHelper().getAlias(c.user1);
             temp.setText(alias);
             temp = (TextView) convertView.findViewById(R.id.txtLastMessage);
-            temp.setText("User 2 ID: " +c.user2);
-        }
-        else if(userID != c.user2)
-        {
+            temp.setText("User 2 ID: " + c.user2);
+        } else if (userID == c.user1) {
             alias = HomeActivity.getDbHelper().getAlias(c.user2);
             temp.setText(alias);
             temp = (TextView) convertView.findViewById(R.id.txtLastMessage);
-            temp.setText("User 2 ID: " +c.user1);
+            temp.setText("User 2 ID: " + c.user1);
         }
         temp = (TextView) convertView.findViewById(R.id.txtTimestamp);
-        temp.setText("Chat ID: " +c.ChatID);
+        temp.setText("Chat ID: " + c.ChatID);
         convertView.setOnClickListener(onChatClick(alias));
         return convertView;
     }
-    private View.OnClickListener onChatClick(final String name)
-    {
+
+    private View.OnClickListener onChatClick(final String name) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {

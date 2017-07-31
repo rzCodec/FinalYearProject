@@ -11,7 +11,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -21,7 +20,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,9 +29,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,16 +40,15 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
+    static ProgressBar load = null;
     private static HomeActivity instance = null;
     private static DBHelper dbHelper = null;
-    static ProgressBar load = null;
     FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
 
     private String SortRadarType;
@@ -64,6 +59,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     static HomeActivity getInstance() {
         return instance;
     }
+
+    public static DBHelper getDbHelper() {
+        return dbHelper;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,29 +130,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getPosition() == 0)
-                {
+                if (tab.getPosition() == 0) {
                     newChatFab.setVisibility(View.VISIBLE);
                     btn_sortRadar.setVisibility(View.GONE);
-                    //load.setVisibility(View.GONE);               
-                }
-                else
-                {
+                    load.setVisibility(View.GONE);
+                } else {
                     newChatFab.setVisibility(View.GONE);
                 }
-                if(tab.getPosition() == 1)
-                {
+                if (tab.getPosition() == 1) {
                     newPostFab.setVisibility(View.VISIBLE);
                     btn_sortRadar.setVisibility(View.GONE);
-                    //onResume();
-
-                }
-                else
-                {
+                    onResume();
+                } else {
                     newPostFab.setVisibility(View.GONE);
                 }
-                if(tab.getPosition() == 2)
-                {
+                if (tab.getPosition() == 2) {
                     newChatFab.setVisibility(View.GONE);
                     newPostFab.setVisibility(View.GONE);
                     btn_sortRadar.setVisibility(View.VISIBLE);
@@ -170,6 +162,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(1);
     }
 
     public RadarThread getRadarThreadObj(){
@@ -183,10 +176,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     /**
      * The following methods are used to setup a floating context menu.
+     *
      * @param sender - View to be passed to the menu. The menu can also receive
-     *                 a listview
+     *               a listview
      */
-    private void start_SortActivity(View sender){
+    private void start_SortActivity(View sender) {
         registerForContextMenu(sender);
         openContextMenu(sender);
         unregisterForContextMenu(sender);
@@ -194,6 +188,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     /**
      * Create the menu when the user selects the floating button
+     *
      * @param menu
      * @param v
      * @param menuInfo
@@ -208,6 +203,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Sort the radar profiles based on the user's selection
      * The Profile Queue class is then used
+     *
      * @param item - Each item is defined in the res/menu
      * @return - True or false if the item has been selected
      */
@@ -230,11 +226,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 RadarUtil.UpdatedSort_RadarProfiles("RATING", true);
                 return true;
 
-            default: return super.onContextItemSelected(item);
+            default:
+                return super.onContextItemSelected(item);
         }
 
     }
-
 
     private void UpdateLocation() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -307,7 +303,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             GregorianCalendar gc = new GregorianCalendar();
                             long date = gc.getTimeInMillis();
                             SharedPreferences.Editor e = sp.edit();
-                            e.putString("DatePosted", date+"");
+                            e.putString("DatePosted", date + "");
                             e.apply();
                             try {
                                 Log.d("Location Set", "onResponse: Location has been set with affected rows :" + response.getString("affectedRows"));
@@ -385,10 +381,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Intent i = new Intent(this, ProfileActivity.class);
             i.putExtra("id", userID);
             i.putExtra("name", alias);
-            i.putExtra("IsOwner",true);
+            i.putExtra("IsOwner", true);
             startActivity(i);
-        } else if(id==R.id.nav_event){
-            startActivity(new Intent(this,EventActivity.class));
+        } else if (id == R.id.nav_event) {
+            startActivity(new Intent(this, EventActivity.class));
         } else if (id == R.id.nav_settings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
@@ -420,7 +416,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to connect to Google Play Services");
     }
-
 
     @Override
     protected void onResume() {
@@ -455,10 +450,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 UpdateLocation();
             }
         }
-    }
-
-    public static DBHelper getDbHelper() {
-        return dbHelper;
     }
 
 }

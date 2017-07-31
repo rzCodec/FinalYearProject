@@ -1,7 +1,6 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Context;
-import android.preference.ListPreference;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
