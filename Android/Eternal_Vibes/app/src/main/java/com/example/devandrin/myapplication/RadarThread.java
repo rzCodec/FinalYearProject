@@ -24,9 +24,10 @@ public class RadarThread implements Runnable {
     private ArrayList<RadarContent> unsorted_radarList;
     private RadarContent[] arrAPI_Profiles;
     private int distanceInMeters = 0;
+    private int userID;
 
-    public RadarThread(){
-
+    public RadarThread(int userID){
+        this.userID = userID;
     }
 
     @Override
@@ -34,7 +35,8 @@ public class RadarThread implements Runnable {
 
         //Thread runs in the background without clashing with the worker thread
         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        String url = "https://www.eternalvibes.me/getListRadarUsers";
+
+        String url = "https://www.eternalvibes.me/getNearbyStrangers/:" + userID;
         int numProfiles = 5;
 
         /* Request method to be used soon

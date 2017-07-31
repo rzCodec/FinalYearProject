@@ -75,7 +75,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //Find the users when the app starts on a separate child thread
         //The main thread creates the required UI components
         //While this happens, the child thread retrieves the required data to be displayed in the UI
-        radarThreadObj = new RadarThread();
+        radarThreadObj = new RadarThread(5);
         thread = new Thread(radarThreadObj);
         thread.setDaemon(true); //Kill this child thread when the main thread is terminated
         thread.start();
