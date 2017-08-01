@@ -1,5 +1,8 @@
 package com.example.devandrin.myapplication;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Ronnie on 2017-04-13.
  */
@@ -21,6 +24,20 @@ public class RadarContent {
         Ranking = ranking;
         this.sLocation = sLocation;
         TimeStamp = timeStamp;
+    }
+
+    public RadarContent(JSONObject jsonObject){
+        try{
+            this.userID = jsonObject.getInt("id");
+            this.sUsername = jsonObject.getString("username");
+            this.Distance = jsonObject.getInt("distance");
+            this.Rating = jsonObject.getInt("rating");
+            this.Ranking = jsonObject.getString("ranking");
+        }
+        catch(JSONException jException){
+
+        }
+
     }
 
     public String getsUsername() {

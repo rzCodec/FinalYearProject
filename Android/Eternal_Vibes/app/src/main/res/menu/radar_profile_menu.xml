@@ -7,4 +7,7 @@
     <item android:title="Invite to event"
         android:id="@+id/InviteToEvent" />
 
+    <item android:title="View detailed information"
+        android:id="@+id/ViewProfileDetails" />
+
 </menu>

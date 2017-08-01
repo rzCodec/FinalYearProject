@@ -3,15 +3,18 @@ package com.example.devandrin.myapplication;
 import android.content.SharedPreferences;
 import android.os.Process;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
@@ -23,12 +26,13 @@ public class RadarThread implements Runnable {
 
     private ArrayList<RadarContent> unsorted_radarList;
     private RadarContent[] arrAPI_Profiles;
-    private int distanceInMeters = 0;
+    private ArrayList<RadarContent> detailedRadarProfileList;
     private int userID;
     private JSONObject jRadarResponse;
+    private int numProfiles;
 
     public RadarThread(){
-
+        detailedRadarProfileList = new ArrayList<>();
     }
 
     public RadarThread(int userID){
@@ -42,13 +46,26 @@ public class RadarThread implements Runnable {
         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
         String url = "https://www.eternalvibes.me/getNearbyStrangers/:" + userID;
-        int numProfiles = 5;
+        numProfiles = 5;
 
-        /* Request method to be used soon
-        JsonObjectRequest JOR = new JsonObjectRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+        JsonArrayRequest JOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray responseArray) {
 
+                numProfiles = responseArray.length();
+
+                for(int i = 0; i < responseArray.length(); i++){
+                    try
+                    {
+                        arrAPI_Profiles[i] = new RadarContent(responseArray.getJSONObject(i));
+                    }
+                    catch (JSONException e) {
+                        Toast.makeText(HomeActivity.getInstance(), "Could not get the JSON data.",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -56,7 +73,6 @@ public class RadarThread implements Runnable {
 
             }
         });
-        */
 
         setupProfiles(numProfiles, jRadarResponse);
     }
@@ -95,15 +111,12 @@ public class RadarThread implements Runnable {
         }
     }
 
-    /**
-     * This calculates the distance in meters between two user's longitude and latitude coordinates
-     * @return a value in meters
-     */
-    private int calcDistanceInMeters(){
-        return 0;
-    }
-
     public ArrayList<RadarContent> getUnsorted_radarList() {
         return unsorted_radarList;
     }
-}
+
+    public ArrayList<RadarContent> getDetailedRadarProfileList() {
+        return detailedRadarProfileList;
+    }
+
+}//end of class

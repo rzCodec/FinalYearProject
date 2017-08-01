@@ -166,6 +166,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         viewPager.setCurrentItem(1);
     }
 
+    //Returns a RadarThread Object to be used in the RadarUtil
     public RadarThread getRadarThreadObj(){
         return radarThreadObj;
     }
@@ -211,6 +212,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         menu.setHeaderTitle("Choose an option");
         MenuInflater inflater = getMenuInflater();
 
+        //Check the view that was passed in to determine which menu to inflate
         if(v.getId() == R.id.ArrayList){
             inflater.inflate(R.menu.radar_profile_menu, menu);
         }
@@ -249,11 +251,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.AddToContacts:
                 Toast.makeText(HomeActivity.getInstance(), "Selected user has been added to your contacts list.",
                         Toast.LENGTH_LONG).show();
+                //Functionality to add to the contacts list goes here
                 return true;
 
             case R.id.InviteToEvent:
                 Toast.makeText(HomeActivity.getInstance(), "An invitation has been sent to the selected user.",
                         Toast.LENGTH_LONG).show();
+                //Send an invitation to the user
+                return true;
+
+            case R.id.ViewProfileDetails:
+                //View more of the profile details
                 return true;
 
             default:
