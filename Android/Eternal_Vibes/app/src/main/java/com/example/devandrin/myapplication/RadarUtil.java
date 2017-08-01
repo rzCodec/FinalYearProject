@@ -1,9 +1,12 @@
 package com.example.devandrin.myapplication;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -13,12 +16,12 @@ import java.util.ArrayList;
 
 public class RadarUtil extends Content {
 
-    //Use two different arraylists to prevent clashing
+    //Use two different arraylists to prevent
     private static ArrayList<RadarContent> unsorted_radarList;
     private static ArrayList<RadarContent> sorted_radarList;
     private static RadarAdapter raObj;
     private static View view;
-    private RadarContent[] arrAPI_Profiles = new RadarContent[5];
+    public static boolean isProfileSelected = false;
 
     /**
      * @param inflater  - Inflates and creates the required xml files
@@ -50,8 +53,24 @@ public class RadarUtil extends Content {
     private static void setupRadar(View view) {
 
         raObj = new RadarAdapter(HomeActivity.getInstance().getApplicationContext(), sorted_radarList);
-        ListView lv = (ListView) view.findViewById(R.id.ArrayList);
+        final ListView lv = (ListView) view.findViewById(R.id.ArrayList);
         lv.setAdapter(raObj);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * This method allows an item in a listview to be clicked.
+             * Various actions or activities can be created from here.
+             * @param adapter
+             * @param view
+             * @param position
+             * @param arg
+             */
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+                HomeActivity.getInstance().setupRadarProfileMenu(lv);
+            }
+        });
+
         raObj.notifyDataSetChanged();
     }
 

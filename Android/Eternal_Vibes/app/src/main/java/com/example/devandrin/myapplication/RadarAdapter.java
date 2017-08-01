@@ -14,6 +14,7 @@ import java.util.ArrayList;
  */
 
 public class RadarAdapter extends ArrayAdapter<RadarContent> {
+
     public RadarAdapter(Context context, ArrayList<RadarContent> radarList) {
         super(context, R.layout.radar_item, radarList); //Pass in the custom layout file for the components
     }
@@ -34,6 +35,7 @@ public class RadarAdapter extends ArrayAdapter<RadarContent> {
             radarComponents.txtTimestamp = (TextView) convertView.findViewById(R.id.txtTimestamp);
             radarComponents.txtRating = (TextView) convertView.findViewById(R.id.txtRating);
             radarComponents.txtRanking = (TextView) convertView.findViewById(R.id.txtRanking);
+            convertView.setTag(radarComponents);
         }
         else {
             //Otherwise, keep recycling the existing components for better performance instead of re-creating

@@ -29,7 +29,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -186,6 +188,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
+     * The following methods are used to setup a floating context menu.
+     *
+     * @param lv which is a listview from the RadarUtil class
+     */
+    public void setupRadarProfileMenu(ListView lv) {
+        registerForContextMenu(lv);
+        openContextMenu(lv);
+        unregisterForContextMenu(lv);
+    }
+
+    /**
      * Create the menu when the user selects the floating button
      *
      * @param menu
@@ -195,9 +208,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle("Choose a sort option");
+        menu.setHeaderTitle("Choose an option");
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.sort_options_menu, menu);
+
+        if(v.getId() == R.id.ArrayList){
+            inflater.inflate(R.menu.radar_profile_menu, menu);
+        }
+        else
+        {
+            inflater.inflate(R.menu.sort_options_menu, menu);
+        }
     }
 
     /**
@@ -224,6 +244,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.LowestRating:
                 RadarUtil.UpdatedSort_RadarProfiles("RATING", true);
+                return true;
+
+            case R.id.AddToContacts:
+                Toast.makeText(HomeActivity.getInstance(), "Selected user has been added to your contacts list.",
+                        Toast.LENGTH_LONG).show();
+                return true;
+
+            case R.id.InviteToEvent:
+                Toast.makeText(HomeActivity.getInstance(), "An invitation has been sent to the selected user.",
+                        Toast.LENGTH_LONG).show();
                 return true;
 
             default:
