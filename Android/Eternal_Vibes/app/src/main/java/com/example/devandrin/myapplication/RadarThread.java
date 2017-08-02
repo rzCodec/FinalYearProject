@@ -27,15 +27,15 @@ public class RadarThread implements Runnable {
     private ArrayList<RadarContent> unsorted_radarList;
     private RadarContent[] arrAPI_Profiles;
     private ArrayList<RadarContent> detailedRadarProfileList;
-    private int userID;
-    private JSONObject jRadarResponse;
+    private String userID = "Hello Default String";
+    private JSONObject jRadarResponse = null;
     private int numProfiles;
 
     public RadarThread(){
-        detailedRadarProfileList = new ArrayList<>();
+
     }
 
-    public RadarThread(int userID){
+    public RadarThread(String userID){
         this.userID = userID;
     }
 
@@ -55,6 +55,7 @@ public class RadarThread implements Runnable {
 
                 numProfiles = responseArray.length();
 
+                /*
                 for(int i = 0; i < responseArray.length(); i++){
                     try
                     {
@@ -66,6 +67,7 @@ public class RadarThread implements Runnable {
                     }
 
                 }
+                */
             }
         }, new Response.ErrorListener() {
             @Override
@@ -87,7 +89,7 @@ public class RadarThread implements Runnable {
         numProfiles = 5;
         arrAPI_Profiles = new RadarContent[numProfiles];
 
-        arrAPI_Profiles[0] = new RadarContent(452, "Jessica Grom", 12, 3, "Intermediate", "Sandton", 2100);
+        arrAPI_Profiles[0] = new RadarContent(452, "Jessica Grom : " + userID, 12, 3, "Intermediate", "Sandton", 2100);
         arrAPI_Profiles[1] = new RadarContent(89, "Bob Brown", 20, 2, "Beginner", "Houghton", 500);
         arrAPI_Profiles[2] = new RadarContent(1552, "Tom Yeis", 18, 4, "Advanced", "Randburg", 1500);
         arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);

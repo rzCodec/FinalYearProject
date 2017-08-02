@@ -33,8 +33,6 @@ public class EventUtil extends Content {
         ListView lv = (ListView) v.findViewById(R.id.ArrayList);
         ea = new EventAdapter(EventActivity.getInstance().getApplicationContext(), dataList);
         lv.setAdapter(ea);
-        eaObj = EventActivity.getInstance();
-        eaObj.start_MenuActivity(lv);
         return v;
     }
 

@@ -45,6 +45,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.RunnableFuture;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -53,8 +54,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private static DBHelper dbHelper = null;
     FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
 
-    private String SortRadarType;
-    private Boolean isAscending;
     private Thread thread;
     private RadarThread radarThreadObj;
 
@@ -73,14 +72,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         load = (ProgressBar) findViewById(R.id.pbLoad);
         dbHelper = new DBHelper(this);
         instance = this;
-
-        //Find the users when the app starts on a separate child thread
-        //The main thread creates the required UI components
-        //While this happens, the child thread retrieves the required data to be displayed in the UI
-        radarThreadObj = new RadarThread(5);
-        thread = new Thread(radarThreadObj);
-        thread.setDaemon(true); //Kill this child thread when the main thread is terminated
-        thread.start();
 
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
@@ -248,12 +239,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 RadarUtil.UpdatedSort_RadarProfiles("RATING", true);
                 return true;
 
-            case R.id.AddToContacts:
-                Toast.makeText(HomeActivity.getInstance(), "Selected user has been added to your contacts list.",
-                        Toast.LENGTH_LONG).show();
-                //Functionality to add to the contacts list goes here
-                return true;
-
             case R.id.InviteToEvent:
                 Toast.makeText(HomeActivity.getInstance(), "An invitation has been sent to the selected user.",
                         Toast.LENGTH_LONG).show();
@@ -262,6 +247,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.ViewProfileDetails:
                 //View more of the profile details
+                Thread t1 = new Thread(new Runnable() {
+                    @Override
+                    public void run(){
+                        Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                t1.setDaemon(true);
+                t1.start();
+
                 return true;
 
             default:
@@ -467,6 +463,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         String id = sp.getString("userID", "");
         NewsFeedUtil.makeRequest(id);
         MessengerUtil.makeRequest(id);
+
+        //Find the users when the app starts on a separate child thread
+        //The main thread creates the required UI components
+        //While this happens, the child thread retrieves the required data to be displayed in the UI
+        radarThreadObj = new RadarThread(id);
+        thread = new Thread(radarThreadObj);
+        thread.setDaemon(true); //Kill this child thread when the main thread is terminated
+        thread.start();
     }
 
     @Override
