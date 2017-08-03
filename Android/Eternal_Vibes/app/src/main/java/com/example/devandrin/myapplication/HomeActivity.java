@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -49,7 +50,7 @@ import java.util.concurrent.RunnableFuture;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
-    static ProgressBar load = null;
+    private  ProgressBar load = null;
     private static HomeActivity instance = null;
     private static DBHelper dbHelper = null;
     FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
@@ -178,7 +179,36 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         openContextMenu(sender);
         unregisterForContextMenu(sender);
     }
-
+    public void enableProgressBar()
+    {
+        if (load.getVisibility() == View.GONE) {
+            load.setVisibility(View.VISIBLE);
+            ConstraintLayout c = (ConstraintLayout) findViewById(R.id.cLayout);
+            for(int i =0; i< c.getChildCount() ; i++)
+            {
+                View v = c.getChildAt(i);
+                if(v.getId() != load.getId())
+                {
+                    v.setEnabled(false);
+                }
+            }
+        }
+    }
+    public void disableProgressBar()
+    {
+        if (load.getVisibility() == View.VISIBLE) {
+            load.setVisibility(View.GONE);
+            ConstraintLayout c = (ConstraintLayout) findViewById(R.id.cLayout);
+            for(int i =0; i< c.getChildCount() ; i++)
+            {
+                View v = c.getChildAt(i);
+                if(v.getId() != load.getId())
+                {
+                    v.setEnabled(true);
+                }
+            }
+        }
+    }
     /**
      * The following methods are used to setup a floating context menu.
      *

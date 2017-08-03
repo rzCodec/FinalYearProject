@@ -170,4 +170,10 @@ public class RegistrationActivity extends AppCompatActivity {
         });
         RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jar);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

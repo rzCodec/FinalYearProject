@@ -96,4 +96,10 @@ public class CreateEventActivity extends AppCompatActivity {
     public void setTime(View v) {
         showDialog(1253);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
