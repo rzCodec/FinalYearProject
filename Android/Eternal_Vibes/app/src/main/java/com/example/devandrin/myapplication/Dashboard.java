@@ -13,24 +13,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class Dashboard extends AppCompatActivity {
     private static Dashboard instance;
-    private TextView warning, Register;
+    private TextView warning;
     private EditText Email, Password;
-    private final String url = "https://www.eternalvibes.me/MobileLogin";
+    private static final String url = "https://www.eternalvibes.me/MobileLogin";
     static Dashboard getInstance() {
         return instance;
     }
@@ -47,7 +56,7 @@ public class Dashboard extends AppCompatActivity {
             setContentView(R.layout.activity_dashboard);
             warning = (TextView) findViewById(R.id.warning);
             warning.setVisibility(View.GONE);
-            Register = (TextView) findViewById(R.id.tvRegister);
+            TextView Register = (TextView) findViewById(R.id.tvRegister);
             Register.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -66,21 +75,7 @@ public class Dashboard extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Map<String,Object> data = new HashMap<>();
-                //data.put("id",303346727);
-                //data.put("alias","Vanneh");
-                data.put("id",303346716);
-                data.put("alias","kogmaw");
-                try
-                {
-                    nextActivity(new JSONObject(data));
-                }catch(JSONException e)
-                {
-                    e.printStackTrace();
-                }
-
-                /*if (Password.length() > 0) {
+                if (Password.length() > 0) {
                     if (Email.length() > 0) {
                         if (Patterns.EMAIL_ADDRESS.matcher(Email.getText()).matches()) {
                             Email.setTextColor(Color.BLACK);
@@ -93,7 +88,7 @@ public class Dashboard extends AppCompatActivity {
                     }
                 } else {
                     Utilities.MakeToast(getApplicationContext(), "Credentials empty");
-                }*/
+                }
             }
         };
     }
@@ -103,53 +98,143 @@ public class Dashboard extends AppCompatActivity {
         Map<String, String> data = new HashMap<>();
         data.put("username", username);
         data.put("password", password);
-        JSONObject jo = new JSONObject();
-        try {
-            jo.put("username", username);
-            jo.put("password", password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, jo, new Response.Listener<JSONObject>() {
+        final JSONObject jo = new JSONObject(data);
+        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
-                warning.setText(response.toString());
-                warning.setVisibility(View.VISIBLE);
+            public void onResponse(String response) {
+                if(response.equals("200"))
+                {
+                    nextActivity(username);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    if (error.networkResponse.statusCode == 200) {
-                        try {
-                            nextActivity(null);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else if (error.networkResponse.statusCode == 500) {
-                        warning.setText("Username or password is incorrect");
-                        warning.setVisibility(View.VISIBLE);
-                    } else {
-                        warning.setText("Oops, Something went wrong");
-                        warning.setVisibility(View.VISIBLE);
-                    }
-                } catch (NullPointerException e) {
-                    warning.setText("Definitely something is nerfed");
+                if (error.networkResponse.statusCode == 500) {
+                    warning.setText("Error Code 500");
+                    warning.setVisibility(View.VISIBLE);
+                } else {
+                    warning.setText("Unknown Error code");
                     warning.setVisibility(View.VISIBLE);
                 }
             }
-        });
+        }){
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
 
-        RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jor);
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return jo.toString() == null ? null : jo.toString().getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", jo.toString(), "utf-8");
+                    return null;
+                }
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                String responseString = "";
+                if (response != null) {
+                    responseString = response.statusCode+"";
+                    // can get more details such as response.headers
+                }
+                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+            }
+
+
+        };
+
+        /*JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, jo, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try
+                {
+                    nextActivity(response);
+                }
+                catch(JSONException e)
+                {
+                    warning.setText("JSON error");
+                    warning.setVisibility(View.VISIBLE);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                    if (error.networkResponse.statusCode == 200) {
+                        warning.setText("Success");
+                        warning.setVisibility(View.VISIBLE);
+                    } else if (error.networkResponse.statusCode == 500) {
+                        warning.setText("Error Code 500");
+                        warning.setVisibility(View.VISIBLE);
+                    } else {
+                        warning.setText("Unknown Error code");
+                        warning.setVisibility(View.VISIBLE);
+                    }
+            }
+        }){
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                Map<String,String> rHeaders =response.headers;
+                String raw = rHeaders.get("Set-Cookie");
+                warning.setText(raw);
+                warning.setVisibility(View.VISIBLE);
+                return super.parseNetworkResponse(response);
+            }
+        };*/
+
     }
+    private void nextActivity(String email)
+    {
+        String emailurl = "https://www.eternalvibes.me/getuserinfoemail/"+email.toString();
+        /*JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, emailurl, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+               try
+               {
+                   nextActivity(response);
+               }
+               catch(Exception e)
+               {
+                   e.printStackTrace();
+               }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
+            }
+        });*/
+        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, emailurl, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try
+                {
+                    nextActivity(response.getJSONObject(0));
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jar);
+        warning.setText("Email Requested");
+        warning.setVisibility(View.VISIBLE);
+    }
     void nextActivity(JSONObject obj) throws JSONException {
 
         SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
         e.putString("userID", obj.getInt("id") + "");
-        e.putString("alias", obj.getString("alias"));
+        e.putString("alias", obj.getString("username"));
         e.apply();
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
@@ -175,5 +260,6 @@ public class Dashboard extends AppCompatActivity {
             Dialog err = GoogleApiAvailability.getInstance().getErrorDialog(this, result, 0);
             err.show();
         }
+
     }
 }
