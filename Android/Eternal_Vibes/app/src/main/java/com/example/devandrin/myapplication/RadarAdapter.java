@@ -1,7 +1,6 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Context;
-import android.preference.ListPreference;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
  */
 
 public class RadarAdapter extends ArrayAdapter<RadarContent> {
+
     public RadarAdapter(Context context, ArrayList<RadarContent> radarList) {
         super(context, R.layout.radar_item, radarList); //Pass in the custom layout file for the components
     }
@@ -23,31 +23,43 @@ public class RadarAdapter extends ArrayAdapter<RadarContent> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         final RadarContent RC = getItem(position);
-        if (convertView == null) {
+        radarViewComponents radarComponents;
+
+        if (convertView == null)  {
+            radarComponents = new radarViewComponents();
+            //Creates the required components from scratch for the first time a user sees the Radar
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.radar_item, parent, false);
+            radarComponents.txtViewUsername = (TextView) convertView.findViewById(R.id.txtUsername);
+            radarComponents.txtViewDistance = (TextView) convertView.findViewById(R.id.txtDistance);
+            radarComponents.txtViewLocation = (TextView) convertView.findViewById(R.id.txtLocation);
+            radarComponents.txtTimestamp = (TextView) convertView.findViewById(R.id.txtTimestamp);
+            radarComponents.txtRating = (TextView) convertView.findViewById(R.id.txtRating);
+            radarComponents.txtRanking = (TextView) convertView.findViewById(R.id.txtRanking);
+            convertView.setTag(radarComponents);
+        }
+        else {
+            //Otherwise, keep recycling the existing components for better performance instead of re-creating
+            radarComponents = (radarViewComponents) convertView.getTag();
         }
 
-        //Find the textviews and set each textview's content with the information from the arrayList
-        TextView txtViewUsername = (TextView) convertView.findViewById(R.id.txtUsername);
-        txtViewUsername.setText(RC.getsUsername());
-
-        TextView txtViewDistance = (TextView) convertView.findViewById(R.id.txtDistance);
-        txtViewDistance.setText(RC.getDistance() + " km away");
-
-        TextView txtViewLocation = (TextView) convertView.findViewById(R.id.txtLocation);
-        txtViewLocation.setText("in : " + RC.getsLocation());
-
-        TextView txtTimestamp = (TextView) convertView.findViewById(R.id.txtTimestamp);
-        txtTimestamp.setText("Time : " + RC.getTimeStamp() + "");
-
-        TextView txtRating = (TextView) convertView.findViewById(R.id.txtRating);
-        txtRating.setText("Rating : " + RC.getRating() + "/5");
-
-        TextView txtRanking = (TextView) convertView.findViewById(R.id.txtRanking);
-        txtRanking.setText("Rank : " + RC.getRanking());
-
+        radarComponents.txtViewUsername.setText(RC.getsUsername());
+        radarComponents.txtViewDistance.setText(RC.getDistance() + " km away");
+        radarComponents.txtViewLocation.setText("in : " + RC.getsLocation());
+        radarComponents.txtTimestamp.setText("Time : " + RC.getTimeStamp() + "");
+        radarComponents.txtRating.setText("Rating : " + RC.getRating() + "/5");
+        radarComponents.txtRanking.setText("Rank : " + RC.getRanking());
 
         return convertView;
+    }
+
+    //A class to hold Android components
+    private static class radarViewComponents{
+        private TextView txtViewUsername;
+        private TextView txtViewDistance;
+        private TextView txtViewLocation;
+        private TextView txtTimestamp;
+        private TextView txtRating;
+        private TextView txtRanking;
     }
 
 }
