@@ -75,8 +75,7 @@ public class Dashboard extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                 /*Map<String,Object> data = new HashMap<>();
+                /*Map<String,Object> data = new HashMap<>();
                 //data.put("user_id",303346727);
                 //data.put("username","Vanneh");
                 data.put("user_id",303346716);
@@ -199,6 +198,9 @@ public class Dashboard extends AppCompatActivity {
             }
         };*/
 
+
+        RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(sr);
+        warning.setText("Login requested");
     }
     private void nextActivity(String email)
     {
@@ -218,7 +220,6 @@ public class Dashboard extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });*/
         JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, emailurl, null, new Response.Listener<JSONArray>() {
@@ -274,6 +275,5 @@ public class Dashboard extends AppCompatActivity {
             Dialog err = GoogleApiAvailability.getInstance().getErrorDialog(this, result, 0);
             err.show();
         }
-
     }
 }
