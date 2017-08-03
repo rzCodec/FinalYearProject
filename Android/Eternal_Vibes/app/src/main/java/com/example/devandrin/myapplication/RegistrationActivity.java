@@ -127,7 +127,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             SharedPreferences sp = Dashboard.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
                             SharedPreferences.Editor e = sp.edit();
                             e.putString("userID", response.getInt("id") + "");
-                            e.putString("alias", response.getString("alias"));
+                            e.putString("alias", response.getString("username"));
                             e.apply();
                             Intent i = new Intent(instance, HomeActivity.class);
                             startActivity(i);
@@ -169,5 +169,11 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
         RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jar);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
