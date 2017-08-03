@@ -382,6 +382,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Intent i = getBaseContext().getPackageManager()
                     .getLaunchIntentForPackage(getBaseContext().getPackageName());
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            dbHelper.resetData();
             startActivity(i);
             finish();
         } else if (id == R.id.nav_exit) {

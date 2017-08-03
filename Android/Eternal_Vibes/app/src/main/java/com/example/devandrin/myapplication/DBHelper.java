@@ -25,7 +25,6 @@ import java.util.ArrayList;
 public class DBHelper extends SQLiteOpenHelper {
     private final static String DB_NAME = "Testing.db";
     private final static int V = 3;
-
     public DBHelper(Context c) {
         super(c, DB_NAME, null, V);
     }
@@ -36,7 +35,14 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(ContractClass.CREATE_USERS_TABLE);
         db.execSQL(ContractClass.CREATE_MESSAGE_TABLE);
     }
-
+    public void resetData()
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(ContractClass.DELETE_MESSAGE_TABLE);
+        db.execSQL(ContractClass.DELETE_CHAT_TABLE);
+        db.execSQL(ContractClass.DELETE_USERS_TABLE);
+        onCreate(db);
+    }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(ContractClass.DELETE_CHAT_TABLE);
