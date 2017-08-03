@@ -1,7 +1,5 @@
 package com.example.devandrin.myapplication;
 
-import java.util.Date;
-
 /**
  * Created by Devandrin on 2017/07/11.
  */

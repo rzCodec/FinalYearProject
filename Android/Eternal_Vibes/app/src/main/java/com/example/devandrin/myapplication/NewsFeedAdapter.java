@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -70,7 +69,7 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
         nfi.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "https://www.eternalvibes.me/likestatus/"+item.getStatusID();
+                String url = "https://www.eternalvibes.me/likestatus/" + item.getStatusID();
                 JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -88,7 +87,7 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeedItem> {
         nfi.flag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "https://www.eternalvibes.me/flagstatus/"+item.getStatusID();
+                String url = "https://www.eternalvibes.me/flagstatus/" + item.getStatusID();
                 JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

@@ -25,35 +25,37 @@ public class MessengerAdapter extends ArrayAdapter<Chat> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final Chat c = getItem(position);
+        viewComponents vc ;
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.messenger_item, parent, false);
+            vc = new viewComponents();
+            vc.Username = (TextView) convertView.findViewById(R.id.txtName);
+            vc.Timestamp = (TextView) convertView.findViewById(R.id.txtTimestamp);
+            vc.LastMessage = (TextView) convertView.findViewById(R.id.txtLastMessage);
+            convertView.setTag(vc);
+        }
+        else
+        {
+            vc =(viewComponents) convertView.getTag();
         }
         SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String tempS = sp.getString("userID", "-1");
-        int userID = Integer.parseInt(tempS);
-        TextView temp = (TextView) convertView.findViewById(R.id.txtName);
-        String alias="";
-        if(userID != c.user1)
-        {
-            alias = HomeActivity.getDbHelper().getAlias(c.user1);
-            temp.setText(alias);
-            temp = (TextView) convertView.findViewById(R.id.txtLastMessage);
-            temp.setText("User 2 ID: " +c.user2);
-        }
-        else if(userID != c.user2)
-        {
+        String alias ="";
+        if (tempS.equals(String.valueOf(c.user1))) {
             alias = HomeActivity.getDbHelper().getAlias(c.user2);
-            temp.setText(alias);
-            temp = (TextView) convertView.findViewById(R.id.txtLastMessage);
-            temp.setText("User 2 ID: " +c.user1);
+            vc.Username.setText(alias);
+            vc.LastMessage.setText("User 2 ID: " + c.user2);
+        } else if (tempS.equals(String.valueOf(c.user2))) {
+            alias = HomeActivity.getDbHelper().getAlias(c.user1);
+            vc.Username.setText(alias);
+            vc.LastMessage.setText("User 2 ID: " + c.user1);
         }
-        temp = (TextView) convertView.findViewById(R.id.txtTimestamp);
-        temp.setText("Chat ID: " +c.ChatID);
+        vc.Timestamp.setText("Chat ID: " + c.ChatID);
         convertView.setOnClickListener(onChatClick(alias));
         return convertView;
     }
-    private View.OnClickListener onChatClick(final String name)
-    {
+
+    private View.OnClickListener onChatClick(final String name) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,5 +65,8 @@ public class MessengerAdapter extends ArrayAdapter<Chat> {
             }
         };
     }
-
+    private static class viewComponents
+    {
+        TextView Timestamp,LastMessage,Username;
+    }
 }

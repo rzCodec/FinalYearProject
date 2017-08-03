@@ -5,7 +5,7 @@ package com.example.devandrin.myapplication;
  */
 
 public class Message {
-    int ChatID,SenderID,MessageID;
+    int ChatID, SenderID, MessageID;
     byte isRead;
     long timestamp;
     String Message;
@@ -21,11 +21,11 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message ID: " +MessageID+
-                "\nChat ID: "+ChatID+
-                "\nSender ID: "+SenderID+
-                "\nIs Read: "+isRead+
-                "\nTimestamp: "+timestamp+
-                "\nMessage: "+ Message;
+        return "Message ID: " + MessageID +
+                "\nChat ID: " + ChatID +
+                "\nSender ID: " + SenderID +
+                "\nIs Read: " + isRead +
+                "\nTimestamp: " + timestamp +
+                "\nMessage: " + Message;
     }
 }

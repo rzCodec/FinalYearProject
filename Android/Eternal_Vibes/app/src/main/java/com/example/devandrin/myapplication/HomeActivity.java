@@ -9,10 +9,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -20,7 +21,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,9 +30,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -43,24 +43,29 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.RunnableFuture;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
+    private  ProgressBar load = null;
     private static HomeActivity instance = null;
     private static DBHelper dbHelper = null;
-    static ProgressBar load = null;
     FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
 
-    private String SortRadarType;
-    private Boolean isAscending;
+    private Thread thread;
+    private RadarThread radarThreadObj;
 
     static HomeActivity getInstance() {
         return instance;
     }
+
+    public static DBHelper getDbHelper() {
+        return dbHelper;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,28 +124,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getPosition() == 0)
-                {
+                if (tab.getPosition() == 0) {
                     newChatFab.setVisibility(View.VISIBLE);
                     btn_sortRadar.setVisibility(View.GONE);
                     load.setVisibility(View.GONE);
-                }
-                else
-                {
+                } else {
                     newChatFab.setVisibility(View.GONE);
                 }
-                if(tab.getPosition() == 1)
-                {
+                if (tab.getPosition() == 1) {
                     newPostFab.setVisibility(View.VISIBLE);
                     btn_sortRadar.setVisibility(View.GONE);
                     onResume();
-                }
-                else
-                {
+                } else {
                     newPostFab.setVisibility(View.GONE);
                 }
-                if(tab.getPosition() == 2)
-                {
+                if (tab.getPosition() == 2) {
                     newChatFab.setVisibility(View.GONE);
                     newPostFab.setVisibility(View.GONE);
                     btn_sortRadar.setVisibility(View.VISIBLE);
@@ -158,7 +156,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
+    }
 
+    //Returns a RadarThread Object to be used in the RadarUtil
+    public RadarThread getRadarThreadObj(){
+        return radarThreadObj;
     }
 
     //Start a new chat activity for the messenger
@@ -168,17 +170,59 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     /**
      * The following methods are used to setup a floating context menu.
+     *
      * @param sender - View to be passed to the menu. The menu can also receive
-     *                 a listview
+     *               a listview
      */
-    private void start_SortActivity(View sender){
+    private void start_SortActivity(View sender) {
         registerForContextMenu(sender);
         openContextMenu(sender);
         unregisterForContextMenu(sender);
     }
+    public void enableProgressBar()
+    {
+        if (load.getVisibility() == View.GONE) {
+            load.setVisibility(View.VISIBLE);
+            ConstraintLayout c = (ConstraintLayout) findViewById(R.id.cLayout);
+            for(int i =0; i< c.getChildCount() ; i++)
+            {
+                View v = c.getChildAt(i);
+                if(v.getId() != load.getId())
+                {
+                    v.setEnabled(false);
+                }
+            }
+        }
+    }
+    public void disableProgressBar()
+    {
+        if (load.getVisibility() == View.VISIBLE) {
+            load.setVisibility(View.GONE);
+            ConstraintLayout c = (ConstraintLayout) findViewById(R.id.cLayout);
+            for(int i =0; i< c.getChildCount() ; i++)
+            {
+                View v = c.getChildAt(i);
+                if(v.getId() != load.getId())
+                {
+                    v.setEnabled(true);
+                }
+            }
+        }
+    }
+    /**
+     * The following methods are used to setup a floating context menu.
+     *
+     * @param lv which is a listview from the RadarUtil class
+     */
+    public void setupRadarProfileMenu(ListView lv) {
+        registerForContextMenu(lv);
+        openContextMenu(lv);
+        unregisterForContextMenu(lv);
+    }
 
     /**
      * Create the menu when the user selects the floating button
+     *
      * @param menu
      * @param v
      * @param menuInfo
@@ -186,13 +230,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Choose an option");
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.sort_options_menu, menu);
+
+        //Check the view that was passed in to determine which menu to inflate
+        if(v.getId() == R.id.ArrayList){
+            inflater.inflate(R.menu.radar_profile_menu, menu);
+        }
+        else
+        {
+            inflater.inflate(R.menu.sort_options_menu, menu);
+        }
     }
 
     /**
      * Sort the radar profiles based on the user's selection
      * The Profile Queue class is then used
+     *
      * @param item - Each item is defined in the res/menu
      * @return - True or false if the item has been selected
      */
@@ -215,11 +269,32 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 RadarUtil.UpdatedSort_RadarProfiles("RATING", true);
                 return true;
 
-            default: return super.onContextItemSelected(item);
+            case R.id.InviteToEvent:
+                Toast.makeText(HomeActivity.getInstance(), "An invitation has been sent to the selected user.",
+                        Toast.LENGTH_LONG).show();
+                //Send an invitation to the user
+                return true;
+
+            case R.id.ViewProfileDetails:
+                //View more of the profile details
+                Thread t1 = new Thread(new Runnable() {
+                    @Override
+                    public void run(){
+                        Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                t1.setDaemon(true);
+                t1.start();
+
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
         }
 
     }
-
 
     private void UpdateLocation() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -292,7 +367,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             GregorianCalendar gc = new GregorianCalendar();
                             long date = gc.getTimeInMillis();
                             SharedPreferences.Editor e = sp.edit();
-                            e.putString("DatePosted", date+"");
+                            e.putString("DatePosted", date + "");
                             e.apply();
                             try {
                                 Log.d("Location Set", "onResponse: Location has been set with affected rows :" + response.getString("affectedRows"));
@@ -370,10 +445,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Intent i = new Intent(this, ProfileActivity.class);
             i.putExtra("id", userID);
             i.putExtra("name", alias);
-            i.putExtra("IsOwner",true);
+            i.putExtra("IsOwner", true);
             startActivity(i);
-        } else if(id==R.id.nav_event){
-            startActivity(new Intent(this,EventActivity.class));
+        } else if (id == R.id.nav_event) {
+            startActivity(new Intent(this, EventActivity.class));
         } else if (id == R.id.nav_settings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
@@ -386,6 +461,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Intent i = getBaseContext().getPackageManager()
                     .getLaunchIntentForPackage(getBaseContext().getPackageName());
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            dbHelper.resetData();
             startActivity(i);
             finish();
         } else if (id == R.id.nav_exit) {
@@ -406,7 +482,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to connect to Google Play Services");
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -419,6 +494,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         String id = sp.getString("userID", "");
         NewsFeedUtil.makeRequest(id);
         MessengerUtil.makeRequest(id);
+
+        //Find the users when the app starts on a separate child thread
+        //The main thread creates the required UI components
+        //While this happens, the child thread retrieves the required data to be displayed in the UI
+        radarThreadObj = new RadarThread(id);
+        thread = new Thread(radarThreadObj);
+        thread.setDaemon(true); //Kill this child thread when the main thread is terminated
+        thread.start();
     }
 
     @Override
@@ -440,10 +523,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 UpdateLocation();
             }
         }
-    }
-
-    public static DBHelper getDbHelper() {
-        return dbHelper;
     }
 
 }

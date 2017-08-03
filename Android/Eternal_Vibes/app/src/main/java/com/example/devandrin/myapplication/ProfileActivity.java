@@ -17,10 +17,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class ProfileActivity extends AppCompatActivity 
-{
-	public static int USER_ID = 0; //A user id that will checked and used in Radar and Messenger classes
+public class ProfileActivity extends AppCompatActivity {
+    public static int USER_ID = 0; //A user id that will checked and used in Radar and Messenger classes
     private ProgressBar load = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +30,9 @@ public class ProfileActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         setTitle(getIntent().getStringExtra("name"));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if(getIntent().hasExtra("IsOwner"))
-        {
+        if (getIntent().hasExtra("IsOwner")) {
             fab.setVisibility(View.GONE);
-        }
-        else
-        {
+        } else {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -51,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity
                 try {
                     Profile p = Profile.fromJSONArray(response).get(0);
 
-					USER_ID = p.getId(); //This user id will be used for the messenger and also for the radar
+                    USER_ID = p.getId(); //This user id will be used for the messenger and also for the radar
                     TextView values = (TextView) findViewById(R.id.firstName);
                     values.setText(p.getFirstname());
                     values = (TextView) findViewById(R.id.lastName);
@@ -60,8 +57,7 @@ public class ProfileActivity extends AppCompatActivity
                     values.setText(p.getEmail());
                     values = (TextView) findViewById(R.id.SongLink);
                     values.setText(p.getSong_link());
-                    if(load.getVisibility() == View.VISIBLE)
-                    {
+                    if (load.getVisibility() == View.VISIBLE) {
                         load.setVisibility(View.GONE);
                     }
                 } catch (JSONException e) {

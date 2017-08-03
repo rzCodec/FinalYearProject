@@ -17,42 +17,44 @@ public class Profile {
     private String email;
     private String alias;
     private int genre_id;
-    private String token;
     private String song_link;
     private int latitude;
     private int longitude;
     private int pardons;
     private int search_distance;
-    private int join_timestamp;
+    private long join_timestamp;
     private int is_banned;
-    private int last_login_timestamp;
+    private long last_login_timestamp;
     private String avatar_url;
-    private String permalink_url;
-    private String permalink;
+
     Profile(JSONObject item) throws JSONException {
         this.id = item.getInt("id");
         this.firstname = item.getString("firstname");
         this.surname = item.getString("surname");
         this.email = item.getString("email");
-        this.alias = item.getString("alias");
+        this.alias = item.getString("username");
         this.genre_id = item.getInt("genre_id");
-        this.token = item.getString("token");
         this.song_link = item.getString("song_link");
-        this.latitude = item.getInt("latitude");
-        this.longitude = item.getInt("longitude");
-        this.pardons = item.getInt("pardons");
-        this.search_distance = item.getInt("search_distance");
         try {
-            this.join_timestamp = item.getInt("join_timestamp");
+            this.latitude = item.getInt("latitude");
+            this.longitude = item.getInt("longitude");
         } catch (JSONException e) {
-            this.join_timestamp = -1;
+            this.latitude =-1;
+            this.longitude =-1;
         }
 
+        this.pardons = item.getInt("pardons");
+        this.search_distance = item.getInt("distance_id");
+        try {
+            this.join_timestamp = item.getLong("join_timestamp");
+            this.last_login_timestamp = item.getLong("last_login_timestamp");
+        } catch (JSONException e) {
+            this.join_timestamp = -1;
+            this.join_timestamp=-1;
+        }
         this.is_banned = item.getInt("is_banned");
-        this.last_login_timestamp = item.getInt("last_login_timestamp");
-        this.avatar_url = item.getString("avatar_url");
-        this.permalink_url = item.getString("permalink_url");
-        this.permalink = item.getString("permalink");
+
+        this.avatar_url = item.getString("profilepic_url");
     }
 
     public Profile(int id, String alias, int genre_id) {
@@ -68,16 +70,17 @@ public class Profile {
         }
         return (values.size() <= 0) ? null : values;
     }
-    public static ArrayList<Profile> fromJSONArrayContacts(JSONArray arr) throws JSONException
-    {
+
+    public static ArrayList<Profile> fromJSONArrayContacts(JSONArray arr) throws JSONException {
         ArrayList<Profile> values = new ArrayList<>();
         JSONObject j = null;
         for (int i = 0; i < arr.length(); i++) {
-            j=arr.getJSONObject(i) ;
-            values.add(new Profile(j.getInt("id"),j.getString("alias"),j.getInt("genre_id")));
+            j = arr.getJSONObject(i);
+            values.add(new Profile(j.getInt("id"), j.getString("alias"), j.getInt("genre_id")));
         }
         return (values.size() <= 0) ? null : values;
     }
+
     public int getId() {
         return id;
     }
@@ -124,14 +127,6 @@ public class Profile {
 
     public void setGenre_id(int genre_id) {
         this.genre_id = genre_id;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public String getSong_link() {
@@ -182,11 +177,11 @@ public class Profile {
         this.search_distance = search_distance;
     }
 
-    public int getJoin_timestamp() {
+    public long getJoin_timestamp() {
         return join_timestamp;
     }
 
-    public void setJoin_timestamp(int join_timestamp) {
+    public void setJoin_timestamp(long join_timestamp) {
         this.join_timestamp = join_timestamp;
     }
 
@@ -194,11 +189,11 @@ public class Profile {
         return is_banned;
     }
 
-    public int getLast_login_timestamp() {
+    public long getLast_login_timestamp() {
         return last_login_timestamp;
     }
 
-    public void setLast_login_timestamp(int last_login_timestamp) {
+    public void setLast_login_timestamp(long last_login_timestamp) {
         this.last_login_timestamp = last_login_timestamp;
     }
 
@@ -210,27 +205,11 @@ public class Profile {
         this.avatar_url = avatar_url;
     }
 
-    public String getPermalink_url() {
-        return permalink_url;
-    }
-
-    public void setPermalink_url(String permalink_url) {
-        this.permalink_url = permalink_url;
-    }
-
-    public String getPermalink() {
-        return permalink;
-    }
-
-    public void setPermalink(String permalink) {
-        this.permalink = permalink;
-    }
-
     @Override
     public String toString() {
-        return id + "\n" + firstname + "\n" + surname + "\n" + email + "\n" + alias + "\n" + genre_id + "\n" + token + "\n" + song_link + "\n" + latitude + "\n"
+        return id + "\n" + firstname + "\n" + surname + "\n" + email + "\n" + alias + "\n" + genre_id + "\n" + song_link + "\n" + latitude + "\n"
                 + longitude + "\n" + pardons + "\n" + search_distance + "\n" + join_timestamp + "\n" + is_banned + "\n"
-                + last_login_timestamp + "\n" + avatar_url + "\n" + permalink_url + "\n" + permalink;
+                + last_login_timestamp + "\n" + avatar_url ;
     }
 
 }

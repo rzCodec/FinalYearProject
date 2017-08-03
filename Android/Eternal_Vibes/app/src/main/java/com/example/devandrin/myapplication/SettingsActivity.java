@@ -28,7 +28,6 @@ import org.json.JSONObject;
 import java.util.List;
 
 
-
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -41,9 +40,9 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
-    public static int iSEARCH_DISTANCE = 0;
     public static final String LOCATIONKEY = "location_services";
     public static final String LOCATIONRANGE = "location_services_range";
+    public static int iSEARCH_DISTANCE = 0;
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
