@@ -24,12 +24,27 @@ import java.util.GregorianCalendar;
 
 public class RadarThread implements Runnable {
 
+    private class RadarProfile{
+        private String userID = "";
+        private double longitude = 0;
+        private double latitude = 0;
+
+        public RadarProfile(JSONObject o){
+            try{
+                this.userID = o.getString("userID");
+            }
+            catch(JSONException e){
+
+            }
+        }
+    }
+
     private ArrayList<RadarContent> unsorted_radarList;
     private RadarContent[] arrAPI_Profiles;
     private ArrayList<RadarContent> detailedRadarProfileList;
     private String userID = "Hello Default String";
     private JSONObject jRadarResponse = null;
-    private int numProfiles;
+    private int numProfiles, temp;
 
     public RadarThread(){
 
@@ -45,7 +60,7 @@ public class RadarThread implements Runnable {
         //Thread runs in the background without clashing with the worker thread
         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
-        String url = "https://www.eternalvibes.me/getNearbyStrangers/:" + userID;
+        String url = "https://www.eternalvibes.me/getNearbyStrangers/" + userID;
         numProfiles = 5;
 
 
@@ -54,6 +69,19 @@ public class RadarThread implements Runnable {
             public void onResponse(JSONArray responseArray) {
 
                 numProfiles = responseArray.length();
+                temp = responseArray.length() + 1;
+                RadarProfile[] arrRadarProfiles = new RadarProfile[numProfiles];
+
+                for(int i = 0; i < responseArray.length(); i++){
+                    /*
+                    try {
+                        arrRadarProfiles[i] = new RadarProfile(responseArray.getJSONObject(i));
+                    }
+                    catch(JSONException e){
+
+                    }
+                    */
+                }
 
                 /*
                 for(int i = 0; i < responseArray.length(); i++){
@@ -89,7 +117,7 @@ public class RadarThread implements Runnable {
         numProfiles = 5;
         arrAPI_Profiles = new RadarContent[numProfiles];
 
-        arrAPI_Profiles[0] = new RadarContent(452, "Jessica Grom : " + userID, 12, 3, "Intermediate", "Sandton", 2100);
+        arrAPI_Profiles[0] = new RadarContent(452, "Jessica Grom : " + temp, 12, 3, "Intermediate", "Sandton", 2100);
         arrAPI_Profiles[1] = new RadarContent(89, "Bob Brown", 20, 2, "Beginner", "Houghton", 500);
         arrAPI_Profiles[2] = new RadarContent(1552, "Tom Yeis", 18, 4, "Advanced", "Randburg", 1500);
         arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);

@@ -75,6 +75,20 @@ public class Dashboard extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                 /*Map<String,Object> data = new HashMap<>();
+                //data.put("user_id",303346727);
+                //data.put("username","Vanneh");
+                data.put("user_id",303346716);
+                data.put("username","kogmaw");
+                try
+                {
+                    nextActivity(new JSONObject(data));
+                }catch(JSONException e)
+                {
+                    e.printStackTrace();
+                }*/
+
                 if (Password.length() > 0) {
                     if (Email.length() > 0) {
                         if (Patterns.EMAIL_ADDRESS.matcher(Email.getText()).matches()) {
