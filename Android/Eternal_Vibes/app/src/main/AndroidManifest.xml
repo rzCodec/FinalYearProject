@@ -60,6 +60,17 @@
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".NewChatActivity"/>
         <activity android:name=".EventActivity"/>
+
+        <activity
+            android:name=".RadarProfileActivity"
+            android:label="Radar Profile Activity"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.devandrin.myapplication.HomeActivity" />
+        </activity>
+
     </application>
 
 </manifest>

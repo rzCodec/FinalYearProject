@@ -1,6 +1,8 @@
 package com.example.devandrin.myapplication;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class EventUtil extends Content {
     private static ArrayList<EventItem> dataList;
     private EventAdapter ea;
+    private EventActivity eaObj;
     public EventUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);
     }
@@ -32,6 +35,7 @@ public class EventUtil extends Content {
         lv.setAdapter(ea);
         return v;
     }
+
 
     public void MakeRequest(String ID) {
         //DOes request and update data

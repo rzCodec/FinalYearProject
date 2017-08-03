@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -29,7 +30,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -43,6 +46,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.RunnableFuture;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -51,8 +55,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private static DBHelper dbHelper = null;
     FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
 
-    private String SortRadarType;
-    private Boolean isAscending;
+    private Thread thread;
+    private RadarThread radarThreadObj;
 
     static HomeActivity getInstance() {
         return instance;
@@ -152,7 +156,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
+    }
 
+    //Returns a RadarThread Object to be used in the RadarUtil
+    public RadarThread getRadarThreadObj(){
+        return radarThreadObj;
     }
 
     //Start a new chat activity for the messenger
@@ -202,6 +210,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
     /**
+     * The following methods are used to setup a floating context menu.
+     *
+     * @param lv which is a listview from the RadarUtil class
+     */
+    public void setupRadarProfileMenu(ListView lv) {
+        registerForContextMenu(lv);
+        openContextMenu(lv);
+        unregisterForContextMenu(lv);
+    }
+
+    /**
      * Create the menu when the user selects the floating button
      *
      * @param menu
@@ -211,8 +230,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Choose an option");
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.sort_options_menu, menu);
+
+        //Check the view that was passed in to determine which menu to inflate
+        if(v.getId() == R.id.ArrayList){
+            inflater.inflate(R.menu.radar_profile_menu, menu);
+        }
+        else
+        {
+            inflater.inflate(R.menu.sort_options_menu, menu);
+        }
     }
 
     /**
@@ -239,6 +267,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.LowestRating:
                 RadarUtil.UpdatedSort_RadarProfiles("RATING", true);
+                return true;
+
+            case R.id.InviteToEvent:
+                Toast.makeText(HomeActivity.getInstance(), "An invitation has been sent to the selected user.",
+                        Toast.LENGTH_LONG).show();
+                //Send an invitation to the user
+                return true;
+
+            case R.id.ViewProfileDetails:
+                //View more of the profile details
+                Thread t1 = new Thread(new Runnable() {
+                    @Override
+                    public void run(){
+                        Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                t1.setDaemon(true);
+                t1.start();
+
                 return true;
 
             default:
@@ -445,6 +494,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         String id = sp.getString("userID", "");
         NewsFeedUtil.makeRequest(id);
         MessengerUtil.makeRequest(id);
+
+        //Find the users when the app starts on a separate child thread
+        //The main thread creates the required UI components
+        //While this happens, the child thread retrieves the required data to be displayed in the UI
+        radarThreadObj = new RadarThread(id);
+        thread = new Thread(radarThreadObj);
+        thread.setDaemon(true); //Kill this child thread when the main thread is terminated
+        thread.start();
     }
 
     @Override

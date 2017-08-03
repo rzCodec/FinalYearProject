@@ -1,9 +1,12 @@
 package com.example.devandrin.myapplication;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -13,12 +16,12 @@ import java.util.ArrayList;
 
 public class RadarUtil extends Content {
 
-    //Use two different arraylists to prevent clashing
+    //Use two different arraylists to prevent
     private static ArrayList<RadarContent> unsorted_radarList;
     private static ArrayList<RadarContent> sorted_radarList;
     private static RadarAdapter raObj;
     private static View view;
-    private RadarContent[] arrAPI_Profiles = new RadarContent[5];
+    public static boolean isProfileSelected = false;
 
     /**
      * @param inflater  - Inflates and creates the required xml files
@@ -50,8 +53,24 @@ public class RadarUtil extends Content {
     private static void setupRadar(View view) {
 
         raObj = new RadarAdapter(HomeActivity.getInstance().getApplicationContext(), sorted_radarList);
-        ListView lv = (ListView) view.findViewById(R.id.ArrayList);
+        final ListView lv = (ListView) view.findViewById(R.id.ArrayList);
         lv.setAdapter(raObj);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * This method allows an item in a listview to be clicked.
+             * Various actions or activities can be created from here.
+             * @param adapter
+             * @param view
+             * @param position
+             * @param arg
+             */
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+                HomeActivity.getInstance().setupRadarProfileMenu(lv);
+            }
+        });
+
         raObj.notifyDataSetChanged();
     }
 
@@ -62,33 +81,10 @@ public class RadarUtil extends Content {
     public View displayContent() {
         view = super.displayContent();
 
-        setupProfiles();
+        //The setup profiles method has been moved to the RadarThread class
+        unsorted_radarList = HomeActivity.getInstance().getRadarThreadObj().getUnsorted_radarList();
         UpdatedSort_RadarProfiles("DISTANCE", false); //Default sort by shortest distance
 
         return view;
     }
-
-    /**
-     * Sends a request and receives an array of profiles from the API response
-     * Then calculates the distance of each user to check if they are within range
-     */
-    private void setupProfiles() {
-        //Dummy profiles are used for now until the API to return actual profiles is implemented
-        arrAPI_Profiles[0] = new RadarContent(452, "Jessica Grom", 12, 3, "Intermediate", "Sandton", 2100);
-        arrAPI_Profiles[1] = new RadarContent(89, "Bob Brown", 20, 2, "Beginner", "Houghton", 500);
-        arrAPI_Profiles[2] = new RadarContent(1552, "Tom Yeis", 18, 4, "Advanced", "Randburg", 1500);
-        arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);
-        arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);
-
-        //Calculate distance will be added soon
-
-        //Each time the items in the Radar are sorted it must do it with a brand new list and not an existing one
-        unsorted_radarList = new ArrayList<>();
-        for (int i = 0; i < arrAPI_Profiles.length; i++) {
-            if (arrAPI_Profiles[i].getDistance() <= 45) {
-                unsorted_radarList.add(arrAPI_Profiles[i]);
-            }
-        }
-    }
-
 }//end of class
