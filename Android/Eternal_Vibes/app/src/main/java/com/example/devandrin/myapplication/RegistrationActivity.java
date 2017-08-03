@@ -29,15 +29,12 @@ public class RegistrationActivity extends AppCompatActivity {
     private TextView Genre, Firstname, LastName, Email, PasswordE, PasswordC, Alias;
     private ArrayList<String> list = new ArrayList<>();
     private RegistrationActivity instance;
-    private final String url = "https://www.eternalvibes.me/MobileSignup";
+    private final String url = "https://www.eternalvibes.me/mobilesignup";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         instance = this;
-        /*Spinner s = (Spinner) findViewById(R.id.Genre);
-        ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter<CharSequence>(this,android.R.layout.simple_spinner_item,list);
-        s.setAdapter(arrayAdapter);*/
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Genre")
                 .setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list), new DialogInterface.OnClickListener() {
@@ -60,7 +57,6 @@ public class RegistrationActivity extends AppCompatActivity {
         LastName = (TextView) findViewById(R.id.lastName);
         PasswordC = (TextView) findViewById(R.id.PasswordC);
         PasswordE = (TextView) findViewById(R.id.PasswordE);
-
         Genre.setKeyListener(null);
         Genre.setOnClickListener(new View.OnClickListener() {
             @Override
