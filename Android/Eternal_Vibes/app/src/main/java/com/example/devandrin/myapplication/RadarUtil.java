@@ -1,6 +1,7 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,8 +84,13 @@ public class RadarUtil extends Content {
 
         //The setup profiles method has been moved to the RadarThread class
         unsorted_radarList = HomeActivity.getInstance().getRadarThreadObj().getUnsorted_radarList();
+        if(unsorted_radarList == null){
+            Snackbar s = Snackbar.make(HomeActivity.getInstance().findViewById(R.id.cLayout), "Could locate other users due to a connection error.", Snackbar.LENGTH_LONG);
+            s.show();
+        }
         UpdatedSort_RadarProfiles("DISTANCE", false); //Default sort by shortest distance
 
         return view;
     }
+
 }//end of class

@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/profiletoolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -21,8 +21,8 @@
     </android.support.design.widget.AppBarLayout>
 
     <include
-        android:id="@+id/includeRadarProfile"
+        android:id="@+id/include_radar"
         layout="@layout/content_radar_profile"
-        android:layout_height="445dp" />
+        android:layout_height="508dp" />
 
 </android.support.design.widget.CoordinatorLayout>
