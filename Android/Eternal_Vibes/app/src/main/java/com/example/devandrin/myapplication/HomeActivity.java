@@ -281,8 +281,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void run(){
                         Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
-                        String sProfileUsername = "Jimmy";
-                        intent.putExtra("Name", sProfileUsername + "s Profile");
+                        String sProfileUsername = "Jack";
+                        intent.putExtra("Name", sProfileUsername + "'s Profile");
                         startActivity(intent);
                     }
                 });
