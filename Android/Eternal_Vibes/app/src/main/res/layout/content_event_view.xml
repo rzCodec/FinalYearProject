@@ -8,11 +8,33 @@
     tools:context="com.example.devandrin.myapplication.EventViewActivity"
     tools:showIn="@layout/activity_event_view">
 
-    <TextView
-        android:id="@+id/txtInfoBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/evName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/box"
+            android:textSize="20sp"
+            android:text="TextView" />
+        <TextView
+            android:id="@+id/evInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/box"
+            android:textSize="20sp"
+            android:text="TextView" />
+        <TextView
+            android:id="@+id/evDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/box"
+            android:textSize="20sp"
+            android:text="TextView" />
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
