@@ -31,10 +31,11 @@ public class ChatActivity extends AppCompatActivity {
 
         final Random rand = new Random();
         int iChance = 0;
-
-        for (int i = 0; i < 15; i++) {
+        //TODO Gotta use the below Array list that contains all messages, see Message class for structure of Message.
+        ArrayList<Message> m = HomeActivity.getDbHelper().getMessages(getIntent().getIntExtra("ChatID",-1));
+        for (int i = 0; i < m.size(); i++) {
             iChance = rand.nextInt(2) + 1;
-            String sTempMessage = msgReplyObj.generateReplyMsg();
+            String sTempMessage = m.get(i).Message;
             if (iChance == 1) //Simulate a history of your messages
             {
                 msgList.add(new MessageContent(true, sTempMessage));
