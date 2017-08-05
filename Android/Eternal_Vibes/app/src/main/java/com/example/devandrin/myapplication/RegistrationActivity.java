@@ -13,17 +13,25 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
     private TextView Genre, Firstname, LastName, Email, PasswordE, PasswordC, Alias;
@@ -107,20 +115,17 @@ public class RegistrationActivity extends AppCompatActivity {
                     return;
                 }
 
-                JSONObject data = new JSONObject();
-                try {
-                    data.put("firstname", Firstname.getText());
-                    data.put("surname", LastName.getText());
-                    data.put("realUserName", Alias.getText());
-                    data.put("username", Email.getText());
-                    data.put("password", PasswordC.getText());
-                    data.put("genre", Genre.getText());
-                    data.put("distance", "25");
-                    data.put("description", "nothing for now");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JsonObjectRequest jar = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+                Map<String,String> datat = new HashMap<>();
+                    datat.put("firstname", Firstname.getText().toString());
+                    datat.put("surname", LastName.getText().toString());
+                    datat.put("realUserName", Alias.getText().toString());
+                    datat.put("username", Email.getText().toString());
+                    datat.put("password", PasswordC.getText().toString());
+                    datat.put("genre", Genre.getText().toString());
+                    datat.put("distance", "25");
+                    datat.put("description", "nothing for now");
+                final JSONObject data = new JSONObject();
+                /*JsonObjectRequest jar = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -141,8 +146,49 @@ public class RegistrationActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Utilities.MakeToast(instance,"Something went wrong");
                     }
-                });
-                RequestQueueSingleton.getInstance(instance).addToQ(jar);
+                });*/
+                StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if(response.equals("200"))
+                        {
+                            nextActivity(Email.getText().toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }){
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json; charset=utf-8";
+                    }
+
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        try {
+                            return data.toString() == null ? null : data.toString().getBytes("utf-8");
+                        } catch (UnsupportedEncodingException uee) {
+                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", data.toString(), "utf-8");
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                        String responseString = "";
+                        if (response != null) {
+                            responseString = response.statusCode+"";
+                            // can get more details such as response.headers
+                        }
+                        return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                    }
+
+
+                };
+                RequestQueueSingleton.getInstance(instance).addToQ(sr);
             }
         };
     }
@@ -174,6 +220,53 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        finish();
+    }
+    private void nextActivity(String email) {
+        String emailurl = "https://www.eternalvibes.me/getuserinfoemail/" + email.toString();
+        /*JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, emailurl, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+               try
+               {
+                   nextActivity(response);
+               }
+               catch(Exception e)
+               {
+                   e.printStackTrace();
+               }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });*/
+        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, emailurl, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    nextActivity(response.getJSONObject(0));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jar);
+    }
+    void nextActivity(JSONObject obj) throws JSONException {
+
+        SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
+        SharedPreferences.Editor e = sp.edit();
+        e.putString("userID", obj.getInt("id") + "");
+        e.putString("alias", obj.getString("username"));
+        e.apply();
+        Intent i = new Intent(this, HomeActivity.class);
+        startActivity(i);
         finish();
     }
 }
