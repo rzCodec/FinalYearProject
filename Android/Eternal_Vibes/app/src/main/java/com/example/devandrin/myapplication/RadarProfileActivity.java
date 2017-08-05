@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 public class RadarProfileActivity extends AppCompatActivity {
 
+    //Will refactor this class out after Alpha, everything is good for now
     private class RadarProfile{
         private String sUsername;
         private String sLastName;
@@ -28,7 +29,7 @@ public class RadarProfileActivity extends AppCompatActivity {
         private String sRank;
         private String sLocation;
         private int iDistance;
-
+        private String sEmail;
 
         public RadarProfile(){
 
@@ -81,6 +82,14 @@ public class RadarProfileActivity extends AppCompatActivity {
         public void setiDistance(int iDistance) {
             this.iDistance = iDistance;
         }
+
+        public String getsEmail() {
+            return sEmail;
+        }
+
+        public void setsEmail(String sEmail) {
+            this.sEmail = sEmail;
+        }
     }
 
     //Attributes
@@ -100,8 +109,8 @@ public class RadarProfileActivity extends AppCompatActivity {
         Initialize();
         setupRadarProfileDetails();
 
+        //Experimental code below, please don't remove
         //createAlertBuilder();
-
         /*btnFollow = (FloatingActionButton) findViewById(R.id.btnFollowMusician);
         btnFollow.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -116,22 +125,26 @@ public class RadarProfileActivity extends AppCompatActivity {
     //Method to setup text views and show the selected profile's details from the listview in RadarUtil
     private void setupRadarProfileDetails(){
         TextView tvUsername = (TextView) findViewById(R.id.txtRadarProfileName);
+        TextView tvLastName = (TextView) findViewById(R.id.txtRadarProfileLastName);
         TextView tvRank = (TextView) findViewById(R.id.txtRadarProfileRank);
         TextView tvRating = (TextView) findViewById(R.id.txtRadarProfileRating);
         TextView tvSkillset = (TextView) findViewById(R.id.txtRadarProfileSkillset);
         TextView tvDistanceAndLocation = (TextView) findViewById(R.id.txtRadarProfileDistanceLocation);
+        TextView tvEmail = (TextView) findViewById(R.id.txtRadarProfileEmailAddress);
 
         tvUsername.setText("First Name: " + rpObj.getsUsername());
+        tvLastName.setText("Last Name: " + rpObj.getsLastName());
         tvRank.setText("Rank: " + rpObj.getsRank());
         tvRating.setText("Rating: " + rpObj.getiRating());
         tvSkillset.setText("Muscian Skillset:");
         tvDistanceAndLocation.setText("Distance " + rpObj.getiDistance() + " km away and is in " + rpObj.getsLocation());
+        tvEmail.setText("Email Address: " + rpObj.getsEmail());
 
     }
 
 
-    /* Leave this here for now, we might need it for Beta
-       Shows the user Yes and No options in a dialog
+    /* Leave this here for now, we can use it for Beta
+       Shows the user Yes and No options in a dialog box
     private void createAlertBuilder(){
         builder = new AlertDialog.Builder(RadarProfileActivity.this);
         builder.setTitle("Would you like to follow " + sProfileName + "?");
@@ -167,11 +180,14 @@ public class RadarProfileActivity extends AppCompatActivity {
         //sProfileName = i.getStringExtra("Name");
         //setTitle(i.getStringExtra("Name"));
 
+        //Get the details from HomeActivity, so the text views can show data
         rpObj.setsUsername(i.getStringExtra("Name"));
+        rpObj.setsLastName(i.getStringExtra("LastName"));
         rpObj.setsRank(i.getStringExtra("Rank"));
         rpObj.setiRating(i.getIntExtra("Rating", 0));
         rpObj.setiDistance(i.getIntExtra("Distance", 0));
         rpObj.setsLocation(i.getStringExtra("Location"));
+        rpObj.setsEmail(i.getStringExtra("Email"));
     }
 
 }

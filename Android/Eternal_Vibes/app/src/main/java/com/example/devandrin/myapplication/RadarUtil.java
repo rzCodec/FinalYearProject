@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class RadarUtil extends Content {
 
     //Use two different arraylists to prevent
-    private static ArrayList<RadarContent> unsorted_radarList;
+    private static ArrayList<RadarContent> unsorted_radarList = new ArrayList<>();
     private static ArrayList<RadarContent> sorted_radarList;
     private static RadarAdapter raObj;
     private static View view;
@@ -68,15 +68,11 @@ public class RadarUtil extends Content {
              */
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-                //When the user clicks an item in the listview, pass that specific object data
-                //into the menu creation method
-                //That object then gets passed to the RadarProfileActivity class
-                RadarContent rcObj = (RadarContent) adapter.getItemAtPosition(position);
 
-                if(rcObj != null){
-                    Toast.makeText(HomeActivity.getInstance(), "Username is" + rcObj.getsUsername(),
-                            Toast.LENGTH_LONG).show();
-                }
+                //When the user clicks an item in the listview, pass that specific object data
+                //into the home activity, setup a brand new radar content object and send the data to
+                //to the RadarProfileActivity class
+                RadarContent rcObj = (RadarContent) adapter.getItemAtPosition(position);
                 HomeActivity.getInstance().setRadarProfileObject(rcObj);
                 HomeActivity.getInstance().setupRadarProfileMenu(lv);
             }

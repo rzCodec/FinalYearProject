@@ -15,6 +15,10 @@ import java.util.Random;
 
 public class ChatActivity extends AppCompatActivity {
 
+    private ArrayList<Chat> chatList = new ArrayList<>();
+    private int iCurrentUserID = 0;
+    private int iChatID = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +28,51 @@ public class ChatActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Initialize();
 
+        DBHelper dbHelper = HomeActivity.getDbHelper();
+        ArrayList<Message> msgList = dbHelper.getMessages(iCurrentUserID);
+        //This list now holds messages that belongs to the respective users
+        final ArrayList<MessageContent> cleanedChatList = new ArrayList<>();
+
+        for(Message msgObj : msgList){
+            if(msgObj.SenderID == iCurrentUserID){
+                //This adds a new message that was sent from the user of the app
+                cleanedChatList.add(new MessageContent(true, msgObj.Message));
+            }
+            else{
+                //Otherwise it is a message from someone else
+                cleanedChatList.add(new MessageContent(false, msgObj.Message));
+            }
+        }
+
+        final ChatAdapter caObj = new ChatAdapter(getApplicationContext(), cleanedChatList);
+        final ListView lv = (ListView) findViewById(R.id.chatMsgList_layout);
+        lv.setAdapter(caObj);
+        lv.setSelection(lv.getAdapter().getCount() - 1); //Set the focus on the last message
+
+        final EditText msgTextField = (EditText) findViewById(R.id.txtMessage); //Messages are typed here
+        ImageButton btnSendMsg = (ImageButton) findViewById(R.id.btnSend);
+
+        btnSendMsg.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                String sYourMessage = "";
+                if (!(msgTextField.getText().toString().equals(""))){
+                    sYourMessage = msgTextField.getText().toString();
+                    ChatThread ctObj = new ChatThread(sYourMessage, iChatID, iCurrentUserID);
+                    ctObj.setDaemon(true); //Destroy this thread when this activity is finished
+                    ctObj.start();
+
+                    cleanedChatList.add(new MessageContent(true, sYourMessage));
+                    lv.setAdapter(caObj);
+                    lv.setSelection(lv.getAdapter().getCount() - 1); //Set the focus on the last message
+                }
+            }
+        });
+    }
+
+    //Method to temporarily hold the messenger
+    private void tempHolder(){
+
+        /*
         //This part is used to send a message to another user
         //This holds the messages sent and received by the user
         final ArrayList<MessageContent> msgList = new ArrayList<>();
@@ -75,7 +124,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         }); // end of seton click listener
-
+        */
     }
 
     @Override
@@ -87,6 +136,11 @@ public class ChatActivity extends AppCompatActivity {
     private void Initialize() {
         Intent i = getIntent();
         setTitle(i.getStringExtra("Name"));
+
+        //I need the current ID of the user to check where the messages are
+        //aligned in the listview
+        iCurrentUserID = i.getIntExtra("CurrentUserID", 0);
+        iChatID = i.getIntExtra("ChatID", 0);
     }
 
     @Override
