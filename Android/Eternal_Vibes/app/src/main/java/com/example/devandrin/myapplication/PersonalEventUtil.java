@@ -5,6 +5,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 /**
@@ -13,7 +20,7 @@ import java.util.ArrayList;
 
 public class PersonalEventUtil extends Content {
     private static ArrayList<EventItem> dataList;
-    private EventAdapter ea;
+    private static EventAdapter ea;
     public PersonalEventUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);
     }
@@ -26,13 +33,35 @@ public class PersonalEventUtil extends Content {
     public View displayContent() {
         if (dataList == null)
             dataList = new ArrayList<>();
-        dataList.add(new EventItem("Your events ", "Your own events will be displayed here", 1120341241234L));
-        dataList.add(new EventItem("Hello World", "Hello World", System.currentTimeMillis()));
-        dataList.add(new EventItem("Sentence", "The quick brown fox jumped over the lazy dog", 109231245125L));
         View v = super.displayContent();
         ListView lv = (ListView) v.findViewById(R.id.ArrayList);
         ea = new EventAdapter(EventActivity.getInstance().getApplicationContext(), dataList);
         lv.setAdapter(ea);
         return v;
+    }
+    public static void makeRequest(int UserId)
+    {
+        EventActivity.getInstance().enableProgressBar();
+        String url = "https://www.eternalvibes.me/getusersevents/"+UserId;
+        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                EventActivity.getInstance().disableProgressBar();
+                ArrayList<EventItem> temp = EventItem.fromJSONArray(response);
+                if(temp != null)
+                {
+                    ea.clear();
+                    dataList = temp;
+                    ea.addAll(dataList);
+                    ea.notifyDataSetChanged();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                EventActivity.getInstance().disableProgressBar();
+            }
+        });
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
     }
 }

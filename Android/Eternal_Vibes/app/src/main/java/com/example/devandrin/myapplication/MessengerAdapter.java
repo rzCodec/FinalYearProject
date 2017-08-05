@@ -51,16 +51,17 @@ public class MessengerAdapter extends ArrayAdapter<Chat> {
             vc.LastMessage.setText("User 2 ID: " + c.user1);
         }
         vc.Timestamp.setText("Chat ID: " + c.ChatID);
-        convertView.setOnClickListener(onChatClick(alias));
+        convertView.setOnClickListener(onChatClick(alias,c.ChatID));
         return convertView;
     }
 
-    private View.OnClickListener onChatClick(final String name) {
+    private View.OnClickListener onChatClick(final String name,final int ChatID) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.getInstance(), ChatActivity.class);
                 i.putExtra("Name", name);
+                i.putExtra("ChatID",ChatID);
                 HomeActivity.getInstance().startActivity(i);
             }
         };

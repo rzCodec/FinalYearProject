@@ -49,4 +49,26 @@ public class Chat {
                 "\nUser 1 ID: " + user1 +
                 "\nUser 2 ID: " + user2;
     }
+    public JSONArray chatList(ArrayList<Chat> chats)
+    {
+        JSONArray arr = new JSONArray();
+        JSONObject obj;
+        try
+        {
+
+
+            for (Chat c: chats)
+            {
+                obj = new JSONObject();
+                obj.put("chat_id",c.ChatID);
+                arr.put(obj);
+            }
+        }catch(JSONException e )
+        {
+            e.printStackTrace();
+        }
+        finally {
+            return arr;
+        }
+    }
 }
