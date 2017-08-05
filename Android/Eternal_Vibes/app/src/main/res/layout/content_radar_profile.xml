@@ -9,7 +9,26 @@
     tools:showIn="@layout/activity_radar_profile">
 
     <TextView
-        android:id="@+id/txtRating"
+        android:id="@+id/txtRadarProfileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="First Name"
+        android:gravity="left"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.116"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.084" />
+
+    <TextView
+        android:id="@+id/txtRadarProfileRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -19,12 +38,13 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Rating"
+        android:gravity="left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.106"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileRank"
-        app:layout_constraintVertical_bias="0.095" />
+        app:layout_constraintVertical_bias="0.101" />
 
     <TextView
         android:id="@+id/txtRadarProfileSongLink"
@@ -37,12 +57,13 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Song Link"
+        android:gravity="left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.113"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintVertical_bias="0.173"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+        app:layout_constraintVertical_bias="0.179"
+        app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileDistanceLocation" />
 
     <TextView
         android:id="@+id/txtRadarProfileRank"
@@ -54,12 +75,13 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:gravity="left"
         android:text="Current Rank"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.121"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtLastName"
+        app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileLastName"
         app:layout_constraintVertical_bias="0.083" />
 
     <TextView
@@ -73,36 +95,20 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Musician Skillset"
+        android:gravity="left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtRating"
-        app:layout_constraintVertical_bias="0.108" />
+        app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileRating"
+        app:layout_constraintVertical_bias="0.112" />
 
     <TextView
-        android:id="@+id/txtRadarProfileName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="First Name"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.114"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.083" />
-
-    <TextView
-        android:id="@+id/txtLastName"
+        android:id="@+id/txtRadarProfileLastName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Last Name"
+        android:gravity="left"
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
@@ -115,7 +121,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileName" />
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/txtRadarProfileDistanceLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -123,31 +129,28 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:text="Location and Distance"
+        android:gravity="left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.152"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileSkillset"
-        app:layout_constraintVertical_bias="0.146" />
+        app:layout_constraintVertical_bias="0.137" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btnFollowMusician"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+    <TextView
+        android:id="@+id/txtRadarProfileEmailAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email Address"
         android:layout_marginTop="8dp"
-        android:clickable="true"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileSongLink"
+        android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9"
-        app:srcCompat="@android:drawable/btn_star"
-        tools:layout_editor_absoluteX="295dp"
-        tools:layout_editor_absoluteY="368dp" />
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintHorizontal_bias="0.125"
+        app:layout_constraintVertical_bias="0.319" />
 
 </android.support.constraint.ConstraintLayout>

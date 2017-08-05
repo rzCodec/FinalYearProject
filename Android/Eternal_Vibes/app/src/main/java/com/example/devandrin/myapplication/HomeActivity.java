@@ -1,5 +1,6 @@
 package com.example.devandrin.myapplication;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -57,6 +58,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private Thread thread;
     private RadarThread radarThreadObj;
+    private RadarContent rcObjItem = new RadarContent();
 
     static HomeActivity getInstance() {
         return instance;
@@ -227,6 +229,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
      * @param v
      * @param menuInfo
      */
+
+    public void setRadarProfileObject(RadarContent rcObjItem){
+        //Toast.makeText(HomeActivity.getInstance(), "Passed Username is :" + rcObjItem.getsUsername(),
+               // Toast.LENGTH_LONG).show();
+        //this.rcObjItem = rcObjItem;
+        this.rcObjItem.setsUsername(rcObjItem.getsUsername());
+        this.rcObjItem.setRanking(rcObjItem.getRanking());
+        this.rcObjItem.setRating(rcObjItem.getRating());
+        this.rcObjItem.setDistance(rcObjItem.getDistance());
+        this.rcObjItem.setsLocation(rcObjItem.getsLocation());
+
+        //Toast.makeText(this, "Passed Username is :" + this.rcObjItem.getsUsername(),
+        //        Toast.LENGTH_LONG).show();
+    }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -275,6 +292,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 //Send an invitation to the user
                 return true;
 
+            case R.id.FollowUser:
+
+                return true;
+
             case R.id.ViewProfileDetails:
                 //View more of the profile details
                 Thread t1 = new Thread(new Runnable() {
@@ -282,7 +303,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     public void run(){
                         Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
                         String sProfileUsername = "Jack";
-                        intent.putExtra("Name", sProfileUsername + "'s Profile");
+                        intent.putExtra("Name", rcObjItem.getsUsername());
+                        //intent.putExtra("Last Name", rcObjItem.getLastName());
+                        intent.putExtra("Rank", rcObjItem.getRanking());
+                        intent.putExtra("Rating", rcObjItem.getRating());
+                        intent.putExtra("Distance", rcObjItem.getDistance());
+                        intent.putExtra("Location", rcObjItem.getsLocation());
+
+                        /*
+                        if(rcObjItem == null){
+                        Toast.makeText(HomeActivity.getInstance(), "Null Object Bro!",
+                                Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Toast.makeText(HomeActivity.getInstance(), "Not Null Bro!",
+                                    Toast.LENGTH_LONG).show();
+                        }*/
+
                         startActivity(intent);
                     }
                 });

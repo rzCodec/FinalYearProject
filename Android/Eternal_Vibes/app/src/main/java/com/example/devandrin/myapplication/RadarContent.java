@@ -16,6 +16,10 @@ public class RadarContent {
     private String sLocation;
     private long TimeStamp;
 
+    public RadarContent(){
+
+    }
+
     public RadarContent(int userID, String sUsername, int distance, int rating, String ranking, String sLocation, long timeStamp) {
         this.userID = userID;
         this.sUsername = sUsername;

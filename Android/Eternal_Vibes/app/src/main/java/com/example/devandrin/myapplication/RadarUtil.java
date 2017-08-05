@@ -68,6 +68,16 @@ public class RadarUtil extends Content {
              */
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+                //When the user clicks an item in the listview, pass that specific object data
+                //into the menu creation method
+                //That object then gets passed to the RadarProfileActivity class
+                RadarContent rcObj = (RadarContent) adapter.getItemAtPosition(position);
+
+                if(rcObj != null){
+                    Toast.makeText(HomeActivity.getInstance(), "Username is" + rcObj.getsUsername(),
+                            Toast.LENGTH_LONG).show();
+                }
+                HomeActivity.getInstance().setRadarProfileObject(rcObj);
                 HomeActivity.getInstance().setupRadarProfileMenu(lv);
             }
         });
