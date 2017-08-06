@@ -45,6 +45,7 @@ public class RadarThread implements Runnable {
     private String userID = "Hello Default String";
     private JSONObject jRadarResponse = null;
     private int numProfiles, temp;
+    private String resStringFromAPI = "";
 
     public RadarThread(){
 
@@ -60,13 +61,26 @@ public class RadarThread implements Runnable {
         //Thread runs in the background without clashing with the worker thread
         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
-        String url = "https://www.eternalvibes.me/getNearbyStrangers/" + userID;
+        //String url = "https://www.eternalvibes.me/getNearbyStrangers/" + userID;
+        String url = "https://www.eternalvibes.me/getNearbyStrangers/303346733";
         numProfiles = 5;
 
         JsonArrayRequest JOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray responseArray) {
 
+                for(int i = 0; i < responseArray.length(); i++){
+                    try{
+                        JSONObject o = responseArray.getJSONObject(i);
+                        resStringFromAPI = o.toString();
+                        Log.i("VOLLEY", "Response # " + i + " is >> " + o.toString());
+                    }
+                    catch(JSONException e){
+                        Log.e("VOLLEY", "Error Response # " + i + "is >>>>>>>>>>>>>>>>>> " + e.toString());
+                    }
+
+                }
+                /*
                 numProfiles = responseArray.length();
                 temp = responseArray.length() + 1;
                 RadarProfile[] arrRadarProfiles = new RadarProfile[numProfiles];
@@ -79,7 +93,7 @@ public class RadarThread implements Runnable {
                     catch(JSONException e){
 
                     }
-                    */
+
                 }
 
                 /*
@@ -103,6 +117,7 @@ public class RadarThread implements Runnable {
             }
         });
 
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(JOR);
         setupProfiles(numProfiles, jRadarResponse);
     }
 
@@ -123,11 +138,11 @@ public class RadarThread implements Runnable {
         arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);
         arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);*/
 
-        arrAPI_Profiles[0] = new RadarContent(452, "Jessica", "Grom", 12, 3, "Intermediate", "Sandton", 2100, "Jess55@gmail.com");
-        arrAPI_Profiles[1] = new RadarContent(89, "Bob", "Brown", 20, 2, "Beginner", "Houghton", 500, "Bob85@gmail.com");
-        arrAPI_Profiles[2] = new RadarContent(1552, "Tom", "Yeis", 18, 4, "Advanced", "Randburg", 1500, "Tom@44hotmail.com");
-        arrAPI_Profiles[3] = new RadarContent(452, "Tiffany", "Vlein", 40, 5, "Master", "Pretoria", 4100, "22Tiff@gmail.com");
-        arrAPI_Profiles[4] = new RadarContent(842, "Jerry", " Alko", 34, 1, "Beginner", "Soweto", 800, "Jerry@hotmail.com");
+        arrAPI_Profiles[0] = new RadarContent(452, "Jessica", "Grom", 12, 3, "Intermediate", "Sandton", 2100, "Jess55@gmail.com", "Vocals");
+        arrAPI_Profiles[1] = new RadarContent(89, "Bob", "Brown", 20, 2, "Beginner", "Houghton", 500, "Bob85@gmail.com", "Drums");
+        arrAPI_Profiles[2] = new RadarContent(1552, "Tom", "Yeis", 18, 4, "Advanced", "Randburg", 1500, "Tom@44hotmail.com", "Keyboard");
+        arrAPI_Profiles[3] = new RadarContent(452, "Tiffany", "Vlein", 40, 5, "Master", "Pretoria", 4100, "22Tiff@gmail.com", "Guitar");
+        arrAPI_Profiles[4] = new RadarContent(842, "Jerry", " Alko", 34, 1, "Beginner", "Soweto", 800, "Jerry@hotmail.com", "Piano");
 
 
         /*

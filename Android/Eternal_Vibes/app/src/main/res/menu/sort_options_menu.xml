@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
+    
     <item android:title="Sort by nearest distance"
           android:id="@+id/NearestDistance" />
 
     <item android:title="Sort by furthest distance"
           android:id="@+id/FurthestDistance" />
-
 
     <item android:title="Sort by highest rating"
           android:id="@+id/HighestRating" />

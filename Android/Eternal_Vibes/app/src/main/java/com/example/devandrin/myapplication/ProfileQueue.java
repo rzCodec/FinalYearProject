@@ -5,6 +5,7 @@ package com.example.devandrin.myapplication;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class ProfileQueue implements Iterable<RadarContent> {
@@ -55,6 +56,16 @@ public class ProfileQueue implements Iterable<RadarContent> {
             //Sort by rating
             quickSortRating(arrProfiles, 0, arrProfiles.length - 1, isAscending);
         }
+    }
+
+    public int SkillsetCount(ArrayList<String> skillsetList){
+        HashMap<Integer, String> skillMap = new HashMap<Integer, String>();
+
+        //Add all the skills to the skillset
+        for(int i = 0; i < skillsetList.size(); i++){
+            skillMap.put(i, skillsetList.get(i));
+        }
+        return 0;
     }
 
     /**
