@@ -2,6 +2,7 @@
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
+    <!--
     <LinearLayout
         android:id="@+id/chatMsgDateLinearLayout"
         android:layout_width="match_parent"
@@ -20,6 +21,7 @@
             android:paddingBottom="2.5dp"
             android:text="blank" />
     </LinearLayout>
+    -->
 
     <LinearLayout
         android:id="@+id/chatMsgLinearLayout"
@@ -38,7 +40,7 @@
             android:paddingRight="7.5dp"
             android:paddingTop="2.5dp"
             android:paddingBottom="2.5dp"
-            android:text="blank" />
+            android:text="Some message" />
 
     </LinearLayout>
 

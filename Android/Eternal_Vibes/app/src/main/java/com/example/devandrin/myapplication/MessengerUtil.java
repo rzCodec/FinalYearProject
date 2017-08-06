@@ -76,4 +76,26 @@ public class MessengerUtil extends Content {
         return view;
     }
 
+    public static void getMessages(int id)
+    {
+        String url = "https://eternalvibes.me/getmessages/" + id;
+        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response.length() >= 0) {
+                    ArrayList<Message> messages = Message.fromJSONArray(response);
+                    for(Message m : messages)
+                    {
+                        HomeActivity.getDbHelper().insertMessage(m);
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //do nothing
+            }
+        });
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
+    }
 }

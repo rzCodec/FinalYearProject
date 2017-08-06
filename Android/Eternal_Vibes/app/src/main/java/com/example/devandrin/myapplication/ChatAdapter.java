@@ -29,9 +29,9 @@ public class ChatAdapter extends ArrayAdapter<MessageContent> {
         if (convertView == null) {
             //Make a new text view to show the messages
             cmComponent = new chatMessageComponent();
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.chat_message_grid_item, parent, false);
-            cmComponent.txtChatMsg = (TextView) convertView.findViewById((R.id.txtGridChatMessage));
-            cmComponent.txtMsgChatDate = (TextView) convertView.findViewById((R.id.txtGridChatMessageDate));
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.chat_message_item, parent, false);
+            cmComponent.txtChatMsg = (TextView) convertView.findViewById((R.id.txtChatMessage));
+            //cmComponent.txtMsgChatDate = (TextView) convertView.findViewById((R.id.txtGridChatMessageDate));
             convertView.setTag(cmComponent);
         } else {
             cmComponent = (chatMessageComponent) convertView.getTag();
@@ -40,8 +40,8 @@ public class ChatAdapter extends ArrayAdapter<MessageContent> {
         try {
             //Get the linear layout because its gravity will change.
             //The textview will move according to the linear layout's gravity.
-            LinearLayout chatContainer = (LinearLayout) convertView.findViewById(R.id.chatMsgLinearLayout);
-            LinearLayout chatMsgDateContainer = (LinearLayout) convertView.findViewById(R.id.chatMsgDateLinearLayout);
+            LinearLayout chatContainer = (LinearLayout) convertView.findViewById(R.id.chatContainer);
+            //LinearLayout chatMsgDateContainer = (LinearLayout) convertView.findViewById(R.id.chatMsgDateLinearLayout);
 
 
             //Simulate a time sent part at the end of each message for now...
@@ -51,12 +51,12 @@ public class ChatAdapter extends ArrayAdapter<MessageContent> {
                 sSpacing += " ";
             }
 
-            cmComponent.txtMsgChatDate.setText("DD/MM/YY");
-            cmComponent.txtMsgChatDate.setTextColor(Color.BLUE);
-            chatMsgDateContainer.setGravity(Gravity.CENTER_HORIZONTAL);
+            //cmComponent.txtMsgChatDate.setText("DD/MM/YY");
+            //cmComponent.txtMsgChatDate.setTextColor(Color.BLUE);
+            //chatMsgDateContainer.setGravity(Gravity.CENTER_HORIZONTAL);
             //Set the message in the textview with time below it.
             //cmComponent.txtChatMsg.setText(msgObj.getsMessage() + "\n" + sSpacing + "19:45");
-            String sDateAndTime = "5 April 2017 @ 20:21";
+            //String sDateAndTime = "5 April 2017 @ 20:21";
             cmComponent.txtChatMsg.setText(msgObj.getsMessage());
             //cmComponent.txtMsgChatDate.setText("MM/DD/YY");
             //cmComponent.txtMsgChatDate.setTextColor(Color.BLUE);

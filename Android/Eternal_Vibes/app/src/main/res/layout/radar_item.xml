@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtUsername"
         tools:layout_constraintLeft_creator="1"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="8dp" />
 

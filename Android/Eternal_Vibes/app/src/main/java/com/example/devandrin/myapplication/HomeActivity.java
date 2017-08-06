@@ -1,5 +1,6 @@
 package com.example.devandrin.myapplication;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -57,6 +58,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private Thread thread;
     private RadarThread radarThreadObj;
+    private RadarContent rcObjItem = new RadarContent();
+    public String activeuserID = "";
 
     static HomeActivity getInstance() {
         return instance;
@@ -226,6 +229,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
      * @param v
      * @param menuInfo
      */
+
+    public void setRadarProfileObject(RadarContent rcObjItem){
+        //Create a branch new RadarContent object
+        //The data was passed from RadarUtil
+        this.rcObjItem.setsUsername(rcObjItem.getsUsername());
+        this.rcObjItem.setsLastName(rcObjItem.getsLastName());
+        this.rcObjItem.setRanking(rcObjItem.getRanking());
+        this.rcObjItem.setRating(rcObjItem.getRating());
+        this.rcObjItem.setDistance(rcObjItem.getDistance());
+        this.rcObjItem.setsLocation(rcObjItem.getsLocation());
+        this.rcObjItem.setsEmail(rcObjItem.getsEmail());
+    }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -271,7 +287,36 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.InviteToEvent:
                 Toast.makeText(HomeActivity.getInstance(), "An invitation has been sent to the selected user.",
                         Toast.LENGTH_LONG).show();
-                //Send an invitation to the user
+                //Send an invitation to the user functionality can be added here
+                return true;
+
+            case R.id.FollowUser:
+                Thread followThread = new Thread(new Runnable(){
+                    @Override
+                    public void run(){
+
+                        int userIDToFollow = rcObjItem.getUserID();
+                        String url = "https://www.eternalvibes.me/followUser/" + activeuserID + "/" + userIDToFollow;
+                        JsonObjectRequest jar = new JsonObjectRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        });
+                    }
+                });
+
+                followThread.setDaemon(true);
+                followThread.start();
+
+                Toast.makeText(this, "You are now following " + rcObjItem.getsUsername(),
+                        Toast.LENGTH_LONG).show();
+
                 return true;
 
             case R.id.ViewProfileDetails:
@@ -280,6 +325,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void run(){
                         Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
+                        String sProfileUsername = "Jack";
+
+                        //Pass the required information to the next activity
+                        intent.putExtra("Name", rcObjItem.getsUsername());
+                        intent.putExtra("LastName", rcObjItem.getsLastName());
+                        intent.putExtra("Rank", rcObjItem.getRanking());
+                        intent.putExtra("Rating", rcObjItem.getRating());
+                        intent.putExtra("Distance", rcObjItem.getDistance());
+                        intent.putExtra("Location", rcObjItem.getsLocation());
+                        intent.putExtra("Email", rcObjItem.getsEmail());
+
                         startActivity(intent);
                     }
                 });
@@ -504,10 +560,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //Find the users when the app starts on a separate child thread
         //The main thread creates the required UI components
         //While this happens, the child thread retrieves the required data to be displayed in the UI
+        activeuserID = id;
         radarThreadObj = new RadarThread(id);
         thread = new Thread(radarThreadObj);
         thread.setDaemon(true); //Kill this child thread when the main thread is terminated
         thread.start();
+
+        //Toast.makeText(this, "UserID is " + activeuserID,
+        //        Toast.LENGTH_LONG).show();
     }
 
     @Override

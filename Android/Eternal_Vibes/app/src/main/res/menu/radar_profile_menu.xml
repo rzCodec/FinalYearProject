@@ -4,6 +4,9 @@
     <item android:title="Invite to event"
         android:id="@+id/InviteToEvent" />
 
+    <item android:title="Follow user"
+        android:id="@+id/FollowUser" />
+
     <item android:title="View detailed information"
         android:id="@+id/ViewProfileDetails" />
 
