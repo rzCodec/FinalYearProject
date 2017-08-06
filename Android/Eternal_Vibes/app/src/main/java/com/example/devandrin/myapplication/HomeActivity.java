@@ -137,7 +137,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if (tab.getPosition() == 1) {
                     newPostFab.setVisibility(View.VISIBLE);
                     btn_sortRadar.setVisibility(View.GONE);
-                    onResume();
                 } else {
                     newPostFab.setVisibility(View.GONE);
                 }

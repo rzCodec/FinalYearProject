@@ -36,9 +36,9 @@ public class ProfileQueue implements Iterable<RadarContent> {
      * @param radarContentList
      */
     public ProfileQueue(ArrayList<RadarContent> radarContentList) {
-        this.arrProfiles = new RadarContent[radarContentList.size()];
-        radarContentList.toArray(arrProfiles);
-        this.length = radarContentList.size();
+            this.arrProfiles = new RadarContent[radarContentList.size()];
+            radarContentList.toArray(arrProfiles);
+            this.length = radarContentList.size();
     }
 
     /**

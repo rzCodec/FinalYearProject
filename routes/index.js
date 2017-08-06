@@ -47,54 +47,59 @@ module.exports = function (app, passport) {
     });
   });
   app.get('/dashBoard', isLoggedIn, function (req, res) {
-    var UserInfo = {
-      info: req.user
-    };
-    parallel([
-        function (callback) {
-          request({
-            url: "https://www.eternalvibes.me/getStatuses/" + req.user.id,
-            json: true
-          }, function (error, response, body) {
-            if (error) {
-              console.log(error);
-            }
-            UserInfo.Status = body;
-            callback(null);
+    if (req.user.admin == "0") {
+      var UserInfo = {
+        info: req.user
+      };
+      parallel([
+          function (callback) {
+            request({
+              url: "https://www.eternalvibes.me/getStatuses/" + req.user.id,
+              json: true
+            }, function (error, response, body) {
+              if (error) {
+                console.log(error);
+              }
+              UserInfo.Status = body;
+              callback(null);
+            });
+          },
+          function (callback) {
+            request({
+              url: "https://www.eternalvibes.me/getTopGenres",
+              json: true
+            }, function (error, response, body) {
+              if (error) {
+                console.log(error);
+              }
+              UserInfo.TopGenres = body;
+              callback(null);
+            });
+          },
+          function (callback) {
+            request({
+              url: "https://www.eternalvibes.me/getTopArtists",
+              json: true
+            }, function (error, response, body) {
+              if (error) {
+                console.log(error);
+              }
+              UserInfo.TopArtists = body;
+              callback(null);
+            });
+          }
+        ],
+        function (err, results) {
+          res.render('Pages/UserDashboard/DashBoard.ejs', {
+            UserInfo: UserInfo
           });
-        },
-        function (callback) {
-          request({
-            url: "https://www.eternalvibes.me/getTopGenres",
-            json: true
-          }, function (error, response, body) {
-            if (error) {
-              console.log(error);
-            }
-            UserInfo.TopGenres = body;
-            callback(null);
-          });
-        },
-        function (callback) {
-          request({
-            url: "https://www.eternalvibes.me/getTopArtists",
-            json: true
-          }, function (error, response, body) {
-            if (error) {
-              console.log(error);
-            }
-            UserInfo.TopArtists = body;
-            callback(null);
-          });
-        }
-      ],
-      function (err, results) {
-        res.render('Pages/UserDashboard/DashBoard.ejs', {
-          UserInfo: UserInfo
         });
-      });
+    } else {
+      res.redirect('/broadcast');
+    }
 
   });
+
   app.get('/logout', isLoggedIn, function (req, res) {
     req.logout();
     res.redirect('/');
@@ -129,6 +134,66 @@ module.exports = function (app, passport) {
       res.send(html);
     });
   });
+  app.get('/reports', isLoggedIn, function (req, res) {
+    var Reports = {
+      users24: null,
+      events24: null,
+      genres: null,
+      usersLogin24: null
+    };
+    parallel([
+        function (callback) {
+          connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)', function (error, results) {
+            if (error) {
+              console.log(error)
+            } else {
+              Reports.users24 = results[0];
+              callback();
+            }
+          });
+        },
+        function (callback) {
+          connection.query('SELECT COUNT(*) AS count FROM `events` WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)', function (error, results) {
+            if (error) {
+              console.log(error)
+            } else {
+              Reports.events24 = results[0];
+              callback();
+            }
+          });
+        },
+
+        function (callback) {
+          connection.query('SELECT COUNT(*) AS count FROM `users` WHERE users.last_login_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)', function (error, results) {
+            if (error) {
+              console.log(error)
+            } else {
+              Reports.usersLogin24 = results[0];
+              callback();
+            }
+          });
+        },
+
+        function (callback) {
+          connection.query('SELECT genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC', function (error, results) {
+            if (error) {
+              console.log(error)
+            } else {
+              Reports.genres = results;
+              callback();
+            }
+          });
+        }
+      ],
+      function (err, results) {
+        res.render('Pages/AdminDashboard/reports.ejs', {
+          Reports: Reports
+        }, function (err, html) {
+          res.send(html);
+        });
+      });
+
+  });
 
   app.get('/MobileLogin', function (req, res) {
     if (req.param("status") === "false") {
@@ -161,7 +226,7 @@ module.exports = function (app, passport) {
     }
   });
   app.post('/MobileSignup', passport.authenticate('local-signup', {
-    successRedirect: '/MobileSignup?status=fail',
+    successRedirect: '/MobileSignup?status=true',
     failureRedirect: '/MobileSignup?status=fail',
     failureFlash: true
   }));
@@ -176,7 +241,7 @@ module.exports = function (app, passport) {
     });
   });//
   app.get('/getTopArtists', function (req, res) {
-    connection.query('SELECT users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id GROUP BY status_list.user_id ORDER BY count DESC', function (error, results) {
+    connection.query('SELECT users.id,users.username,users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id GROUP BY status_list.user_id ORDER BY count DESC', function (error, results) {
       if (error) {
         console.log(error)
       } else {
@@ -339,7 +404,7 @@ module.exports = function (app, passport) {
 
   });
   app.get('/getFollowing/:userID', function (req, res) {
-    connection.query('SELECT followers.user_id, users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ?', [req.params.userID], function (error, results) {
+    connection.query('SELECT followers.liked_id, users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ?', [req.params.userID], function (error, results) {
       if (error) {
         console.log(error)
       } else {
@@ -358,7 +423,7 @@ module.exports = function (app, passport) {
   });
   app.get('/getFriends/:userID', function (req, res) {
     var FriendList = [];
-    connection.query('SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.avatar_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ?', [req.params.userID], function (error, result) {
+    connection.query('SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ?', [req.params.userID], function (error, result) {
       if (error) {
         console.log(error)
       } else {
@@ -521,6 +586,70 @@ module.exports = function (app, passport) {
              });
          });*/
         res.send(filterDistance(Users, DistanceUpperBound, Longitude, Latitude));
+      });
+  });
+
+  app.post('/createEvent', function (req, res) {
+    connection.query('INSERT INTO `events` (`id`, `title`, `date`, `description`, `status`, `user_id`,`createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
+      [req.body.title, req.body.date, req.body.description, req.body.status, req.body.user_id], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  app.get('/cancelEvent/:eventID', function (req, res) {
+    connection.query('delete from events where events.id = 1',
+      [req.params.eventID], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  app.get('/getEvents/:userID', function (req, res) {
+    connection.query('SELECT events.*, invites.message,invites.id AS invite_id,invites.sender_user_id FROM invites \n' +
+      'INNER JOIN events on events.id = invites.id \n' +
+      'INNER JOIN responses ON responses.id = invites.response_id \n' +
+      'WHERE invites.receiver_user_id = ? AND response_id !=3',
+      [req.params.userID], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  app.get('/GetUsersEvents/:userID', function (req, res) {
+    connection.query('SELECT events.* FROM events WHERE events.user_id=?',
+      [req.params.userID], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  app.post('/SendInvite', function (req, res) {
+    connection.query('INSERT INTO `invites` (`id`, `sender_user_id`, `receiver_user_id`, `response_id`, `event_id`, `message`) VALUES (NULL, ?, ?, 2, ?, ?)',
+      [req.body.sender_user_id, req.body.receiver_user_id, req.body.event_id, req.body.message], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  app.post('/ResponseToInvite', function (req, res) {
+    connection.query('UPDATE `invites` SET `response_id` = ? WHERE `invites`.`id` = ?;',
+      [req.body.response_id, req.body.id], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
       });
   });
 };

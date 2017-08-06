@@ -1,6 +1,8 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +50,14 @@ public class EventAdapter extends ArrayAdapter<EventItem> {
         }
         cal.setTimeInMillis(item.getDate());
         components.Date.setText(sdf.format(cal.getTime()));
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventViewActivity.setItem(item);
+                Intent i = new Intent(EventActivity.getInstance(),EventViewActivity.class);
+                EventActivity.getInstance().startActivity(i);
+            }
+        });
         return convertView;
     }
 
@@ -56,4 +66,5 @@ public class EventAdapter extends ArrayAdapter<EventItem> {
         TextView info;
         TextView Date;
     }
+
 }

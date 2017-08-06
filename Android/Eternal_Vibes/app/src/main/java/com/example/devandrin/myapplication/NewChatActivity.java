@@ -69,7 +69,7 @@ public class NewChatActivity extends AppCompatActivity {
                     for(int i =0; i< response.length(); i++)
                     {
                         o = response.getJSONObject(i);
-                        list.add(new Profile(o.getInt("user_id"),o.getString("username"),0));
+                        list.add(new Profile(o.getInt("liked_id"),o.getString("username"),0));
                     }
                     cca.notifyDataSetChanged();
                 }
