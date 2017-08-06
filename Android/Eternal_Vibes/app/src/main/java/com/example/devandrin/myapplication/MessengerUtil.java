@@ -69,6 +69,7 @@ public class MessengerUtil extends Content {
         srl.setOnRefreshListener(srfListener());
         return view;
     }
+
     public static void getMessages(int id)
     {
         String url = "https://eternalvibes.me/getmessages/" + id;

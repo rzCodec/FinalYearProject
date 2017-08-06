@@ -59,7 +59,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Thread thread;
     private RadarThread radarThreadObj;
     private RadarContent rcObjItem = new RadarContent();
-    private String activeuserID = "";
+    public String activeuserID = "";
 
     static HomeActivity getInstance() {
         return instance;
@@ -559,8 +559,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         thread.setDaemon(true); //Kill this child thread when the main thread is terminated
         thread.start();
 
-        Toast.makeText(this, "UserID is " + id,
-                Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "UserID is " + activeuserID,
+        //        Toast.LENGTH_LONG).show();
     }
 
     @Override

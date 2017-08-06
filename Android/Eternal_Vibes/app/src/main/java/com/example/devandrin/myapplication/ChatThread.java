@@ -1,5 +1,6 @@
 package com.example.devandrin.myapplication;
 
+import android.util.Log;
 import android.view.View;
 
 import com.android.volley.AuthFailureError;
@@ -42,7 +43,7 @@ public class ChatThread extends Thread {
 
     @Override
     public void run(){
-        //Make chat request here
+        //Making the chat request here
         String url = "https://eternalvibes.me/" + userMessage + "/" + chatID + "/" + currentUserID;
 
         Map<String, String> data = new HashMap<>();
@@ -55,15 +56,12 @@ public class ChatThread extends Thread {
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if(response.equals("200"))
-                {
-
-                }
+                Log.i("VOLLEY", response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e("VOLLEY", "Error from send message request is : " + error.toString());
             }
         }){
             @Override

@@ -177,8 +177,6 @@ public class RadarProfileActivity extends AppCompatActivity {
 
     private void Initialize() {
         Intent i = getIntent();
-        //sProfileName = i.getStringExtra("Name");
-        //setTitle(i.getStringExtra("Name"));
 
         //Get the details from HomeActivity, so the text views can show data
         rpObj.setsUsername(i.getStringExtra("Name"));
@@ -188,6 +186,8 @@ public class RadarProfileActivity extends AppCompatActivity {
         rpObj.setiDistance(i.getIntExtra("Distance", 0));
         rpObj.setsLocation(i.getStringExtra("Location"));
         rpObj.setsEmail(i.getStringExtra("Email"));
+
+        setTitle(i.getStringExtra("Name") + "'s Profile");
     }
 
 }
