@@ -8,7 +8,6 @@
     <item android:title="Sort by furthest distance"
           android:id="@+id/FurthestDistance" />
 
-
     <item android:title="Sort by highest rating"
           android:id="@+id/HighestRating" />
 

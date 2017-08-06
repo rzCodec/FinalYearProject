@@ -32,11 +32,16 @@ public class RadarUtil extends Content {
         super(inflater, container);
     }
 
+    public static void SortBySkillset(ArrayList<String> skillsetList){
+
+    }
+
+
     public static void UpdatedSort_RadarProfiles(String RadarSortType, Boolean isAscending) {
 
         if(unsorted_radarList == null){
             unsorted_radarList = new ArrayList<>();
-            unsorted_radarList.add(new RadarContent(3528, "James", "Vrom", 11, 4, "Intermediate", "Rosebank", 4200, "James99@gmail.com"));
+            unsorted_radarList.add(new RadarContent(3528, "James", "Vrom", 11, 4, "Intermediate", "Rosebank", 4200, "James99@gmail.com", "Drums"));
         }
 
         ProfileQueue pqObj = new ProfileQueue(unsorted_radarList);

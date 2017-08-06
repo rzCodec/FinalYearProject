@@ -30,6 +30,7 @@ public class RadarProfileActivity extends AppCompatActivity {
         private String sLocation;
         private int iDistance;
         private String sEmail;
+        private String Skillset;
 
         public RadarProfile(){
 
@@ -90,6 +91,14 @@ public class RadarProfileActivity extends AppCompatActivity {
         public void setsEmail(String sEmail) {
             this.sEmail = sEmail;
         }
+
+        public String getSkillset() {
+            return Skillset;
+        }
+
+        public void setSkillset(String skillset) {
+            Skillset = skillset;
+        }
     }
 
     //Attributes
@@ -136,7 +145,7 @@ public class RadarProfileActivity extends AppCompatActivity {
         tvLastName.setText("Last Name: " + rpObj.getsLastName());
         tvRank.setText("Rank: " + rpObj.getsRank());
         tvRating.setText("Rating: " + rpObj.getiRating());
-        tvSkillset.setText("Muscian Skillset:");
+        tvSkillset.setText("Muscian Skillset: " + rpObj.getSkillset());
         tvDistanceAndLocation.setText("Distance " + rpObj.getiDistance() + " km away and is in " + rpObj.getsLocation());
         tvEmail.setText("Email Address: " + rpObj.getsEmail());
 
@@ -186,6 +195,7 @@ public class RadarProfileActivity extends AppCompatActivity {
         rpObj.setiDistance(i.getIntExtra("Distance", 0));
         rpObj.setsLocation(i.getStringExtra("Location"));
         rpObj.setsEmail(i.getStringExtra("Email"));
+        rpObj.setSkillset(i.getStringExtra("Skillset"));
 
         setTitle(i.getStringExtra("Name") + "'s Profile");
     }

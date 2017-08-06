@@ -17,12 +17,13 @@ public class RadarContent {
     private String sLocation;
     private long TimeStamp;
     private String sEmail;
+    private String Skillset;
 
     public RadarContent(){
 
     }
 
-    public RadarContent(int userID, String sUsername, String sLastName, int distance, int rating, String ranking, String sLocation, long timeStamp, String sEmail) {
+    public RadarContent(int userID, String sUsername, String sLastName, int distance, int rating, String ranking, String sLocation, long timeStamp, String sEmail, String Skillset) {
         this.userID = userID;
         this.sUsername = sUsername;
         this.sLastName = sLastName;
@@ -32,6 +33,7 @@ public class RadarContent {
         this.sLocation = sLocation;
         TimeStamp = timeStamp;
         this.sEmail = sEmail;
+        this.Skillset = Skillset;
     }
 
     public RadarContent(JSONObject jsonObject){
@@ -70,6 +72,14 @@ public class RadarContent {
 
     public void setsEmail(String sEmail) {
         this.sEmail = sEmail;
+    }
+
+    public String getSkillset() {
+        return Skillset;
+    }
+
+    public void setSkillset(String skillset) {
+        Skillset = skillset;
     }
 
     public String getsLocation() {

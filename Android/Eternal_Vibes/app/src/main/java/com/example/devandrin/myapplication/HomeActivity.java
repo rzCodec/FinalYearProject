@@ -45,6 +45,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.RunnableFuture;
@@ -60,6 +61,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private RadarThread radarThreadObj;
     private RadarContent rcObjItem = new RadarContent();
     public String activeuserID = "";
+    private String[] arrSkillsets;
 
     static HomeActivity getInstance() {
         return instance;
@@ -76,6 +78,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         load = (ProgressBar) findViewById(R.id.pbLoad);
         dbHelper = new DBHelper(this);
         instance = this;
+
+        SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
+        activeuserID = sp.getString("userID", "");
+        radarThreadObj = new RadarThread(activeuserID);
+        thread = new Thread(radarThreadObj);
+        thread.setDaemon(true); //Kill this child thread when the main thread is terminated
+        thread.start();
+
+        /*
+        ArrayList<RadarContent> unsorted_radarList = radarThreadObj.getUnsorted_radarList();
+        arrSkillsets = new String[unsorted_radarList.size()];
+        for(int i = 0; i < arrSkillsets.length; i++){
+            arrSkillsets[i] = unsorted_radarList.get(i).getSkillset();
+        }*/
+
+            //Toast.makeText(this, "User ID is " + activeuserID,
+        //        Toast.LENGTH_LONG).show();
 
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
@@ -233,6 +252,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void setRadarProfileObject(RadarContent rcObjItem){
         //Create a branch new RadarContent object
         //The data was passed from RadarUtil
+        this.rcObjItem.setUserID(rcObjItem.getUserID());
         this.rcObjItem.setsUsername(rcObjItem.getsUsername());
         this.rcObjItem.setsLastName(rcObjItem.getsLastName());
         this.rcObjItem.setRanking(rcObjItem.getRanking());
@@ -240,6 +260,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         this.rcObjItem.setDistance(rcObjItem.getDistance());
         this.rcObjItem.setsLocation(rcObjItem.getsLocation());
         this.rcObjItem.setsEmail(rcObjItem.getsEmail());
+        this.rcObjItem.setSkillset(rcObjItem.getSkillset());
     }
 
     @Override
@@ -308,6 +329,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                             }
                         });
+
+                        RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(jar);
                     }
                 });
 
@@ -335,6 +358,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         intent.putExtra("Distance", rcObjItem.getDistance());
                         intent.putExtra("Location", rcObjItem.getsLocation());
                         intent.putExtra("Email", rcObjItem.getsEmail());
+                        intent.putExtra("Skillset", rcObjItem.getSkillset());
 
                         startActivity(intent);
                     }
@@ -561,13 +585,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //The main thread creates the required UI components
         //While this happens, the child thread retrieves the required data to be displayed in the UI
         activeuserID = id;
-        radarThreadObj = new RadarThread(id);
-        thread = new Thread(radarThreadObj);
-        thread.setDaemon(true); //Kill this child thread when the main thread is terminated
-        thread.start();
 
-        //Toast.makeText(this, "UserID is " + activeuserID,
-        //        Toast.LENGTH_LONG).show();
     }
 
     @Override
