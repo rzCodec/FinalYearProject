@@ -44,24 +44,24 @@ public class ChatThread extends Thread {
     @Override
     public void run(){
         //Making the chat request here
-        String url = "https://eternalvibes.me/" + userMessage + "/" + chatID + "/" + currentUserID;
+        String url = "https://www.eternalvibes.me/sendmessage" + "/" + chatID + "/" + currentUserID;
 
         Map<String, String> data = new HashMap<>();
         data.put("message", userMessage);
         data.put("chatID", Integer.toString(chatID));
-        data.put("currentUserID", Integer.toString(chatID));
+        data.put("currentUserID", Integer.toString(currentUserID));
 
         final JSONObject jo = new JSONObject(data);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.i("VOLLEY", response);
+                Log.i("VOLLEY", "Response is >>>>>>>>>>>>>>>>>> " + response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("VOLLEY", "Error from send message request is : " + error.toString());
+                Log.e("VOLLEY", "Error from send message request is >>>>>>>>>>>>>> " + error.toString());
             }
         }){
             @Override
@@ -88,8 +88,6 @@ public class ChatThread extends Thread {
                 }
                 return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
             }
-
-
         };
 
         RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(sr);

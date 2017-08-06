@@ -63,7 +63,6 @@ public class RadarThread implements Runnable {
         String url = "https://www.eternalvibes.me/getNearbyStrangers/" + userID;
         numProfiles = 5;
 
-
         JsonArrayRequest JOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray responseArray) {
