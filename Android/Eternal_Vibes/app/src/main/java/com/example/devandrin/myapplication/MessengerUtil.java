@@ -23,7 +23,13 @@ public class MessengerUtil extends Content {
     private static ArrayList<Chat> clist = null;
 
     private static MessengerAdapter adapter = null;
-
+    public static void dataUpdate()
+    {
+        if(adapter != null)
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
     public MessengerUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);
     }
@@ -38,7 +44,7 @@ public class MessengerUtil extends Content {
                     DBHelper dbh = HomeActivity.getDbHelper();
                     for (Chat c : clist) {
                         dbh.insertChat(c);
-                        getMessages(c.ChatID);
+                        ChatActivity.getMessages(c.ChatID);
                     }
                     adapter.clear();
                     clist = dbh.getAllChats();
