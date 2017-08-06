@@ -23,7 +23,13 @@ public class MessengerUtil extends Content {
     private static ArrayList<Chat> clist = null;
 
     private static MessengerAdapter adapter = null;
-
+    public static void dataUpdate()
+    {
+        if(adapter != null)
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
     public MessengerUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);
     }
@@ -38,7 +44,7 @@ public class MessengerUtil extends Content {
                     DBHelper dbh = HomeActivity.getDbHelper();
                     for (Chat c : clist) {
                         dbh.insertChat(c);
-                        getMessages(c.ChatID);
+                        ChatActivity.getMessages(c.ChatID);
                     }
                     adapter.clear();
                     clist = dbh.getAllChats();
@@ -69,26 +75,5 @@ public class MessengerUtil extends Content {
         srl.setOnRefreshListener(srfListener());
         return view;
     }
-    public static void getMessages(int id)
-    {
-        String url = "https://eternalvibes.me/getmessages/" + id;
-        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                if (response.length() >= 0) {
-                    ArrayList<Message> messages = Message.fromJSONArray(response);
-                    for(Message m : messages)
-                    {
-                        HomeActivity.getDbHelper().insertMessage(m);
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //do nothing
-            }
-        });
-        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
-    }
+
 }

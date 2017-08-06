@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/send_invites"
+        android:title="Invite Friends" />
+    <item
+        android:id="@+id/invite_all"
+        android:title="Invite All Friends" />
+    <item
         android:id="@+id/cancelevent"
-        android:orderInCategory="100"
         android:title="Cancel Event" />
 </menu>

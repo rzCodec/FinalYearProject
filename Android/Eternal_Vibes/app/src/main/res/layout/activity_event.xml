@@ -35,7 +35,7 @@
         android:layout_marginTop="8dp"
         android:clickable="true"
         android:onClick="createEvent"
-        app:fabSize="normal"
+        app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintLeft_toLeftOf="parent"
