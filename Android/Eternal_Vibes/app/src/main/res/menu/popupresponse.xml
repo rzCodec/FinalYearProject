@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group >
+        <item android:id="@+id/attending"
+            android:title="Attending event"/>
+        <item android:id="@+id/maybe"
+            android:title="Maybe" />
+        <item android:id="@+id/not_attending"
+            android:title="Not attending" />
+    </group>
+</menu>

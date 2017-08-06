@@ -1,6 +1,7 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public class RadarUtil extends Content {
 
     //Use two different arraylists to prevent
-    private static ArrayList<RadarContent> unsorted_radarList;
+    private static ArrayList<RadarContent> unsorted_radarList = new ArrayList<>();
     private static ArrayList<RadarContent> sorted_radarList;
     private static RadarAdapter raObj;
     private static View view;
@@ -32,6 +33,11 @@ public class RadarUtil extends Content {
     }
 
     public static void UpdatedSort_RadarProfiles(String RadarSortType, Boolean isAscending) {
+
+        if(unsorted_radarList == null){
+            unsorted_radarList = new ArrayList<>();
+            unsorted_radarList.add(new RadarContent(3528, "James", "Vrom", 11, 4, "Intermediate", "Rosebank", 4200, "James99@gmail.com"));
+        }
 
         ProfileQueue pqObj = new ProfileQueue(unsorted_radarList);
         pqObj.ProfileSort(RadarSortType, isAscending);
@@ -67,6 +73,12 @@ public class RadarUtil extends Content {
              */
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+
+                //When the user clicks an item in the listview, pass that specific object data
+                //into the home activity, setup a brand new radar content object and send the data to
+                //to the RadarProfileActivity class
+                RadarContent rcObj = (RadarContent) adapter.getItemAtPosition(position);
+                HomeActivity.getInstance().setRadarProfileObject(rcObj);
                 HomeActivity.getInstance().setupRadarProfileMenu(lv);
             }
         });
@@ -83,8 +95,13 @@ public class RadarUtil extends Content {
 
         //The setup profiles method has been moved to the RadarThread class
         unsorted_radarList = HomeActivity.getInstance().getRadarThreadObj().getUnsorted_radarList();
+        if(unsorted_radarList == null){
+            Snackbar s = Snackbar.make(HomeActivity.getInstance().findViewById(R.id.cLayout), "Could locate other users due to a connection error.", Snackbar.LENGTH_LONG);
+            s.show();
+        }
         UpdatedSort_RadarProfiles("DISTANCE", false); //Default sort by shortest distance
 
         return view;
     }
+
 }//end of class

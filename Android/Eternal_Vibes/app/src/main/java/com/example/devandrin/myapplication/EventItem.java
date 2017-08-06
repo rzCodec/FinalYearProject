@@ -46,7 +46,7 @@ public class EventItem {
         status = (short) o.getInt("status");
         if(o.has("invite_id"))
         {
-            invite = new Invitation(o.getInt("invite_id"),o.getString("message"),o.getInt("status"));
+            invite = new Invitation(o.getInt("invite_id"),o.getString("message"),o.getLong("sender_user_id"));
         }
     }
     public static ArrayList<EventItem> fromJSONArray(JSONArray arr)

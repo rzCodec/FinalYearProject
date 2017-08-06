@@ -45,6 +45,7 @@
         <activity
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

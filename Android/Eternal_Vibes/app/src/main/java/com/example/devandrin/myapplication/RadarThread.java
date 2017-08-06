@@ -63,7 +63,6 @@ public class RadarThread implements Runnable {
         String url = "https://www.eternalvibes.me/getNearbyStrangers/" + userID;
         numProfiles = 5;
 
-
         JsonArrayRequest JOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray responseArray) {
@@ -117,11 +116,19 @@ public class RadarThread implements Runnable {
         numProfiles = 5;
         arrAPI_Profiles = new RadarContent[numProfiles];
 
+        /*
         arrAPI_Profiles[0] = new RadarContent(452, "Jessica Grom : " + temp, 12, 3, "Intermediate", "Sandton", 2100);
         arrAPI_Profiles[1] = new RadarContent(89, "Bob Brown", 20, 2, "Beginner", "Houghton", 500);
         arrAPI_Profiles[2] = new RadarContent(1552, "Tom Yeis", 18, 4, "Advanced", "Randburg", 1500);
         arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);
-        arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);
+        arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);*/
+
+        arrAPI_Profiles[0] = new RadarContent(452, "Jessica", "Grom", 12, 3, "Intermediate", "Sandton", 2100, "Jess55@gmail.com");
+        arrAPI_Profiles[1] = new RadarContent(89, "Bob", "Brown", 20, 2, "Beginner", "Houghton", 500, "Bob85@gmail.com");
+        arrAPI_Profiles[2] = new RadarContent(1552, "Tom", "Yeis", 18, 4, "Advanced", "Randburg", 1500, "Tom@44hotmail.com");
+        arrAPI_Profiles[3] = new RadarContent(452, "Tiffany", "Vlein", 40, 5, "Master", "Pretoria", 4100, "22Tiff@gmail.com");
+        arrAPI_Profiles[4] = new RadarContent(842, "Jerry", " Alko", 34, 1, "Beginner", "Soweto", 800, "Jerry@hotmail.com");
+
 
         /*
         for(int i = 0; i < numProfiles; i++){

@@ -75,7 +75,7 @@ public class Dashboard extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Map<String,Object> data = new HashMap<>();
+                Map<String,Object> data = new HashMap<>();
                 //data.put("user_id",303346727);
                 //data.put("username","Vanneh");
                 data.put("user_id",303346716);
@@ -86,7 +86,8 @@ public class Dashboard extends AppCompatActivity {
                 }catch(JSONException e)
                 {
                     e.printStackTrace();
-                }*/
+                }
+
 
                 if (Password.length() > 0) {
                     if (Email.length() > 0) {
@@ -102,6 +103,7 @@ public class Dashboard extends AppCompatActivity {
                 } else {
                     Utilities.MakeToast(getApplicationContext(), "Credentials empty");
                 }
+
             }
         };
     }
