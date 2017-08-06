@@ -123,6 +123,7 @@ public class ChatActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
     public static void getMessages(int id)
     {
         String url = "https://eternalvibes.me/getmessages/" + id;
