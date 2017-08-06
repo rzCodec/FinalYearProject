@@ -289,15 +289,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-            case R.id.MostCommonSkillset:
-
-                return true;
-
-            case R.id.LeastCommonSkillset:
-
-                return true;
-
             case R.id.NearestDistance:
                 RadarUtil.UpdatedSort_RadarProfiles("DISTANCE", true);
                 return true;
