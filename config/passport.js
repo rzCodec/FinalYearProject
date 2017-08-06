@@ -35,8 +35,8 @@ module.exports = function (passport) {
               email: username,
               firstname: req.param('firstname'),
               surname: req.param('surname'),
-              genre_id: req.param('genre'),
-              distance_id: req.param('distance'),
+              genre_id: req.param('genre_id'),
+              distance_id: req.param('distance_id'),
               description: req.param('description')
             };
 

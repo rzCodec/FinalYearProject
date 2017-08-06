@@ -250,7 +250,7 @@ module.exports = function (app, passport) {
     });
   });//
   app.get('/getUserInfoEmail/:email', function (req, res) {
-    connection.query('SELECT * FROM `users` WHERE email=' + req.params.email, function (error, results) {
+    connection.query('SELECT * FROM `users` WHERE email=?', [req.params.email], function (error, results) {
       if (error) {
         console.log(error)
       } else {
@@ -423,13 +423,32 @@ module.exports = function (app, passport) {
   });
   app.get('/getFriends/:userID', function (req, res) {
     var FriendList = [];
-    connection.query('SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ?', [req.params.userID], function (error, result) {
-      if (error) {
-        console.log(error)
-      } else {
-        res.send(result);
-      }
-    });
+
+    parallel([
+        function (callback) {
+          connection.query('SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ?', [req.params.userID], function (error, result) {
+            if (error) {
+              console.log(error)
+            } else {
+              FriendList.concat(result)
+              callback();
+            }
+          });
+        },
+        function (callback) {
+          connection.query('SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user1_id = users.id WHERE user2_id = ?', [req.params.userID], function (error, result) {
+            if (error) {
+              console.log(error)
+            } else {
+              FriendList.concat(result)
+              callback();
+            }
+          });
+        }
+      ],
+      function (err, results) {
+        res.send(FriendList);
+      });
   });
   app.post('/setStatus/:userID', function (req, res) {
     connection.query('INSERT INTO `status_list` (`user_id`, `timestamp`, `status`, `extra_info`) VALUES (?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ?, ?)', [req.params.userID, req.body.status, req.body.extraInfo], function (error, results) {
@@ -505,7 +524,7 @@ module.exports = function (app, passport) {
     var Friend2 = [];*/
     parallel([
         function (callback) {
-          connection.query('SELECT users.search_distance,users.longitude,users.latitude FROM users WHERE users.id = ?', [req.params.userID], function (error, results) {
+          connection.query('SELECT distances.distance AS search_distance,users.longitude,users.latitude FROM users INNER JOIN distances on distance_id=distances.id WHERE users.id = ?', [req.params.userID], function (error, results) {
             if (error) {
               console.log(error)
             } else {
