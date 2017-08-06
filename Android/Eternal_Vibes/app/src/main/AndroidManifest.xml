@@ -45,9 +45,9 @@
         <activity
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"
-            android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.devandrin.myapplication.HomeActivity" />
@@ -78,6 +78,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.devandrin.myapplication.EventActivity" />
+        </activity>
+        <activity
+            android:name=".SendInviteActivity"
+            android:label="@string/title_activity_send_invite"
+            android:parentActivityName=".EventViewActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.devandrin.myapplication.EventViewActivity" />
         </activity>
     </application>
 

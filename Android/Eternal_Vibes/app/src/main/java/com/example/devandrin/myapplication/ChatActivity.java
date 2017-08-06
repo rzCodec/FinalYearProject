@@ -14,6 +14,13 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -115,5 +122,27 @@ public class ChatActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+    public static void getMessages(int id)
+    {
+        String url = "https://eternalvibes.me/getmessages/" + id;
+        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response.length() >= 0) {
+                    ArrayList<Message> messages = Message.fromJSONArray(response);
+                    for(Message m : messages)
+                    {
+                        HomeActivity.getDbHelper().insertMessage(m);
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //do nothing
+            }
+        });
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
     }
 }

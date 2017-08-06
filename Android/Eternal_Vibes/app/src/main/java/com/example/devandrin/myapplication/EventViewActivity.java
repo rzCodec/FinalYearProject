@@ -1,5 +1,6 @@
 package com.example.devandrin.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,20 +12,36 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class EventViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
     private static EventItem item;
     Calendar cal = Calendar.getInstance();
+    private static EventViewActivity instance;
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss \n dd/MM/yy");
     public static void setItem(EventItem item) {
         EventViewActivity.item = item;
     }
 
+    public static EventItem getItem() {
+        return item;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
+        if(item == null)
+        {
+            onBackPressed();
+            return;
+        }
         setContentView(R.layout.activity_event_view);
         setTitle(item.getName());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -86,8 +103,17 @@ public class EventViewActivity extends AppCompatActivity implements PopupMenu.On
                 Toast.makeText(this,"Maybe",Toast.LENGTH_LONG).show();
                 onBackPressed();
                 return true;
+            case R.id.send_invites :
+                Intent i = new Intent(this,SendInviteActivity.class);
+                i.putExtra("event_id",getItem().getId());
+                startActivity(i);
+                return true;
+            case R.id.invite_all :
+                SendInviteActivity.sendAllInvites(getItem().getId());
+                Toast.makeText(this,"Invitations sent",Toast.LENGTH_LONG).show();
+                return true;
             case R.id.cancelevent:
-                Toast.makeText(this,"Event Cancelled",Toast.LENGTH_LONG).show();
+                CancelEvent();
                 onBackPressed();
                 return true;
             default:
@@ -98,7 +124,23 @@ public class EventViewActivity extends AppCompatActivity implements PopupMenu.On
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        EventActivity.getInstance().onResume();
         finish();
+    }
+    public void CancelEvent()
+    {
+        String url = "https://www.eternalvibes.me/cancelevent" + getItem().getId();
+        StringRequest sr = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Utilities.MakeToast(instance,"Event Cancelled");
+                onBackPressed();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utilities.MakeToast(instance,"Error Cancelling Event");
+            }
+        });
+        RequestQueueSingleton.getInstance(this).addToQ(sr);
     }
 }

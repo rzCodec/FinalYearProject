@@ -498,11 +498,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_post) {
-            startPostActivity();
-            return true;
+        switch(id)
+        {
+            case R.id.action_post:
+                startPostActivity();
+                return true;
+            case R.id.action_event:
+                startActivity(new Intent(this, EventActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     void startPostActivity() {
