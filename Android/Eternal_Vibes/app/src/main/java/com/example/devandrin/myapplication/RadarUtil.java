@@ -34,6 +34,11 @@ public class RadarUtil extends Content {
 
     public static void UpdatedSort_RadarProfiles(String RadarSortType, Boolean isAscending) {
 
+        if(unsorted_radarList == null){
+            unsorted_radarList = new ArrayList<>();
+            unsorted_radarList.add(new RadarContent(3528, "James", "Vrom", 11, 4, "Intermediate", "Rosebank", 4200, "James99@gmail.com"));
+        }
+
         ProfileQueue pqObj = new ProfileQueue(unsorted_radarList);
         pqObj.ProfileSort(RadarSortType, isAscending);
 
