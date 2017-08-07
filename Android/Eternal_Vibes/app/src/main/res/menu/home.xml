@@ -3,10 +3,15 @@
 
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_topArtists"
+        android:icon="@android:drawable/btn_star"
+        android:title="Top Profiles"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_event"
         android:title="Events"
         android:icon="@drawable/ic_event_dark"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_post"
         android:title="@string/action_settings"
