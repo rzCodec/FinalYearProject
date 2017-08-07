@@ -72,7 +72,7 @@
         </activity>
         <activity
             android:name=".EventViewActivity"
-            android:label="@string/title_activity_event_view"
+            android:label="@string/title_activity_home"
             android:parentActivityName=".EventActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -81,7 +81,7 @@
         </activity>
         <activity
             android:name=".SendInviteActivity"
-            android:label="@string/title_activity_send_invite"
+            android:label="@string/title_activity_home"
             android:parentActivityName=".EventViewActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -90,13 +90,17 @@
         </activity>
         <activity
             android:name=".EventSelectionActivity"
-            android:label="@string/title_activity_event_selection"
+            android:label="@string/title_activity_home"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.devandrin.myapplication.HomeActivity" />
         </activity>
+        <activity
+            android:name=".FollowersListActivity"
+            android:label="@string/title_activity_followers_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

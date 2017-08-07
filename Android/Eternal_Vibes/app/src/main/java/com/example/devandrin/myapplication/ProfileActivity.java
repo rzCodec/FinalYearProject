@@ -2,6 +2,7 @@ package com.example.devandrin.myapplication;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,17 +21,20 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ProfileActivity extends AppCompatActivity {
     public static int USER_ID = 0; //A user id that will checked and used in Radar and Messenger classes
-    private ProgressDialog pd = null;
+    private static ProgressDialog pd = null;
     private FloatingActionButton fab;
+    private ProfileActivity instance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        instance=this;
         pd = new ProgressDialog(this);
         pd.setMessage("Loading Profile...");
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -43,20 +47,6 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(JSONArray response) {
                 try {
                     final Profile p = Profile.fromJSONArray(response).get(0);
-                    if(p.isAdmin() && !getIntent().hasExtra("IsOwner"))
-                    {
-                        fab.setVisibility(View.GONE);
-                    }
-                    else
-                    {
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                String url = "https://eternalvibes.me/flaguser/"+p.getId();
-
-                            }
-                        });
-                    }
                     USER_ID = p.getId(); //This user id will be used for the messenger and also for the radar
                     TextView values = (TextView) findViewById(R.id.firstName);
                     values.setText(p.getFirstname());
@@ -66,6 +56,12 @@ public class ProfileActivity extends AppCompatActivity {
                     values.setText(p.getEmail());
                     values = (TextView) findViewById(R.id.SongLink);
                     values.setText(p.getDescription());
+                    SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                    String userID = sp.getString("userID", "");
+                    if(!userID.equals(p.getId()+""))
+                    {
+                        fab.setOnClickListener(followUSer(p.getId()));
+                    }
                 } catch (JSONException e) {
                     System.err.println("Oops, something went wrong...");
                 }
@@ -91,5 +87,35 @@ public class ProfileActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+    private View.OnClickListener followUSer(final int ID)
+    {
+        SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        final String userID = sp.getString("userID", "");
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pd = new ProgressDialog(instance);
+                pd.setMessage("Following user...");
+                pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                pd.show();
+                String url = "https://eternalvibes.me/followuser/" + userID+"/"+ID;
+                JsonArrayRequest jor = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        pd.cancel();
+                        Utilities.MakeToast(HomeActivity.getInstance().getApplicationContext(), "User has been Followed");
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        pd.cancel();
+                        Utilities.MakeToast(HomeActivity.getInstance().getApplicationContext(), "Error Following user");
+                    }
+                });
+                RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jor);
+            }
+        };
     }
 }

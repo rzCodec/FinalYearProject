@@ -131,7 +131,6 @@ public class SendInviteActivity extends AppCompatActivity {
 
                     for(int i =0; i< response.length(); i++)
                     {
-                        pd.cancel();
                         o = response.getJSONObject(i);
                         list.add(new Profile(o.getInt("liked_id"),o.getString("username"),0));
                     }
@@ -142,6 +141,7 @@ public class SendInviteActivity extends AppCompatActivity {
                 {
                     e.printStackTrace();
                 }
+                pd.cancel();
             }
         }, new Response.ErrorListener() {
             @Override

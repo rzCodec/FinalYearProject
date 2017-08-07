@@ -35,8 +35,6 @@ public class ContactChatAdapter extends ArrayAdapter<Profile> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Components c;
-        SharedPreferences sp = NewChatActivity.getInstance().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        final String userID = sp.getString("userID", "");
         if (convertView == null) {
             c = new Components();
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.contact_item, parent, false);
@@ -47,8 +45,29 @@ public class ContactChatAdapter extends ArrayAdapter<Profile> {
         } else {
             c = (Components) convertView.getTag();
         }
-        final Profile p = getItem(position);
-        convertView.setOnClickListener(new View.OnClickListener() {
+        Profile p = getItem(position);
+        convertView.setOnClickListener(sendRequest(p));
+        c.username.setText(p.getAlias());
+        switch (p.getGenre_id()) {
+            case 0:
+                c.iv.setImageResource(R.mipmap.jazz_icon);
+                break;
+            case 1:
+                c.iv.setImageResource(R.mipmap.rock_icon);
+                break;
+            case 2:
+                c.iv.setImageResource(R.mipmap.rap_icon);
+                break;
+        }
+        return convertView;
+    }
+
+    private class Components {
+        TextView username;
+        ImageView iv;
+    }
+    protected View.OnClickListener sendRequest(final Profile p) {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DBHelper dbh = HomeActivity.getInstance().getDbHelper();
@@ -62,6 +81,8 @@ public class ContactChatAdapter extends ArrayAdapter<Profile> {
                     NewChatActivity.getInstance().finish();
                     return;
                 }
+                SharedPreferences sp = NewChatActivity.getInstance().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                final String userID = sp.getString("userID", "");
                 String url = "https://eternalvibes.me/createchat/"+userID+"/"+p.getId();
                 JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -88,27 +109,8 @@ public class ContactChatAdapter extends ArrayAdapter<Profile> {
                     }
                 });
                 RequestQueueSingleton.getInstance(NewChatActivity.getInstance()).addToQ(jor);
-
             }
-        });
-        c.username.setText(p.getAlias());
-        switch (p.getGenre_id()) {
-            case 0:
-                c.iv.setImageResource(R.mipmap.jazz_icon);
-                break;
-            case 1:
-                c.iv.setImageResource(R.mipmap.rock_icon);
-                break;
-            case 2:
-                c.iv.setImageResource(R.mipmap.rap_icon);
-                break;
-        }
-        return convertView;
-    }
-
-    private class Components {
-        TextView username;
-        ImageView iv;
+        };
     }
 
 }

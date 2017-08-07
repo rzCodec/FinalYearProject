@@ -14,6 +14,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 /**
  * Created by Devandrin on 2017/04/01.
@@ -73,6 +74,8 @@ public class MessengerUtil extends Content {
         l.setAdapter(adapter);
         srl = (SwipeRefreshLayout) view.findViewById(R.id.refreshView);
         srl.setOnRefreshListener(srfListener());
+        View Empty = inflater.inflate(R.layout.empty,null);
+        l.setEmptyView(Empty);
         return view;
     }
 
