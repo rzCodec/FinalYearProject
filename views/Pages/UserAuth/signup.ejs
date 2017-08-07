@@ -47,8 +47,8 @@
                             <div class="errorTxt4" ></div >
                         </div >
                         <div class="col s12" >
-                            <label for="genre" >Genre</label >
-                            <select class="error browser-default" id="genre" name="genre" data-error=".errorTxt6" >
+                            <label for="genre_id" >Genre</label >
+                            <select class="error browser-default" id="genre_id" name="genre_id" data-error=".errorTxt6" >
                                 <option value="" disabled="" selected="" >Choose your genre</option >
                                 <% genres.forEach(function(t){
                                 %>
@@ -61,8 +61,8 @@
                             </div >
                         </div >
                         <div class="col s12" >
-                            <label for="distance" >Choose the distance you want to search for people in</label >
-                            <select class="error browser-default" id="distance" name="distance"
+                            <label for="distance_id" >Choose the distance you want to search for people in</label >
+                            <select class="error browser-default" id="distance_id" name="distance_id"
                                     data-error=".errorTxt68" >
                                 <option value="" disabled="" selected="" >Distance (KM)</option >
                                 <% distances.forEach(function(t){
@@ -152,8 +152,8 @@
           minlength: 5,
           equalTo: "#password"
         },
-        genre: "required",
-        distance: "required",
+        genre_id: "required",
+        distance_id: "required",
         skill: "required",
         status: {
           required: true,
