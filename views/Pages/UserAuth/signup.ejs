@@ -1,174 +1,113 @@
 <!doctype html>
 <html >
 <head >
-    <title >Node Authentication</title >
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" >
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" >
-    <style >
-        body {
-            padding-top: 80px;
-        }
-    </style >
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.min.css" >
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js" ></script >
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/js/materialize.min.js" ></script >
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js" ></script >
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.min.js" ></script >
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style type="text/css" >
-        .input-field div.error {
-            position: relative;
-            top: -1rem;
-            left: 0rem;
-            font-size: 0.8rem;
-            color: #FF4081;
-            -webkit-transform: translateY(0%);
-            -ms-transform: translateY(0%);
-            -o-transform: translateY(0%);
-            transform: translateY(0%);
-        }
-
-        .input-field label.active {
-            width: 100%;
-        }
-
-        .left-alert input[type=text] + label:after,
-        .left-alert input[type=password] + label:after,
-        .left-alert input[type=email] + label:after,
-        .left-alert input[type=url] + label:after,
-        .left-alert input[type=time] + label:after,
-        .left-alert input[type=date] + label:after,
-        .left-alert input[type=datetime-local] + label:after,
-        .left-alert input[type=tel] + label:after,
-        .left-alert input[type=number] + label:after,
-        .left-alert input[type=search] + label:after,
-        .left-alert textarea.materialize-textarea + label:after {
-            left: 0px;
-        }
-
-        .right-alert input[type=text] + label:after,
-        .right-alert input[type=password] + label:after,
-        .right-alert input[type=email] + label:after,
-        .right-alert input[type=url] + label:after,
-        .right-alert input[type=time] + label:after,
-        .right-alert input[type=date] + label:after,
-        .right-alert input[type=datetime-local] + label:after,
-        .right-alert input[type=tel] + label:after,
-        .right-alert input[type=number] + label:after,
-        .right-alert input[type=search] + label:after,
-        .right-alert textarea.materialize-textarea + label:after {
-            right: 70px;
-        }
-    </style >
+    <%- include ../../Partials/AboveFold.ejs %>
 </head >
 <body >
-<div class="container" >
-
-    <div class="col-sm-6 col-sm-offset-3" >
-
-        <h1 ><span class="fa fa-sign-in" ></span > Signup</h1 >
-
-        <!-- show any messages that come back with authentication -->
-        <% if (message.length > 0) { %>
-        <div class="alert alert-danger" ><%= message %></div >
-        <% } %>
-
-        <!-- LOGIN FORM -->
-        <div class="row" >
-            <form action="/signup" class="formValidate col s12 " id="formValidate" method="post" action=""
-                  novalidate="novalidate" >
-                <div class="row" >
-                    <div class="input-field col s6" >
-                        <label for="firstname" >First Name</label >
-                        <input id="firstname" name="firstname" type="text" data-error=".errorTxt1" >
-                        <div class="errorTxt1" ></div >
-                    </div >
-                    <div class="input-field col s6" >
-                        <label for="surname" >Surname</label >
-                        <input id="surname" name="surname" type="text" data-error=".errorTxt22" >
-                        <div class="errorTxt22" ></div >
-                    </div >
-                    <div class="input-field col s12" >
-                        <label for="realUserName" >Username</label >
-                        <input id="realUserName" name="realUserName" type="text" data-error=".errorTxt23" >
-                        <div class="errorTxt23" ></div >
-                    </div >
-                    <div class="input-field col s12" >
-                        <label for="username" >Email</label >
-                        <input id="username" name="username" type="email" data-error=".errorTxt24" >
-                        <div class="errorTxt24" ></div >
-                    </div >
-                    <div class="input-field col s12" >
-                        <label for="password" >Password</label >
-                        <input id="password" type="password" name="password" data-error=".errorTxt3" >
-                        <div class="errorTxt3" ></div >
-                    </div >
-                    <div class="input-field col s12" >
-                        <label for="confirmpassword" >Confirm Password</label >
-                        <input id="confirmpassword" type="password" name="confirmpassword" data-error=".errorTxt4" >
-                        <div class="errorTxt4" ></div >
-                    </div >
-                    <div class="col s12" >
-                        <label for="genre" >Genre</label >
-                        <select class="error browser-default" id="genre" name="genre" data-error=".errorTxt6" >
-                            <option value="" disabled="" selected="" >Choose your genre</option >
-                            <% genres.forEach(function(t){
-                            %>
-                            <option value="<%= t.id %>" ><%= t.name %></option >
-                            <%
-                            }); %>
-                        </select >
-                        <div class="input-field" >
-                            <div class="errorTxt6" ></div >
+<%- include ./partials/nav.ejs %>
+<main >
+    <div class="container" >
+        <div class="col-sm-6 col-sm-offset-3" >
+            <h1 ><span class="fa fa-sign-in" ></span > Signup</h1 >
+            <% if (message.length > 0) { %>
+            <div class="alert alert-danger" ><%= message %></div >
+            <% } %>
+            <div class="row" >
+                <form action="/signup" class="formValidate col s12 " id="formValidate" method="post" action=""
+                      novalidate="novalidate" >
+                    <div class="row" >
+                        <div class="input-field col s6" >
+                            <label for="firstname" >First Name</label >
+                            <input id="firstname" name="firstname" type="text" data-error=".errorTxt1" >
+                            <div class="errorTxt1" ></div >
                         </div >
-                    </div >
-                    <div class="col s12" >
-                        <label for="distance" >Distance (KM)</label >
-                        <select class="error browser-default" id="distance" name="distance" data-error=".errorTxt68" >
-                            <option value="" disabled="" selected="" >Choose your Search Distance (KM)</option >
-                            <% distances.forEach(function(t){
-                            %>
-                            <option value="<%= t.id %>" ><%= t.distance %></option >
-                            <%
-                            }); %>
-                        </select >
-                        <div class="input-field" >
-                            <div class="errorTxt68" ></div >
+                        <div class="input-field col s6" >
+                            <label for="surname" >Surname</label >
+                            <input id="surname" name="surname" type="text" data-error=".errorTxt22" >
+                            <div class="errorTxt22" ></div >
                         </div >
-                    </div >
-                    <div class="input-field col s12" >
+                        <div class="input-field col s12" >
+                            <label for="realUserName" >Username</label >
+                            <input id="realUserName" name="realUserName" type="text" data-error=".errorTxt23" >
+                            <div class="errorTxt23" ></div >
+                        </div >
+                        <div class="input-field col s12" >
+                            <label for="username" >Email</label >
+                            <input id="username" name="username" type="email" data-error=".errorTxt24" >
+                            <div class="errorTxt24" ></div >
+                        </div >
+                        <div class="input-field col s12" >
+                            <label for="password" >Password</label >
+                            <input id="password" type="password" name="password" data-error=".errorTxt3" >
+                            <div class="errorTxt3" ></div >
+                        </div >
+                        <div class="input-field col s12" >
+                            <label for="confirmpassword" >Confirm Password</label >
+                            <input id="confirmpassword" type="password" name="confirmpassword" data-error=".errorTxt4" >
+                            <div class="errorTxt4" ></div >
+                        </div >
+                        <div class="col s12" >
+                            <label for="genre" >Genre</label >
+                            <select class="error browser-default" id="genre" name="genre" data-error=".errorTxt6" >
+                                <option value="" disabled="" selected="" >Choose your genre</option >
+                                <% genres.forEach(function(t){
+                                %>
+                                <option value="<%= t.id %>" ><%= t.name %></option >
+                                <%
+                                }); %>
+                            </select >
+                            <div class="input-field" >
+                                <div class="errorTxt6" ></div >
+                            </div >
+                        </div >
+                        <div class="col s12" >
+                            <label for="distance" >Distance (KM)</label >
+                            <select class="error browser-default" id="distance" name="distance"
+                                    data-error=".errorTxt68" >
+                                <option value="" disabled="" selected="" >Choose your Search Distance (KM)</option >
+                                <% distances.forEach(function(t){
+                                %>
+                                <option value="<%= t.id %>" ><%= t.distance %></option >
+                                <%
+                                }); %>
+                            </select >
+                            <div class="input-field" >
+                                <div class="errorTxt68" ></div >
+                            </div >
+                        </div >
+                        <div class="input-field col s12" >
                         <textarea id="description" name="description" class="materialize-textarea validate"
                                   data-error=".errorTxt7" ></textarea >
-                        <label for="description" >Description</label >
-                        <div class="errorTxt7" ></div >
-                    </div >
-                    <div class="col s12" >
-                        <label for="tnc_select" >T&amp;C *</label >
-                        <p >
-                            <input type="checkbox" class="checkbox" id="agreee" name="agreee" data-error=".errorTxt9" >
-                            <label for="agreee" >Please agree to our policy</label >
-                        </p >
-                        <div class="input-field" >
-                            <div class="errorTxt9" ></div >
+                            <label for="description" >Description</label >
+                            <div class="errorTxt7" ></div >
+                        </div >
+                        <div class="col s12" >
+                            <label for="tnc_select" >T&amp;C *</label >
+                            <p >
+                                <input type="checkbox" class="checkbox" id="agreee" name="agreee"
+                                       data-error=".errorTxt9" >
+                                <label for="agreee" >Please agree to our policy</label >
+                            </p >
+                            <div class="input-field" >
+                                <div class="errorTxt9" ></div >
+                            </div >
+                        </div >
+                        <div class="input-field col s12" >
+                            <button class="btn waves-effect waves-light left submit" type="submit" name="action" >Sign
+                                Up
+                                <i class="mdi-content-send right" ></i >
+                            </button >
                         </div >
                     </div >
-                    <div class="input-field col s12" >
-                        <button class="btn waves-effect waves-light left submit" type="submit" name="action" >Sign Up
-                            <i class="mdi-content-send right" ></i >
-                        </button >
-                    </div >
-                </div >
-            </form >
-
+                </form >
+            </div >
+            <hr >
+            <p >Already have an account? <a href="/login" >Login</a ></p >
+            <p >Or go <a href="/" >home</a >.</p >
         </div >
-        <hr >
-
-        <p >Already have an account? <a href="/login" >Login</a ></p >
-        <p >Or go <a href="/" >home</a >.</p >
-
     </div >
-
-</div >
+</main >
+<%- include ../../Partials/footer.ejs %>
 <script >
   $(document).ready(function () {
     $("#formValidate").validate({

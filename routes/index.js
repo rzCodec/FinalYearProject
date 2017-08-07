@@ -524,8 +524,8 @@ module.exports = function (app, passport) {
   });
   app.get('/getNearbyStrangers/:userID', function (req, res) {
     var DistanceUpperBound = 10;
-    var Longitude = 0;
-    var Latitude = 0;
+    var Longitude = null;
+    var Latitude = null;
     var Users = [];
     /*var Following = [];
     var Followed = [];
@@ -537,7 +537,7 @@ module.exports = function (app, passport) {
             if (error) {
               console.log(error)
             } else {
-              if (results.length = 0) {
+              if (results.length != 0) {
                 DistanceUpperBound = results[0].search_distance;
                 Longitude = results[0].longitude;
                 Latitude = results[0].latitude;
@@ -653,8 +653,8 @@ module.exports = function (app, passport) {
   });
 
   app.post('/createEvent', function (req, res) {
-    connection.query('INSERT INTO `events` (`id`, `title`, `date`, `description`, `status`, `user_id`,`createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
-      [req.body.title, req.body.date, req.body.description, req.body.status, req.body.user_id], function (error, results) {
+    connection.query('INSERT INTO `events` (`id`, `title`, `date`, `description`, `duration`, `user_id`,`createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
+      [req.body.title, req.body.date, req.body.description, req.body.duration, req.body.user_id], function (error, results) {
         if (error) {
           console.log(error)
         } else {
@@ -733,10 +733,10 @@ function isLoggedIn(req, res, next) {
 function filterDistance(array, distance, longitude, latitude) {
   var EndUsers = [];
   array.forEach(function (user) {
-    var km = calcCrow(user.latitude, user.longitude, longitude, latitude);
+    var km = calcCrow(user.latitude, user.longitude, latitude, longitude);
     console.log(distance)
     console.log(km)
-    console.log(user+" "+user.latitude+" "+user.longitude+" "+longitude+" "+latitude)
+    console.log(user + " " + user.latitude + " " + user.longitude + " " + longitude + " " + latitude)
     if (km <= distance) {
       EndUsers.push({ user: user, km: km });
     }

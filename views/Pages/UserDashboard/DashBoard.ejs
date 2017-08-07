@@ -1,82 +1,60 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head >
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
-    <title >Eternal Vibes</title >
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" >
-    <link href="stylesheets/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link href="stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
-
+    <%- include ../../Partials/AboveFold.ejs %>
 </head >
 <body >
-<nav class="white" role="navigation" >
-    <div class="nav-wrapper container" >
-        <a href="/logout" class="brand-logo brown-text" ><i class="material-icons" >cloud</i >ETERNAL VIBES</a >
-        <ul class="right hide-on-med-and-down" >
-            <li ><a href="/dashboard" ><i class="material-icons" >refresh</i ></a ></li >
-            <li ><a href="/profile" > <i class="material-icons" >assignment_ind</i ></a ></li >
-            <li ><a href="/settings" > <i class="material-icons" >settings</i ></a ></li >
-            <li ><a href="/logout" > <i class="material-icons" >power_settings_new</i ></a ></li >
-        </ul >
-    </div >
-
-</nav >
-<div class="row" >
-    <div class="col s7 offset-s1" >
-        <ul id="staggered-test" >
-            <li class="" style="transform: translateX(0px); opacity: 0;" >
-                <div class="card white darken-1" >
-                    <div class="card-content" >
+<%- include ./partials/nav.ejs %>
+<main >
+    <div class="row" >
+        <div class="col s7 offset-s1" >
+            <ul id="staggered-test" >
+                <li class="" style="transform: translateX(0px); opacity: 0;" >
+                    <div class="card white darken-1" >
+                        <div class="card-content" >
                         <span class="card-title" >Welcome <%= UserInfo.info.username %> <img class="circle"
                                                                                              src="<%= UserInfo.info.profilepic_url %>"
                                                                                              width="64"
                                                                                              height="64" ></span >
 
+                        </div >
                     </div >
-                </div >
-            </li >
-            <%
-            UserInfo.Status.forEach(function (output, index) { %>
-            <li class="" style="transform: translateX(0px); opacity: 0;" >
-                <div class="card white darken-4 black-text" >
-                    <div class="card-content activator" >
-                        <div class="valign-wrapper" >
-                            <div class="col s3" ><img class="circle"
-                                                      src="<%= output.profilepic_url %>"
-                                                      width="64" height="64" >
-                                <div class="chip" >
-                                    <%= output.username %>
+                </li >
+                <%
+                UserInfo.Status.forEach(function (output, index) { %>
+                <li class="" style="transform: translateX(0px); opacity: 0;" >
+                    <div class="card white darken-4 black-text" >
+                        <div class="card-content activator" >
+                            <div class="valign-wrapper" >
+                                <div class="col s3" ><img class="circle"
+                                                          src="<%= output.profilepic_url %>"
+                                                          width="64" height="64" >
+                                    <div class="chip" >
+                                        <%= output.username %>
+                                    </div >
+                                </div >
+                                <div class="col s6" > <%= output.status %></div >
+                                <div class="col s2" > <%= output.timestamp %></div >
+                                <div class="col s1" ><i class="material-icons" >done</i ><i
+                                            class="material-icons activator" >info_outline</i >
                                 </div >
                             </div >
-
-                            <div class="col s6" > <%= output.status %></div >
-                            <div class="col s2" > <%= output.timestamp %></div >
-                            <div class="col s1" ><i class="material-icons" >done</i ><i
-                                        class="material-icons activator" >info_outline</i >
-                            </div >
                         </div >
-
-                    </div >
-                    <div class="card-reveal" >
+                        <div class="card-reveal" >
                         <span class="card-title grey-text text-darken-4" >Extra Info<i
                                     class="material-icons right" >close</i ></span >
-                        <p ><%= output.extra_info %></p >
+                            <p ><%= output.extra_info %></p >
+                        </div >
                     </div >
-
-                </div >
-            </li >
-            <% }); %>
-
-        </ul >
-
-    </div >
-    <div class="col s4" >
-        <ul id="staggered-test2" >
-            <li class="" style="transform: translateX(0px); opacity: 0;" >
-
-                <div class="card white lighten-2" >
-                    <div class="card-content" >
+                </li >
+                <% }); %>
+            </ul >
+        </div >
+        <div class="col s4" >
+            <ul id="staggered-test2" >
+                <li class="" style="transform: translateX(0px); opacity: 0;" >
+                    <div class="card white lighten-2" >
+                        <div class="card-content" >
 		<span class="card-title" >Top Artists <div class="chip" >
      Daily
   </div >
@@ -86,64 +64,33 @@
   <div class="chip" >
      Month
   </div ></span >
-
+                        </div >
+                        <ul class="collection" >
+                            <% UserInfo.TopArtists.forEach(function (output) { %>
+                            <li class="collection-item avatar" >
+                                <img src="<%= output.profilepic_url %>" alt=""
+                                     class="circle" >
+                                <span class="title" ><%= output.username %></span >
+                                <p >Swimming Pools
+                                </p >
+                                <a href="#" class="secondary-content" ><%= output.liked %></a >
+                            </li >
+                            <% }); %>
+                        </ul >
                     </div >
-                    <ul class="collection" >
-                        <% UserInfo.TopArtists.forEach(function (output) { %>
-                        <li class="collection-item avatar" >
+                    <div class="card white lighten-2" >
+                        <div class="card-content white-text" >
 
-                            <img src="<%= output.profilepic_url %>" alt=""
-                                 class="circle" >
-                            <span class="title" ><%= output.username %></span >
-                            <p >Swimming Pools
-                            </p >
-                            <a href="#" class="secondary-content" ><%= output.liked %></a >
-                        </li >
-                        <% }); %>
-
-                    </ul >
-                </div >
-                <div class="card white lighten-2" >
-                    <div class="card-content white-text" >
-
-                        <canvas id="myChart" width="400" height="400" ></canvas >
+                            <canvas id="myChart" width="400" height="400" ></canvas >
+                        </div >
                     </div >
-
-                </div >
-            </li >
-
-        </ul >
-    </div >
-
-</div >
-
-<footer class="page-footer brown darken-4" >
-    <div class="container" >
-        <div class="row" style='margin-bottom:0;' >
-            <div class="col l6 s12" >
-                <h5 class="white-text" >Eternal Vibes</h5 >
-                <p class="grey-text text-lighten-4" >We are growing, watch this space to see how fast we work</p >
-
-            </div >
-
-            <div class="col l3 s12" >
-                <h5 class="white-text" >Connect</h5 >
-                <ul >
-                    <li ><a class="white-text" href="#!" >Facebook</a ></li >
-                    <li ><a class="white-text" href="#!" >Twitter</a ></li >
-                    <li ><a class="white-text" href="#!" >Instagram</a ></li >
-                    <li ><a class="white-text" href="#!" >Google+</a ></li >
-                </ul >
-            </div >
+                </li >
+            </ul >
         </div >
     </div >
-</footer >
+</main >
+<%- include ../../Partials/footer.ejs %>
 
-<script src="https://code.jquery.com/jquery-2.1.1.min.js" ></script >
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js" ></script >
-
-<script src="javascripts/materialize.min.js" ></script >
-<script src="javascripts/init.js" ></script >
 <script >
   Materialize.showStaggeredList('#staggered-test');
   Materialize.showStaggeredList('#staggered-test2');
