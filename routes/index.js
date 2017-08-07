@@ -28,10 +28,13 @@ module.exports = function (app, passport) {
     connection.query('USE informatics');
     connection.query("SELECT * FROM `genres` ", function (err, genres) {
       connection.query("SELECT * FROM `distances` ORDER By distance ASC", function (err, distances) {
-        res.render('Pages/UserAuth/signup.ejs', {
-          genres: genres,
-          distances: distances,
-          message: req.flash('signupMessage')
+        connection.query("SELECT * FROM `skills` ORDER By distance ASC", function (err, skills) {
+          res.render('Pages/UserAuth/signup.ejs', {
+            genres: genres,
+            distances: distances,
+            skills: skills,
+            message: req.flash('signupMessage')
+          });
         });
       });
     });
@@ -268,8 +271,8 @@ module.exports = function (app, passport) {
     });
   });//
   app.post('/updateUserInfo/:userID', function (req, res) {
-    connection.query('UPDATE users SET email=?,song_link=?,genre_id=?,distance_id=?,last_login_timestamp=?,profilepic_url=?,description=?,skill_id=?  WHERE id=?',
-      [req.body.email, req.body.song_link, req.body.genre_id, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.body.skill_id, req.params.userID], function (error, results) {
+    connection.query('UPDATE users SET genre_id=?,distance_id=?,last_login_timestamp=?,profilepic_url=?,description=?,skill_id=?  WHERE id=?',
+      [ req.body.genre_id, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.body.skill_id, req.params.userID], function (error, results) {
         if (error) {
           console.log(error)
         } else {
@@ -652,6 +655,23 @@ module.exports = function (app, passport) {
       });
   });
 
+  app.get('/getEventSkill/:eventID', function (req, res) {
+    connection.query('delete from events where events.id = ?',
+      [req.params.eventID], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          connection.query('delete from invites where invites.event_id = ?',
+            [req.params.eventID], function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                res.send(results);
+              }
+            });
+        }
+      });
+  });
   app.post('/createEvent', function (req, res) {
     connection.query('INSERT INTO `events` (`id`, `title`, `date`, `description`, `duration`, `user_id`,`createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
       [req.body.title, req.body.date, req.body.description, req.body.duration, req.body.user_id], function (error, results) {
@@ -715,6 +735,47 @@ module.exports = function (app, passport) {
   app.post('/responseToInvite', function (req, res) {
     connection.query('UPDATE `invites` SET `response_id` = ? WHERE `invites`.`id` = ?;',
       [req.body.response_id, req.body.id], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
+      });
+  });
+
+  app.get('/confirmEventSkill/:event_skillID', function (req, res) {
+    connection.query('UPDATE events_skills SET status = TRUE WHERE id=?',
+      [req.params.event_skillID], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  app.get('/unconfirmEventSkill/:event_skillID', function (req, res) {
+    connection.query('UPDATE events_skills SET status = FALSE WHERE id=?',
+      [req.params.event_skillID], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  app.get('/addEventSkill/:event_id/:skill_id', function (req, res) {
+    connection.query('INSERT INTO `events_skills` (`id`, `event_id`, `skill_id`, `status`) VALUES (NULL, ?, ?, FALSE)',
+      [req.params.event_id,req.params.skill_id], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  app.get('/getEventSkills/:event_id', function (req, res) {
+    connection.query('SELECT * FROM `events_skills` WHERE events_skills.event_id=?',
+      [req.params.event_id], function (error, results) {
         if (error) {
           console.log(error)
         } else {

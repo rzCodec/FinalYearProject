@@ -61,10 +61,10 @@
                             </div >
                         </div >
                         <div class="col s12" >
-                            <label for="distance" >Distance (KM)</label >
+                            <label for="distance" >Choose the distance you want to search for people in</label >
                             <select class="error browser-default" id="distance" name="distance"
                                     data-error=".errorTxt68" >
-                                <option value="" disabled="" selected="" >Choose your Search Distance (KM)</option >
+                                <option value="" disabled="" selected="" >Distance (KM)</option >
                                 <% distances.forEach(function(t){
                                 %>
                                 <option value="<%= t.id %>" ><%= t.distance %></option >
@@ -73,6 +73,21 @@
                             </select >
                             <div class="input-field" >
                                 <div class="errorTxt68" ></div >
+                            </div >
+                        </div >
+                        <div class="col s12" >
+                            <label for="skill" >Choose the musical skill that suits you </label >
+                            <select class="error browser-default" id="skill" name="skill"
+                                    data-error=".errorTxt6888" >
+                                <option value="" disabled="" selected="" >Skill</option >
+                                <% skills.forEach(function(t){
+                                %>
+                                <option value="<%= t.id %>" ><%= t.name %></option >
+                                <%
+                                }); %>
+                            </select >
+                            <div class="input-field" >
+                                <div class="errorTxt6888" ></div >
                             </div >
                         </div >
                         <div class="input-field col s12" >
@@ -139,6 +154,7 @@
         },
         genre: "required",
         distance: "required",
+        skill: "required",
         status: {
           required: true,
           minlength: 15
