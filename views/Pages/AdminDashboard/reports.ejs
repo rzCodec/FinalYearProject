@@ -135,12 +135,12 @@
   var myChart3 = new Chart(ctx3, {
     type: 'bar',
     data: {
-      labels: [<% Reports.usersSkills.forEach(function (skill) { %>
+      labels: [<% Reports.skills.forEach(function (skill) { %>
         "<%= skill.name %>",
           <% }) %>],
       datasets: [{
         label: '# of skills',
-        data: [<% Reports.usersSkills.forEach(function (skill) { %>
+        data: [<% Reports.skills.forEach(function (skill) { %>
             <%= skill.count %>,
             <% }) %>],
         borderWidth: 1

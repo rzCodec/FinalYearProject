@@ -45,9 +45,17 @@ module.exports = function (app, passport) {
     failureFlash: true
   }));
   app.get('/profile', isLoggedIn, function (req, res) {
-    res.render('Pages/UserDashboard/profile.ejs', {
-      user: req.user
+
+    connection.query(' SELECT users.*,skills.name AS skill, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN skills on users.skill_id = skills.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=?',[req.user.id], function (error, results) {
+      if (error) {
+        console.log(error)
+      } else {
+        res.render('Pages/UserDashboard/profile.ejs', {
+          user: results[0]
+        });
+      }
     });
+
   });
   app.get('/dashBoard', isLoggedIn, function (req, res) {
     if (req.user.admin == "0") {
@@ -144,7 +152,7 @@ module.exports = function (app, passport) {
       events24: null,
       genres: null,
       usersLogin24: null,
-      usersSkills: null,
+      skills: null,
       usersWeek1: null,
       usersWeek2: null,
       usersWeek3: null,
@@ -166,7 +174,7 @@ module.exports = function (app, passport) {
             if (error) {
               console.log(error)
             } else {
-              Reports.usersSkills = results[0];
+              Reports.skills = results;
               callback();
             }
           });
