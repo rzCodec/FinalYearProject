@@ -27,6 +27,26 @@
                     <div class='container' >
                         <div class="card white darken-4 black-text" >
                             <div class="card-content" >
+                                <h1 >Signups per week</h1 >
+                                <canvas id="myChartSignup" width="400" height="400" ></canvas >
+                            </div >
+                        </div >
+                    </div >
+                </li >
+                <li class="" style="transform: translateX(0px); opacity: 0; " >
+                    <div class='container' >
+                        <div class="card white darken-4 black-text" >
+                            <div class="card-content" >
+                                <h1 >Skill Percentages</h1 >
+                                <canvas id="myChartSkills" width="400" height="400" ></canvas >
+                            </div >
+                        </div >
+                    </div >
+                </li >
+                <li class="" style="transform: translateX(0px); opacity: 0; " >
+                    <div class='container' >
+                        <div class="card white darken-4 black-text" >
+                            <div class="card-content" >
                                 <h1 >Daily # of Signups</h1 >
                                 <br >
                                 <%= Reports.users24.count %>
@@ -87,11 +107,58 @@
     }
   });
 
+  var ctx2 = document.getElementById("myChartSignup").getContext('2d');
+  var myChart2 = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: [
+        "Week4","Week3","Week2","Week1"
+      ],
+      datasets: [{
+        label: '# of users per week',
+        data: [<%=Reports.usersWeek4%>,<%=Reports.usersWeek3%>,<%=Reports.usersWeek2%>,<%=Reports.usersWeek1%>],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+
+  var ctx3 = document.getElementById("myChartSkills").getContext('2d');
+  var myChart3 = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels: [<% Reports.usersSkills.forEach(function (skill) { %>
+        "<%= skill.name %>",
+          <% }) %>],
+      datasets: [{
+        label: '# of users',
+        data: [<% Reports.usersSkills.forEach(function (skill) { %>
+            <%= skill.count %>,
+            <% }) %>],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
 </script >
 <script >
   Materialize.showStaggeredList('#staggered-test');
-
-  // Initialize collapse button
   $(".button-collapse").sideNav();
 
 </script >

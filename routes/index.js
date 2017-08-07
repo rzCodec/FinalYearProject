@@ -113,17 +113,18 @@ module.exports = function (app, passport) {
     });
   });
   app.get('/broadcast', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/Broadcast.ejs', function (err, html) {
+    res.render('Pages/AdminDashboard/Broadcast.ejs', { info: req.user }, function (err, html) {
+
       res.send(html);
     });
   });
   app.get('/flaggedposts', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/FlaggedPosts.ejs', function (err, html) {
+    res.render('Pages/AdminDashboard/FlaggedPosts.ejs', { info: req.user }, function (err, html) {
       res.send(html);
     });
   });
   app.get('/flaggedusers', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/FlaggedUsers.ejs', function (err, html) {
+    res.render('Pages/AdminDashboard/FlaggedUsers.ejs', { info: req.user }, function (err, html) {
       res.send(html);
     });
   });
@@ -133,7 +134,7 @@ module.exports = function (app, passport) {
     });
   });
   app.get('/addStudio', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/AddStudio.ejs', function (err, html) {
+    res.render('Pages/AdminDashboard/AddStudio.ejs', { info: req.user }, function (err, html) {
       res.send(html);
     });
   });
@@ -142,7 +143,12 @@ module.exports = function (app, passport) {
       users24: null,
       events24: null,
       genres: null,
-      usersLogin24: null
+      usersLogin24: null,
+      usersSkills: null,
+      usersWeek1: null,
+      usersWeek2: null,
+      usersWeek3: null,
+      usersWeek4: null
     };
     parallel([
         function (callback) {
@@ -153,6 +159,35 @@ module.exports = function (app, passport) {
               Reports.users24 = results[0];
               callback();
             }
+          });
+        },
+        function (callback) {
+          connection.query('SELECT skills.name, COUNT(users.skill_id) AS count FROM users INNER JOIN skills on skills.id = users.skill_id GROUP BY skill_id ORDER BY count DESC', function (error, results) {
+            if (error) {
+              console.log(error)
+            } else {
+              Reports.usersSkills = results[0];
+              callback();
+            }
+          });
+        },
+        function (callback) {
+          connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-604800000)', function (error1, results1) {
+            Reports.usersWeek1 = results1[0].count;
+            connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1209600000)', function (error2, results2) {
+              Reports.usersWeek2 = results2[0].count-Reports.usersWeek1;
+              connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1814400000)', function (error3, results3) {
+                Reports.usersWeek3 = results3[0].count-Reports.usersWeek2-Reports.usersWeek1;
+                connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2419200000)', function (error4, results4) {
+                  if (error4) {
+                    console.log(error4)
+                  } else {
+                    Reports.usersWeek4 = results4[0].count-Reports.usersWeek3-Reports.usersWeek2-Reports.usersWeek1;
+                    callback();
+                  }
+                });
+              });
+            });
           });
         },
         function (callback) {
@@ -190,7 +225,8 @@ module.exports = function (app, passport) {
       ],
       function (err, results) {
         res.render('Pages/AdminDashboard/reports.ejs', {
-          Reports: Reports
+          Reports: Reports,
+          info: req.user
         }, function (err, html) {
           res.send(html);
         });
@@ -272,7 +308,7 @@ module.exports = function (app, passport) {
   });//
   app.post('/updateUserInfo/:userID', function (req, res) {
     connection.query('UPDATE users SET genre_id=?,distance_id=?,last_login_timestamp=?,profilepic_url=?,description=?,skill_id=?  WHERE id=?',
-      [ req.body.genre_id, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.body.skill_id, req.params.userID], function (error, results) {
+      [req.body.genre_id, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.body.skill_id, req.params.userID], function (error, results) {
         if (error) {
           console.log(error)
         } else {
@@ -765,7 +801,7 @@ module.exports = function (app, passport) {
   });
   app.get('/addEventSkill/:event_id/:skill_id', function (req, res) {
     connection.query('INSERT INTO `events_skills` (`id`, `event_id`, `skill_id`, `status`) VALUES (NULL, ?, ?, FALSE)',
-      [req.params.event_id,req.params.skill_id], function (error, results) {
+      [req.params.event_id, req.params.skill_id], function (error, results) {
         if (error) {
           console.log(error)
         } else {
