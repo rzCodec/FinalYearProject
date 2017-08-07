@@ -87,12 +87,12 @@ public class InviteAdapter extends ArrayAdapter<Profile> {
                 if(selectedItems.contains(p))
                 {
                     selectedItems.remove(p);
-                    v.setBackgroundColor(Color.parseColor("#f57c00"));
+                    v.setBackgroundColor(Color.parseColor("#FAFAFA"));
                 }
                 else
                 {
                     selectedItems.add(p);
-                    v.setBackgroundColor(Color.parseColor("#FAFAFA"));
+                    v.setBackgroundColor(Color.parseColor("#f57c00"));
                 }
                 return false;
             }

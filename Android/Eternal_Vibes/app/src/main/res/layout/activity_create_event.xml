@@ -101,7 +101,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.202" />
+        app:layout_constraintHorizontal_bias="0.1"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <TextView
         android:id="@+id/txtDate"
@@ -111,28 +113,25 @@
         android:textSize="20sp"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/btnDate"
-        android:layout_marginLeft="0dp"
         app:layout_constraintLeft_toLeftOf="@+id/btnDate" />
 
     <Button
         android:id="@+id/btnTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:text="Set Time"
         android:onClick="setTime"
-        app:layout_constraintHorizontal_bias="0.785"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/txtDescription"
+        app:layout_constraintRight_toLeftOf="@+id/textView11"
+        android:layout_marginRight="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/btnDate"
+        android:layout_marginLeft="8dp" />
 
     <TextView
         android:id="@+id/txtTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintRight_toRightOf="@+id/btnTime"
         app:layout_constraintTop_toBottomOf="@+id/btnTime" />
@@ -142,10 +141,6 @@
         android:onClick="CheckData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
         android:clickable="true"
         android:src="@drawable/ic_done"
         app:fabSize="mini"
@@ -155,6 +150,32 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.9" />
+
+    <Spinner
+        android:id="@+id/sdurtation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/textView11"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView11"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/textView11"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Duration: "
+        android:textSize="20sp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtDescription"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.9" />
 
 
 </android.support.constraint.ConstraintLayout>

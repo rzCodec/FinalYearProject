@@ -15,10 +15,15 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventViewActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
     private static EventItem item;
@@ -60,12 +65,21 @@ public class EventViewActivity extends AppCompatActivity implements PopupMenu.On
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView tv = (TextView) findViewById(R.id.evName);
-        tv.setText("Event: \n\n"+item.getName());
+        tv.setText("Description: \n\n\n"+item.getInfo());
         tv = (TextView) findViewById(R.id.evInfo);
-        tv.setText("Description: \n\n"+item.getInfo());
+        tv.setText("Date: \n\n\n"+sdf.format(cal.getTime()));
         tv = (TextView) findViewById(R.id.evDate);
         cal.setTimeInMillis(item.getDate());
-        tv.setText("Event Date: \n\n"+sdf.format(cal.getTime()));
+        String Duration;
+        if(item.getStatus() > 30)
+        {
+            Duration = (item.getStatus()/60)+" Hours";
+        }
+        else
+        {
+            Duration = item.getStatus()+ " Minutes";
+        }
+        tv.setText("Duration: \n\n\n"+Duration);
     }
     public void EventManagement(View v)
     {
@@ -92,16 +106,13 @@ public class EventViewActivity extends AppCompatActivity implements PopupMenu.On
         switch(item.getItemId())
         {
             case R.id.attending:
-                Toast.makeText(this,"Attending Event",Toast.LENGTH_LONG).show();
-                onBackPressed();
+                respondToInvite(1,getItem().getInvite().getId());
                 return true;
             case R.id.not_attending:
-                Toast.makeText(this,"Not Attending",Toast.LENGTH_LONG).show();
-                onBackPressed();
+                respondToInvite(3,getItem().getInvite().getId());
                 return true;
             case R.id.maybe:
-                Toast.makeText(this,"Maybe",Toast.LENGTH_LONG).show();
-                onBackPressed();
+                respondToInvite(2,getItem().getInvite().getId());
                 return true;
             case R.id.send_invites :
                 Intent i = new Intent(this,SendInviteActivity.class);
@@ -128,10 +139,10 @@ public class EventViewActivity extends AppCompatActivity implements PopupMenu.On
     }
     public void CancelEvent()
     {
-        String url = "https://www.eternalvibes.me/cancelevent" + getItem().getId();
-        StringRequest sr = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        String url = "https://www.eternalvibes.me/cancelevent/" + getItem().getId();
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(JSONObject response) {
                 Utilities.MakeToast(instance,"Event Cancelled");
                 onBackPressed();
             }
@@ -141,6 +152,27 @@ public class EventViewActivity extends AppCompatActivity implements PopupMenu.On
                 Utilities.MakeToast(instance,"Error Cancelling Event");
             }
         });
-        RequestQueueSingleton.getInstance(this).addToQ(sr);
+        RequestQueueSingleton.getInstance(this).addToQ(jor);
+    }
+    public void respondToInvite(int Response,int InviteID)
+    {
+        Map<String,Integer> m = new HashMap<>();
+        m.put("response_id",Response);
+        m.put("id",InviteID);
+        JSONObject j = new JSONObject(m);
+        String url = "https://www.eternalvibes.me/responsetoinvite/";
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, j, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Utilities.MakeToast(instance,"Response sent");
+                instance.onBackPressed();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utilities.MakeToast(instance,"Unable to respond");
+            }
+        });
+        RequestQueueSingleton.getInstance(this).addToQ(jor);
     }
 }

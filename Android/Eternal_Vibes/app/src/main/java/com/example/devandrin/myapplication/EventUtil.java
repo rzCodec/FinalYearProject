@@ -1,5 +1,6 @@
 package com.example.devandrin.myapplication;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -35,9 +36,16 @@ public class EventUtil extends Content {
         ListView lv = (ListView) v.findViewById(R.id.ArrayList);
         ea = new EventAdapter(EventActivity.getInstance().getApplicationContext(), dataList);
         lv.setAdapter(ea);
+        srl = (SwipeRefreshLayout) v.findViewById(R.id.refreshView);
+        srl.setOnRefreshListener(srfListener());
         return v;
     }
 
+    @Override
+    protected void update() {
+        EventActivity.getInstance().onResume();
+        srl.setRefreshing(false);
+    }
 
     public static void makeRequest(int UserId)
     {

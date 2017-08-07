@@ -1,6 +1,7 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -50,7 +51,17 @@ public class ContactChatAdapter extends ArrayAdapter<Profile> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //303346729
+                DBHelper dbh = HomeActivity.getInstance().getDbHelper();
+                Chat c = dbh.hasChat(p.getId());
+                if(c != null)
+                {
+                    Intent i = new Intent(HomeActivity.getInstance(),ChatActivity.class);
+                    i.putExtra("ChatID",c.ChatID);
+                    i.putExtra("Name",p.getAlias());
+                    HomeActivity.getInstance().startActivity(i);
+                    NewChatActivity.getInstance().finish();
+                    return;
+                }
                 String url = "https://eternalvibes.me/createchat/"+userID+"/"+p.getId();
                 JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -59,7 +70,11 @@ public class ContactChatAdapter extends ArrayAdapter<Profile> {
                         {
                             if(response.getInt("affectedRows") == 1)
                             {
-                                NewChatActivity.getInstance().onBackPressed();
+                                Intent i = new Intent(HomeActivity.getInstance(),ChatActivity.class);
+                                i.putExtra("ChatID",response.getInt("insertId"));
+                                i.putExtra("Name",p.getAlias());
+                                HomeActivity.getInstance().startActivity(i);
+                                NewChatActivity.getInstance().finish();
                             }
                         }catch(JSONException e)
                         {
@@ -73,6 +88,7 @@ public class ContactChatAdapter extends ArrayAdapter<Profile> {
                     }
                 });
                 RequestQueueSingleton.getInstance(NewChatActivity.getInstance()).addToQ(jor);
+
             }
         });
         c.username.setText(p.getAlias());

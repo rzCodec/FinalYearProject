@@ -80,4 +80,10 @@ public class NewsFeedUtil extends Content {
         srl.setOnRefreshListener(srfListener());
         return view;
     }
+
+    @Override
+    protected void update() {
+        HomeActivity.getInstance().onResume();
+        srl.setRefreshing(false);
+    }
 }

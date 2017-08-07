@@ -104,4 +104,8 @@ public class RadarUtil extends Content {
         return view;
     }
 
+    @Override
+    protected void update() {
+
+    }
 }//end of class

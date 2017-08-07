@@ -1,5 +1,7 @@
 package com.example.devandrin.myapplication;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -8,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -24,18 +27,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class SendInviteActivity extends AppCompatActivity {
-    private static ArrayList<Profile> list = new ArrayList<>();
+    private static ArrayList<Profile> list;
     private static InviteAdapter iv ;
-    private ProgressBar load = null;
+    private ProgressDialog pd;
     private static SendInviteActivity instance;
     private static final String url = "https://eternalvibes.me/getfollowing/";
     private static final String url2 = "https://www.eternalvibes.me/sendinvite";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        list = new ArrayList<>();
         setContentView(R.layout.activity_send_invite);
         instance = this;
-        load = (ProgressBar) findViewById(R.id.siPBar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -43,8 +46,10 @@ public class SendInviteActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                for(Profile p:InviteAdapter.selectedItems)
+                {
+
+                }
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -113,30 +118,20 @@ public class SendInviteActivity extends AppCompatActivity {
     }
     private  void  getContacts()
     {
-        enableProgressBar();
+        StartProgressDialog("Loading Contacts ...");
         SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
         String userID = "";
         userID = sp.getString("userID", userID);
-        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url + userID, null, contactsResponse(), new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                disableProgressBar();
-            }
-        });
-        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
-    }
-    private  Response.Listener<JSONArray> contactsResponse()
-    {
-        return new Response.Listener<JSONArray>() {
+        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url + userID, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                disableProgressBar();
                 try
                 {
                     JSONObject o;
 
                     for(int i =0; i< response.length(); i++)
                     {
+                        pd.cancel();
                         o = response.getJSONObject(i);
                         list.add(new Profile(o.getInt("liked_id"),o.getString("username"),0));
                     }
@@ -148,8 +143,15 @@ public class SendInviteActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        };
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                pd.cancel();
+            }
+        });
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -160,34 +162,17 @@ public class SendInviteActivity extends AppCompatActivity {
     public static SendInviteActivity getInstance() {
         return instance;
     }
-    public void enableProgressBar()
+
+    private void StartProgressDialog(String Message)
     {
-        if (load.getVisibility() == View.GONE) {
-            load.setVisibility(View.VISIBLE);
-            ConstraintLayout c = (ConstraintLayout) findViewById(R.id.cLayout);
-            for(int i =0; i< c.getChildCount() ; i++)
-            {
-                View v = c.getChildAt(i);
-                if(v.getId() != load.getId())
-                {
-                    v.setEnabled(false);
-                }
-            }
+        pd = new ProgressDialog(instance);
+        pd.setMessage(Message);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-    public void disableProgressBar()
-    {
-        if (load.getVisibility() == View.VISIBLE) {
-            load.setVisibility(View.GONE);
-            ConstraintLayout c = (ConstraintLayout) findViewById(R.id.cLayout);
-            for(int i =0; i< c.getChildCount() ; i++)
-            {
-                View v = c.getChildAt(i);
-                if(v.getId() != load.getId())
-                {
-                    v.setEnabled(true);
-                }
-            }
-        }
+        pd.show();
     }
 }

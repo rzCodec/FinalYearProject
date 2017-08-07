@@ -1,14 +1,18 @@
 package com.example.devandrin.myapplication;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -38,6 +42,7 @@ import java.util.concurrent.ExecutionException;
 public class Dashboard extends AppCompatActivity {
     private static Dashboard instance;
     private TextView warning;
+    private ProgressDialog pd;
     private EditText Email, Password;
     private static final String url = "https://www.eternalvibes.me/MobileLogin";
     static Dashboard getInstance() {
@@ -70,25 +75,22 @@ public class Dashboard extends AppCompatActivity {
         }
 
     }
-
+    private void StartProgressDialog()
+    {
+        pd = new ProgressDialog(instance);
+        pd.setMessage("Logging you in...");
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        pd.show();
+    }
     private View.OnClickListener login() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String,Object> data = new HashMap<>();
-                //data.put("user_id",303346727);
-                //data.put("username","Vanneh");
-                data.put("user_id",303346716);
-                data.put("username","kogmaw");
-                try
-                {
-                    nextActivity(new JSONObject(data));
-                }catch(JSONException e)
-                {
-                    e.printStackTrace();
-                }
-
-
                 if (Password.length() > 0) {
                     if (Email.length() > 0) {
                         if (Patterns.EMAIL_ADDRESS.matcher(Email.getText()).matches()) {
@@ -109,7 +111,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void requestLogin(final String username, final String password) {
-
+        StartProgressDialog();
         Map<String, String> data = new HashMap<>();
         data.put("username", username);
         data.put("password", password);
@@ -125,9 +127,11 @@ public class Dashboard extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                pd.cancel();
                 if (error.networkResponse.statusCode == 500) {
-                    warning.setText("Error Code 500");
+                    warning.setText("Email or password is incorrect");
                     warning.setVisibility(View.VISIBLE);
+
                 } else {
                     warning.setText("Unknown Error code");
                     warning.setVisibility(View.VISIBLE);
@@ -202,7 +206,6 @@ public class Dashboard extends AppCompatActivity {
 
 
         RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(sr);
-        warning.setText("Login requested");
     }
     private void nextActivity(String email)
     {
@@ -239,12 +242,12 @@ public class Dashboard extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                pd.cancel();
+                warning.setText("Email or Password is Incorrect");
+                warning.setVisibility(View.VISIBLE);
             }
         });
         RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jar);
-        warning.setText("Email Requested");
-        warning.setVisibility(View.VISIBLE);
     }
     void nextActivity(JSONObject obj) throws JSONException {
 

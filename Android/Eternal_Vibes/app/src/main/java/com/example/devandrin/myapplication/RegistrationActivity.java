@@ -1,5 +1,7 @@
 package com.example.devandrin.myapplication;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,9 +37,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
-    private TextView Genre, Firstname, LastName, Email, PasswordE, PasswordC, Alias;
+    private TextView Genre, Firstname, LastName, Email, PasswordE, PasswordC, Alias,description;
     private ArrayList<String> list = new ArrayList<>();
     private RegistrationActivity instance;
+    private ProgressDialog pd;
     private final String url = "https://www.eternalvibes.me/mobilesignup";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class RegistrationActivity extends AppCompatActivity {
         LastName = (TextView) findViewById(R.id.lastName);
         PasswordC = (TextView) findViewById(R.id.PasswordC);
         PasswordE = (TextView) findViewById(R.id.PasswordE);
+        description = (TextView) findViewById(R.id.txtDescription);
         Genre.setKeyListener(null);
         Genre.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +86,7 @@ public class RegistrationActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (Firstname.length() <= 0) {
                     Firstname.setBackgroundResource(R.drawable.warningbox);
                     return;
@@ -114,17 +120,24 @@ public class RegistrationActivity extends AppCompatActivity {
                     Email.setBackgroundResource(R.drawable.warningbox);
                     return;
                 }
-
-                Map<String,String> datat = new HashMap<>();
+                StartProgressDialog();
+                Map<String,Object> datat = new HashMap<>();
                     datat.put("firstname", Firstname.getText().toString());
                     datat.put("surname", LastName.getText().toString());
                     datat.put("realUserName", Alias.getText().toString());
                     datat.put("username", Email.getText().toString());
                     datat.put("password", PasswordC.getText().toString());
-                    datat.put("genre", Genre.getText().toString());
-                    datat.put("distance", "25");
+                    datat.put("skill_id",1);
+                    datat.put("genre_id", Integer.parseInt(Genre.getText().toString()));
+                    datat.put("distance_id", 4);
+                if(description.getText().length() >0)
+                {
+                    datat.put("description", description.getText().toString());
+                } else
+                {
                     datat.put("description", "nothing for now");
-                final JSONObject data = new JSONObject();
+                }
+                final JSONObject data = new JSONObject(datat);
                 /*JsonObjectRequest jar = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -158,7 +171,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        pd.cancel();
                     }
                 }){
                     @Override
@@ -253,7 +266,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                pd.cancel();
             }
         });
         RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jar);
@@ -268,5 +281,17 @@ public class RegistrationActivity extends AppCompatActivity {
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();
+    }
+    private void StartProgressDialog()
+    {
+        pd = new ProgressDialog(instance);
+        pd.setMessage("Uploading and Registering your details");
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        pd.show();
     }
 }
