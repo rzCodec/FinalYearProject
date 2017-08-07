@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class NewChatActivity extends AppCompatActivity {
     private ProgressBar bar = null;
-    private static ArrayList<Profile> list = new ArrayList<>();
+    private static ArrayList<Profile> list ;
     private static ContactChatAdapter cca;
     private static NewChatActivity instance = null;
     private static final String url = "https://eternalvibes.me/getfollowing/";
@@ -30,6 +30,7 @@ public class NewChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_chat);
         instance = this;
+        list = new ArrayList<>();
         bar = (ProgressBar) findViewById(R.id.ncPBar);
         bar.setVisibility(View.GONE);
         ListView lv = (ListView) findViewById(R.id.lvContacts);
@@ -48,17 +49,7 @@ public class NewChatActivity extends AppCompatActivity {
         SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
         String userID = "";
         userID = sp.getString("userID", userID);
-        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url + userID, null, contactsResponse(), new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
-    }
-    private static Response.Listener<JSONArray> contactsResponse()
-    {
-        return new Response.Listener<JSONArray>() {
+        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url + userID, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try
@@ -78,9 +69,14 @@ public class NewChatActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        };
-    }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
+            }
+        });
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();

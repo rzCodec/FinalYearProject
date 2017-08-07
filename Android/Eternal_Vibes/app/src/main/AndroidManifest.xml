@@ -88,6 +88,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.devandrin.myapplication.EventViewActivity" />
         </activity>
+        <activity
+            android:name=".EventSelectionActivity"
+            android:label="@string/title_activity_event_selection"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.devandrin.myapplication.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>

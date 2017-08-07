@@ -98,4 +98,10 @@ public class MessengerUtil extends Content {
         });
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
     }
+
+    @Override
+    protected void update() {
+        HomeActivity.getInstance().onResume();
+        srl.setRefreshing(false);
+    }
 }
