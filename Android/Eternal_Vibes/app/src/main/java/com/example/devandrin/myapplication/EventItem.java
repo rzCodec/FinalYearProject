@@ -43,7 +43,7 @@ public class EventItem {
         Info = o.getString("description");
         Date = o.getLong("date");
         CreatedTimestamp = o.getLong("createdTimestamp");
-        status = (short) o.getInt("status");
+        status = (short) o.getInt("duration");
         if(o.has("invite_id"))
         {
             invite = new Invitation(o.getInt("invite_id"),o.getString("message"),o.getLong("sender_user_id"));

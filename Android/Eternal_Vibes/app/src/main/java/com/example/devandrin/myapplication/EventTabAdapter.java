@@ -10,8 +10,8 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 
 public class EventTabAdapter extends FragmentPagerAdapter {
-    private final int PAGE_COUNT = 3;
-    private String[] tabTitles = new String[]{"Events", "Your Events", "Pending Reviews"};
+    private final int PAGE_COUNT = 2;
+    private String[] tabTitles = new String[]{"Events", "Your Events"};
     private Context context;
 
     public EventTabAdapter(FragmentManager fm, Context context) {

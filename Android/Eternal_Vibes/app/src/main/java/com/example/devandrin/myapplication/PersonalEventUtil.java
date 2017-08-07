@@ -1,5 +1,6 @@
 package com.example.devandrin.myapplication;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ public class PersonalEventUtil extends Content {
         ListView lv = (ListView) v.findViewById(R.id.ArrayList);
         ea = new EventAdapter(EventActivity.getInstance().getApplicationContext(), dataList);
         lv.setAdapter(ea);
+        srl = (SwipeRefreshLayout) v.findViewById(R.id.refreshView);
+        srl.setOnRefreshListener(srfListener());
         return v;
     }
     public static void makeRequest(int UserId)
@@ -63,5 +66,11 @@ public class PersonalEventUtil extends Content {
             }
         });
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
+    }
+
+    @Override
+    protected void update() {
+        EventActivity.getInstance().onResume();
+        srl.setRefreshing(false);
     }
 }

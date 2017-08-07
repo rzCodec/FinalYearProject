@@ -33,5 +33,9 @@ public class PendingReviewUtil extends Content {
         return v;
     }
 
-
+    @Override
+    protected void update() {
+        EventActivity.getInstance().onResume();
+        srl.setRefreshing(false);
+    }
 }

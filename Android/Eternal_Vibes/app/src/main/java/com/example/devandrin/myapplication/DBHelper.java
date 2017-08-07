@@ -161,7 +161,38 @@ public class DBHelper extends SQLiteOpenHelper {
         });
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
     }
-
+    public Chat hasChat(int userID)
+    {
+        Chat c = null;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor result = db.rawQuery(ContractClass.CHAT_U1 + userID, null);
+        if(result.getCount() > 0)
+        {
+            result.moveToFirst();
+            while (!result.isAfterLast()) {
+                int ChatID = result.getInt(result.getColumnIndex(ContractClass.Chat._CHATID));
+                int u1 = result.getInt(result.getColumnIndex(ContractClass.Chat._USER1));
+                int u2 = result.getInt(result.getColumnIndex(ContractClass.Chat._USER2));
+                c =new Chat(ChatID, u1, u2);
+                result.moveToNext();
+            }
+            result.close();
+        }
+         result = db.rawQuery(ContractClass.CHAT_U2 + userID, null);
+        if(result.getCount() > 0)
+        {
+            result.moveToFirst();
+            while (!result.isAfterLast()) {
+                int ChatID = result.getInt(result.getColumnIndex(ContractClass.Chat._CHATID));
+                int u1 = result.getInt(result.getColumnIndex(ContractClass.Chat._USER1));
+                int u2 = result.getInt(result.getColumnIndex(ContractClass.Chat._USER2));
+                c =new Chat(ChatID, u1, u2);
+                result.moveToNext();
+            }
+            result.close();
+        }
+        return c;
+    }
     public String getAlias(int ID) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor result = db.rawQuery(ContractClass.GETALIAS + ID, null);

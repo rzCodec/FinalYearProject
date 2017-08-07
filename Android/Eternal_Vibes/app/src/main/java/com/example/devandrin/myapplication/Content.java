@@ -19,10 +19,7 @@ public abstract class Content implements iContent {
         this.container = container;
     }
 
-    protected void update() {
-        HomeActivity.getInstance().onResume();
-        srl.setRefreshing(false);
-    }
+    protected abstract void update() ;
 
     protected SwipeRefreshLayout.OnRefreshListener srfListener() {
         return new SwipeRefreshLayout.OnRefreshListener() {

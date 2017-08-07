@@ -16,6 +16,8 @@ public class Profile {
     private String surname;
     private String email;
     private String alias;
+    private boolean admin;
+    private String description;
     private int genre_id;
     private String song_link;
     private int latitude;
@@ -42,7 +44,7 @@ public class Profile {
             this.latitude =-1;
             this.longitude =-1;
         }
-
+        this.description = item.getString("description");
         this.pardons = item.getInt("pardons");
         this.search_distance = item.getInt("distance_id");
         try {
@@ -53,7 +55,7 @@ public class Profile {
             this.join_timestamp=-1;
         }
         this.is_banned = item.getInt("is_banned");
-
+        admin = (item.getInt("admin") == 1);
         this.avatar_url = item.getString("profilepic_url");
     }
 
@@ -212,4 +214,19 @@ public class Profile {
                 + last_login_timestamp + "\n" + avatar_url ;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
 }

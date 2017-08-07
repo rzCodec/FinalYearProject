@@ -35,6 +35,8 @@ public final class ContractClass {
             " = " + Message.TABLE_NAME + "." + Message._CHATID +
             " where " + Chat.TABLE_NAME + "." + Chat._CHATID + " = ";
     public static final String GETALIAS = "Select * from " + Users.TABLE_NAME + " where " + Users._ID + " =";
+    public static final String CHAT_U1 = GETALLCHATS + " where "+Chat._USER1+" = ";
+    public static final String CHAT_U2 = GETALLCHATS + " where "+Chat._USER2+" = ";
     private ContractClass() {
     }
 
