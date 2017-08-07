@@ -28,7 +28,7 @@ module.exports = function (app, passport) {
     connection.query('USE informatics');
     connection.query("SELECT * FROM `genres` ", function (err, genres) {
       connection.query("SELECT * FROM `distances` ORDER By distance ASC", function (err, distances) {
-        connection.query("SELECT * FROM `skills` ORDER By distance ASC", function (err, skills) {
+        connection.query("SELECT * FROM `skills`", function (err, skills) {
           res.render('Pages/UserAuth/signup.ejs', {
             genres: genres,
             distances: distances,

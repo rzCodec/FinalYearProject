@@ -38,10 +38,10 @@ module.exports = function (passport) {
               genre_id: req.param('genre_id'),
               distance_id: req.param('distance_id'),
               description: req.param('description'),
-              skill_id:req.param('skill_id')
+              skill_id:req.param('skill')
             };
 
-            var insertQuery = "INSERT INTO users ( username, password, email, firstname, surname, genre_id, distance_id, description,join_timestamp,last_login_timestamp,skill_id ) values (?,?,?,?,?,?,?,?,ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000),ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000),?)";
+            var insertQuery = "INSERT INTO users ( username, password, email, firstname, surname, genre_id, distance_id, description,join_timestamp,last_login_timestamp,skill_id ) values (?,?,?,?,?,?,?,?,?,ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000),ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))";
 
             connection.query(insertQuery, [newUserMysql.username, newUserMysql.password, newUserMysql.email, newUserMysql.firstname, newUserMysql.surname, newUserMysql.genre_id, newUserMysql.distance_id, newUserMysql.description,newUserMysql.skill_id], function (err, rows) {
               console.log(err)
