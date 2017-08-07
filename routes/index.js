@@ -45,8 +45,7 @@ module.exports = function (app, passport) {
     failureFlash: true
   }));
   app.get('/profile', isLoggedIn, function (req, res) {
-
-    connection.query(' SELECT users.*,skills.name AS skill, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN skills on users.skill_id = skills.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=?',[req.user.id], function (error, results) {
+    connection.query(' SELECT users.*,skills.name AS skill, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN skills on users.skill_id = skills.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=?', [req.user.id], function (error, results) {
       if (error) {
         console.log(error)
       } else {
@@ -55,7 +54,6 @@ module.exports = function (app, passport) {
         });
       }
     });
-
   });
   app.get('/dashBoard', isLoggedIn, function (req, res) {
     if (req.user.admin == "0") {
@@ -183,14 +181,14 @@ module.exports = function (app, passport) {
           connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-604800000)', function (error1, results1) {
             Reports.usersWeek1 = results1[0].count;
             connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1209600000)', function (error2, results2) {
-              Reports.usersWeek2 = results2[0].count-Reports.usersWeek1;
+              Reports.usersWeek2 = results2[0].count - Reports.usersWeek1;
               connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1814400000)', function (error3, results3) {
-                Reports.usersWeek3 = results3[0].count-Reports.usersWeek2-Reports.usersWeek1;
+                Reports.usersWeek3 = results3[0].count - Reports.usersWeek2 - Reports.usersWeek1;
                 connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2419200000)', function (error4, results4) {
                   if (error4) {
                     console.log(error4)
                   } else {
-                    Reports.usersWeek4 = results4[0].count-Reports.usersWeek3-Reports.usersWeek2-Reports.usersWeek1;
+                    Reports.usersWeek4 = results4[0].count - Reports.usersWeek3 - Reports.usersWeek2 - Reports.usersWeek1;
                     callback();
                   }
                 });

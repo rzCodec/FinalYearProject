@@ -5,20 +5,20 @@
 </head >
 <body >
 <%- include ./partials/nav.ejs %>
-<main>
-<div class="container" >
-    <div class="page-header text-center" >
-        <h1 ><span class="fa fa-anchor" ></span > Profile Page</h1 >
-        <a href="/logout" class="btn btn-default btn-sm" >Logout</a >
-    </div >
-    <div class="row" >
-        <div class="col-sm-12" >
-            <div class="well" >
-                <h3 ><span class="fa fa-user" ></span > Profile</h3 >
+<main >
+    <div class="container" >
+        <div class="page-header text-center" >
+            <h1 ></span > Profile Page</h1 >
+            <a href="/logout" class="btn btn-default btn-sm" >Logout</a >
+        </div >
+        <div class="row" >
+            <div class="col-sm-12" >
+                <div class="well" style="text-align: center;" >
+                <h3 ><span class=" fa fa-user" ></span > Profile</h3 >
                 <p >
                     <strong >Firstname: </strong >: <%= user.firstname %><br >
                     <strong >Surname: </strong >: <%= user.surname %><br >
-                    <strong >Username: </strong >: <%= user.	username %><br >
+                    <strong >Username: </strong >: <%= user.username %><br >
                     <strong >Email: </strong >: <%= user.email %><br >
                     <strong >Song_link: </strong >: <%= user.song_link %><br >
                     <strong >Username: </strong >: <%= user.username %><br >
@@ -35,8 +35,8 @@
             </div >
         </div >
     </div >
-</div >
-</main>
+    </div >
+</main >
 <%- include ../../Partials/footer.ejs %>
 </body >
 </html >
