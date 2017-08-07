@@ -195,7 +195,7 @@ module.exports = function (app, passport) {
 
   });
 
-  app.get('/MobileLogin', function (req, res) {
+  app.get('/mobileLogin', function (req, res) {
     if (req.param("status") === "false") {
       res.status(500).send('BadCredentials!')
     } else if (req.param("status") === "true") {
@@ -204,7 +204,7 @@ module.exports = function (app, passport) {
       res.status(400).send('Something broke!')
     }
   });
-  app.post('/MobileLogin', passport.authenticate('local-login', {
+  app.post('/mobileLogin', passport.authenticate('local-login', {
       successRedirect: '/MobileLogin?status=true',
       failureRedirect: '/MobileLogin?status=false',
       failureFlash: true
@@ -216,7 +216,7 @@ module.exports = function (app, passport) {
         req.session.cookie.expires = false;
       }
     });
-  app.get('/MobileSignup', function (req, res) {
+  app.get('/mobileSignup', function (req, res) {
     if (req.param("status") === "false") {
       res.status(500).send('BadCredentials!')
     } else if (req.param("status") === "true") {
@@ -225,7 +225,7 @@ module.exports = function (app, passport) {
       res.status(400).send('Something broke!')
     }
   });
-  app.post('/MobileSignup', passport.authenticate('local-signup', {
+  app.post('/mobileSignup', passport.authenticate('local-signup', {
     successRedirect: '/MobileSignup?status=true',
     failureRedirect: '/MobileSignup?status=fail',
     failureFlash: true
@@ -268,8 +268,8 @@ module.exports = function (app, passport) {
     });
   });//
   app.post('/updateUserInfo/:userID', function (req, res) {
-    connection.query('UPDATE users SET email=?,song_link=?,genre_id=?,distance_id=?,last_login_timestamp=?,profilepic_url=?,description=?  WHERE id=?',
-      [req.body.email, req.body.song_link, req.body.genre_id, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.params.userID], function (error, results) {
+    connection.query('UPDATE users SET email=?,song_link=?,genre_id=?,distance_id=?,last_login_timestamp=?,profilepic_url=?,description=?,skill_id=?  WHERE id=?',
+      [req.body.email, req.body.song_link, req.body.genre_id, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.body.skill_id, req.params.userID], function (error, results) {
         if (error) {
           console.log(error)
         } else {
@@ -306,6 +306,15 @@ module.exports = function (app, passport) {
   });//
   app.get('/getDistances', function (req, res) {
     connection.query('SELECT * FROM `distances`', function (error, results) {
+      if (error) {
+        console.log(error)
+      } else {
+        res.send(results);
+      }
+    });
+  });//
+  app.get('/getSkills', function (req, res) {
+    connection.query('SELECT * FROM `skills`', function (error, results) {
       if (error) {
         console.log(error)
       } else {
@@ -477,7 +486,7 @@ module.exports = function (app, passport) {
       }
     });
   });
-  app.get('/CreateChat/:UserID1/:UserID2', function (req, res) {
+  app.get('/createChat/:UserID1/:UserID2', function (req, res) {
     connection.query('INSERT INTO `chats` (`user1_id`, `user2_id`, `start_timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))', [req.params.UserID1, req.params.UserID2], function (error, results) {
       if (error) {
         console.log(error)
@@ -607,6 +616,41 @@ module.exports = function (app, passport) {
         res.send(filterDistance(Users, DistanceUpperBound, Longitude, Latitude));
       });
   });
+  app.get('/getNearbyStrangersWithSkill/:userID/:skillID', function (req, res) {
+    var DistanceUpperBound = 10;
+    var Longitude = 0;
+    var Latitude = 0;
+    var Users = [];
+    parallel([
+        function (callback) {
+          connection.query('SELECT distances.distance AS search_distance,users.longitude,users.latitude FROM users INNER JOIN distances on distance_id=distances.id WHERE users.id = ? ', [req.params.userID], function (error, results) {
+            if (error) {
+              console.log(error)
+            } else {
+              if (results.length = 0) {
+                DistanceUpperBound = results[0].search_distance;
+                Longitude = results[0].longitude;
+                Latitude = results[0].latitude;
+              }
+              callback(null);
+            }
+          });
+        },
+        function (callback) {
+          connection.query('SELECT users.id, users.longitude,users.latitude FROM users INNER JOIN skills on skills.id=users.skill_id WHERE users.id != ? AND users.skill_id=?  AND users.longitude IS NOT NULL AND users.latitude IS NOT NULL', [req.params.userID, req.params.skill_id], function (error, results) {
+            if (error) {
+              console.log(error)
+            } else {
+              Users = results;
+              callback(null);
+            }
+          });
+        }
+      ],
+      function (err) {
+        res.send(filterDistance(Users, DistanceUpperBound, Longitude, Latitude));
+      });
+  });
 
   app.post('/createEvent', function (req, res) {
     connection.query('INSERT INTO `events` (`id`, `title`, `date`, `description`, `status`, `user_id`,`createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
@@ -619,12 +663,19 @@ module.exports = function (app, passport) {
       });
   });
   app.get('/cancelEvent/:eventID', function (req, res) {
-    connection.query('delete from events where events.id = 1',
+    connection.query('delete from events where events.id = ?',
       [req.params.eventID], function (error, results) {
         if (error) {
           console.log(error)
         } else {
-          res.send(results);
+          connection.query('delete from invites where invites.event_id = ?',
+            [req.params.eventID], function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                res.send(results);
+              }
+            });
         }
       });
   });
@@ -641,7 +692,7 @@ module.exports = function (app, passport) {
         }
       });
   });
-  app.get('/GetUsersEvents/:userID', function (req, res) {
+  app.get('/getUsersEvents/:userID', function (req, res) {
     connection.query('SELECT events.* FROM events WHERE events.user_id=?',
       [req.params.userID], function (error, results) {
         if (error) {
@@ -651,7 +702,7 @@ module.exports = function (app, passport) {
         }
       });
   });
-  app.post('/SendInvite', function (req, res) {
+  app.post('/sendInvite', function (req, res) {
     connection.query('INSERT INTO `invites` (`id`, `sender_user_id`, `receiver_user_id`, `response_id`, `event_id`, `message`) VALUES (NULL, ?, ?, 2, ?, ?)',
       [req.body.sender_user_id, req.body.receiver_user_id, req.body.event_id, req.body.message], function (error, results) {
         if (error) {
@@ -661,7 +712,7 @@ module.exports = function (app, passport) {
         }
       });
   });
-  app.post('/ResponseToInvite', function (req, res) {
+  app.post('/responseToInvite', function (req, res) {
     connection.query('UPDATE `invites` SET `response_id` = ? WHERE `invites`.`id` = ?;',
       [req.body.response_id, req.body.id], function (error, results) {
         if (error) {
@@ -683,9 +734,11 @@ function filterDistance(array, distance, longitude, latitude) {
   var EndUsers = [];
   array.forEach(function (user) {
     var km = calcCrow(user.latitude, user.longitude, longitude, latitude);
-
+    console.log(distance)
+    console.log(km)
+    console.log(user+" "+user.latitude+" "+user.longitude+" "+longitude+" "+latitude)
     if (km <= distance) {
-      EndUsers.push(user);
+      EndUsers.push({ user: user, km: km });
     }
   });
   return EndUsers;
