@@ -18,13 +18,17 @@ import java.util.ArrayList;
 
 public class MessengerAdapter extends ArrayAdapter<Chat> {
 
+    //I need the chatID to be passed into the onChatClick method to find which list of messages to get
+    private Chat c = null;
+
     public MessengerAdapter(Context context, ArrayList<Chat> objects) {
         super(context, 0, objects);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final Chat c = getItem(position);
+        //final Chat c = getItem(position);
+        c = getItem(position);
         viewComponents vc ;
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.messenger_item, parent, false);
@@ -51,16 +55,21 @@ public class MessengerAdapter extends ArrayAdapter<Chat> {
             vc.LastMessage.setText("User 2 ID: " + c.user1);
         }
         vc.Timestamp.setText("Chat ID: " + c.ChatID);
-        convertView.setOnClickListener(onChatClick(alias));
+        convertView.setOnClickListener(onChatClick(alias,c.ChatID));
         return convertView;
     }
 
-    private View.OnClickListener onChatClick(final String name) {
+    private View.OnClickListener onChatClick(final String name,final int ChatID) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.getInstance(), ChatActivity.class);
                 i.putExtra("Name", name);
+
+                //i.putExtra("CurrentUserID", c.user1);
+                //i.putExtra("ChatID", c.ChatID);
+
+                i.putExtra("ChatID",ChatID);
                 HomeActivity.getInstance().startActivity(i);
             }
         };

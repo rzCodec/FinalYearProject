@@ -46,7 +46,8 @@
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"
             android:parentActivityName=".HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.devandrin.myapplication.HomeActivity" />
@@ -58,9 +59,8 @@
         <activity android:name=".PostActivity" />
         <activity android:name=".RegistrationActivity" />
         <activity android:name=".CreateEventActivity" />
-        <activity android:name=".NewChatActivity"/>
-        <activity android:name=".EventActivity"/>
-
+        <activity android:name=".NewChatActivity" />
+        <activity android:name=".EventActivity" />
         <activity
             android:name=".RadarProfileActivity"
             android:label="Radar Profile Activity"
@@ -70,7 +70,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.devandrin.myapplication.HomeActivity" />
         </activity>
-
+        <activity
+            android:name=".EventViewActivity"
+            android:label="@string/title_activity_event_view"
+            android:parentActivityName=".EventActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.devandrin.myapplication.EventActivity" />
+        </activity>
+        <activity
+            android:name=".SendInviteActivity"
+            android:label="@string/title_activity_send_invite"
+            android:parentActivityName=".EventViewActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.devandrin.myapplication.EventViewActivity" />
+        </activity>
     </application>
 
 </manifest>

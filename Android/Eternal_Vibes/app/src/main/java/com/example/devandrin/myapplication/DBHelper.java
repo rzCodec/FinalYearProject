@@ -147,6 +147,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     SQLiteDatabase db = getWritableDatabase();
                     try {
                         db.insertOrThrow(ContractClass.Users.TABLE_NAME, null, cv);
+                        MessengerUtil.dataUpdate();
                     } catch (SQLiteConstraintException e) {
                         //do nothing
                     }

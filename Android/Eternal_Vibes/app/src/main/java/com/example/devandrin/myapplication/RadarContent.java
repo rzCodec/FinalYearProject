@@ -10,20 +10,30 @@ import org.json.JSONObject;
 public class RadarContent {
     private int userID;
     private String sUsername;
+    private String sLastName;
     private int Distance;
     private int Rating;
     private String Ranking;
     private String sLocation;
     private long TimeStamp;
+    private String sEmail;
+    private String Skillset;
 
-    public RadarContent(int userID, String sUsername, int distance, int rating, String ranking, String sLocation, long timeStamp) {
+    public RadarContent(){
+
+    }
+
+    public RadarContent(int userID, String sUsername, String sLastName, int distance, int rating, String ranking, String sLocation, long timeStamp, String sEmail, String Skillset) {
         this.userID = userID;
         this.sUsername = sUsername;
+        this.sLastName = sLastName;
         Distance = distance;
         Rating = rating;
         Ranking = ranking;
         this.sLocation = sLocation;
         TimeStamp = timeStamp;
+        this.sEmail = sEmail;
+        this.Skillset = Skillset;
     }
 
     public RadarContent(JSONObject jsonObject){
@@ -46,6 +56,30 @@ public class RadarContent {
 
     public void setsUsername(String sUsername) {
         this.sUsername = sUsername;
+    }
+
+    public String getsLastName() {
+        return sLastName;
+    }
+
+    public void setsLastName(String sLastName) {
+        this.sLastName = sLastName;
+    }
+
+    public String getsEmail() {
+        return sEmail;
+    }
+
+    public void setsEmail(String sEmail) {
+        this.sEmail = sEmail;
+    }
+
+    public String getSkillset() {
+        return Skillset;
+    }
+
+    public void setSkillset(String skillset) {
+        Skillset = skillset;
     }
 
     public String getsLocation() {

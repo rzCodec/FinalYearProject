@@ -7,6 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 /**
@@ -15,8 +22,7 @@ import java.util.ArrayList;
 
 public class EventUtil extends Content {
     private static ArrayList<EventItem> dataList;
-    private EventAdapter ea;
-    private EventActivity eaObj;
+    private static EventAdapter ea;
     public EventUtil(LayoutInflater inflater, ViewGroup container) {
         super(inflater, container);
     }
@@ -25,10 +31,6 @@ public class EventUtil extends Content {
     public View displayContent() {
         //if(dataList == null)
         dataList = new ArrayList<>();
-        dataList.add(new EventItem("Hello World", "Hello World", System.currentTimeMillis()));
-        dataList.add(new EventItem("Sentence", "The quick brown fox jumped over the lazy dog", 109231245125L));
-        dataList.add(new EventItem("Name", "Info 12345678901234567890123456789012345678901234567890" +
-                "12345678901234567890123456789012345678901234567890123456789012345678901234567890", 1120341241234L));
         View v = super.displayContent();
         ListView lv = (ListView) v.findViewById(R.id.ArrayList);
         ea = new EventAdapter(EventActivity.getInstance().getApplicationContext(), dataList);
@@ -37,7 +39,29 @@ public class EventUtil extends Content {
     }
 
 
-    public void MakeRequest(String ID) {
-        //DOes request and update data
+    public static void makeRequest(int UserId)
+    {
+        EventActivity.getInstance().enableProgressBar();
+        String url = "https://www.eternalvibes.me/getevents/"+UserId;
+        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                EventActivity.getInstance().disableProgressBar();
+                ArrayList<EventItem> temp = EventItem.fromJSONArray(response);
+                if(temp != null)
+                {
+                    ea.clear();
+                    dataList = temp;
+                    ea.addAll(dataList);
+                    ea.notifyDataSetChanged();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                EventActivity.getInstance().disableProgressBar();
+            }
+        });
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
     }
 }
