@@ -56,9 +56,7 @@ public class ProfileActivity extends AppCompatActivity {
                     values.setText(p.getEmail());
                     values = (TextView) findViewById(R.id.SongLink);
                     values.setText(p.getDescription());
-                    SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                    String userID = sp.getString("userID", "");
-                    if(!userID.equals(p.getId()+""))
+                    if(!getIntent().hasExtra("IsOwner"))
                     {
                         fab.setOnClickListener(followUSer(p.getId()));
                     }

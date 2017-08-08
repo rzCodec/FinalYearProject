@@ -48,14 +48,14 @@ public class ContactChatAdapter extends ArrayAdapter<Profile> {
         Profile p = getItem(position);
         convertView.setOnClickListener(sendRequest(p));
         c.username.setText(p.getAlias());
-        switch (p.getGenre_id()) {
-            case 0:
+        switch (p.getGenre_id()+1) {
+            case 1:
                 c.iv.setImageResource(R.mipmap.jazz_icon);
                 break;
-            case 1:
+            case 2:
                 c.iv.setImageResource(R.mipmap.rock_icon);
                 break;
-            case 2:
+            case 3:
                 c.iv.setImageResource(R.mipmap.rap_icon);
                 break;
         }

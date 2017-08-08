@@ -70,37 +70,17 @@ public class MessengerUtil extends Content {
         DBHelper dbh = HomeActivity.getDbHelper();
         clist = dbh.getAllChats();
         adapter = new MessengerAdapter(HomeActivity.getInstance().getApplicationContext(), clist);
-        ListView l = (ListView) view.findViewById(R.id.ArrayList);
+        l = (ListView) view.findViewById(R.id.ArrayList);
         l.setAdapter(adapter);
         srl = (SwipeRefreshLayout) view.findViewById(R.id.refreshView);
         srl.setOnRefreshListener(srfListener());
         View Empty = inflater.inflate(R.layout.empty,null);
         l.setEmptyView(Empty);
+
         return view;
     }
 
-    public static void getMessages(int id)
-    {
-        String url = "https://eternalvibes.me/getmessages/" + id;
-        JsonArrayRequest jar = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                if (response.length() >= 0) {
-                    ArrayList<Message> messages = Message.fromJSONArray(response);
-                    for(Message m : messages)
-                    {
-                        HomeActivity.getDbHelper().insertMessage(m);
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //do nothing
-            }
-        });
-        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
-    }
+
 
     @Override
     protected void update() {
