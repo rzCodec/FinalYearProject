@@ -35,6 +35,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -42,6 +43,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,6 +64,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private RadarContent rcObjItem = new RadarContent();
     public String activeuserID = "";
     private String[] arrSkillsets;
+    private ArrayList<RadarContent> unsortedRadarList = new ArrayList<>();
 
     static HomeActivity getInstance() {
         return instance;
@@ -85,6 +88,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         thread = new Thread(radarThreadObj);
         thread.setDaemon(true); //Kill this child thread when the main thread is terminated
         thread.start();
+
+        String sReq = "https://www.eternalvibes.me/getNearbyStrangers/" + activeuserID;
+        RadarRequest rrObj = new RadarRequest(sReq);
+        unsortedRadarList = rrObj.sendRequestAndReceiveResponse();
+
+
+
+
+
 
         /*
         ArrayList<RadarContent> unsorted_radarList = radarThreadObj.getUnsorted_radarList();
@@ -177,6 +189,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
+    }
+
+    public ArrayList<RadarContent> getUnsortedRadarList(){
+        return unsortedRadarList;
     }
 
     //Returns a RadarThread Object to be used in the RadarUtil

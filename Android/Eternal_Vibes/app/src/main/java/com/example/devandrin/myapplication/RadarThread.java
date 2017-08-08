@@ -74,57 +74,10 @@ public class RadarThread implements Runnable {
         //String url = "https://www.eternalvibes.me/getNearbyStrangers/303346733";
         String url = "https://www.eternalvibes.me/getNearbyStrangers" + userID;
 
-        numProfiles = 5;
-
-        /*
-
-        JsonArrayRequest JOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray responseArray) {
-
-                temp = responseArray.length();
-
-                for(int i = 0; i < responseArray.length(); i++){
-                    try{
-                        JSONObject o = responseArray.getJSONObject(i);
-                        resStringFromAPI = o.toString();
-                        Log.i("VOLLEY", "Response # " + i + " is >> " + o.toString());
-                    }
-                    catch(JSONException e){
-                        Log.e("VOLLEY", "Error Response # " + i + "is >>>>>>>>>>>>>>>>>> " + e.toString());
-                    }
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });*/
 
 
         /*
-        JsonObjectRequest JOR = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try{
-                    JSONArray outerArray = response.getJSONArray("user");
-                    JSONObject obj = response.getJSONObject("user");
-                    temp = outerArray.length() + obj.length();
-                }
-                catch(JSONException e){
-
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        }){
-
-        };*/
+        */
 
         //String url = "https://www.eternalvibes.me/sendmessage" + "/" + chatID + "/" + currentUserID;
 
@@ -172,17 +125,17 @@ public class RadarThread implements Runnable {
         };
         */
 
-        RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(sr);
+        //RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(sr);
 
         //RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(JOR);
-        setupProfiles(numProfiles, jRadarResponse);
+        setupProfiles(numProfiles, resStringFromAPI);
     }
 
     /**
      * Sends a request and receives an array of profiles from the API response
      * Then calculates the distance of each user to check if they are within range
      */
-    private void setupProfiles(int numProfiles, JSONObject jObject){
+    private void setupProfiles(int numProfiles, String response){
 
         //Dummy profiles are used for now until the API to return actual profiles is implemented
         numProfiles = 3;
@@ -195,7 +148,7 @@ public class RadarThread implements Runnable {
         arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);
         arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);*/
 
-        arrAPI_Profiles[0] = new RadarContent(303346736, "John ", "Crester", 12, 3, "Intermediate", "Sandton", 2100, "Jess55@gmail.com", "Vocals");
+        arrAPI_Profiles[0] = new RadarContent(303346736, response, "Crester" + temp, 12, 3, "Intermediate", "Sandton", 2100, "Jess55@gmail.com", "Vocals");
         arrAPI_Profiles[1] = new RadarContent(303346737, "mrBob", "Breck", 20, 2, "Beginner", "Houghton", 500, "bob2@gmail.com", "Drums");
         arrAPI_Profiles[2] = new RadarContent(303346740, "Vanneh", "Kunni", 18, 4, "Advanced", "Randburg", 1500, "201320596@student.uj.ac.za", "Keyboard");
         //arrAPI_Profiles[3] = new RadarContent(452, "Tiffany", "Vlein", 40, 5, "Master", "Pretoria", 4100, "22Tiff@gmail.com", "Guitar");

@@ -2,12 +2,23 @@ package com.example.devandrin.myapplication;
 
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -100,12 +111,13 @@ public class RadarUtil extends Content {
 
         //The setup profiles method has been moved to the RadarThread class
         unsorted_radarList = HomeActivity.getInstance().getRadarThreadObj().getUnsorted_radarList();
+
+        //unsorted_radarList = HomeActivity.getInstance().getUnsortedRadarList();
         if(unsorted_radarList == null){
             Snackbar s = Snackbar.make(HomeActivity.getInstance().findViewById(R.id.cLayout), "Could locate other users due to a connection error.", Snackbar.LENGTH_LONG);
             s.show();
         }
         UpdatedSort_RadarProfiles("DISTANCE", false); //Default sort by shortest distance
-
         return view;
     }
 
