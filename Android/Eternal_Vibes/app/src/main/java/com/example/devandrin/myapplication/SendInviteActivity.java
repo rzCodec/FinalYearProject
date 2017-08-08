@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -30,6 +31,7 @@ public class SendInviteActivity extends AppCompatActivity {
     private static ArrayList<Profile> list;
     private static InviteAdapter iv ;
     private ProgressDialog pd;
+    private EditText message;
     private static SendInviteActivity instance;
     private static final String url = "https://eternalvibes.me/getfollowing/";
     private static final String url2 = "https://www.eternalvibes.me/sendinvite";
@@ -41,14 +43,25 @@ public class SendInviteActivity extends AppCompatActivity {
         instance = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        message = (EditText) findViewById(R.id.inviteMessage) ;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_send_invite);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for(Profile p:InviteAdapter.selectedItems)
+                SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", MODE_PRIVATE);
+                final String userID = sp.getString("userID", "");
+                for(Profile p :InviteAdapter.selectedItems)
                 {
-
+                    if(message.getText().length()<=0)
+                    {
+                        send(getIntent().getIntExtra("event_id",-1),p.getId(),Integer.parseInt(userID),"You have been invited to attend an Event by "+p.getAlias());
+                    }
+                    else
+                    {
+                        send(getIntent().getIntExtra("event_id",-1),p.getId(),Integer.parseInt(userID),message.getText().toString());
+                    }
+                    Utilities.MakeToast(getApplicationContext(),"Invites sent!!");
+                    onBackPressed();
                 }
             }
         });

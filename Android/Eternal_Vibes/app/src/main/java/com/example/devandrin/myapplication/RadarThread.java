@@ -172,7 +172,7 @@ public class RadarThread implements Runnable {
         };
         */
 
-        RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(sr);
+        //RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(sr);
 
         //RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(JOR);
         setupProfiles(numProfiles, jRadarResponse);
