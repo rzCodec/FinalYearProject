@@ -21,7 +21,7 @@
         android:text="First Name"
         android:gravity="left"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.116"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -78,7 +78,7 @@
         android:gravity="left"
         android:text="Current Rank"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.121"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileLastName"
@@ -97,7 +97,7 @@
         android:text="Musician Skillset"
         android:gravity="left"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileRating"
@@ -116,7 +116,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintHorizontal_bias="0.116"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintVertical_bias="0.071"
         app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileName" />
 
@@ -131,11 +131,11 @@
         android:text="Location and Distance"
         android:gravity="left"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.152"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtRadarProfileSkillset"
-        app:layout_constraintVertical_bias="0.137" />
+        app:layout_constraintVertical_bias="0.153" />
 
     <TextView
         android:id="@+id/txtRadarProfileEmailAddress"
@@ -150,7 +150,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintHorizontal_bias="0.125"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintVertical_bias="0.319" />
 
 </android.support.constraint.ConstraintLayout>
