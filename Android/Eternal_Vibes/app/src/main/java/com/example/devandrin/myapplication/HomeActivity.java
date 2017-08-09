@@ -65,6 +65,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public String activeuserID = "";
     private String[] arrSkillsets;
     private ArrayList<RadarContent> unsortedRadarList = new ArrayList<>();
+    private RadarRequest rrObj;
+
 
     static HomeActivity getInstance() {
         return instance;
@@ -82,31 +84,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         dbHelper = new DBHelper(this);
         instance = this;
 
-        SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
-        activeuserID = sp.getString("userID", "");
+        /*
         radarThreadObj = new RadarThread(activeuserID);
         thread = new Thread(radarThreadObj);
         thread.setDaemon(true); //Kill this child thread when the main thread is terminated
-        thread.start();
+        thread.start();*/
 
+        //Makes a request to find all the music artists within the vicinity of the current user
+        SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
+        String activeuserID = sp.getString("userID", "");
         String sReq = "https://www.eternalvibes.me/getNearbyStrangers/" + activeuserID;
-        RadarRequest rrObj = new RadarRequest(sReq);
+        rrObj = new RadarRequest(sReq);
         unsortedRadarList = rrObj.sendRequestAndReceiveResponse();
 
-
-
-
-
-
-        /*
-        ArrayList<RadarContent> unsorted_radarList = radarThreadObj.getUnsorted_radarList();
-        arrSkillsets = new String[unsorted_radarList.size()];
-        for(int i = 0; i < arrSkillsets.length; i++){
-            arrSkillsets[i] = unsorted_radarList.get(i).getSkillset();
-        }*/
-
-            //Toast.makeText(this, "User ID is " + activeuserID,
-        //        Toast.LENGTH_LONG).show();
+        //ArrayList<RadarContent> testList = new ArrayList<>();
+        //testList.add(new RadarContent(-5, "Tester", "Jester", 12, 3, "Pester", "Fester", 2100, "Jess55@gmail.com", "Vocals"));
+        //unsortedRadarList = rrObj.sendRequestAndReceiveResponse();
+        //unsortedRadarList = testList;
 
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
@@ -189,6 +183,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
+    }
+
+    public RadarRequest returnRadarContentInstance(){
+        return rrObj;
     }
 
     public ArrayList<RadarContent> getUnsortedRadarList(){
@@ -597,9 +595,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NewsFeedUtil.makeRequest(id);
         MessengerUtil.makeRequest(id);
 
-        //Find the users when the app starts on a separate child thread
-        //The main thread creates the required UI components
-        //While this happens, the child thread retrieves the required data to be displayed in the UI
         activeuserID = id;
 
     }

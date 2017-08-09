@@ -21,12 +21,11 @@ import java.util.Random;
  * Created by Ronald on 8/8/2017.
  */
 
-public class RadarRequest {
+public class RadarRequest{
     private String sReq = "";
     private ArrayList<RadarContent> rcList;
     private RadarContent[] arrNearbyStrangersResponse;
     private RadarContent rcObj;
-    private int iNumProfiles = 0;
     private int counter = 0;
 
     public RadarRequest(){
@@ -53,8 +52,15 @@ public class RadarRequest {
                 double latitude = 0;
                 int distance = 0;
 
+                Toast.makeText(HomeActivity.getInstance(), "Details" + responseArray.toString(),
+                        Toast.LENGTH_LONG).show();
+
                 for(int i = 0; i < responseArray.length(); i++){
                     try{
+                        //The response array is in the following JSON format
+                        /*
+                         * [{"user"{"id", "longitude", "latitude"} "km"}, etc]
+                         */
                         JSONObject jOuterObj = responseArray.getJSONObject(i);
                         JSONObject innerObj = jOuterObj.getJSONObject("user");
                         userID = innerObj.getString("id");
@@ -62,16 +68,23 @@ public class RadarRequest {
                         latitude = innerObj.getDouble("latitude");
                         distance = (int) jOuterObj.getDouble("km");
 
-                        ProfileRequest(userID);
+                        rcList = ProfileRequest(userID, distance);
                         arrNearbyStrangersResponse[i] = new RadarContent(Integer.parseInt(userID), longitude, latitude, distance);
 
                         Toast.makeText(HomeActivity.getInstance(), "Profile # " + i + "\n" + arrNearbyStrangersResponse[i].getNearbyStrangersResponseString(),
-                                Toast.LENGTH_LONG).show();
+                               Toast.LENGTH_LONG).show();
+
+
                     }
                     catch(JSONException e){
                         Log.e("Volley", "Error from getNearbyStrangersAPI" + e.toString());
                     }
                 }//end for loop
+
+
+                //Toast.makeText(HomeActivity.getInstance(), "Size is -> " + rcList.size(),
+                //      Toast.LENGTH_LONG).show();
+
 
                 //Testing Code Purposes Below
                 //Toast.makeText(HomeActivity.getInstance(), "User Distance is -> " + arrNearbyStrangersResponse[0].getDistance(),
@@ -80,6 +93,7 @@ public class RadarRequest {
                 //Toast.makeText(HomeActivity.getInstance(), "User ID is -> " + userID + "\n"
                 //                + "longitude -> " + longitude + "\n" + "latitude ->" + latitude + "\n" + "Distance ->" + distance,
                 //        Toast.LENGTH_LONG).show();
+                rcList = new ArrayList<>();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -87,14 +101,15 @@ public class RadarRequest {
 
             }
         });
+
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(JOR);
-        Toast.makeText(HomeActivity.getInstance(), "Arraylist size is -> " + rcObj.getUnsortedRC_List().size(),
-                    Toast.LENGTH_LONG).show();
+        //Toast.makeText(HomeActivity.getInstance(), HomeActivity.getInstance().getUnsortedRadarList().size(),
+                    //Toast.LENGTH_LONG).show();
 
         return rcList;
     }
 
-    public void ProfileRequest(String sUserID){
+    public ArrayList<RadarContent> ProfileRequest(String sUserID, final int iDistance){
         //Toast.makeText(HomeActivity.getInstance(), "Total Number of Profiles are " + iNumProfiles,
         //        Toast.LENGTH_LONG).show();
 
@@ -105,10 +120,23 @@ public class RadarRequest {
             JsonArrayRequest arrJOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, sGetProfileReq, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray responseArray) {
+
                     Toast.makeText(HomeActivity.getInstance(), "Profile # " + counter + " -> " + responseArray.toString(),
-                               Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_LONG).show();
                     counter++;
-                    rcObj.getUnsortedRC_List().add(new RadarContent(responseArray));
+
+                    RadarContent rcObj = new RadarContent(responseArray);
+                    rcObj.setDistance(iDistance);
+                    rcObj.setRanking("<Ranking will go here>");
+                    rcObj.setRating(new Random().nextInt(5) + 1);
+                    rcObj.setsEmail("temp@gmail.com");
+                    rcObj.setSkillset("<Skills will go here>");
+                    rcObj.setsLocation("<Location will go here>");
+
+                    rcList.add(rcObj);
+                    setRadarContentList(rcList);
+
+                    //rcObj.getUnsortedRC_List().add(new RadarContent(responseArray));
                     //rcList.add(new RadarContent(responseArray));
                 }
             }, new Response.ErrorListener() {
@@ -117,7 +145,20 @@ public class RadarRequest {
 
                 }
             });
+
             RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(arrJOR);
+
+        return rcList;
     }//end of ProfileRequest method
+
+    private void setRadarContentList(ArrayList<RadarContent> param_rcList){
+        this.rcList = param_rcList;
+        //Toast.makeText(HomeActivity.getInstance(), "Size of list is -> " + rcList.size(),
+        //        Toast.LENGTH_LONG).show();
+    }
+
+    public ArrayList<RadarContent> getUnsortedRadarList(){
+        return rcList;
+    }
 
 }//end of class

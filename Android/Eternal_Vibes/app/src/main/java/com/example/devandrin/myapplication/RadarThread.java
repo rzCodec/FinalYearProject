@@ -141,18 +141,9 @@ public class RadarThread implements Runnable {
         numProfiles = 3;
         arrAPI_Profiles = new RadarContent[numProfiles];
 
-        /*
-        arrAPI_Profiles[0] = new RadarContent(452, "Jessica Grom : " + temp, 12, 3, "Intermediate", "Sandton", 2100);
-        arrAPI_Profiles[1] = new RadarContent(89, "Bob Brown", 20, 2, "Beginner", "Houghton", 500);
-        arrAPI_Profiles[2] = new RadarContent(1552, "Tom Yeis", 18, 4, "Advanced", "Randburg", 1500);
-        arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);
-        arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);*/
-
-        arrAPI_Profiles[0] = new RadarContent(303346736, response, "Crester" + temp, 12, 3, "Intermediate", "Sandton", 2100, "Jess55@gmail.com", "Vocals");
+        arrAPI_Profiles[0] = new RadarContent(303346736, "John", "Crester" + temp, 12, 3, "Intermediate", "Sandton", 2100, "Jess55@gmail.com", "Vocals");
         arrAPI_Profiles[1] = new RadarContent(303346737, "mrBob", "Breck", 20, 2, "Beginner", "Houghton", 500, "bob2@gmail.com", "Drums");
         arrAPI_Profiles[2] = new RadarContent(303346740, "Vanneh", "Kunni", 18, 4, "Advanced", "Randburg", 1500, "201320596@student.uj.ac.za", "Keyboard");
-        //arrAPI_Profiles[3] = new RadarContent(452, "Tiffany", "Vlein", 40, 5, "Master", "Pretoria", 4100, "22Tiff@gmail.com", "Guitar");
-        //arrAPI_Profiles[4] = new RadarContent(842, "Jerry's length is : " + temp, " Alko", 34, 1, "Beginner", "Soweto", 800, "Jerry@hotmail.com", "Piano");
 
         //Each time the items in the Radar are sorted it must do it with a brand new list and not an existing one
         unsorted_radarList = new ArrayList<>();
