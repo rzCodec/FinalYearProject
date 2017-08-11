@@ -1,5 +1,9 @@
 package com.example.devandrin.myapplication;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,13 +50,28 @@ public class RadarContent {
 
     /**
      * Overloaded constructor is used in the RadarRequest class
-     * @param jsonArray - An object received from the node.js API created by David
+     * @param jsonArray - An array object received from the node.js API created by David
      */
-    public RadarContent(JSONArray o){
+    public RadarContent(JSONArray arr){
         try{
-            this.sUsername = o.getJSONObject(0).getString("firstname");
-            this.sAlias = o.getJSONObject(0).getString("username");
-            this.sLastName = o.getJSONObject(0).getString("surname");
+            this.sUsername = arr.getJSONObject(0).getString("firstname");
+            this.sAlias = arr.getJSONObject(0).getString("username");
+            this.sLastName = arr.getJSONObject(0).getString("surname");
+        }
+        catch(JSONException jException){
+
+        }
+    }
+
+    /**
+     * Overloaded constructor is used in the RadarRequest class
+     * @param jsonObject - An object received from the node.js API created by David
+     */
+    public RadarContent(JSONObject o){
+        try{
+            this.sUsername = o.getString("firstname");
+            this.sAlias = o.getString("username");
+            this.sLastName = o.getString("surname");
         }
         catch(JSONException jException){
 
@@ -71,6 +90,11 @@ public class RadarContent {
         this.longitude = longitude;
         this.latitude = latitude;
         this.Distance = distance;
+    }
+
+    public void makeProfileRequest(String activeuserID){
+
+
     }
 
     public String getsUsername() {

@@ -63,9 +63,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private RadarThread radarThreadObj;
     private RadarContent rcObjItem = new RadarContent();
     public String activeuserID = "";
-    private String[] arrSkillsets;
     private ArrayList<RadarContent> unsortedRadarList = new ArrayList<>();
-    private RadarRequest rrObj;
+    public static String hello = "hello home activity & ";
 
 
     static HomeActivity getInstance() {
@@ -94,13 +93,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
         String activeuserID = sp.getString("userID", "");
         String sReq = "https://www.eternalvibes.me/getNearbyStrangers/" + activeuserID;
-        rrObj = new RadarRequest(sReq);
-        unsortedRadarList = rrObj.sendRequestAndReceiveResponse();
-
-        //ArrayList<RadarContent> testList = new ArrayList<>();
-        //testList.add(new RadarContent(-5, "Tester", "Jester", 12, 3, "Pester", "Fester", 2100, "Jess55@gmail.com", "Vocals"));
+        //rrObj = new RadarRequest(sReq);
         //unsortedRadarList = rrObj.sendRequestAndReceiveResponse();
-        //unsortedRadarList = testList;
+
+        //final RadarAsyncTask radarAsyncTaskObj = new RadarAsyncTask();
+        //radarAsyncTaskObj.execute(activeuserID);
+        //Toast.makeText(this, "Size of unsorted radar list is " + this.unsortedRadarList.size() + " message " + hello,
+        //       Toast.LENGTH_LONG).show();
 
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
@@ -183,10 +182,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
-    }
-
-    public RadarRequest returnRadarContentInstance(){
-        return rrObj;
     }
 
     public ArrayList<RadarContent> getUnsortedRadarList(){
@@ -595,8 +590,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NewsFeedUtil.makeRequest(id);
         MessengerUtil.makeRequest(id);
 
+        //This is used for the Messenger Chat
         activeuserID = id;
-
     }
 
     @Override
