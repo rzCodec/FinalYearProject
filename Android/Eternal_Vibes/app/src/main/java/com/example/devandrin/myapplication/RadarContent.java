@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Ronnie on 2017-04-13.
@@ -50,7 +51,7 @@ public class RadarContent {
 
     /**
      * Overloaded constructor is used in the RadarRequest class
-     * @param jsonArray - An array object received from the node.js API created by David
+     * @param arr - An array object received from the node.js API created by David
      */
     public RadarContent(JSONArray arr){
         try{
@@ -65,13 +66,17 @@ public class RadarContent {
 
     /**
      * Overloaded constructor is used in the RadarRequest class
-     * @param jsonObject - An object received from the node.js API created by David
+     * @param o - An object received from the node.js API created by David
      */
     public RadarContent(JSONObject o){
         try{
             this.sUsername = o.getString("firstname");
             this.sAlias = o.getString("username");
             this.sLastName = o.getString("surname");
+            //To be completed properly
+            this.Rating = new Random().nextInt(5) + 1;
+            this.Ranking = "Temporary";
+            this.Distance = new Random().nextInt(100) + 1;
         }
         catch(JSONException jException){
 
@@ -92,9 +97,18 @@ public class RadarContent {
         this.Distance = distance;
     }
 
-    public void makeProfileRequest(String activeuserID){
+    public static ArrayList<RadarContent> fromJSONResponseArray(JSONArray arr){
+        ArrayList<RadarContent> rcList = new ArrayList<>();
+        try {
+            for(int i=0; i < arr.length();i++) {
+                rcList.add(new RadarContent(arr.getJSONObject(i)));
+            }
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+        }
 
-
+        return rcList;
     }
 
     public String getsUsername() {

@@ -1,6 +1,8 @@
 package com.example.devandrin.myapplication;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,10 +49,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -62,10 +66,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Thread thread;
     private RadarThread radarThreadObj;
     private RadarContent rcObjItem = new RadarContent();
-    public String activeuserID = "";
+    public static String activeuserID = "";
     private ArrayList<RadarContent> unsortedRadarList = new ArrayList<>();
-    public static String hello = "hello home activity & ";
-
 
     static HomeActivity getInstance() {
         return instance;
@@ -83,23 +85,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         dbHelper = new DBHelper(this);
         instance = this;
 
-        /*
+        /*This block for threads can be deleted safely
         radarThreadObj = new RadarThread(activeuserID);
         thread = new Thread(radarThreadObj);
         thread.setDaemon(true); //Kill this child thread when the main thread is terminated
         thread.start();*/
 
-        //Makes a request to find all the music artists within the vicinity of the current user
         SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
         String activeuserID = sp.getString("userID", "");
         String sReq = "https://www.eternalvibes.me/getNearbyStrangers/" + activeuserID;
-        //rrObj = new RadarRequest(sReq);
-        //unsortedRadarList = rrObj.sendRequestAndReceiveResponse();
-
-        //final RadarAsyncTask radarAsyncTaskObj = new RadarAsyncTask();
-        //radarAsyncTaskObj.execute(activeuserID);
-        //Toast.makeText(this, "Size of unsorted radar list is " + this.unsortedRadarList.size() + " message " + hello,
-        //       Toast.LENGTH_LONG).show();
 
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
@@ -141,12 +135,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Utilities.MakeSnack(findViewById(R.id.cLayout), "Location services disabled");
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
-        TabAdapter ta = new TabAdapter(getSupportFragmentManager(), HomeActivity.this);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
+        final TabAdapter ta = new TabAdapter(getSupportFragmentManager(), HomeActivity.this);
         viewPager.setAdapter(ta);
 
         // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -183,6 +177,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
         viewPager.setCurrentItem(1);
     }
+
+
+    /* Gets the response from the async task. Please do not delete this
+    @Override
+    public ArrayList<RadarContent> processCompleted(ArrayList<RadarContent> rcList){
+        this.unsortedRadarList = rcList;
+        return this.unsortedRadarList;
+    }*/
 
     public ArrayList<RadarContent> getUnsortedRadarList(){
         return unsortedRadarList;
@@ -253,9 +255,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Create the menu when the user selects the floating button
      *
-     * @param menu
-     * @param v
-     * @param menuInfo
+     * @param
+     * @param
+     * @param
      */
 
     public void setRadarProfileObject(RadarContent rcObjItem){

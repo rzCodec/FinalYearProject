@@ -22,8 +22,6 @@ public abstract class RenderFactory {
         } else if (s.equals("PersonalEvents")) {
             return new PersonalEventUtil(inflater, container);
         }
-
-
         return null;
     }
 

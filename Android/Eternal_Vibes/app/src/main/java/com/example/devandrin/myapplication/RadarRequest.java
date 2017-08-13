@@ -11,8 +11,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -20,14 +24,11 @@ import java.util.Random;
  */
 
 public class RadarRequest {
-    ArrayList<RadarContent> unsortedRadarResponseList = new ArrayList<>();
+    private ArrayList<RadarContent> unsortedRadarResponseList = new ArrayList<>();
+    public static String resString = "";
 
     public RadarRequest(){
 
-    }
-
-    public RadarRequest(String activeuserID){
-        extractNearbyStrangersData(activeuserID);
     }
 
     /**
@@ -35,7 +36,7 @@ public class RadarRequest {
      * @param activeuserID - The current user id of the app
      * @return a list of user ids and distances
      */
-    public ArrayList<RadarContent> extractNearbyStrangersData(String activeuserID){
+    public ArrayList<RadarContent> extractNearbyStrangersData(String activeuserID, final RadarAdapter adapter){
         String sReq = "https://www.eternalvibes.me/getNearbyStrangers/" + activeuserID;
         JsonArrayRequest JOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, sReq, null, new Response.Listener<JSONArray>() {
             @Override
@@ -52,14 +53,16 @@ public class RadarRequest {
                         double longitude = innerObj.getDouble("longitude");
                         double latitude = innerObj.getDouble("latitude");
                         int distance = (int) jOuterObj.getDouble("km");
-                        unsortedRadarResponseList = extractUserInfo(userID, distance);
+                        unsortedRadarResponseList = extractUserInfo(userID, distance, adapter);
                     }
                     catch(JSONException e){
                         e.printStackTrace();
                     }
                 }
-                Toast.makeText(HomeActivity.getInstance(), "List size is -> " + unsortedRadarResponseList.size(),
-                        Toast.LENGTH_LONG).show();
+
+                //Toast.makeText(HomeActivity.getInstance(), "List size is -> " + unsortedRadarResponseList.size(),
+                //        Toast.LENGTH_LONG).show();
+
             }
 
         }, new Response.ErrorListener() {
@@ -78,20 +81,35 @@ public class RadarRequest {
      * @param iDistance - Distance between current user and found user
      * @return
      */
-    private ArrayList<RadarContent> extractUserInfo(String sUserID, final int iDistance){
+    private ArrayList<RadarContent> extractUserInfo(String sUserID, final int iDistance, final RadarAdapter adapter){
         String sGetProfileReq = "https://www.eternalvibes.me/getuserinfo/" + sUserID;
 
         JsonArrayRequest arrJOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, sGetProfileReq, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray responseArray) {
-                RadarContent rcObj = new RadarContent(responseArray);
-                rcObj.setDistance(iDistance);
-                rcObj.setRanking("<Ranking will go here>");
-                rcObj.setRating(new Random().nextInt(5) + 1);
-                rcObj.setsEmail("temp@gmail.com");
-                rcObj.setSkillset("<Skills will go here>");
-                rcObj.setsLocation("<Location will go here>");
+                //RadarContent rcObj = new RadarContent(RadarContent rcObj = new RadarContent(responseArray);
+                RadarContent rcObj = new RadarContent();
+                try{
+                    JSONObject object = responseArray.getJSONObject(0);
+                    rcObj.setsUsername(object.getString("firstname"));
+                    rcObj.setsLastName(object.getString("surname"));
+                    rcObj.setsAlias(object.getString("username"));
+                    rcObj.setDistance(iDistance);
+                    rcObj.setRanking("<Ranking will go here>");
+                    rcObj.setRating(new Random().nextInt(5) + 1);
+                    rcObj.setsEmail("temp@gmail.com");
+                    rcObj.setSkillset("<Skills will go here>");
+                    rcObj.setsLocation("<Location will go here>");
+                }
+                catch(Exception e){
+
+                }
                 unsortedRadarResponseList.add(rcObj);
+                if(adapter != null){
+                    adapter.clear();
+                    adapter.addAll(unsortedRadarResponseList);
+                    adapter.notifyDataSetChanged();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -102,4 +120,36 @@ public class RadarRequest {
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(arrJOR);
         return unsortedRadarResponseList;
     }
+
+    //================ Temporary ===============
+
+    public static JSONObject getJSONObjectFromURL(String urlString) throws IOException, JSONException {
+        HttpURLConnection urlConnection = null;
+        URL url = new URL(urlString);
+        urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setReadTimeout(10000 /* milliseconds */ );
+        urlConnection.setConnectTimeout(15000 /* milliseconds */ );
+        urlConnection.setDoOutput(true);
+        urlConnection.connect();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+        StringBuilder sb = new StringBuilder();
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line + "\n");
+        }
+        br.close();
+
+        String jsonString = sb.toString();
+
+        Toast.makeText(HomeActivity.getInstance(), "Response using Http is -> " + jsonString,
+                Toast.LENGTH_LONG).show();
+
+        //System.out.println("JSON: " + jsonString);
+
+        return new JSONObject(jsonString);
+    }
+
 }//end of class

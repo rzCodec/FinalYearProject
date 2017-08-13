@@ -1,6 +1,7 @@
 package com.example.devandrin.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by Devandrin on 2017/04/01.
  */
@@ -30,19 +33,13 @@ import java.util.Random;
 public class RadarUtil extends Content {
 
     //Use two different arraylists to prevent
-    private static ArrayList<RadarContent> unsorted_radarList = new ArrayList<>();
+    //This is the response from the getnearbyStrangers API returns
+    //Must be static because it accessed from other methods and classes
+    private static ArrayList<RadarContent> unsortedResponseList;
     private static ArrayList<RadarContent> sorted_radarList;
-    private static RadarAdapter raObj;
+    private static RadarAdapter radarAdapter;
     private static View view;
-    private RadarContent[] arrAPI_Profiles;
-    public static boolean isProfileSelected = false;
-
-    //=============
-    private static ArrayList<RadarContent> rcList;
-    private static RadarContent[] arrNearbyStrangersResponse;
-    private static ArrayList<RadarContent> unsortedResponseList = new ArrayList<>();
-
-    //private static int counter = 0;
+    public static ListView lv = null;
 
     /**
      * @param inflater  - Inflates and creates the required xml files
@@ -53,47 +50,46 @@ public class RadarUtil extends Content {
     }
 
     //==================================================================================================
-
     public static void UpdatedSort_RadarProfiles(String RadarSortType, Boolean isAscending) {
-        if(unsorted_radarList == null){
-            unsorted_radarList = new ArrayList<>();
-            //unsorted_radarList.add(new RadarContent(3528, "James", "Vrom", 11, 4, "Intermediate", "Rosebank", 4200, "James99@gmail.com", "Drums"));
-        }
-
-        //unsorted_radarList = HomeActivity.getInstance().returnRadarContentInstance().getUnsortedRadarList();
-        //unsorted_radarList = HomeActivity.getInstance().getRadarThreadObj().getUnsorted_radarList();
-        ProfileQueue pqObj = new ProfileQueue(unsorted_radarList);
+        ProfileQueue pqObj = new ProfileQueue(unsortedResponseList);
         pqObj.ProfileSort(RadarSortType, isAscending);
-
         //Each time the items in the Radar are sorted,
         //it must do it with a brand new list and not an existing one
         sorted_radarList = new ArrayList<>();
-
         while (pqObj.iterator().hasNext()) {
             sorted_radarList.add(pqObj.poll());
-            //Remove each Profile from the queue with the highest priority then
-            //add each profile to an arraylist so it can displayed in the RadarAdapter class
         }
-        //setupRadar(view);
+        if(radarAdapter != null){
+            radarAdapter.clear();
+            radarAdapter.addAll(sorted_radarList);
+            radarAdapter.notifyDataSetChanged();
+        }
     }
+
     /**
      * @return a custom view to display content
      */
     @Override
     public View displayContent() {
         view = super.displayContent();
-        final ListView lv = (ListView) view.findViewById(R.id.ArrayList);
 
-        RadarRequest rrObj = new RadarRequest();
-        String currentUserID = HomeActivity.getInstance().activeuserID;
-        unsortedResponseList = rrObj.extractNearbyStrangersData(currentUserID);
-
+        lv = (ListView) view.findViewById(R.id.ArrayList);
+        //unsortedResponseList = HomeActivity.getInstance().getUnsortedRadarList();
         if(unsortedResponseList == null){
             unsortedResponseList = new ArrayList<>();
         }
 
-        raObj = new RadarAdapter(HomeActivity.getInstance().getApplicationContext(), unsortedResponseList);
-        lv.setAdapter(raObj);
+        radarAdapter = new RadarAdapter(HomeActivity.getInstance().getApplicationContext(), unsortedResponseList);
+        //The two below lines work as well
+        //RadarRequest request = new RadarRequest();
+        //request.extractNearbyStrangersData(HomeActivity.activeuserID, raObj);
+
+        //Use an asynchronous task to make the request on a background thread instead of blocking the UI thread
+        RadarAsyncTask requestTask = new RadarAsyncTask(HomeActivity.getInstance().getApplicationContext(), radarAdapter, lv);
+        requestTask.execute(HomeActivity.activeuserID);
+
+        lv.setAdapter(radarAdapter);
+        radarAdapter.notifyDataSetChanged();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             /**
              * This method allows an item in a listview to be clicked.
@@ -102,19 +98,21 @@ public class RadarUtil extends Content {
              * @param view
              * @param position
              * @param arg
+             *
              */
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                 RadarContent rcObj = (RadarContent) adapter.getItemAtPosition(position);
                 HomeActivity.getInstance().setRadarProfileObject(rcObj);
                 HomeActivity.getInstance().setupRadarProfileMenu(lv);
-                //Toast.makeText(HomeActivity.getInstance(), "Size of rcList is " + radarAsyncTaskObj.getRadarResponseList().size(),
-                 //     Toast.LENGTH_LONG).show();
+                //Toast.makeText(HomeActivity.getInstance(), "Size of the unsorted list is " + unsortedResponseList.size(),
+                //      Toast.LENGTH_LONG).show();
             }
         });
 
         return view;
     }
+
     @Override
     protected void update() {
 
