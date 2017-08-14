@@ -29,6 +29,11 @@ public class ChatActivity extends AppCompatActivity {
     private ArrayList<Chat> chatList = new ArrayList<>();
     private int iCurrentUserID = 0;
     private int iChatID = 0;
+    private static  ChatAdapter caObj;
+
+    public static ChatAdapter getCaObj() {
+        return caObj;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +66,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
 
-        final ChatAdapter caObj = new ChatAdapter(getApplicationContext(), msgList);
+        caObj = new ChatAdapter(getApplicationContext(), msgList);
         final ListView lv = (ListView) findViewById(R.id.chatMsgList_layout);
 
         lv.setAdapter(caObj);

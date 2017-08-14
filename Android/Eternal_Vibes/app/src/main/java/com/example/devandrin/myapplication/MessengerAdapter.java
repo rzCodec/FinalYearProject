@@ -78,4 +78,5 @@ public class MessengerAdapter extends ArrayAdapter<Chat> {
     {
         TextView Timestamp,LastMessage,Username;
     }
+
 }

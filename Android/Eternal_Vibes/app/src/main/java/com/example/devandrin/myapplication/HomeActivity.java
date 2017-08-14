@@ -252,14 +252,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         unregisterForContextMenu(lv);
     }
 
-    /**
-     * Create the menu when the user selects the floating button
-     *
-     * @param
-     * @param
-     * @param
-     */
-
     public void setRadarProfileObject(RadarContent rcObjItem){
         //Create a branch new RadarContent object
         //The data was passed from RadarUtil
@@ -511,6 +503,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //noinspection SimplifiableIfStatement
         switch(id)
         {
+            case R.id.action_topArtists:
+                Intent i = new Intent(this,FollowersListActivity.class);
+                i.putExtra("title", "Top Artists");
+                startActivity(i);
+                return true;
             case R.id.action_post:
                 startPostActivity();
                 return true;

@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/txtRadarProfileName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -29,7 +29,7 @@
 
     <TextView
         android:id="@+id/txtRadarProfileRating"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -48,7 +48,7 @@
 
     <TextView
         android:id="@+id/txtRadarProfileSongLink"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -67,7 +67,7 @@
 
     <TextView
         android:id="@+id/txtRadarProfileRank"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -86,7 +86,7 @@
 
     <TextView
         android:id="@+id/txtRadarProfileSkillset"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -105,7 +105,7 @@
 
     <TextView
         android:id="@+id/txtRadarProfileLastName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Last Name"
         android:gravity="left"
@@ -122,7 +122,7 @@
 
     <TextView
         android:id="@+id/txtRadarProfileDistanceLocation"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
@@ -139,7 +139,7 @@
 
     <TextView
         android:id="@+id/txtRadarProfileEmailAddress"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Email Address"
         android:layout_marginTop="8dp"
