@@ -1,14 +1,17 @@
 package com.example.devandrin.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -41,6 +44,9 @@ public class RadarUtil extends Content {
     private static View view;
     public static ListView lv = null;
 
+    private Context HomeContext;
+    private ProgressBar progressBar;
+
     /**
      * @param inflater  - Inflates and creates the required xml files
      * @param container - Holds a bunch of views together
@@ -72,7 +78,6 @@ public class RadarUtil extends Content {
     @Override
     public View displayContent() {
         view = super.displayContent();
-
         lv = (ListView) view.findViewById(R.id.ArrayList);
         //unsortedResponseList = HomeActivity.getInstance().getUnsortedRadarList();
         if(unsortedResponseList == null){
@@ -85,8 +90,10 @@ public class RadarUtil extends Content {
         //request.extractNearbyStrangersData(HomeActivity.activeuserID, raObj);
 
         //Use an asynchronous task to make the request on a background thread instead of blocking the UI thread
-        RadarAsyncTask requestTask = new RadarAsyncTask(HomeActivity.getInstance().getApplicationContext(), radarAdapter, lv);
-        requestTask.execute(HomeActivity.activeuserID);
+        HomeContext = HomeActivity.getInstance().getApplicationContext();
+        progressBar = HomeActivity.getInstance().getProgressBar();
+        RadarAsyncTask RadarRequestTask = new RadarAsyncTask(progressBar, HomeContext, radarAdapter, lv);
+        RadarRequestTask.execute(HomeActivity.activeuserID);
 
         lv.setAdapter(radarAdapter);
         radarAdapter.notifyDataSetChanged();
@@ -110,11 +117,16 @@ public class RadarUtil extends Content {
             }
         });
 
+        srl = (SwipeRefreshLayout) view.findViewById(R.id.refreshView);
+        srl.setOnRefreshListener(srfListener());
+
         return view;
     }
 
     @Override
     protected void update() {
-
+        RadarAsyncTask newRadarRequestTask = new RadarAsyncTask(progressBar, HomeContext, radarAdapter, lv);
+        newRadarRequestTask.execute(HomeActivity.activeuserID);
+        srl.setRefreshing(false);
     }
 }//end of class

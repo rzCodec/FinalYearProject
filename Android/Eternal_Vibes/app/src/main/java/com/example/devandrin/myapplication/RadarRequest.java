@@ -26,9 +26,10 @@ import java.util.Random;
 public class RadarRequest {
     private ArrayList<RadarContent> unsortedRadarResponseList = new ArrayList<>();
     public static String resString = "";
+    private RadarAsyncTask radarAsyncTask;
 
-    public RadarRequest(){
-
+    public RadarRequest(RadarAsyncTask radarAsyncTask){
+        this.radarAsyncTask = radarAsyncTask;
     }
 
     /**
@@ -41,6 +42,7 @@ public class RadarRequest {
         JsonArrayRequest JOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, sReq, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray responseArray) {
+                int percentageProgressValue = 0;
                 for(int i = 0; i < responseArray.length(); i++){
                     try{
                          /*The response array is in the following JSON format
@@ -100,10 +102,12 @@ public class RadarRequest {
                     rcObj.setsEmail("temp@gmail.com");
                     rcObj.setSkillset("<Skills will go here>");
                     rcObj.setsLocation("<Location will go here>");
+                    rcObj.setDescription(object.getString("description"));
                 }
                 catch(Exception e){
 
                 }
+
                 unsortedRadarResponseList.add(rcObj);
                 if(adapter != null){
                     adapter.clear();

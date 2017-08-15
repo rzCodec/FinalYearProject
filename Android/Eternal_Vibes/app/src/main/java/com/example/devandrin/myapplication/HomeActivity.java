@@ -58,7 +58,8 @@ import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
-    private  ProgressBar load = null;
+    private ProgressBar load = null;
+    private ProgressBar radarProgressBar;
     private static HomeActivity instance = null;
     private static DBHelper dbHelper = null;
     FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
@@ -91,6 +92,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         thread.setDaemon(true); //Kill this child thread when the main thread is terminated
         thread.start();*/
 
+        //The activeuserID is used in the RadarUtil class to make Requests
         SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
         String activeuserID = sp.getString("userID", "");
         String sReq = "https://www.eternalvibes.me/getNearbyStrangers/" + activeuserID;
@@ -162,6 +164,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     newChatFab.setVisibility(View.GONE);
                     newPostFab.setVisibility(View.GONE);
                     btn_sortRadar.setVisibility(View.VISIBLE);
+                    enableProgressBar();
                 }
             }
 
@@ -178,6 +181,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         viewPager.setCurrentItem(1);
     }
 
+    public ProgressBar getProgressBar(){
+        return load;
+    }
 
     /* Gets the response from the async task. Please do not delete this
     @Override
@@ -258,12 +264,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         this.rcObjItem.setUserID(rcObjItem.getUserID());
         this.rcObjItem.setsUsername(rcObjItem.getsUsername());
         this.rcObjItem.setsLastName(rcObjItem.getsLastName());
+        this.rcObjItem.setsAlias(rcObjItem.getsAlias());
         this.rcObjItem.setRanking(rcObjItem.getRanking());
         this.rcObjItem.setRating(rcObjItem.getRating());
         this.rcObjItem.setDistance(rcObjItem.getDistance());
         this.rcObjItem.setsLocation(rcObjItem.getsLocation());
         this.rcObjItem.setsEmail(rcObjItem.getsEmail());
         this.rcObjItem.setSkillset(rcObjItem.getSkillset());
+        this.rcObjItem.setDescription(rcObjItem.getDescription());
     }
 
     @Override
@@ -351,17 +359,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void run(){
                         Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
-                        String sProfileUsername = "Jack";
-
                         //Pass the required information to the next activity
                         intent.putExtra("Name", rcObjItem.getsUsername());
                         intent.putExtra("LastName", rcObjItem.getsLastName());
+                        intent.putExtra("Alias", rcObjItem.getsAlias());
                         intent.putExtra("Rank", rcObjItem.getRanking());
                         intent.putExtra("Rating", rcObjItem.getRating());
                         intent.putExtra("Distance", rcObjItem.getDistance());
                         intent.putExtra("Location", rcObjItem.getsLocation());
                         intent.putExtra("Email", rcObjItem.getsEmail());
                         intent.putExtra("Skillset", rcObjItem.getSkillset());
+                        intent.putExtra("Description", rcObjItem.getDescription());
 
                         startActivity(intent);
                     }

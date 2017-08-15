@@ -27,6 +27,7 @@ public class RadarContent {
     private long TimeStamp;
     private String sEmail;
     private String Skillset;
+    private String Description;
 
     private double longitude;
     private double latitude;
@@ -215,9 +216,18 @@ public class RadarContent {
         this.sAlias = sAlias;
     }
 
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
     public ArrayList<RadarContent> getUnsortedRC_List() {
         return unsortedRC_List;
     }
+
 
     public void setUnsortedRC_List(ArrayList<RadarContent> unsortedRC_List) {
         this.unsortedRC_List = unsortedRC_List;
@@ -244,8 +254,10 @@ public class RadarContent {
                 ", TimeStamp=" + TimeStamp +
                 ", sEmail='" + sEmail + '\'' +
                 ", Skillset='" + Skillset + '\'' +
+                ", Description='" + Description + '\'' +
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
+                ", unsortedRC_List=" + unsortedRC_List +
                 '}';
     }
-}
+}//end of class

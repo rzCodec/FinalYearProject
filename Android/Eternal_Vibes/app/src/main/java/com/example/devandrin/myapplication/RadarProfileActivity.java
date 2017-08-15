@@ -6,14 +6,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 /**
  * Created by Ronald on 8/2/2017.
@@ -21,88 +26,17 @@ import android.widget.Toast;
 
 public class RadarProfileActivity extends AppCompatActivity {
 
-    //Will refactor this class out after Alpha, everything is good for now
-    private class RadarProfile{
-        private String sUsername;
-        private String sLastName;
-        private int iRating;
-        private String sRank;
-        private String sLocation;
-        private int iDistance;
-        private String sEmail;
-        private String Skillset;
-
-        public RadarProfile(){
-
-        }
-
-        public String getsUsername() {
-            return sUsername;
-        }
-
-        public void setsUsername(String sUsername) {
-            this.sUsername = sUsername;
-        }
-
-        public String getsLastName() {
-            return sLastName;
-        }
-
-        public void setsLastName(String sLastName) {
-            this.sLastName = sLastName;
-        }
-
-        public int getiRating() {
-            return iRating;
-        }
-
-        public void setiRating(int iRating) {
-            this.iRating = iRating;
-        }
-
-        public String getsRank() {
-            return sRank;
-        }
-
-        public void setsRank(String sRank) {
-            this.sRank = sRank;
-        }
-
-        public String getsLocation() {
-            return sLocation;
-        }
-
-        public void setsLocation(String sLocation) {
-            this.sLocation = sLocation;
-        }
-
-        public int getiDistance() {
-            return iDistance;
-        }
-
-        public void setiDistance(int iDistance) {
-            this.iDistance = iDistance;
-        }
-
-        public String getsEmail() {
-            return sEmail;
-        }
-
-        public void setsEmail(String sEmail) {
-            this.sEmail = sEmail;
-        }
-
-        public String getSkillset() {
-            return Skillset;
-        }
-
-        public void setSkillset(String skillset) {
-            Skillset = skillset;
-        }
-    }
+    private String sUsername;
+    private String sLastName;
+    private int iRating;
+    private String sRank;
+    private String sLocation;
+    private int iDistance;
+    private String sEmail;
+    private String Skillset;
+    private String Description;
 
     //Attributes
-    private RadarProfile rpObj = new RadarProfile();
     private FloatingActionButton btnFollow;
     private String sProfileName = "";
     private AlertDialog.Builder builder;
@@ -114,9 +48,18 @@ public class RadarProfileActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.profiletoolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        RadarProfile rpObj = new RadarProfile();
         Initialize();
         setupRadarProfileDetails();
+
+        ListView listView = (ListView) findViewById(R.id.radarProfileEventListView);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.radarProfileEventListLinearLayout);
+        ll.setGravity(Gravity.CENTER);
+        ArrayList<String> eventList = new ArrayList<String>();
+        for(int i = 0; i < 3; i++){
+            eventList.add("Event Name # " + i);
+        }
+        ArrayAdapter<String> eventListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, eventList);
+        listView.setAdapter(eventListAdapter);
 
         //Experimental code below, please don't remove
         //createAlertBuilder();
@@ -133,21 +76,17 @@ public class RadarProfileActivity extends AppCompatActivity {
 
     //Method to setup text views and show the selected profile's details from the listview in RadarUtil
     private void setupRadarProfileDetails(){
-        TextView tvUsername = (TextView) findViewById(R.id.txtRadarProfileName);
-        TextView tvLastName = (TextView) findViewById(R.id.txtRadarProfileLastName);
-        TextView tvRank = (TextView) findViewById(R.id.txtRadarProfileRank);
-        TextView tvRating = (TextView) findViewById(R.id.txtRadarProfileRating);
+        TextView tvUsername = (TextView) findViewById(R.id.txtRadarProfileNameAndSurname);
+        TextView tvDescription =(TextView) findViewById(R.id.txtRadarProfileDescription);
         TextView tvSkillset = (TextView) findViewById(R.id.txtRadarProfileSkillset);
-        TextView tvDistanceAndLocation = (TextView) findViewById(R.id.txtRadarProfileDistanceLocation);
         TextView tvEmail = (TextView) findViewById(R.id.txtRadarProfileEmailAddress);
+        TextView tvEventList = (TextView) findViewById(R.id.txtRadarProfileEventList);
 
-        tvUsername.setText("First Name: " + rpObj.getsUsername());
-        tvLastName.setText("Last Name: " + rpObj.getsLastName());
-        tvRank.setText("Rank: " + rpObj.getsRank());
-        tvRating.setText("Rating: " + rpObj.getiRating());
-        tvSkillset.setText("Muscian Skillset: " + rpObj.getSkillset());
-        tvDistanceAndLocation.setText("Distance " + rpObj.getiDistance() + " km away and is in " + rpObj.getsLocation());
-        tvEmail.setText("Email Address: " + rpObj.getsEmail());
+        tvUsername.setText("Name : " + sUsername + " " + sLastName + " is " + iDistance + "km away from you.");
+        tvDescription.setText("Description : I'm just putting in this very long description for some testing purposes because I want to see what kind of effect it has on the other components" + Description);
+        tvSkillset.setText("Muscian Skillset: " + Skillset);
+        tvEmail.setText("Email Address: " + sEmail);
+        tvEventList.setText(sUsername + " is hosting the following events.");
 
     }
 
@@ -184,20 +123,17 @@ public class RadarProfileActivity extends AppCompatActivity {
         finish();
     }
 
+    //Get the details from HomeActivity, so the text views can show data
     private void Initialize() {
         Intent i = getIntent();
-
-        //Get the details from HomeActivity, so the text views can show data
-        rpObj.setsUsername(i.getStringExtra("Name"));
-        rpObj.setsLastName(i.getStringExtra("LastName"));
-        rpObj.setsRank(i.getStringExtra("Rank"));
-        rpObj.setiRating(i.getIntExtra("Rating", 0));
-        rpObj.setiDistance(i.getIntExtra("Distance", 0));
-        rpObj.setsLocation(i.getStringExtra("Location"));
-        rpObj.setsEmail(i.getStringExtra("Email"));
-        rpObj.setSkillset(i.getStringExtra("Skillset"));
-
-        setTitle(i.getStringExtra("Name") + "'s Profile");
+        setTitle(i.getStringExtra("Alias") + "'s Profile");
+        sUsername = i.getStringExtra("Name");
+        sLastName = i.getStringExtra("LastName");
+        iDistance = i.getIntExtra("Distance", 0);
+        sLocation = i.getStringExtra("Location");
+        sEmail = i.getStringExtra("Email");
+        Skillset = i.getStringExtra("Skillset");
+        Description = i.getStringExtra("Description");
     }
 
 }
