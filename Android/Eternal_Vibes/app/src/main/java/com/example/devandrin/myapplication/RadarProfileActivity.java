@@ -51,15 +51,6 @@ public class RadarProfileActivity extends AppCompatActivity {
         Initialize();
         setupRadarProfileDetails();
 
-        ListView listView = (ListView) findViewById(R.id.radarProfileEventListView);
-        LinearLayout ll = (LinearLayout) findViewById(R.id.radarProfileEventListLinearLayout);
-        ll.setGravity(Gravity.CENTER);
-        ArrayList<String> eventList = new ArrayList<String>();
-        for(int i = 0; i < 3; i++){
-            eventList.add("Event Name # " + i);
-        }
-        ArrayAdapter<String> eventListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, eventList);
-        listView.setAdapter(eventListAdapter);
 
         //Experimental code below, please don't remove
         //createAlertBuilder();
@@ -80,14 +71,11 @@ public class RadarProfileActivity extends AppCompatActivity {
         TextView tvDescription =(TextView) findViewById(R.id.txtRadarProfileDescription);
         TextView tvSkillset = (TextView) findViewById(R.id.txtRadarProfileSkillset);
         TextView tvEmail = (TextView) findViewById(R.id.txtRadarProfileEmailAddress);
-        TextView tvEventList = (TextView) findViewById(R.id.txtRadarProfileEventList);
 
         tvUsername.setText("Name : " + sUsername + " " + sLastName + " is " + iDistance + "km away from you.");
         tvDescription.setText("Description : I'm just putting in this very long description for some testing purposes because I want to see what kind of effect it has on the other components" + Description);
         tvSkillset.setText("Muscian Skillset: " + Skillset);
         tvEmail.setText("Email Address: " + sEmail);
-        tvEventList.setText(sUsername + " is hosting the following events.");
-
     }
 
 
