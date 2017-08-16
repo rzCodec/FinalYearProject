@@ -1,8 +1,11 @@
 package com.example.devandrin.myapplication;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -67,8 +71,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return instance;
     }
 
+    EVService service;
+    boolean isBound = false;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            EVService.MessengerBinder binder = (EVService.MessengerBinder) service;
+            HomeActivity.this.service = binder.getService();
+            isBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            service = null;
+            isBound = false;
+        }
+    };
     public static DBHelper getDbHelper() {
         return dbHelper;
+    }
+
+    public static void setDbHelper(DBHelper dbHelper) {
+        HomeActivity.dbHelper = dbHelper;
     }
 
     @Override
@@ -76,7 +100,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         load = (ProgressBar) findViewById(R.id.pbLoad);
-        dbHelper = new DBHelper(this);
+        if(dbHelper == null)
+        {
+            dbHelper = new DBHelper(getApplicationContext());
+        }
         instance = this;
 
         SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
@@ -177,6 +204,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
+        Intent i = new Intent(this,EVService.class);
+        startService(i);
     }
 
     //Returns a RadarThread Object to be used in the RadarUtil
@@ -547,6 +576,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             dbHelper.resetData();
             startActivity(i);
+            Intent es = new Intent(this,EVService.class);
+            stopService(es);
             finish();
         } else if (id == R.id.nav_exit) {
             Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -568,6 +599,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onResume() {
+        Intent intent = new Intent(this, EVService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         super.onResume();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean Result = sp.getBoolean(SettingsActivity.LOCATIONKEY, false);
@@ -577,7 +610,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         sp = getSharedPreferences("userInfo", MODE_PRIVATE);
         String id = sp.getString("userID", "");
         NewsFeedUtil.makeRequest(id);
-        MessengerUtil.makeRequest(id);
 
         //Find the users when the app starts on a separate child thread
         //The main thread creates the required UI components
@@ -593,7 +625,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
+        NotificationManager m = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        m.cancelAll();
         dbHelper.close();
+        dbHelper = null;
         super.onDestroy();
     }
 

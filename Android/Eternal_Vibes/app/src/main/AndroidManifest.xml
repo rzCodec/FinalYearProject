@@ -100,7 +100,9 @@
         <activity
             android:name=".FollowersListActivity"
             android:label="@string/title_activity_followers_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <service android:name=".EVService"
+            android:exported="false"/>
     </application>
 
 </manifest>

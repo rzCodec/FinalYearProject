@@ -1,5 +1,6 @@
 package com.example.devandrin.myapplication;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Process;
 import android.util.Log;
@@ -72,16 +73,18 @@ public class RadarThread implements Runnable {
 
         //resStringFromAPI = "https://www.eternalvibes.me/getNearbyStrangers/" + userID;
         //String url = "https://www.eternalvibes.me/getNearbyStrangers/303346733";
-        String url = "https://www.eternalvibes.me/getNearbyStrangers" + userID;
-
+        SharedPreferences sp = HomeActivity.getInstance().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String userID = sp.getString("userID","");
+        String url = "https://eternalvibes.me/getnearbystrangers/" + userID;
+        //"https://eternalvibes.me/getnearbystrangers/303346733"
         numProfiles = 5;
 
-        /*
 
-        JsonArrayRequest JOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        /*JsonArrayRequest JOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray responseArray) {
 
+                resStringFromAPI = responseArray.toString();
                 temp = responseArray.length();
 
                 for(int i = 0; i < responseArray.length(); i++){
@@ -173,8 +176,19 @@ public class RadarThread implements Runnable {
         */
 
         //RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(sr);
+        JsonArrayRequest sr = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                resStringFromAPI =response.toString();
+                Utilities.MakeToast(HomeActivity.getInstance().getApplicationContext(),response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-        //RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(JOR);
+            }
+        });
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance().getApplicationContext()).addToQ(sr);
         setupProfiles(numProfiles, jRadarResponse);
     }
 
@@ -195,7 +209,7 @@ public class RadarThread implements Runnable {
         arrAPI_Profiles[3] = new RadarContent(452, "Tiffany Vlein", 40, 5, "Master", "Pretoria", 4100);
         arrAPI_Profiles[4] = new RadarContent(842, "Jerry Alko", 34, 1, "Beginner", "Soweto", 800);*/
 
-        arrAPI_Profiles[0] = new RadarContent(303346736, "John ", "Crester", 12, 3, "Intermediate", "Sandton", 2100, "Jess55@gmail.com", "Vocals");
+        arrAPI_Profiles[0] = new RadarContent(303346736, "John " + resStringFromAPI, "Crester", 12, 3, "Intermediate", "Sandton", 2100, "Jess55@gmail.com", "Vocals");
         arrAPI_Profiles[1] = new RadarContent(303346737, "mrBob", "Breck", 20, 2, "Beginner", "Houghton", 500, "bob2@gmail.com", "Drums");
         arrAPI_Profiles[2] = new RadarContent(303346740, "Vanneh", "Kunni", 18, 4, "Advanced", "Randburg", 1500, "201320596@student.uj.ac.za", "Keyboard");
         //arrAPI_Profiles[3] = new RadarContent(452, "Tiffany", "Vlein", 40, 5, "Master", "Pretoria", 4100, "22Tiff@gmail.com", "Guitar");

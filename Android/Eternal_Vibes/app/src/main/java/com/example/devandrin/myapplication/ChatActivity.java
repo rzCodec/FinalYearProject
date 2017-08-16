@@ -26,26 +26,22 @@ import java.util.Random;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private ArrayList<Chat> chatList = new ArrayList<>();
     private int iCurrentUserID = 0;
+    private static ArrayList<MessageContent> msgList = new ArrayList<>();
     private int iChatID = 0;
     private static  ChatAdapter caObj;
-
-    public static ChatAdapter getCaObj() {
-        return caObj;
-    }
-
+    private static ChatActivity instance = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
+        instance = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Initialize();
 
-        final ArrayList<MessageContent> msgList = new ArrayList<>();
+
 
         //Gets the current user ID from shared preferences, when onResume is invoked in HomeActivity
         iCurrentUserID = Integer.parseInt(HomeActivity.getInstance().activeuserID);
@@ -114,6 +110,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        msgList.clear();
         finish();
     }
 
@@ -141,6 +138,10 @@ public class ChatActivity extends AppCompatActivity {
                     {
                         HomeActivity.getDbHelper().insertMessage(m);
                     }
+                    if(instance != null)
+                    {
+                        instance.updateChat();
+                    }
                 }
             }
         }, new Response.ErrorListener() {
@@ -150,5 +151,26 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
+    }
+    public void updateChat()
+    {
+        ArrayList<Message> m = HomeActivity.getDbHelper().getMessages(getIntent().getIntExtra("ChatID",-1));
+        msgList.clear();
+        for(Message msgObj : m){
+            //Check if the message was sent by the current user
+            //If it is then it is the user's message, else it is someone else's
+            if(msgObj.SenderID == iCurrentUserID){
+                MessageContent msg = new MessageContent(true, msgObj.Message);
+                msgList.add(msg);
+            }
+            else{
+                MessageContent msg = new MessageContent(false, msgObj.Message);
+                msgList.add(msg);
+            }
+        }
+        if(caObj != null)
+        {
+            caObj.notifyDataSetChanged();
+        }
     }
 }

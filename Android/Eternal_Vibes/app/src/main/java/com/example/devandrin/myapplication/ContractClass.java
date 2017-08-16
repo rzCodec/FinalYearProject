@@ -37,6 +37,13 @@ public final class ContractClass {
     public static final String GETALIAS = "Select * from " + Users.TABLE_NAME + " where " + Users._ID + " =";
     public static final String CHAT_U1 = GETALLCHATS + " where "+Chat._USER1+" = ";
     public static final String CHAT_U2 = GETALLCHATS + " where "+Chat._USER2+" = ";
+    public static final String  COUNTUNREAD = "Select count" +
+            "(" +Message._ISREAD + ")  as nMessages ,count " +
+            "( DISTINCT " +Message._CHATID + ") as nChats FROM " +
+            Message.TABLE_NAME +
+            " where " +
+            Message._ISREAD +
+            " = 0 AND NOT "+Message._SENDER +" = ";
     private ContractClass() {
     }
 

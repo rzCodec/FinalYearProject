@@ -42,6 +42,7 @@
         android:layout_gravity="center_vertical|left"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@+id/app_bar"
+        android:visibility="gone"
         app:layout_anchorGravity="center_vertical|right"
         app:srcCompat="@drawable/ic_audiotrack_dark" />
 

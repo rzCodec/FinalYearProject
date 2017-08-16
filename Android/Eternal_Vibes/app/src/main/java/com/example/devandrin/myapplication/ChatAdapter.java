@@ -64,7 +64,7 @@ public class ChatAdapter extends ArrayAdapter<MessageContent> {
 
             if (msgObj.getMessageMine()) {
                 cmComponent.txtChatMsg.setBackgroundResource(R.drawable.chat_msg_bubble);
-                cmComponent.txtChatMsg.setTextColor(Color.WHITE);
+                cmComponent.txtChatMsg.setTextColor(Color.BLACK);
                 chatContainer.setGravity(Gravity.RIGHT);
             } else {
                 cmComponent.txtChatMsg.setBackgroundResource(R.drawable.chat_msg_bubble_reply);
