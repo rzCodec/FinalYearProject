@@ -21,7 +21,10 @@ public abstract class RenderFactory {
             return new EventUtil(inflater, container);
         } else if (s.equals("PersonalEvents")) {
             return new PersonalEventUtil(inflater, container);
-        }
+        } else if (s.equals("RadarProfile"))
+            return new RadarProfileUtil(inflater, container);
+          else if (s.equals("RadarProfileEventList"))
+            return new RadarProfileEventListUtil(inflater, container);
         return null;
     }
 

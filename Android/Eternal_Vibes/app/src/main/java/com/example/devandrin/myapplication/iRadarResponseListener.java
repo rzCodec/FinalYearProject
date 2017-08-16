@@ -11,5 +11,5 @@ import java.util.ArrayList;
  */
 
 public interface iRadarResponseListener{
-    public ArrayList<RadarContent> extractNearbyStrangersData(JSONArray jsonResponseArray);
+    public void processRadarContentData(RadarContent radarContent);
 }

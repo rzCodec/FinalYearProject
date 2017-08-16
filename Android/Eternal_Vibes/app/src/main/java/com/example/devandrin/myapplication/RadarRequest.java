@@ -28,6 +28,10 @@ public class RadarRequest {
     public static String resString = "";
     private RadarAsyncTask radarAsyncTask;
 
+    public RadarRequest(){
+
+    }
+
     public RadarRequest(RadarAsyncTask radarAsyncTask){
         this.radarAsyncTask = radarAsyncTask;
     }
@@ -123,6 +127,34 @@ public class RadarRequest {
         });
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(arrJOR);
         return unsortedRadarResponseList;
+    }
+
+    public ArrayList<EventItem> extractCurrentUserEventList(String requestUrl, final RadarProfileEventListAdapter radarEventListAdapter){
+        final ArrayList<EventItem> eventItemResponseList = new ArrayList<>();
+
+        JsonArrayRequest arrJOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, requestUrl, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray responseArray) {
+                /*
+                for(int j = 0; j < responseArray.length(); j++){
+                    eventItemResponseList.add();
+                }
+
+
+                if(radarEventListAdapter != null){
+                    radarEventListAdapter.clear();
+                    radarEventListAdapter.addAll(eventItemResponseList);
+                    radarEventListAdapter.notifyDataSetChanged();
+                }*/
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(arrJOR);
+        return eventItemResponseList;
     }
 
     //================ Temporary ===============

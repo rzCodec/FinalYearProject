@@ -57,7 +57,8 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
         String activeuserID = arractiveuserID[0];
         RadarRequest radarRequest = new RadarRequest(this);
         radarResponseList = radarRequest.extractNearbyStrangersData(activeuserID, radarAdapter);
-        try{
+
+        /*try{
             for(int i = 0; i < 100; i++){
                 Thread.sleep(50);
                 publishProgress(i);
@@ -65,7 +66,7 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
         }
         catch(InterruptedException ie){
 
-        }
+        }*/
         return radarResponseList;
     }
 
