@@ -47,10 +47,13 @@ public class MessengerUtil extends Content {
                         dbh.insertChat(c);
                         ChatActivity.getMessages(c.ChatID);
                     }
-                    adapter.clear();
-                    clist = dbh.getAllChats();
-                    adapter.addAll(clist);
-                    adapter.notifyDataSetChanged();
+                    if(adapter != null)
+                    {
+                        adapter.clear();
+                        clist = dbh.getAllChats();
+                        adapter.addAll(clist);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             }
         }, new Response.ErrorListener() {

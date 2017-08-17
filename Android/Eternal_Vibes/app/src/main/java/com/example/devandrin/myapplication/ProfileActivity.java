@@ -59,6 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if(!getIntent().hasExtra("IsOwner"))
                     {
                         fab.setOnClickListener(followUSer(p.getId()));
+                        fab.setVisibility(View.VISIBLE);
                     }
                 } catch (JSONException e) {
                     System.err.println("Oops, something went wrong...");
