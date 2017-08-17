@@ -21,7 +21,8 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
 
     //These fields are needed for testing, please do not delete
     private Context HomeActivityContext;
-    private ProgressBar progressBar;
+    private View view;
+    private ProgressDialog pd;
     private RadarAdapter radarAdapter;
     private ListView listview;
     private ArrayList<RadarContent> radarResponseList = new ArrayList<>();
@@ -31,8 +32,8 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
 
     }
 
-    public RadarAsyncTask(ProgressBar progressBar, Context HomeActivityContext, RadarAdapter radarAdapter, ListView listview){
-        this.progressBar = progressBar;
+    public RadarAsyncTask(View view, Context HomeActivityContext, RadarAdapter radarAdapter, ListView listview){
+        this.view = view;
         this.HomeActivityContext = HomeActivityContext;
         this.radarAdapter = radarAdapter;
         this.listview = listview;
@@ -44,6 +45,14 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        /*
+            pd = new ProgressDialog(view.getContext());
+            pd.setTitle("Connect with nearby musicians");
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMax(100);
+            pd.setMessage("Loading");
+            pd.show();*/
+
     }
 
     /**
@@ -58,15 +67,17 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
         RadarRequest radarRequest = new RadarRequest(this);
         radarResponseList = radarRequest.extractNearbyStrangersData(activeuserID, radarAdapter);
 
-        /*try{
-            for(int i = 0; i < 100; i++){
-                Thread.sleep(50);
-                publishProgress(i);
+        /*
+            try{
+                for(int i = 0; i < 100; i++){
+                    Thread.sleep(35);
+                    publishProgress(i);
+                }
             }
-        }
-        catch(InterruptedException ie){
+            catch(InterruptedException ie){
 
-        }*/
+            }*/
+
         return radarResponseList;
     }
 
@@ -77,6 +88,7 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
+        //pd.setProgress(values[0]);
     }
 
     /**
@@ -87,6 +99,7 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
     protected void onPostExecute(ArrayList<RadarContent> rcList){
         this.radarResponseList = rcList;
         HomeActivity.getInstance().disableProgressBar();
+        //pd.dismiss();
     }
 
     //Methods below are for testing purposes, please do not delete

@@ -41,7 +41,7 @@ public class RadarProfileUtil extends Content {
         tvUsername.setTextSize(18);
         tvUsername.setTextColor(Color.BLACK);
         tvUsername.setText("Name : " + rcObj.getsUsername() + " " + rcObj.getsLastName() + " is " + rcObj.getDistance() + "km away from you.");
-        tvDescription.setText("Description : I'm just putting in this very long description for some testing purposes because I want to see what kind of effect it has on the other components" + rcObj.getDescription());
+        tvDescription.setText("Description : I'm just putting in this very long description for some testing purposes because I want to see what kind of effect it has on the other components \n" + rcObj.getDescription());
         tvSkillset.setText("Muscian Skillset: " + rcObj.getSkillset());
         tvEmail.setText("Email Address: " + rcObj.getsEmail());
     }

@@ -117,8 +117,8 @@ public class RadarProfileActivity extends AppCompatActivity {
         Intent i = getIntent();
         setTitle("Eternal Vibes");
 
-        sAlias = i.getStringExtra("Alias");
         int iUserID = i.getIntExtra("UserID", 0);
+        sAlias = i.getStringExtra("Alias");
         sUsername = i.getStringExtra("Name");
         sLastName = i.getStringExtra("LastName");
         iDistance = i.getIntExtra("Distance", 0);
@@ -127,8 +127,8 @@ public class RadarProfileActivity extends AppCompatActivity {
         Skillset = i.getStringExtra("Skillset");
         Description = i.getStringExtra("Description");
 
-        radarContentObjToBePassed.setsAlias(sAlias);
         radarContentObjToBePassed.setUserID(iUserID);
+        radarContentObjToBePassed.setsAlias(sAlias);
         radarContentObjToBePassed.setsUsername(sUsername);
         radarContentObjToBePassed.setsLastName(sLastName);
         radarContentObjToBePassed.setDistance(iDistance);

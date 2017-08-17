@@ -92,7 +92,7 @@ public class RadarUtil extends Content {
         //Use an asynchronous task to make the request on a background thread instead of blocking the UI thread
         HomeContext = HomeActivity.getInstance().getApplicationContext();
         progressBar = HomeActivity.getInstance().getProgressBar();
-        RadarAsyncTask RadarRequestTask = new RadarAsyncTask(progressBar, HomeContext, radarAdapter, lv);
+        RadarAsyncTask RadarRequestTask = new RadarAsyncTask(view, HomeContext, radarAdapter, lv);
         RadarRequestTask.execute(HomeActivity.activeuserID);
 
         lv.setAdapter(radarAdapter);
@@ -125,7 +125,8 @@ public class RadarUtil extends Content {
 
     @Override
     protected void update() {
-        RadarAsyncTask newRadarRequestTask = new RadarAsyncTask(progressBar, HomeContext, radarAdapter, lv);
+        //Swipe to refresh and send a new request to find users.
+        RadarAsyncTask newRadarRequestTask = new RadarAsyncTask(view, HomeContext, radarAdapter, lv);
         newRadarRequestTask.execute(HomeActivity.activeuserID);
         srl.setRefreshing(false);
     }

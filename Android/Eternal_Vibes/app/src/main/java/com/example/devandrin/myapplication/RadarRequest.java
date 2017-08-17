@@ -27,6 +27,7 @@ public class RadarRequest {
     private ArrayList<RadarContent> unsortedRadarResponseList = new ArrayList<>();
     public static String resString = "";
     private RadarAsyncTask radarAsyncTask;
+    private ArrayList<EventItem> eventItemResponseList = new ArrayList<>();
 
     public RadarRequest(){
 
@@ -97,6 +98,7 @@ public class RadarRequest {
                 RadarContent rcObj = new RadarContent();
                 try{
                     JSONObject object = responseArray.getJSONObject(0);
+                    rcObj.setUserID(object.getInt("id"));
                     rcObj.setsUsername(object.getString("firstname"));
                     rcObj.setsLastName(object.getString("surname"));
                     rcObj.setsAlias(object.getString("username"));
@@ -129,23 +131,35 @@ public class RadarRequest {
         return unsortedRadarResponseList;
     }
 
-    public ArrayList<EventItem> extractCurrentUserEventList(String requestUrl, final RadarProfileEventListAdapter radarEventListAdapter){
-        final ArrayList<EventItem> eventItemResponseList = new ArrayList<>();
-
+    /**
+     * Function to get a specific lsit of events the selected user has created and is also attending
+     * @param activeUserID - The user id is sent to retrieve the profile information
+     * @param radarEventListAdapter - Used to set and display content in a listview
+     * @return
+     */
+    public ArrayList<EventItem> extractCurrentUserEventList(String activeUserID, final RadarProfileEventListAdapter radarEventListAdapter){
+        String requestUrl = "https://www.eternalvibes.me/getusersevents/" + activeUserID;
         JsonArrayRequest arrJOR = new JsonArrayRequest(JsonArrayRequest.Method.GET, requestUrl, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray responseArray) {
-                /*
                 for(int j = 0; j < responseArray.length(); j++){
-                    eventItemResponseList.add();
+                    try{
+                        EventItem ei = new EventItem();
+                        JSONObject o = responseArray.getJSONObject(j);
+                        ei.setName(o.getString("title"));
+                        ei.setInfo(o.getString("description"));
+                        ei.setSkillsRequired("<Skills will go here>");
+                        eventItemResponseList.add(ei);
+                    }
+                    catch(JSONException e){
+
+                    }
                 }
-
-
                 if(radarEventListAdapter != null){
                     radarEventListAdapter.clear();
                     radarEventListAdapter.addAll(eventItemResponseList);
                     radarEventListAdapter.notifyDataSetChanged();
-                }*/
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -155,37 +169,7 @@ public class RadarRequest {
         });
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(arrJOR);
         return eventItemResponseList;
-    }
+    }//end of method
 
-    //================ Temporary ===============
-
-    public static JSONObject getJSONObjectFromURL(String urlString) throws IOException, JSONException {
-        HttpURLConnection urlConnection = null;
-        URL url = new URL(urlString);
-        urlConnection = (HttpURLConnection) url.openConnection();
-        urlConnection.setRequestMethod("GET");
-        urlConnection.setReadTimeout(10000 /* milliseconds */ );
-        urlConnection.setConnectTimeout(15000 /* milliseconds */ );
-        urlConnection.setDoOutput(true);
-        urlConnection.connect();
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-        StringBuilder sb = new StringBuilder();
-
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line + "\n");
-        }
-        br.close();
-
-        String jsonString = sb.toString();
-
-        Toast.makeText(HomeActivity.getInstance(), "Response using Http is -> " + jsonString,
-                Toast.LENGTH_LONG).show();
-
-        //System.out.println("JSON: " + jsonString);
-
-        return new JSONObject(jsonString);
-    }
 
 }//end of class

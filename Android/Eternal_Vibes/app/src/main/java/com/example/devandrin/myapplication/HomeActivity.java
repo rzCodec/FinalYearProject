@@ -68,8 +68,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private static DBHelper dbHelper = null;
     FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
 
-    private Thread thread;
-    private RadarThread radarThreadObj;
     private RadarContent rcObjItem = new RadarContent();
     public static String activeuserID = "";
     private ArrayList<RadarContent> unsortedRadarList = new ArrayList<>();
@@ -224,12 +222,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public ArrayList<RadarContent> getUnsortedRadarList(){
         return unsortedRadarList;
     }
-
-    //Returns a RadarThread Object to be used in the RadarUtil
-    public RadarThread getRadarThreadObj(){
-        return radarThreadObj;
-    }
-
+    
     //Start a new chat activity for the messenger
     private void StartNewChat() {
         startActivity(new Intent(this, NewChatActivity.class));
@@ -389,6 +382,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     public void run(){
                         Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
                         //Pass the required information to the next activity
+                        intent.putExtra("UserID", rcObjItem.getUserID());
                         intent.putExtra("Name", rcObjItem.getsUsername());
                         intent.putExtra("LastName", rcObjItem.getsLastName());
                         intent.putExtra("Alias", rcObjItem.getsAlias());
@@ -399,7 +393,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         intent.putExtra("Email", rcObjItem.getsEmail());
                         intent.putExtra("Skillset", rcObjItem.getSkillset());
                         intent.putExtra("Description", rcObjItem.getDescription());
-
                         startActivity(intent);
                     }
                 });

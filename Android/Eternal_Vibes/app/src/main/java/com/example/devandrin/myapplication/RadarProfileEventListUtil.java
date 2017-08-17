@@ -17,8 +17,8 @@ import java.util.ArrayList;
  */
 
 public class RadarProfileEventListUtil extends Content {
-    private ArrayList<EventItem> eventItemList = new ArrayList<>();
-    private RadarProfileEventListAdapter adapter;
+    private static ArrayList<EventItem> eventItemList = new ArrayList<>();
+    private static RadarProfileEventListAdapter adapter;
     private RadarProfileActivity radarProfileActivityInstance = RadarProfileActivity.getInstance();
     private AlertDialog.Builder builder;
 
@@ -36,6 +36,7 @@ public class RadarProfileEventListUtil extends Content {
         ListView listView = (ListView) view.findViewById(R.id.ArrayList);
         Context context = radarProfileActivityInstance.getApplicationContext();
 
+        /*
         EventItem ei = new EventItem();
         ei.setName("Classic Event");
         ei.setInfo("I want to make a classic themed track. Looking for people");
@@ -48,11 +49,14 @@ public class RadarProfileEventListUtil extends Content {
 
         eventItemList.add(ei);
         eventItemList.add(ei2);
+        */
         adapter = new RadarProfileEventListAdapter(context, eventItemList);
 
-        //Make the request for the current user's list of events
+        //Make the request for the current user's list of events that he/she has created
+        //as well as events they are participating in
+        String userID = Integer.toString(radarProfileActivityInstance.getRCObj().getUserID());
         RadarEventAsyncTask reaObj = new RadarEventAsyncTask(adapter, view.getContext());
-        reaObj.execute("UserID goes here");
+        reaObj.execute(userID);
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

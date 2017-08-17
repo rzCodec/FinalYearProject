@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class RadarEventAsyncTask extends AsyncTask<String, Integer, ArrayList<EventItem>> {
 
+    private ArrayList<EventItem> eventItemResponseList = new ArrayList<>();
     private RadarProfileEventListAdapter radarEventListAdapter;
     private ProgressDialog progressDialog;
 
@@ -37,21 +38,18 @@ public class RadarEventAsyncTask extends AsyncTask<String, Integer, ArrayList<Ev
     protected ArrayList<EventItem> doInBackground(String... paramURL){
         String requestUrl = paramURL[0];
         //Make the JSON Request here and send the result to onPostExecute
-
         RadarRequest radarRequest = new RadarRequest();
-        //radarRequest.extractCurrentUserEventList(requestUrl, radarEventListAdapter);
+        eventItemResponseList = radarRequest.extractCurrentUserEventList(requestUrl, radarEventListAdapter);
         try{
             for(int i = 0; i < 100; i++){
-                Thread.sleep(30);
+                Thread.sleep(25);
                 publishProgress(i);
             }
         }
         catch(InterruptedException ie){
 
         }
-
-        return null;
-
+        return eventItemResponseList;
     }
 
     @Override
@@ -63,6 +61,8 @@ public class RadarEventAsyncTask extends AsyncTask<String, Integer, ArrayList<Ev
 
     @Override
     protected void onPostExecute(ArrayList<EventItem> eventItemList){
+        super.onPostExecute(eventItemList);
+        this.eventItemResponseList = eventItemList;
         progressDialog.dismiss();
     }
 }
