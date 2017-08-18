@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -79,15 +80,12 @@ public class RadarUtil extends Content {
     public View displayContent() {
         view = super.displayContent();
         lv = (ListView) view.findViewById(R.id.ArrayList);
-        //unsortedResponseList = HomeActivity.getInstance().getUnsortedRadarList();
+
         if(unsortedResponseList == null){
             unsortedResponseList = new ArrayList<>();
         }
 
         radarAdapter = new RadarAdapter(HomeActivity.getInstance().getApplicationContext(), unsortedResponseList);
-        //The two below lines work as well
-        //RadarRequest request = new RadarRequest();
-        //request.extractNearbyStrangersData(HomeActivity.activeuserID, raObj);
 
         //Use an asynchronous task to make the request on a background thread instead of blocking the UI thread
         HomeContext = HomeActivity.getInstance().getApplicationContext();
@@ -97,6 +95,7 @@ public class RadarUtil extends Content {
 
         lv.setAdapter(radarAdapter);
         radarAdapter.notifyDataSetChanged();
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             /**
              * This method allows an item in a listview to be clicked.
@@ -105,8 +104,8 @@ public class RadarUtil extends Content {
              * @param view
              * @param position
              * @param arg
-             *
              */
+
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                 RadarContent rcObj = (RadarContent) adapter.getItemAtPosition(position);

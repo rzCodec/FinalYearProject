@@ -52,7 +52,6 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
             pd.setMax(100);
             pd.setMessage("Loading");
             pd.show();*/
-
     }
 
     /**
@@ -98,7 +97,7 @@ public class RadarAsyncTask extends AsyncTask<String, Integer, ArrayList<RadarCo
     @Override
     protected void onPostExecute(ArrayList<RadarContent> rcList){
         this.radarResponseList = rcList;
-        HomeActivity.getInstance().disableProgressBar();
+        //HomeActivity.getInstance().disableProgressBar();
         //pd.dismiss();
     }
 

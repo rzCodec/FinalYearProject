@@ -111,16 +111,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         instance = this;
 
-        /*This block for threads can be deleted safely
-        radarThreadObj = new RadarThread(activeuserID);
-        thread = new Thread(radarThreadObj);
-        thread.setDaemon(true); //Kill this child thread when the main thread is terminated
-        thread.start();*/
-
         //The activeuserID is used in the RadarUtil class to make Requests
         SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
         String activeuserID = sp.getString("userID", "");
-        String sReq = "https://www.eternalvibes.me/getNearbyStrangers/" + activeuserID;
 
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
@@ -189,7 +182,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     newChatFab.setVisibility(View.GONE);
                     newPostFab.setVisibility(View.GONE);
                     btn_sortRadar.setVisibility(View.VISIBLE);
-                    enableProgressBar();
+                    //enableProgressBar();
                 }
             }
 
@@ -330,6 +323,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 RadarUtil.UpdatedSort_RadarProfiles("DISTANCE", false);
                 return true;
 
+            /*
             case R.id.HighestRating:
                 RadarUtil.UpdatedSort_RadarProfiles("RATING", false);
                 return true;
@@ -373,33 +367,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, "You are now following " + rcObjItem.getsUsername(),
                         Toast.LENGTH_LONG).show();
 
-                return true;
+                return true;*/
 
             case R.id.ViewProfileDetails:
                 //View more of the profile details
-                Thread t1 = new Thread(new Runnable() {
-                    @Override
-                    public void run(){
-                        Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
-                        //Pass the required information to the next activity
-                        intent.putExtra("UserID", rcObjItem.getUserID());
-                        intent.putExtra("Name", rcObjItem.getsUsername());
-                        intent.putExtra("LastName", rcObjItem.getsLastName());
-                        intent.putExtra("Alias", rcObjItem.getsAlias());
-                        intent.putExtra("Rank", rcObjItem.getRanking());
-                        intent.putExtra("Rating", rcObjItem.getRating());
-                        intent.putExtra("Distance", rcObjItem.getDistance());
-                        intent.putExtra("Location", rcObjItem.getsLocation());
-                        intent.putExtra("Email", rcObjItem.getsEmail());
-                        intent.putExtra("Skillset", rcObjItem.getSkillset());
-                        intent.putExtra("Description", rcObjItem.getDescription());
-                        startActivity(intent);
-                    }
-                });
-
-                t1.setDaemon(true);
-                t1.start();
-
+                Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
+                //Pass the required information to the next activity
+                intent.putExtra("UserID", rcObjItem.getUserID());
+                intent.putExtra("Name", rcObjItem.getsUsername());
+                intent.putExtra("LastName", rcObjItem.getsLastName());
+                intent.putExtra("Alias", rcObjItem.getsAlias());
+                intent.putExtra("Rank", rcObjItem.getRanking());
+                intent.putExtra("Rating", rcObjItem.getRating());
+                intent.putExtra("Distance", rcObjItem.getDistance());
+                intent.putExtra("Location", rcObjItem.getsLocation());
+                intent.putExtra("Email", rcObjItem.getsEmail());
+                intent.putExtra("Skillset", rcObjItem.getSkillset());
+                intent.putExtra("Description", rcObjItem.getDescription());
+                startActivity(intent);
                 return true;
 
             default:

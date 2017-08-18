@@ -33,14 +33,28 @@ public class RadarProfileUtil extends Content {
         Button btnFollow = (Button) view.findViewById(R.id.btnRadarFollow);
         Button btnInviteToEvent = (Button) view.findViewById(R.id.btnRadarInviteToEvent);
 
-        TextView tvUsername = (TextView) view.findViewById(R.id.txtRadarProfileNameAndSurname);
+        btnFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        btnInviteToEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+                TextView tvUsername = (TextView) view.findViewById(R.id.txtRadarProfileNameAndSurname);
         TextView tvDescription =(TextView) view.findViewById(R.id.txtRadarProfileDescription);
         TextView tvSkillset = (TextView) view.findViewById(R.id.txtRadarProfileSkillset);
         TextView tvEmail = (TextView) view.findViewById(R.id.txtRadarProfileEmailAddress);
 
         tvUsername.setTextSize(18);
         tvUsername.setTextColor(Color.BLACK);
-        tvUsername.setText("Name : " + rcObj.getsUsername() + " " + rcObj.getsLastName() + " is " + rcObj.getDistance() + "km away from you.");
+        tvUsername.setText("Name : " + rcObj.getsUsername() + " " + rcObj.getsLastName());
         tvDescription.setText("Description : I'm just putting in this very long description for some testing purposes because I want to see what kind of effect it has on the other components \n" + rcObj.getDescription());
         tvSkillset.setText("Muscian Skillset: " + rcObj.getSkillset());
         tvEmail.setText("Email Address: " + rcObj.getsEmail());
