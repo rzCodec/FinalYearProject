@@ -39,5 +39,4 @@ public abstract class Content implements iContent {
     public View displayContent() {
         return inflater.inflate(R.layout.list_fragment, container, false);
     }
-
 }

@@ -1,6 +1,8 @@
 package com.example.devandrin.myapplication;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -39,6 +41,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -46,26 +49,28 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
-    private  ProgressBar load = null;
+    private ProgressBar load = null;
+    private ProgressBar radarProgressBar;
     private static HomeActivity instance = null;
     private static DBHelper dbHelper = null;
     FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
 
-    private Thread thread;
-    private RadarThread radarThreadObj;
     private RadarContent rcObjItem = new RadarContent();
-    public String activeuserID = "";
-    private String[] arrSkillsets;
+    public static String activeuserID = "";
+    private ArrayList<RadarContent> unsortedRadarList = new ArrayList<>();
 
     static HomeActivity getInstance() {
         return instance;
@@ -106,22 +111,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         instance = this;
 
+        //The activeuserID is used in the RadarUtil class to make Requests
         SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
-        activeuserID = sp.getString("userID", "");
-        radarThreadObj = new RadarThread(activeuserID);
-        thread = new Thread(radarThreadObj);
-        thread.setDaemon(true); //Kill this child thread when the main thread is terminated
-        thread.start();
-
-        /*
-        ArrayList<RadarContent> unsorted_radarList = radarThreadObj.getUnsorted_radarList();
-        arrSkillsets = new String[unsorted_radarList.size()];
-        for(int i = 0; i < arrSkillsets.length; i++){
-            arrSkillsets[i] = unsorted_radarList.get(i).getSkillset();
-        }*/
-
-            //Toast.makeText(this, "User ID is " + activeuserID,
-        //        Toast.LENGTH_LONG).show();
+        String activeuserID = sp.getString("userID", "");
 
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
@@ -163,12 +155,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Utilities.MakeSnack(findViewById(R.id.cLayout), "Location services disabled");
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
-        TabAdapter ta = new TabAdapter(getSupportFragmentManager(), HomeActivity.this);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
+        final TabAdapter ta = new TabAdapter(getSupportFragmentManager(), HomeActivity.this);
         viewPager.setAdapter(ta);
 
         // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -190,6 +182,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     newChatFab.setVisibility(View.GONE);
                     newPostFab.setVisibility(View.GONE);
                     btn_sortRadar.setVisibility(View.VISIBLE);
+                    //enableProgressBar();
                 }
             }
 
@@ -208,11 +201,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         startService(i);
     }
 
-    //Returns a RadarThread Object to be used in the RadarUtil
-    public RadarThread getRadarThreadObj(){
-        return radarThreadObj;
+    public ProgressBar getProgressBar(){
+        return load;
     }
 
+    /* Gets the response from the async task. Please do not delete this
+    @Override
+    public ArrayList<RadarContent> processCompleted(ArrayList<RadarContent> rcList){
+        this.unsortedRadarList = rcList;
+        return this.unsortedRadarList;
+    }*/
+
+    public ArrayList<RadarContent> getUnsortedRadarList(){
+        return unsortedRadarList;
+    }
+    
     //Start a new chat activity for the messenger
     private void StartNewChat() {
         startActivity(new Intent(this, NewChatActivity.class));
@@ -270,19 +273,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         unregisterForContextMenu(lv);
     }
 
-
     public void setRadarProfileObject(RadarContent rcObjItem){
         //Create a branch new RadarContent object
         //The data was passed from RadarUtil
         this.rcObjItem.setUserID(rcObjItem.getUserID());
         this.rcObjItem.setsUsername(rcObjItem.getsUsername());
         this.rcObjItem.setsLastName(rcObjItem.getsLastName());
+        this.rcObjItem.setsAlias(rcObjItem.getsAlias());
         this.rcObjItem.setRanking(rcObjItem.getRanking());
         this.rcObjItem.setRating(rcObjItem.getRating());
         this.rcObjItem.setDistance(rcObjItem.getDistance());
         this.rcObjItem.setsLocation(rcObjItem.getsLocation());
         this.rcObjItem.setsEmail(rcObjItem.getsEmail());
         this.rcObjItem.setSkillset(rcObjItem.getSkillset());
+        this.rcObjItem.setDescription(rcObjItem.getDescription());
     }
 
     @Override
@@ -319,6 +323,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 RadarUtil.UpdatedSort_RadarProfiles("DISTANCE", false);
                 return true;
 
+            /*
             case R.id.HighestRating:
                 RadarUtil.UpdatedSort_RadarProfiles("RATING", false);
                 return true;
@@ -362,33 +367,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, "You are now following " + rcObjItem.getsUsername(),
                         Toast.LENGTH_LONG).show();
 
-                return true;
+                return true;*/
 
             case R.id.ViewProfileDetails:
                 //View more of the profile details
-                Thread t1 = new Thread(new Runnable() {
-                    @Override
-                    public void run(){
-                        Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
-                        String sProfileUsername = "Jack";
-
-                        //Pass the required information to the next activity
-                        intent.putExtra("Name", rcObjItem.getsUsername());
-                        intent.putExtra("LastName", rcObjItem.getsLastName());
-                        intent.putExtra("Rank", rcObjItem.getRanking());
-                        intent.putExtra("Rating", rcObjItem.getRating());
-                        intent.putExtra("Distance", rcObjItem.getDistance());
-                        intent.putExtra("Location", rcObjItem.getsLocation());
-                        intent.putExtra("Email", rcObjItem.getsEmail());
-                        intent.putExtra("Skillset", rcObjItem.getSkillset());
-
-                        startActivity(intent);
-                    }
-                });
-
-                t1.setDaemon(true);
-                t1.start();
-
+                Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
+                //Pass the required information to the next activity
+                intent.putExtra("UserID", rcObjItem.getUserID());
+                intent.putExtra("Name", rcObjItem.getsUsername());
+                intent.putExtra("LastName", rcObjItem.getsLastName());
+                intent.putExtra("Alias", rcObjItem.getsAlias());
+                intent.putExtra("Rank", rcObjItem.getRanking());
+                intent.putExtra("Rating", rcObjItem.getRating());
+                intent.putExtra("Distance", rcObjItem.getDistance());
+                intent.putExtra("Location", rcObjItem.getsLocation());
+                intent.putExtra("Email", rcObjItem.getsEmail());
+                intent.putExtra("Skillset", rcObjItem.getSkillset());
+                intent.putExtra("Description", rcObjItem.getDescription());
+                startActivity(intent);
                 return true;
 
             default:
@@ -611,11 +607,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         String id = sp.getString("userID", "");
         NewsFeedUtil.makeRequest(id);
 
-        //Find the users when the app starts on a separate child thread
-        //The main thread creates the required UI components
-        //While this happens, the child thread retrieves the required data to be displayed in the UI
+        //This is used for the Messenger Chat
         activeuserID = id;
-
     }
 
     @Override

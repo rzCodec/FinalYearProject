@@ -31,10 +31,11 @@ public class RadarAdapter extends ArrayAdapter<RadarContent> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.radar_item, parent, false);
             radarComponents.txtViewUsername = (TextView) convertView.findViewById(R.id.txtUsername);
             radarComponents.txtViewDistance = (TextView) convertView.findViewById(R.id.txtDistance);
-            radarComponents.txtViewLocation = (TextView) convertView.findViewById(R.id.txtLocation);
-            radarComponents.txtTimestamp = (TextView) convertView.findViewById(R.id.txtTimestamp);
-            radarComponents.txtRating = (TextView) convertView.findViewById(R.id.txtRating);
-            radarComponents.txtRanking = (TextView) convertView.findViewById(R.id.txtRanking);
+            radarComponents.txtViewDescription = (TextView) convertView.findViewById(R.id.txtRadarShortDescription);
+            //radarComponents.txtViewLocation = (TextView) convertView.findViewById(R.id.txtLocation);
+            //radarComponents.txtTimestamp = (TextView) convertView.findViewById(R.id.txtTimestamp);
+            //radarComponents.txtRating = (TextView) convertView.findViewById(R.id.txtRating);
+            //radarComponents.txtRanking = (TextView) convertView.findViewById(R.id.txtRanking);
             convertView.setTag(radarComponents);
         }
         else {
@@ -43,11 +44,12 @@ public class RadarAdapter extends ArrayAdapter<RadarContent> {
         }
 
         radarComponents.txtViewUsername.setText(RC.getsUsername());
-        radarComponents.txtViewDistance.setText(RC.getDistance() + " km away");
-        radarComponents.txtViewLocation.setText("in : " + RC.getsLocation());
-        radarComponents.txtTimestamp.setText("Time : " + RC.getTimeStamp() + "");
-        radarComponents.txtRating.setText("Rating : " + RC.getRating() + "/5");
-        radarComponents.txtRanking.setText("Rank : " + RC.getRanking());
+        radarComponents.txtViewDistance.setText("is " + RC.getDistance() + " km away");
+        radarComponents.txtViewDescription.setText(RC.getDescription() + "\n");
+        //radarComponents.txtViewLocation.setText("in : " + RC.getsLocation());
+        //radarComponents.txtTimestamp.setText("Time : " + RC.getTimeStamp() + "");
+        //radarComponents.txtRating.setText("Rating : " + RC.getRating() + "/5");
+        //radarComponents.txtRanking.setText("Rank : " + RC.getRanking());
 
         return convertView;
     }
@@ -56,10 +58,11 @@ public class RadarAdapter extends ArrayAdapter<RadarContent> {
     private static class radarViewComponents{
         private TextView txtViewUsername;
         private TextView txtViewDistance;
-        private TextView txtViewLocation;
-        private TextView txtTimestamp;
-        private TextView txtRating;
-        private TextView txtRanking;
+        private TextView txtViewDescription;
+        //private TextView txtViewLocation;
+        //private TextView txtTimestamp;
+        //private TextView txtRating;
+        //private TextView txtRanking;
     }
 
 }
