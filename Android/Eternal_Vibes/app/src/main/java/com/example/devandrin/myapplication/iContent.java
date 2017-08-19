@@ -8,4 +8,5 @@ import android.view.View;
 
 public interface iContent {
     View displayContent();
+
 }

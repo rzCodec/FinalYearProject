@@ -40,11 +40,9 @@ public class ChatActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Initialize();
-
-
-
-        //Gets the current user ID from shared preferences, when onResume is invoked in HomeActivity
-        iCurrentUserID = Integer.parseInt(HomeActivity.getInstance().activeuserID);
+        SharedPreferences sp = getSharedPreferences("userInfo", MODE_PRIVATE);
+        String id = sp.getString("userID", "");
+        iCurrentUserID = Integer.parseInt(id);
 
         //TODO Gotta use the below Array list that contains all messages, see Message class for structure of Message.
         ArrayList<Message> m = HomeActivity.getDbHelper().getMessages(getIntent().getIntExtra("ChatID",-1));

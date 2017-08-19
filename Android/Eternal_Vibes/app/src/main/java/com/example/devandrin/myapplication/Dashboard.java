@@ -292,4 +292,17 @@ public class Dashboard extends AppCompatActivity {
             err.show();
         }
     }
+
+    @Override
+    protected void onDestroy()
+    {
+        if(pd != null)
+        {
+            if(pd.isShowing())
+            {
+                pd.cancel();
+            }
+        }
+        super.onDestroy();
+    }
 }

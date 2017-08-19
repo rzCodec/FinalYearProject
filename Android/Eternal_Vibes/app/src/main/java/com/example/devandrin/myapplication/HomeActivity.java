@@ -199,6 +199,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         viewPager.setCurrentItem(1);
         Intent i = new Intent(this,EVService.class);
         startService(i);
+        refreshNewsFeed();
     }
 
     public ProgressBar getProgressBar(){
@@ -592,12 +593,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to connect to Google Play Services");
     }
-
+    void refreshNewsFeed()
+    {
+        SharedPreferences sp = getSharedPreferences("userInfo", MODE_PRIVATE);
+        String id = sp.getString("userID", "");
+        NewsFeedUtil.makeRequest(id);
+    }
     @Override
     protected void onResume() {
         Intent intent = new Intent(this, EVService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        super.onResume();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean Result = sp.getBoolean(SettingsActivity.LOCATIONKEY, false);
         if (Result) {
@@ -605,10 +610,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         sp = getSharedPreferences("userInfo", MODE_PRIVATE);
         String id = sp.getString("userID", "");
-        NewsFeedUtil.makeRequest(id);
-
-        //This is used for the Messenger Chat
         activeuserID = id;
+        super.onResume();
     }
 
     @Override

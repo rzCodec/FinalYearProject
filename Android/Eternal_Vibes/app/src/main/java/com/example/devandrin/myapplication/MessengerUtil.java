@@ -87,7 +87,7 @@ public class MessengerUtil extends Content {
 
     @Override
     protected void update() {
-        HomeActivity.getInstance().onResume();
+        HomeActivity.getInstance().refreshNewsFeed();
         srl.setRefreshing(false);
     }
 }
