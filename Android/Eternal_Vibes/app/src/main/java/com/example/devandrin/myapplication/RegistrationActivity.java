@@ -1,7 +1,5 @@
 package com.example.devandrin.myapplication;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -37,16 +34,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
-    private TextView Genre, Firstname, LastName, Email, PasswordE, PasswordC, Alias,description;
-    private ArrayList<String> list = new ArrayList<>();
+    private TextView Genre, Firstname, LastName, Email, PasswordE, PasswordC, Alias, Skills;
+    ArrayList<String> list = new ArrayList<String>();
+    private String[] skillList;
+    boolean[] checkedItems;
+    ArrayList<Integer> items = new ArrayList<>();
+    private Skillset skillset;
     private RegistrationActivity instance;
-    private ProgressDialog pd;
     private final String url = "https://www.eternalvibes.me/mobilesignup";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         instance = this;
+        skillset = new Skillset();
+        skillList = skillset.getSkillset().toArray(new String[skillset.getSkillset().size()]);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Genre")
                 .setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list), new DialogInterface.OnClickListener() {
@@ -62,6 +64,9 @@ public class RegistrationActivity extends AppCompatActivity {
                     }
                 });
         final AlertDialog ad = builder.create();
+
+
+        Skills = (TextView)  findViewById(R.id.Skillset);
         Genre = (TextView) findViewById(R.id.Genre);
         Email = (TextView) findViewById(R.id.rEmail);
         Alias = (TextView) findViewById(R.id.rAlias);
@@ -69,7 +74,6 @@ public class RegistrationActivity extends AppCompatActivity {
         LastName = (TextView) findViewById(R.id.lastName);
         PasswordC = (TextView) findViewById(R.id.PasswordC);
         PasswordE = (TextView) findViewById(R.id.PasswordE);
-        description = (TextView) findViewById(R.id.txtDescription);
         Genre.setKeyListener(null);
         Genre.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,13 +84,84 @@ public class RegistrationActivity extends AppCompatActivity {
         genreList();
         Button btnRegister = (Button) findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(Register());
+
+        Skills.setText(skillList.toString());
+        checkedItems = new boolean[skillList.length];
+
+        Skills.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(RegistrationActivity.this);
+                mBuilder.setTitle("Skillset");
+                mBuilder.setMultiChoiceItems(skillList, checkedItems, new DialogInterface.OnMultiChoiceClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position, boolean isChecked)
+                    {
+                        if(isChecked)
+                        {
+                            if(!items.contains(position))
+                            {
+                                items.add(position);
+                            }
+                            else
+                            {
+                               items.remove(position);
+                            }
+                        }
+                    }
+                });
+
+                mBuilder.setCancelable(false);
+                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        String item = "";
+                        for(int i = 0; i > items.size(); i++)
+                        {
+                           item = item + skillList[items.get(i)];
+                            if(i != items.size() - 1)
+                            {
+                                item = item + ", ";
+                            }
+                        }
+
+                        Skills.setText(item);
+                    }
+                });
+               mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       dialog.dismiss();
+                   }
+               });
+
+                mBuilder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for(int i = 0; i > checkedItems.length; i++)
+                        {
+                            checkedItems[i] = false;
+                            items.clear();
+                            Skills.setText("");
+                        }
+                    }
+                });
+
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }
+        });
     }
 
     private View.OnClickListener Register() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (Firstname.length() <= 0) {
                     Firstname.setBackgroundResource(R.drawable.warningbox);
                     return;
@@ -120,24 +195,17 @@ public class RegistrationActivity extends AppCompatActivity {
                     Email.setBackgroundResource(R.drawable.warningbox);
                     return;
                 }
-                StartProgressDialog();
-                Map<String,Object> datat = new HashMap<>();
+
+                Map<String,String> datat = new HashMap<>();
                     datat.put("firstname", Firstname.getText().toString());
                     datat.put("surname", LastName.getText().toString());
                     datat.put("realUserName", Alias.getText().toString());
                     datat.put("username", Email.getText().toString());
                     datat.put("password", PasswordC.getText().toString());
-                    datat.put("skill_id",1);
-                    datat.put("genre_id", Integer.parseInt(Genre.getText().toString()));
-                    datat.put("distance_id", 4);
-                if(description.getText().length() >0)
-                {
-                    datat.put("description", description.getText().toString());
-                } else
-                {
+                    datat.put("genre", Genre.getText().toString());
+                    datat.put("distance", "25");
                     datat.put("description", "nothing for now");
-                }
-                final JSONObject data = new JSONObject(datat);
+                final JSONObject data = new JSONObject();
                 /*JsonObjectRequest jar = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -171,7 +239,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        pd.cancel();
+
                     }
                 }){
                     @Override
@@ -266,7 +334,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                pd.cancel();
+
             }
         });
         RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(jar);
@@ -281,17 +349,5 @@ public class RegistrationActivity extends AppCompatActivity {
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();
-    }
-    private void StartProgressDialog()
-    {
-        pd = new ProgressDialog(instance);
-        pd.setMessage("Uploading and Registering your details");
-        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-        pd.show();
     }
 }
