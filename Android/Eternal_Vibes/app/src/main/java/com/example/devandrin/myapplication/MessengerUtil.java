@@ -44,7 +44,10 @@ public class MessengerUtil extends Content {
                     clist = Chat.extractAll(response);
                     DBHelper dbh = HomeActivity.getDbHelper();
                     for (Chat c : clist) {
-                        dbh.insertChat(c);
+                        if(dbh != null)
+                        {
+                            dbh.insertChat(c);
+                        }
                         ChatActivity.getMessages(c.ChatID);
                     }
                     if(adapter != null)

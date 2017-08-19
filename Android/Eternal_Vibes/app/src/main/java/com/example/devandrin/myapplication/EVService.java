@@ -69,7 +69,7 @@ public class EVService extends Service{
 
                 try
                 {
-                    Thread.sleep(10000L);
+                    Thread.sleep(5000L);
                 }catch(InterruptedException e)
                 {
                     Thread.currentThread().interrupt();

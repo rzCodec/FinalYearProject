@@ -22,12 +22,11 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class ChatActivity extends AppCompatActivity {
 
     private int iCurrentUserID = 0;
-    private static ArrayList<MessageContent> msgList = new ArrayList<>();
+    private static ArrayList<MessageContent> msgList;
     private int iChatID = 0;
     private static  ChatAdapter caObj;
     private static ChatActivity instance = null;
@@ -43,7 +42,7 @@ public class ChatActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("userInfo", MODE_PRIVATE);
         String id = sp.getString("userID", "");
         iCurrentUserID = Integer.parseInt(id);
-
+        msgList = new ArrayList<>();
         //TODO Gotta use the below Array list that contains all messages, see Message class for structure of Message.
         ArrayList<Message> m = HomeActivity.getDbHelper().getMessages(getIntent().getIntExtra("ChatID",-1));
 
@@ -108,7 +107,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        msgList.clear();
         finish();
     }
 

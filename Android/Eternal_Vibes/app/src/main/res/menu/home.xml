@@ -12,9 +12,5 @@
         android:title="Events"
         android:icon="@drawable/ic_event_dark"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/action_post"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
 
 </menu>

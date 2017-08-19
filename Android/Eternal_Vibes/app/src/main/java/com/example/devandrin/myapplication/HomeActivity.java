@@ -110,11 +110,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             dbHelper = new DBHelper(getApplicationContext());
         }
         instance = this;
-
-        //The activeuserID is used in the RadarUtil class to make Requests
-        SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
-        String activeuserID = sp.getString("userID", "");
-
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
         newChatFab.setOnClickListener(new View.OnClickListener() {
@@ -524,9 +519,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 i.putExtra("title", "Top Artists");
                 startActivity(i);
                 return true;
-            case R.id.action_post:
-                startPostActivity();
-                return true;
             case R.id.action_event:
                 startActivity(new Intent(this, EventActivity.class));
                 return true;
@@ -572,9 +564,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     .getLaunchIntentForPackage(getBaseContext().getPackageName());
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             dbHelper.resetData();
-            startActivity(i);
             Intent es = new Intent(this,EVService.class);
             stopService(es);
+            startActivity(i);
             finish();
         } else if (id == R.id.nav_exit) {
             Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -599,10 +591,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         String id = sp.getString("userID", "");
         NewsFeedUtil.makeRequest(id);
     }
+
     @Override
-    protected void onResume() {
+    protected void onStop() {
+        super.onStop();
+        if(isBound)
+        {
+            unbindService(serviceConnection);
+            isBound=false;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         Intent intent = new Intent(this, EVService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onResume() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean Result = sp.getBoolean(SettingsActivity.LOCATIONKEY, false);
         if (Result) {
@@ -614,10 +623,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     @Override
     protected void onDestroy() {
