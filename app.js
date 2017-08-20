@@ -27,14 +27,14 @@ var swaggerDefinition = {
     version: '1.0.0',
     description: 'Demonstrating how to describe a RESTful API with Swagger',
   },
-  host: '37.139.24.181:8080',
+  host: 'eternalvibes.me',
   basePath: '/',
 };
 var options = {
   // import swaggerDefinitions
   swaggerDefinition: swaggerDefinition,
   // path to the API docs
-  apis: ['./routes/index.js'],
+  apis: ['./routes/index.js']
 };
 var swaggerSpec = swaggerJSDoc(options);
 

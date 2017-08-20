@@ -58,8 +58,6 @@ module.exports = function (app, passport, swaggerSpec) {
    *         type: string
    *       description:
    *         type: string
-   *       genre_id:
-   *         type: integer
    *       skillset:
    *         type: array
    *   genre:
@@ -78,7 +76,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *         type: integer
    *       distance:
    *         type: string
-   *   status
+   *   status:
    *     properties:
    *       id:
    *         type: integer
@@ -766,32 +764,32 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       });
   });
-  /**
-   * @swagger
-   * /updateUserSkills:
-   *   post:
-   *     tags:
-   *       - users
-   *     description: Updates the users skills
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: userID
-   *         description: id of user being updated
-   *         in: body
-   *         required: true
-   *         type: integer
-   *       - name: skillsIDs
-   *         description: array of ids of skills
-   *         in: body
-   *         required: true
-   *         type: array
-   *     responses:
-   *       200:
-   *         description: Successfully updated skills
-   *       500:
-   *         description: Failed to update skills
-   */
+    /**
+     * @swagger
+     * /updateUserSkills:
+     *   post:
+     *     tags:
+     *       - users
+     *     description: Updates the users skills
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: userID
+     *         description: id of user being updated
+     *         in: body
+     *         required: true
+     *         type: integer
+     *       - name: skillsIDs
+     *         description: array of ids of skills
+     *         in: body
+     *         required: true
+     *         type: array
+     *     responses:
+     *       200:
+     *         description: Successfully updated skills
+     *       500:
+     *         description: Failed to update skills
+     */
   app.post('/updateUserSkills', function (req, res) {
     async.map(req.body.skillsIDs, function (id, cb) {
       connection.query('DELETE FROM user_skills WHERE user_skills.id = ? AND user_skills.skill_id = ?', [req.body.userID, id], function (error) {
@@ -1173,7 +1171,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *     responses:
    *       200:
    *         description: Successfully created
-   *       200:
+   *       500:
    *         description: Failed to create status
    */
   app.post('/setStatus', function (req, res) {
@@ -1331,6 +1329,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: Failed to send message
    */
+
   app.post('/sendMessage', function (req, res) {
     connection.query('INSERT INTO `message_list` (`message`, `timestamp`, `is_read`, `sender_id`, `chat_id`) VALUES (?,  ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 0, ?, ?)', [req.body.message, req.body.userID, req.body.chatID], function (error, results) {
       if (error) {
