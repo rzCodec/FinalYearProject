@@ -17,9 +17,16 @@ public class EventItem {
     private int id,user_id;
     private String Name;
     private String Info;
+    private String SkillsRequired; //Field to showcase which skills are needed for the event
     private long Date,CreatedTimestamp;
     private short status;
     private Invitation invite;
+
+    //Default constructor so that specific fields can be set in other classes
+    public EventItem(){
+
+    }
+
     public EventItem(String name, String info, long date) {
         Name = name;
         Info = info;
@@ -131,5 +138,13 @@ public class EventItem {
 
     public void setInvite(Invitation invite) {
         this.invite = invite;
+    }
+
+    public String getSkillsRequired() {
+        return SkillsRequired;
+    }
+
+    public void setSkillsRequired(String skillsRequired) {
+        SkillsRequired = skillsRequired;
     }
 }

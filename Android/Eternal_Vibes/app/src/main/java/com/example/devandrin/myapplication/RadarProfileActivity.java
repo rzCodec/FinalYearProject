@@ -3,17 +3,12 @@ package com.example.devandrin.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by Ronald on 8/2/2017.
@@ -21,88 +16,23 @@ import android.widget.Toast;
 
 public class RadarProfileActivity extends AppCompatActivity {
 
-    //Will refactor this class out after Alpha, everything is good for now
-    private class RadarProfile{
-        private String sUsername;
-        private String sLastName;
-        private int iRating;
-        private String sRank;
-        private String sLocation;
-        private int iDistance;
-        private String sEmail;
-        private String Skillset;
+    //Attributes to set the information from a user's profile
+    private String sUsername;
+    private String sLastName;
+    private String sAlias;
+    private int iRating;
+    private String sRank;
+    private String sLocation;
+    private int iDistance;
+    private String sEmail;
+    private String Skillset;
+    private String Description;
 
-        public RadarProfile(){
-
-        }
-
-        public String getsUsername() {
-            return sUsername;
-        }
-
-        public void setsUsername(String sUsername) {
-            this.sUsername = sUsername;
-        }
-
-        public String getsLastName() {
-            return sLastName;
-        }
-
-        public void setsLastName(String sLastName) {
-            this.sLastName = sLastName;
-        }
-
-        public int getiRating() {
-            return iRating;
-        }
-
-        public void setiRating(int iRating) {
-            this.iRating = iRating;
-        }
-
-        public String getsRank() {
-            return sRank;
-        }
-
-        public void setsRank(String sRank) {
-            this.sRank = sRank;
-        }
-
-        public String getsLocation() {
-            return sLocation;
-        }
-
-        public void setsLocation(String sLocation) {
-            this.sLocation = sLocation;
-        }
-
-        public int getiDistance() {
-            return iDistance;
-        }
-
-        public void setiDistance(int iDistance) {
-            this.iDistance = iDistance;
-        }
-
-        public String getsEmail() {
-            return sEmail;
-        }
-
-        public void setsEmail(String sEmail) {
-            this.sEmail = sEmail;
-        }
-
-        public String getSkillset() {
-            return Skillset;
-        }
-
-        public void setSkillset(String skillset) {
-            Skillset = skillset;
-        }
-    }
+    private static RadarProfileActivity instance;
+    private iRadarResponseListener radarResponseListener;
+    RadarContent radarContentObjToBePassed = new RadarContent();
 
     //Attributes
-    private RadarProfile rpObj = new RadarProfile();
     private FloatingActionButton btnFollow;
     private String sProfileName = "";
     private AlertDialog.Builder builder;
@@ -111,12 +41,19 @@ public class RadarProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_radar_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.profiletoolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.radarProfileToolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        RadarProfile rpObj = new RadarProfile();
+        instance = this;
         Initialize();
-        setupRadarProfileDetails();
+
+        ViewPager radarProfileViewPager = (ViewPager) findViewById(R.id.radarProfilePager);
+        GeneralTabAdapter GTA = new GeneralTabAdapter(getSupportFragmentManager(), this, 2, sAlias + "'s Profile", sAlias + "'s Event List");
+        GeneralPageFragment.sActivityType = "RadarProfileActivity";
+        radarProfileViewPager.setAdapter(GTA);
+
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.radarProfileTab);
+        tabLayout.setupWithViewPager(radarProfileViewPager);
 
         //Experimental code below, please don't remove
         //createAlertBuilder();
@@ -131,25 +68,7 @@ public class RadarProfileActivity extends AppCompatActivity {
         */
     }
 
-    //Method to setup text views and show the selected profile's details from the listview in RadarUtil
-    private void setupRadarProfileDetails(){
-        TextView tvUsername = (TextView) findViewById(R.id.txtRadarProfileName);
-        TextView tvLastName = (TextView) findViewById(R.id.txtRadarProfileLastName);
-        TextView tvRank = (TextView) findViewById(R.id.txtRadarProfileRank);
-        TextView tvRating = (TextView) findViewById(R.id.txtRadarProfileRating);
-        TextView tvSkillset = (TextView) findViewById(R.id.txtRadarProfileSkillset);
-        TextView tvDistanceAndLocation = (TextView) findViewById(R.id.txtRadarProfileDistanceLocation);
-        TextView tvEmail = (TextView) findViewById(R.id.txtRadarProfileEmailAddress);
 
-        tvUsername.setText("First Name: " + rpObj.getsUsername());
-        tvLastName.setText("Last Name: " + rpObj.getsLastName());
-        tvRank.setText("Rank: " + rpObj.getsRank());
-        tvRating.setText("Rating: " + rpObj.getiRating());
-        tvSkillset.setText("Muscian Skillset: " + rpObj.getSkillset());
-        tvDistanceAndLocation.setText("Distance " + rpObj.getiDistance() + " km away and is in " + rpObj.getsLocation());
-        tvEmail.setText("Email Address: " + rpObj.getsEmail());
-
-    }
 
 
     /* Leave this here for now, we can use it for Beta
@@ -178,26 +97,45 @@ public class RadarProfileActivity extends AppCompatActivity {
     }
     */
 
+
+    public RadarContent getRCObj(){
+        return radarContentObjToBePassed;
+    }
+
+    public static RadarProfileActivity getInstance(){
+        return instance;
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
     }
 
+    //Get the details from HomeActivity, so the text views can show data
     private void Initialize() {
         Intent i = getIntent();
+        setTitle("Eternal Vibes");
 
-        //Get the details from HomeActivity, so the text views can show data
-        rpObj.setsUsername(i.getStringExtra("Name"));
-        rpObj.setsLastName(i.getStringExtra("LastName"));
-        rpObj.setsRank(i.getStringExtra("Rank"));
-        rpObj.setiRating(i.getIntExtra("Rating", 0));
-        rpObj.setiDistance(i.getIntExtra("Distance", 0));
-        rpObj.setsLocation(i.getStringExtra("Location"));
-        rpObj.setsEmail(i.getStringExtra("Email"));
-        rpObj.setSkillset(i.getStringExtra("Skillset"));
+        int iUserID = i.getIntExtra("UserID", 0);
+        sAlias = i.getStringExtra("Alias");
+        sUsername = i.getStringExtra("Name");
+        sLastName = i.getStringExtra("LastName");
+        iDistance = i.getIntExtra("Distance", 0);
+        sLocation = i.getStringExtra("Location");
+        sEmail = i.getStringExtra("Email");
+        Skillset = i.getStringExtra("Skillset");
+        Description = i.getStringExtra("Description");
 
-        setTitle(i.getStringExtra("Name") + "'s Profile");
+        radarContentObjToBePassed.setUserID(iUserID);
+        radarContentObjToBePassed.setsAlias(sAlias);
+        radarContentObjToBePassed.setsUsername(sUsername);
+        radarContentObjToBePassed.setsLastName(sLastName);
+        radarContentObjToBePassed.setDistance(iDistance);
+        radarContentObjToBePassed.setsLocation(sLocation);
+        radarContentObjToBePassed.setsEmail(sEmail);
+        radarContentObjToBePassed.setSkillset(Skillset);
+        radarContentObjToBePassed.setDescription(Description);
     }
 
 }

@@ -1,8 +1,13 @@
 package com.example.devandrin.myapplication;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,6 +17,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -35,6 +41,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -42,33 +49,55 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
-    private  ProgressBar load = null;
+    private ProgressBar load = null;
+    private ProgressBar radarProgressBar;
     private static HomeActivity instance = null;
     private static DBHelper dbHelper = null;
     FloatingActionButton newChatFab, newPostFab, btn_sortRadar;
 
-    private Thread thread;
-    private RadarThread radarThreadObj;
     private RadarContent rcObjItem = new RadarContent();
-    public String activeuserID = "";
-    private String[] arrSkillsets;
+    public static String activeuserID = "";
+    private ArrayList<RadarContent> unsortedRadarList = new ArrayList<>();
 
     static HomeActivity getInstance() {
         return instance;
     }
 
+    EVService service;
+    boolean isBound = false;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            EVService.MessengerBinder binder = (EVService.MessengerBinder) service;
+            HomeActivity.this.service = binder.getService();
+            isBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            service = null;
+            isBound = false;
+        }
+    };
     public static DBHelper getDbHelper() {
         return dbHelper;
+    }
+
+    public static void setDbHelper(DBHelper dbHelper) {
+        HomeActivity.dbHelper = dbHelper;
     }
 
     @Override
@@ -76,26 +105,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         load = (ProgressBar) findViewById(R.id.pbLoad);
-        dbHelper = new DBHelper(this);
+        if(dbHelper == null)
+        {
+            dbHelper = new DBHelper(getApplicationContext());
+        }
         instance = this;
-
-        SharedPreferences sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
-        activeuserID = sp.getString("userID", "");
-        radarThreadObj = new RadarThread(activeuserID);
-        thread = new Thread(radarThreadObj);
-        thread.setDaemon(true); //Kill this child thread when the main thread is terminated
-        thread.start();
-
-        /*
-        ArrayList<RadarContent> unsorted_radarList = radarThreadObj.getUnsorted_radarList();
-        arrSkillsets = new String[unsorted_radarList.size()];
-        for(int i = 0; i < arrSkillsets.length; i++){
-            arrSkillsets[i] = unsorted_radarList.get(i).getSkillset();
-        }*/
-
-            //Toast.makeText(this, "User ID is " + activeuserID,
-        //        Toast.LENGTH_LONG).show();
-
         //Floating buttons to make a post or send a message
         newChatFab = (FloatingActionButton) findViewById(R.id.new_chat);
         newChatFab.setOnClickListener(new View.OnClickListener() {
@@ -136,12 +150,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Utilities.MakeSnack(findViewById(R.id.cLayout), "Location services disabled");
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
-        TabAdapter ta = new TabAdapter(getSupportFragmentManager(), HomeActivity.this);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.vpager);
+        final TabAdapter ta = new TabAdapter(getSupportFragmentManager(), HomeActivity.this);
         viewPager.setAdapter(ta);
 
         // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -163,6 +177,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     newChatFab.setVisibility(View.GONE);
                     newPostFab.setVisibility(View.GONE);
                     btn_sortRadar.setVisibility(View.VISIBLE);
+                    //enableProgressBar();
                 }
             }
 
@@ -177,13 +192,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         viewPager.setCurrentItem(1);
+        Intent i = new Intent(this,EVService.class);
+        startService(i);
+        refreshNewsFeed();
     }
 
-    //Returns a RadarThread Object to be used in the RadarUtil
-    public RadarThread getRadarThreadObj(){
-        return radarThreadObj;
+    public ProgressBar getProgressBar(){
+        return load;
     }
 
+    /* Gets the response from the async task. Please do not delete this
+    @Override
+    public ArrayList<RadarContent> processCompleted(ArrayList<RadarContent> rcList){
+        this.unsortedRadarList = rcList;
+        return this.unsortedRadarList;
+    }*/
+
+    public ArrayList<RadarContent> getUnsortedRadarList(){
+        return unsortedRadarList;
+    }
+    
     //Start a new chat activity for the messenger
     private void StartNewChat() {
         startActivity(new Intent(this, NewChatActivity.class));
@@ -241,26 +269,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         unregisterForContextMenu(lv);
     }
 
-    /**
-     * Create the menu when the user selects the floating button
-     *
-     * @param menu
-     * @param v
-     * @param menuInfo
-     */
-
     public void setRadarProfileObject(RadarContent rcObjItem){
         //Create a branch new RadarContent object
         //The data was passed from RadarUtil
         this.rcObjItem.setUserID(rcObjItem.getUserID());
         this.rcObjItem.setsUsername(rcObjItem.getsUsername());
         this.rcObjItem.setsLastName(rcObjItem.getsLastName());
+        this.rcObjItem.setsAlias(rcObjItem.getsAlias());
         this.rcObjItem.setRanking(rcObjItem.getRanking());
         this.rcObjItem.setRating(rcObjItem.getRating());
         this.rcObjItem.setDistance(rcObjItem.getDistance());
         this.rcObjItem.setsLocation(rcObjItem.getsLocation());
         this.rcObjItem.setsEmail(rcObjItem.getsEmail());
         this.rcObjItem.setSkillset(rcObjItem.getSkillset());
+        this.rcObjItem.setDescription(rcObjItem.getDescription());
     }
 
     @Override
@@ -297,6 +319,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 RadarUtil.UpdatedSort_RadarProfiles("DISTANCE", false);
                 return true;
 
+            /*
             case R.id.HighestRating:
                 RadarUtil.UpdatedSort_RadarProfiles("RATING", false);
                 return true;
@@ -340,33 +363,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, "You are now following " + rcObjItem.getsUsername(),
                         Toast.LENGTH_LONG).show();
 
-                return true;
+                return true;*/
 
             case R.id.ViewProfileDetails:
                 //View more of the profile details
-                Thread t1 = new Thread(new Runnable() {
-                    @Override
-                    public void run(){
-                        Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
-                        String sProfileUsername = "Jack";
-
-                        //Pass the required information to the next activity
-                        intent.putExtra("Name", rcObjItem.getsUsername());
-                        intent.putExtra("LastName", rcObjItem.getsLastName());
-                        intent.putExtra("Rank", rcObjItem.getRanking());
-                        intent.putExtra("Rating", rcObjItem.getRating());
-                        intent.putExtra("Distance", rcObjItem.getDistance());
-                        intent.putExtra("Location", rcObjItem.getsLocation());
-                        intent.putExtra("Email", rcObjItem.getsEmail());
-                        intent.putExtra("Skillset", rcObjItem.getSkillset());
-
-                        startActivity(intent);
-                    }
-                });
-
-                t1.setDaemon(true);
-                t1.start();
-
+                Intent intent = new Intent(HomeActivity.getInstance(), RadarProfileActivity.class);
+                //Pass the required information to the next activity
+                intent.putExtra("UserID", rcObjItem.getUserID());
+                intent.putExtra("Name", rcObjItem.getsUsername());
+                intent.putExtra("LastName", rcObjItem.getsLastName());
+                intent.putExtra("Alias", rcObjItem.getsAlias());
+                intent.putExtra("Rank", rcObjItem.getRanking());
+                intent.putExtra("Rating", rcObjItem.getRating());
+                intent.putExtra("Distance", rcObjItem.getDistance());
+                intent.putExtra("Location", rcObjItem.getsLocation());
+                intent.putExtra("Email", rcObjItem.getsEmail());
+                intent.putExtra("Skillset", rcObjItem.getSkillset());
+                intent.putExtra("Description", rcObjItem.getDescription());
+                startActivity(intent);
                 return true;
 
             default:
@@ -500,8 +514,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //noinspection SimplifiableIfStatement
         switch(id)
         {
-            case R.id.action_post:
-                startPostActivity();
+            case R.id.action_topArtists:
+                Intent i = new Intent(this,FollowersListActivity.class);
+                i.putExtra("title", "Top Artists");
+                startActivity(i);
                 return true;
             case R.id.action_event:
                 startActivity(new Intent(this, EventActivity.class));
@@ -548,6 +564,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     .getLaunchIntentForPackage(getBaseContext().getPackageName());
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             dbHelper.resetData();
+            Intent es = new Intent(this,EVService.class);
+            stopService(es);
             startActivity(i);
             finish();
         } else if (id == R.id.nav_exit) {
@@ -567,10 +585,33 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Utilities.MakeSnack(findViewById(R.id.cLayout), "Unable to connect to Google Play Services");
     }
+    void refreshNewsFeed()
+    {
+        SharedPreferences sp = getSharedPreferences("userInfo", MODE_PRIVATE);
+        String id = sp.getString("userID", "");
+        NewsFeedUtil.makeRequest(id);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(isBound)
+        {
+            unbindService(serviceConnection);
+            isBound=false;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Intent intent = new Intent(this, EVService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
 
     @Override
     protected void onResume() {
-        super.onResume();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean Result = sp.getBoolean(SettingsActivity.LOCATIONKEY, false);
         if (Result) {
@@ -578,24 +619,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         sp = getSharedPreferences("userInfo", MODE_PRIVATE);
         String id = sp.getString("userID", "");
-        NewsFeedUtil.makeRequest(id);
-        MessengerUtil.makeRequest(id);
-
-        //Find the users when the app starts on a separate child thread
-        //The main thread creates the required UI components
-        //While this happens, the child thread retrieves the required data to be displayed in the UI
         activeuserID = id;
-
+        super.onResume();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     @Override
     protected void onDestroy() {
+        NotificationManager m = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        m.cancelAll();
         dbHelper.close();
+        dbHelper = null;
         super.onDestroy();
     }
 

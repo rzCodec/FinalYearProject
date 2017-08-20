@@ -166,7 +166,7 @@ public class Dashboard extends AppCompatActivity {
 
         };
 
-        /*JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, jo, new Response.Listener<JSONObject>() {
+        /*JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, "https:eternalvibes.me/getnearbystrangers/303346733", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try
@@ -203,7 +203,18 @@ public class Dashboard extends AppCompatActivity {
                 return super.parseNetworkResponse(response);
             }
         };*/
+        /*JsonArrayRequest sr = new JsonArrayRequest(Request.Method.GET, "https://eternalvibes.me/getnearbystrangers/303346733", null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                warning.setText(response.toString());
+                warning.setVisibility(View.VISIBLE);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
+            }
+        });*/
 
         RequestQueueSingleton.getInstance(getApplicationContext()).addToQ(sr);
     }
@@ -280,5 +291,18 @@ public class Dashboard extends AppCompatActivity {
             Dialog err = GoogleApiAvailability.getInstance().getErrorDialog(this, result, 0);
             err.show();
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        if(pd != null)
+        {
+            if(pd.isShowing())
+            {
+                pd.cancel();
+            }
+        }
+        super.onDestroy();
     }
 }

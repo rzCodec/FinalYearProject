@@ -3,11 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/refreshView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/ArrayList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    </ListView>
+    <ListView
+        android:id="@+id/ArrayList"
+        android:scrollbars="vertical"
+        android:paddingBottom="85dp"
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </android.support.v4.widget.SwipeRefreshLayout>

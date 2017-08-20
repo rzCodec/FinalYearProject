@@ -22,29 +22,27 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private ArrayList<Chat> chatList = new ArrayList<>();
     private int iCurrentUserID = 0;
+    private static ArrayList<MessageContent> msgList;
     private int iChatID = 0;
-
+    private static  ChatAdapter caObj;
+    private static ChatActivity instance = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
+        instance = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Initialize();
-
-        final ArrayList<MessageContent> msgList = new ArrayList<>();
-
-        //Gets the current user ID from shared preferences, when onResume is invoked in HomeActivity
-        iCurrentUserID = Integer.parseInt(HomeActivity.getInstance().activeuserID);
-
+        SharedPreferences sp = getSharedPreferences("userInfo", MODE_PRIVATE);
+        String id = sp.getString("userID", "");
+        iCurrentUserID = Integer.parseInt(id);
+        msgList = new ArrayList<>();
         //TODO Gotta use the below Array list that contains all messages, see Message class for structure of Message.
         ArrayList<Message> m = HomeActivity.getDbHelper().getMessages(getIntent().getIntExtra("ChatID",-1));
 
@@ -61,7 +59,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
 
-        final ChatAdapter caObj = new ChatAdapter(getApplicationContext(), msgList);
+        caObj = new ChatAdapter(getApplicationContext(), msgList);
         final ListView lv = (ListView) findViewById(R.id.chatMsgList_layout);
 
         lv.setAdapter(caObj);
@@ -136,6 +134,10 @@ public class ChatActivity extends AppCompatActivity {
                     {
                         HomeActivity.getDbHelper().insertMessage(m);
                     }
+                    if(instance != null)
+                    {
+                        instance.updateChat();
+                    }
                 }
             }
         }, new Response.ErrorListener() {
@@ -145,5 +147,26 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         RequestQueueSingleton.getInstance(HomeActivity.getInstance()).addToQ(jar);
+    }
+    public void updateChat()
+    {
+        ArrayList<Message> m = HomeActivity.getDbHelper().getMessages(getIntent().getIntExtra("ChatID",-1));
+        msgList.clear();
+        for(Message msgObj : m){
+            //Check if the message was sent by the current user
+            //If it is then it is the user's message, else it is someone else's
+            if(msgObj.SenderID == iCurrentUserID){
+                MessageContent msg = new MessageContent(true, msgObj.Message);
+                msgList.add(msg);
+            }
+            else{
+                MessageContent msg = new MessageContent(false, msgObj.Message);
+                msgList.add(msg);
+            }
+        }
+        if(caObj != null)
+        {
+            caObj.notifyDataSetChanged();
+        }
     }
 }

@@ -89,4 +89,5 @@
         <item>8 Hours</item>
         <item>16 Hours</item>
     </string-array>
+    <string name="title_activity_followers_list">FollowersListActivity</string>
 </resources>

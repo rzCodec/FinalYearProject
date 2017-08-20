@@ -61,7 +61,7 @@ public class NewsFeedUtil extends Content {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeActivity.getInstance().onResume();
+                HomeActivity.getInstance().refreshNewsFeed();
             }
         };
     }
@@ -83,7 +83,8 @@ public class NewsFeedUtil extends Content {
 
     @Override
     protected void update() {
-        HomeActivity.getInstance().onResume();
+        HomeActivity.getInstance().refreshNewsFeed();
         srl.setRefreshing(false);
+
     }
 }

@@ -50,7 +50,26 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(ContractClass.DELETE_USERS_TABLE);
         onCreate(db);
     }
-
+    class data
+    {
+        int nMessages;
+        int nChats;
+    }
+    public data getUnreadCount(String userID)
+    {
+        data d = new data();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor result = db.rawQuery(ContractClass.COUNTUNREAD+userID,null);
+        result.moveToFirst();
+        while(!result.isAfterLast())
+        {
+            d.nMessages = result.getInt(0);
+            d.nChats = result.getInt(1);
+            result.moveToNext();
+        }
+        result.close();
+        return d;
+    }
     public ArrayList<Message> getMessages(int ChatID) {
         ArrayList<Message> Messages = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
