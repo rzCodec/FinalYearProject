@@ -6,8 +6,8 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
     "async": "^2.1.5",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.16.0",
     "compression": "^1.6.2",
     "connect-flash": "^0.1.1",
@@ -23,6 +23,7 @@
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
     "request": "^2.80.0",
-    "serve-favicon": "~2.3.2"
+    "serve-favicon": "~2.3.2",
+    "swagger-jsdoc": "^1.9.7"
   }
 }

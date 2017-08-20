@@ -38,10 +38,10 @@ module.exports = function (passport) {
               genre_id: req.param('genre_id'),
               distance_id: req.param('distance_id'),
               description: req.param('description'),
-              skill_id:req.param('skill')
+              skill_ids: req.param('skills')
             };
 
-            var insertQuery = "INSERT INTO users ( username, password, email, firstname, surname, genre_id, distance_id, description,join_timestamp,last_login_timestamp,skill_id ) values (?,?,?,?,?,?,?,?,ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000),ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000),?)";
+            var insertQuery = "INSERT INTO users ( username, password, email, firstname, surname, genre_id, distance_id, description,join_timestamp,last_login_timestamp ) values (?,?,?,?,?,?,?,?,ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000),ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))";
 
             connection.query(insertQuery, [
               newUserMysql.username,
@@ -51,12 +51,27 @@ module.exports = function (passport) {
               newUserMysql.surname,
               newUserMysql.genre_id,
               newUserMysql.distance_id,
-              newUserMysql.description,
-              newUserMysql.skill_id
+              newUserMysql.description
             ], function (err, rows) {
-              console.log(err)
+              if (err) {
+                return done(err);
+              }
               newUserMysql.id = rows.insertId;
-              return done(null, newUserMysql);
+              async.map(newUserMysql.skill_ids, function (id, cb) {
+                connection.query('INSERT INTO `user_skills` (`id`, `user_id`, `skill_id`) VALUES (NULL, ?, ?)', [newUserMysql.id, id], function (error) {
+                  if (error) {
+                    cb(error)
+                  } else {
+                    cb();
+                  }
+                });
+              }, function (err) {
+                if (err) {
+                  return done(err);
+                } else {
+                  return done(null, newUserMysql);
+                }
+              });
             });
           }
         });
