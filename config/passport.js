@@ -61,12 +61,13 @@ module.exports = function (passport) {
                 connection.query('INSERT INTO `user_skills` (`id`, `user_id`, `skill_id`) VALUES (NULL, ?, ?)', [newUserMysql.id, id], function (error) {
                   if (error) {
                     cb(error)
-                  } else {
+                  } else {console.log(error)
                     cb();
                   }
                 });
               }, function (err) {
                 if (err) {
+                  console.log(err)
                   return done(err);
                 } else {
                   return done(null, newUserMysql);

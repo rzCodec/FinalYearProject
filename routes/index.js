@@ -461,9 +461,9 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to Login
    */
   app.get('/mobileLogin', function (req, res) {
-    if (req.param("status") === "false") {
+    if (req.params.status === "false") {
       res.status(500).send('BadCredentials!')
-    } else if (req.param("status") === "true") {
+    } else if (req.params.status === "true") {
       res.status(200).send(req.user)
     } else {
       res.status(400).send('Something broke!')
@@ -544,9 +544,9 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to Register
    */
   app.get('/mobileSignup', function (req, res) {
-    if (req.param("status") === "false") {
+    if (req.params.status === "false") {
       res.status(500).send('BadCredentials!')
-    } else if (req.param("status") === "true") {
+    } else if (req.params.status === "true") {
       res.status(200).send(req.user)
     } else {
       res.status(400).send('Something broke!')
@@ -726,27 +726,22 @@ module.exports = function (app, passport, swaggerSpec) {
    *       - name: genre_id
    *         description: The users genre_id
    *         in: body
-   *         required: true
    *         type: integer
    *       - name: distance_id
    *         description: The users distance_id
    *         in: body
-   *         required: true
    *         type: integer
    *       - name: last_login_timestamp
    *         description: The users last_login_timestamp
    *         in: body
-   *         required: true
    *         type: integer
    *       - name: profilepic_url
    *         description: The users profilepic_url
    *         in: body
-   *         required: true
    *         type: string
    *       - name: description
    *         description: The users description
    *         in: body
-   *         required: true
    *         type: string
    *     responses:
    *       200:
@@ -755,14 +750,81 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to update
    */
   app.post('/updateUserInfo', function (req, res) {
-    connection.query('UPDATE users SET genre_id=?,distance_id=?,last_login_timestamp=?,profilepic_url=?,description=?  WHERE id=?',
-      [req.body.genre_id, req.body.distance_id, req.body.last_login_timestamp, req.body.profilepic_url, req.body.description, req.body.userID], function (error) {
-        if (error) {
-          res.status(500).send(error);
-        } else {
-          res.sendStatus(200);
+    waterfall([
+        function (callback) {
+          if (req.body.genre_id === null) {
+            callback();
+          }else{
+            connection.query('UPDATE users SET genre_id=?  WHERE id=?', [req.body.genre_id,req.body.userID], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback();
+              }
+            });
+          }
+        },
+        function (callback) {
+          if (req.body.distance_id === null) {
+            callback();
+          }else{
+            connection.query('UPDATE users SET distance_id=? WHERE id=?', [req.body.distance_id,req.body.userID], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback();
+              }
+            });
+          }
+        },
+        function (callback) {
+          if (req.body.last_login_timestamp === null) {
+            callback();
+          }else{
+            connection.query('UPDATE users SET last_login_timestamp=?  WHERE id=?', [req.body.last_login_timestamp,req.body.userID], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback();
+              }
+            });
+          }
+        },
+        function (callback) {
+          if (req.body.profilepic_url === null) {
+            callback();
+          }else{
+            connection.query('UPDATE users SET profilepic_url=? WHERE id=?', [req.body.profilepic_url, req.body.userID], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback();
+              }
+            });
+          }
+        },
+        function (callback) {
+          if (req.body.description === null) {
+            callback();
+          }else{
+            connection.query('UPDATE users SET description=? WHERE id=?', [req.body.description,req.body.userID], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback();
+              }
+            });
+          }
         }
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err);
+        }
+        res.sendStatus(200);
       });
+
   });
   /**
    * @swagger
