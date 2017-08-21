@@ -754,8 +754,6 @@ module.exports = function (app, passport, swaggerSpec) {
     waterfall([
         function (callback) {
           if (body.hasOwnProperty('genre_id')) {
-            callback();
-          }else{
             connection.query('UPDATE users SET genre_id=?  WHERE id=?', [req.body.genre_id,req.body.userID], function (error) {
               if (error) {
                 callback(error)
@@ -763,12 +761,12 @@ module.exports = function (app, passport, swaggerSpec) {
                 callback();
               }
             });
+          }else{
+            callback();
           }
         },
         function (callback) {
           if (body.hasOwnProperty('distance_id')) {
-            callback();
-          }else{
             connection.query('UPDATE users SET distance_id=? WHERE id=?', [req.body.distance_id,req.body.userID], function (error) {
               if (error) {
                 callback(error)
@@ -776,12 +774,12 @@ module.exports = function (app, passport, swaggerSpec) {
                 callback();
               }
             });
+          }else{
+            callback();
           }
         },
         function (callback) {
           if (body.hasOwnProperty('last_login_timestamp')) {
-            callback();
-          }else{
             connection.query('UPDATE users SET last_login_timestamp=?  WHERE id=?', [req.body.last_login_timestamp,req.body.userID], function (error) {
               if (error) {
                 callback(error)
@@ -789,12 +787,12 @@ module.exports = function (app, passport, swaggerSpec) {
                 callback();
               }
             });
+          }else{
+            callback();
           }
         },
         function (callback) {
           if (body.hasOwnProperty('profilepic_url')) {
-            callback();
-          }else{
             connection.query('UPDATE users SET profilepic_url=? WHERE id=?', [req.body.profilepic_url, req.body.userID], function (error) {
               if (error) {
                 callback(error)
@@ -802,12 +800,12 @@ module.exports = function (app, passport, swaggerSpec) {
                 callback();
               }
             });
+          }else{
+            callback();
           }
         },
         function (callback) {
           if (body.hasOwnProperty('description')) {
-            callback();
-          }else{
             connection.query('UPDATE users SET description=? WHERE id=?', [req.body.description,req.body.userID], function (error) {
               if (error) {
                 callback(error)
@@ -815,6 +813,8 @@ module.exports = function (app, passport, swaggerSpec) {
                 callback();
               }
             });
+          }else{
+            callback();
           }
         }
       ],
