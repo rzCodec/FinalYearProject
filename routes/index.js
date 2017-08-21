@@ -764,32 +764,32 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       });
   });
-    /**
-     * @swagger
-     * /updateUserSkills:
-     *   post:
-     *     tags:
-     *       - users
-     *     description: Updates the users skills
-     *     produces:
-     *       - application/json
-     *     parameters:
-     *       - name: userID
-     *         description: id of user being updated
-     *         in: body
-     *         required: true
-     *         type: integer
-     *       - name: skillsIDs
-     *         description: array of ids of skills
-     *         in: body
-     *         required: true
-     *         type: array
-     *     responses:
-     *       200:
-     *         description: Successfully updated skills
-     *       500:
-     *         description: Failed to update skills
-     */
+  /**
+   * @swagger
+   * /updateUserSkills:
+   *   post:
+   *     tags:
+   *       - users
+   *     description: Updates the users skills
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: userID
+   *         description: id of user being updated
+   *         in: body
+   *         required: true
+   *         type: integer
+   *       - name: skillsIDs
+   *         description: array of ids of skills
+   *         in: body
+   *         required: true
+   *         type: array
+   *     responses:
+   *       200:
+   *         description: Successfully updated skills
+   *       500:
+   *         description: Failed to update skills
+   */
   app.post('/updateUserSkills', function (req, res) {
     async.map(req.body.skillsIDs, function (id, cb) {
       connection.query('DELETE FROM user_skills WHERE user_skills.id = ? AND user_skills.skill_id = ?', [req.body.userID, id], function (error) {
@@ -1061,7 +1061,7 @@ module.exports = function (app, passport, swaggerSpec) {
 
   /**
    * @swagger
-   * /getStatuses/{userID}:
+   * /getStatuses/{userID}/{offset}/{limit}:
    *   get:
    *     tags:
    *       - statuses
@@ -1137,7 +1137,7 @@ module.exports = function (app, passport, swaggerSpec) {
         IDsToFetch.forEach(function (ID) {
           where = where + " OR status_list.user_id=" + ID + " ";
         });
-        connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' + req.params.userID + ' ' + where + ' LIMIT ? OFFSET ?', [req.params.limit, req.params.offset], function (error, results) {
+        connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' + req.params.userID + ' ' + where + ' LIMIT ' + req.params.limit + ' OFFSET ' + req.params.offset, function (error, results) {
           if (error) {
             res.status(500).send(error);
           } else {

@@ -29,12 +29,11 @@ var swaggerDefinition = {
   },
   host: 'eternalvibes.me',
   basePath: '/',
+  schemes: 'https'
 };
 var options = {
-  // import swaggerDefinitions
   swaggerDefinition: swaggerDefinition,
-  // path to the API docs
-  apis: ['./routes/index.js']
+  apis: ['../routes/index.js']
 };
 var swaggerSpec = swaggerJSDoc(options);
 
