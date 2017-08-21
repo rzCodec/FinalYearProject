@@ -461,9 +461,9 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to Login
    */
   app.get('/mobileLogin', function (req, res) {
-    if (req.params.status === "false") {
+    if (req.param('status') === "false") {
       res.status(500).send('BadCredentials!')
-    } else if (req.params.status === "true") {
+    } else if (req.param('status') === "true") {
       res.status(200).send(req.user)
     } else {
       res.status(400).send('Something broke!')
@@ -544,9 +544,9 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to Register
    */
   app.get('/mobileSignup', function (req, res) {
-    if (req.params.status === "false") {
+    if (req.param('status') === "false") {
       res.status(500).send('BadCredentials!')
-    } else if (req.params.status === "true") {
+    } else if (req.param('status') === "true") {
       res.status(200).send(req.user)
     } else {
       res.status(400).send('Something broke!')
