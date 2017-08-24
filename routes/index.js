@@ -1200,7 +1200,7 @@ module.exports = function (app, passport, swaggerSpec) {
         IDsToFetch.forEach(function (ID) {
           where = where + " OR status_list.user_id=" + ID + " ";
         });
-        connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' + req.params.userID + ' ' + where + ' LIMIT ' + req.params.limit + ' OFFSET ' + req.params.offset, function (error, results) {
+        connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.usevr_id=' + req.params.userID + ' ' + where + ' ORDER BY status_list.timestamp LIMIT ' + req.params.limit + ' OFFSET ' + req.params.offset, function (error, results) {
           if (error) {
             res.status(500).send(error);
           } else {
@@ -1873,7 +1873,7 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('SELECT events.*, invites.message,invites.id AS invite_id,invites.sender_user_id FROM invites \n' +
       'INNER JOIN events on events.id = invites.id \n' +
       'INNER JOIN responses ON responses.id = invites.response_id \n' +
-      'WHERE invites.receiver_user_id = ? AND response_id !=3',
+      'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
           res.status(500).send(error);
@@ -1906,7 +1906,76 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get a users events
    */
   app.get('/getUsersEvents/:userID', function (req, res) {
-    connection.query('SELECT events.* FROM events WHERE events.user_id=?',
+    connection.query('SELECT events.* FROM events WHERE events.user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      [req.params.userID], function (error, results) {
+        if (error) {
+          res.status(500).send(error);
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  /**
+   * @swagger
+   * /getFinishedUsersEvents/{userID}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: Gets the finished events a user has created
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: userID
+   *         description: The id of the user who's finished created events need to be fetched
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *         schema:
+   *           $ref: '#/definitions/event'
+   *       500:
+   *         description: Failed to get a users finished events
+   */
+  app.get('/getFinishedUsersEvents/:userID', function (req, res) {
+    connection.query('SELECT events.* FROM events WHERE events.user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      [req.params.userID], function (error, results) {
+        if (error) {
+          res.status(500).send(error);
+        } else {
+          res.send(results);
+        }
+      });
+  });
+  /**
+   * @swagger
+   * /getFinishedEvents/{userID}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: Gets the finished events that a user was invited to
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: userID
+   *         description: The id of the user who's finished events need to be fetched
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *         schema:
+   *           $ref: '#/definitions/event'
+   *       500:
+   *         description: Failed to get a users events
+   */
+  app.get('/getFinishedEvents/:userID', function (req, res) {
+    connection.query('SELECT events.*, invites.message,invites.id AS invite_id,invites.sender_user_id FROM invites \n' +
+      'INNER JOIN events on events.id = invites.id \n' +
+      'INNER JOIN responses ON responses.id = invites.response_id \n' +
+      'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
           res.status(500).send(error);
@@ -2176,6 +2245,78 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       });
   });
+
+  /**
+   * @swagger
+   * /sendRequestToJoinEvent:
+   *   post:
+   *     tags:
+   *       - eventRequest
+   *     description: Creates a request to join an event
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: event_id
+   *         description: event id
+   *         in: body
+   *         required: true
+   *         type: integer
+   *       - name: sender_user_id
+   *         description: Usender_user_id
+   *         in: body
+   *         required: true
+   *         type: integer
+   *       - name: reason
+   *         description: Treason
+   *         in: body
+   *         required: true
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: Successfully created
+   *       500:
+   *         description: Failed to report
+   */
+  app.post('/sendRequestToJoinEvent', function (req, res) {
+    connection.query('INSERT INTO `event_request` (`id`, `event_id`, `sender_user_id`, `reason`, `timestamp`, `responses_id`) VALUES (NULL, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 2)', [req.body.event_id, req.body.sender_user_id, req.body.reason], function (error, results) {
+      if (error) {
+        res.status(500).send(error);
+      } else {
+        res.sendStatus(200)
+      }
+    });
+  });
+  /**
+   * @swagger
+   * /getRequestedInvites/{eventID}:
+   *   get:
+   *     tags:
+   *       - eventRequest
+   *     description: getRequestedInvites
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: eventID
+   *         description: event id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Successfully got
+   *       500:
+   *         description: Failed to get
+   */
+  app.get('/getRequestedInvites/:eventID', function (req, res) {
+    connection.query('SELECT * FROM `event_request` WHERE event_request.event_id=? AND event_request.responses_id!=3', [req.params.eventID], function (error, results) {
+      if (error) {
+        res.status(500).send(error);
+      } else {
+        res.send(results);
+      }
+    });
+  });
+  
 
   app.get('/swagger.json', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
