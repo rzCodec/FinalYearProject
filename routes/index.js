@@ -1200,7 +1200,7 @@ module.exports = function (app, passport, swaggerSpec) {
         IDsToFetch.forEach(function (ID) {
           where = where + " OR status_list.user_id=" + ID + " ";
         });
-        connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.usevr_id=' + req.params.userID + ' ' + where + ' ORDER BY status_list.timestamp LIMIT ' + req.params.limit + ' OFFSET ' + req.params.offset, function (error, results) {
+        connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' + req.params.userID + ' ' + where + ' ORDER BY status_list.timestamp LIMIT ' + req.params.limit + ' OFFSET ' + req.params.offset, function (error, results) {
           if (error) {
             res.status(500).send(error);
           } else {
@@ -2316,7 +2316,7 @@ module.exports = function (app, passport, swaggerSpec) {
       }
     });
   });
-  
+
 
   app.get('/swagger.json', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
