@@ -1,11 +1,11 @@
-var mysql = require('mysql');
-var waterfall = require('async/waterfall');
-var async = require('async');
-var parallel = require('async/parallel');
-var dbconfig = require('../config/database');
-var connection = mysql.createConnection(dbconfig.connection);
-var request = require("request");
-connection.query('USE informatics');
+var mysql = require('mysql')
+var waterfall = require('async/waterfall')
+var async = require('async')
+var parallel = require('async/parallel')
+var dbconfig = require('../config/database')
+var connection = mysql.createConnection(dbconfig.connection)
+var request = require('request')
+connection.query('USE informatics')
 module.exports = function (app, passport, swaggerSpec) {
   /**
    * @swagger
@@ -198,146 +198,168 @@ module.exports = function (app, passport, swaggerSpec) {
    *         type: integer
    *       username:
    *         type: string
+   *   event_request:
+   *     properties:
+   *       id:
+   *         type: integer
+   *       event_id:
+   *         type: integer
+   *       sender_user_id:
+   *         type: integer
+   *       reason:
+   *         type: string
+   *       timestamp:
+   *         type: string
+   *       responses_id:
+   *         type: integer
    */
   app.get('/', function (req, res) {
-    res.render('Pages/HomePage/Landing.ejs');
-  });
+    res.render('Pages/HomePage/Landing.ejs')
+  })
   app.get('/login', function (req, res) {
-    res.render('Pages/UserAuth/login.ejs', { message: req.flash('loginMessage') });
-  });
+    res.render('Pages/UserAuth/login.ejs',
+      {message: req.flash('loginMessage')})
+  })
   app.post('/login', passport.authenticate('local-login', {
       successRedirect: '/dashBoard',
       failureRedirect: '/login',
-      failureFlash: true
+      failureFlash: true,
     }),
     function (req, res) {
       if (req.body.remember) {
-        req.session.cookie.maxAge = 1000 * 60 * 3;
+        req.session.cookie.maxAge = 1000 * 60 * 3
       } else {
-        req.session.cookie.expires = false;
+        req.session.cookie.expires = false
       }
-      res.redirect('/');
-    });
+      res.redirect('/')
+    })
   app.get('/signup', function (req, res) {
-    connection.query('USE informatics');
-    connection.query("SELECT * FROM `genres` ", function (err, genres) {
-      connection.query("SELECT * FROM `distances` ORDER By distance ASC", function (err, distances) {
-        connection.query("SELECT * FROM `skills`", function (err, skills) {
-          res.render('Pages/UserAuth/signup.ejs', {
-            genres: genres,
-            distances: distances,
-            skills: skills,
-            message: req.flash('signupMessage')
-          });
-        });
-      });
-    });
-  });
+    connection.query('USE informatics')
+    connection.query('SELECT * FROM `genres` ', function (err, genres) {
+      connection.query('SELECT * FROM `distances` ORDER By distance ASC',
+        function (err, distances) {
+          connection.query('SELECT * FROM `skills`', function (err, skills) {
+            res.render('Pages/UserAuth/signup.ejs', {
+              genres: genres,
+              distances: distances,
+              skills: skills,
+              message: req.flash('signupMessage'),
+            })
+          })
+        })
+    })
+  })
   app.post('/signup', passport.authenticate('local-signup', {
     successRedirect: '/dashBoard',
     failureRedirect: '/signup',
-    failureFlash: true
-  }));
+    failureFlash: true,
+  }))
   app.get('/profile', isLoggedIn, function (req, res) {
-    connection.query('SELECT users.*, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=?', [req.user.id], function (error, results) {
-      if (error) {
-        console.log(error)
-      } else {
-        res.render('Pages/UserDashboard/profile.ejs', {
-          user: results[0]
-        });
-      }
-    });
-  });
+    connection.query(
+      'SELECT users.*, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=?',
+      [req.user.id], function (error, results) {
+        if (error) {
+          console.log(error)
+        } else {
+          res.render('Pages/UserDashboard/profile.ejs', {
+            user: results[0],
+          })
+        }
+      })
+  })
   app.get('/dashBoard', isLoggedIn, function (req, res) {
-    if (req.user.admin == "0") {
+    if (req.user.admin == '0') {
       var UserInfo = {
-        info: req.user
-      };
+        info: req.user,
+      }
       parallel([
           function (callback) {
             request({
-              url: "https://www.eternalvibes.me/getStatuses/" + req.user.id,
-              json: true
+              url: 'https://www.eternalvibes.me/getStatuses/' + req.user.id,
+              json: true,
             }, function (error, response, body) {
               if (error) {
-                console.log(error);
+                console.log(error)
               }
-              UserInfo.Status = body;
-              callback(null);
-            });
+              UserInfo.Status = body
+              callback(null)
+            })
           },
           function (callback) {
             request({
-              url: "https://www.eternalvibes.me/getTopGenres",
-              json: true
+              url: 'https://www.eternalvibes.me/getTopGenres',
+              json: true,
             }, function (error, response, body) {
               if (error) {
-                console.log(error);
+                console.log(error)
               }
-              UserInfo.TopGenres = body;
-              callback(null);
-            });
+              UserInfo.TopGenres = body
+              callback(null)
+            })
           },
           function (callback) {
             request({
-              url: "https://www.eternalvibes.me/getTopArtists",
-              json: true
+              url: 'https://www.eternalvibes.me/getTopArtists',
+              json: true,
             }, function (error, response, body) {
               if (error) {
-                console.log(error);
+                console.log(error)
               }
-              UserInfo.TopArtists = body;
-              callback(null);
-            });
-          }
+              UserInfo.TopArtists = body
+              callback(null)
+            })
+          },
         ],
         function (err, results) {
           res.render('Pages/UserDashboard/DashBoard.ejs', {
-            UserInfo: UserInfo
-          });
-        });
+            UserInfo: UserInfo,
+          })
+        })
     } else {
-      res.redirect('/broadcast');
+      res.redirect('/broadcast')
     }
 
-  });
+  })
 
   app.get('/logout', isLoggedIn, function (req, res) {
-    req.logout();
-    res.redirect('/');
-  });
+    req.logout()
+    res.redirect('/')
+  })
   app.get('/appinfo', function (req, res) {
     res.render('Pages/HomePage/AppInfo.ejs', function (err, html) {
-      res.send(html);
-    });
-  });
+      res.send(html)
+    })
+  })
   app.get('/broadcast', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/Broadcast.ejs', { info: req.user }, function (err, html) {
+    res.render('Pages/AdminDashboard/Broadcast.ejs', {info: req.user},
+      function (err, html) {
 
-      res.send(html);
-    });
-  });
+        res.send(html)
+      })
+  })
   app.get('/flaggedposts', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/FlaggedPosts.ejs', { info: req.user }, function (err, html) {
-      res.send(html);
-    });
-  });
+    res.render('Pages/AdminDashboard/FlaggedPosts.ejs', {info: req.user},
+      function (err, html) {
+        res.send(html)
+      })
+  })
   app.get('/flaggedusers', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/FlaggedUsers.ejs', { info: req.user }, function (err, html) {
-      res.send(html);
-    });
-  });
+    res.render('Pages/AdminDashboard/FlaggedUsers.ejs', {info: req.user},
+      function (err, html) {
+        res.send(html)
+      })
+  })
   app.get('/settings', isLoggedIn, function (req, res) {
     res.render('Pages/UserDashboard/Settings.ejs', function (err, html) {
-      res.send(html);
-    });
-  });
+      res.send(html)
+    })
+  })
   app.get('/addStudio', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/AddStudio.ejs', { info: req.user }, function (err, html) {
-      res.send(html);
-    });
-  });
+    res.render('Pages/AdminDashboard/AddStudio.ejs', {info: req.user},
+      function (err, html) {
+        res.send(html)
+      })
+  })
   app.get('/reports', isLoggedIn, function (req, res) {
     var Reports = {
       users24: null,
@@ -348,91 +370,112 @@ module.exports = function (app, passport, swaggerSpec) {
       usersWeek1: null,
       usersWeek2: null,
       usersWeek3: null,
-      usersWeek4: null
-    };
+      usersWeek4: null,
+    }
     parallel([
         function (callback) {
-          connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)', function (error, results) {
-            if (error) {
-              console.log(error)
-            } else {
-              Reports.users24 = results[0];
-              callback();
-            }
-          });
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.users24 = results[0]
+                callback()
+              }
+            })
         },
         function (callback) {
-          connection.query('SELECT skills.name, COUNT(user_skills.skill_id) as count FROM user_skills INNER JOIN skills ON skills.id = user_skills.skill_id GROUP BY user_skills.skill_id', function (error, results) {
-            if (error) {
-              console.log(error)
-            } else {
-              Reports.skills = results;
-              callback();
-            }
-          });
+          connection.query(
+            'SELECT skills.name, COUNT(user_skills.skill_id) as count FROM user_skills INNER JOIN skills ON skills.id = user_skills.skill_id GROUP BY user_skills.skill_id',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.skills = results
+                callback()
+              }
+            })
         },
         function (callback) {
-          connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-604800000)', function (error1, results1) {
-            Reports.usersWeek1 = results1[0].count;
-            connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1209600000)', function (error2, results2) {
-              Reports.usersWeek2 = results2[0].count - Reports.usersWeek1;
-              connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1814400000)', function (error3, results3) {
-                Reports.usersWeek3 = results3[0].count - Reports.usersWeek2 - Reports.usersWeek1;
-                connection.query('SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2419200000)', function (error4, results4) {
-                  if (error4) {
-                    console.log(error4)
-                  } else {
-                    Reports.usersWeek4 = results4[0].count - Reports.usersWeek3 - Reports.usersWeek2 - Reports.usersWeek1;
-                    callback();
-                  }
-                });
-              });
-            });
-          });
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-604800000)',
+            function (error1, results1) {
+              Reports.usersWeek1 = results1[0].count
+              connection.query(
+                'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1209600000)',
+                function (error2, results2) {
+                  Reports.usersWeek2 = results2[0].count - Reports.usersWeek1
+                  connection.query(
+                    'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1814400000)',
+                    function (error3, results3) {
+                      Reports.usersWeek3 = results3[0].count -
+                        Reports.usersWeek2 - Reports.usersWeek1
+                      connection.query(
+                        'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2419200000)',
+                        function (error4, results4) {
+                          if (error4) {
+                            console.log(error4)
+                          } else {
+                            Reports.usersWeek4 = results4[0].count -
+                              Reports.usersWeek3 - Reports.usersWeek2 -
+                              Reports.usersWeek1
+                            callback()
+                          }
+                        })
+                    })
+                })
+            })
         },
         function (callback) {
-          connection.query('SELECT COUNT(*) AS count FROM `events` WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)', function (error, results) {
-            if (error) {
-              console.log(error)
-            } else {
-              Reports.events24 = results[0];
-              callback();
-            }
-          });
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `events` WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.events24 = results[0]
+                callback()
+              }
+            })
         },
 
         function (callback) {
-          connection.query('SELECT COUNT(*) AS count FROM `users` WHERE users.last_login_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)', function (error, results) {
-            if (error) {
-              console.log(error)
-            } else {
-              Reports.usersLogin24 = results[0];
-              callback();
-            }
-          });
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `users` WHERE users.last_login_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.usersLogin24 = results[0]
+                callback()
+              }
+            })
         },
 
         function (callback) {
-          connection.query('SELECT genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC', function (error, results) {
-            if (error) {
-              console.log(error)
-            } else {
-              Reports.genres = results;
-              callback();
-            }
-          });
-        }
+          connection.query(
+            'SELECT genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.genres = results
+                callback()
+              }
+            })
+        },
       ],
       function (err, results) {
         res.render('Pages/AdminDashboard/reports.ejs', {
           Reports: Reports,
-          info: req.user
+          info: req.user,
         }, function (err, html) {
-          res.send(html);
-        });
-      });
+          res.send(html)
+        })
+      })
 
-  });
+  })
 
   /**
    * @swagger
@@ -461,26 +504,26 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to Login
    */
   app.get('/mobileLogin', function (req, res) {
-    if (req.param('status') === "false") {
+    if (req.param('status') === 'false') {
       res.status(500).send('BadCredentials!')
-    } else if (req.param('status') === "true") {
+    } else if (req.param('status') === 'true') {
       res.status(200).send(req.user)
     } else {
       res.status(400).send('Something broke!')
     }
-  });
+  })
   app.post('/mobileLogin', passport.authenticate('local-login', {
       successRedirect: '/MobileLogin?status=true',
       failureRedirect: '/MobileLogin?status=false',
-      failureFlash: true
+      failureFlash: true,
     }),
     function (req, res) {
       if (req.body.remember) {
-        req.session.cookie.maxAge = 1000 * 60 * 3;
+        req.session.cookie.maxAge = 1000 * 60 * 3
       } else {
-        req.session.cookie.expires = false;
+        req.session.cookie.expires = false
       }
-    });
+    })
 
   /**
    * @swagger
@@ -544,19 +587,19 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to Register
    */
   app.get('/mobileSignup', function (req, res) {
-    if (req.param('status') === "false") {
+    if (req.param('status') === 'false') {
       res.status(500).send('BadCredentials!')
-    } else if (req.param('status') === "true") {
+    } else if (req.param('status') === 'true') {
       res.status(200).send(req.user)
     } else {
       res.status(400).send('Something broke!')
     }
-  });
+  })
   app.post('/mobileSignup', passport.authenticate('local-signup', {
     successRedirect: '/MobileSignup?status=true',
     failureRedirect: '/MobileSignup?status=fail',
-    failureFlash: true
-  }));
+    failureFlash: true,
+  }))
 
   /**
    * @swagger
@@ -576,14 +619,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: An error occurred
    */
   app.get('/getGenres', function (req, res) {
-    connection.query('SELECT id, name, created_timestamp, updated_timestamp FROM genres', function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
+    connection.query(
+      'SELECT id, name, created_timestamp, updated_timestamp FROM genres',
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /getTopGenres:
@@ -602,14 +647,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Server error
    */
   app.get('/getTopGenres', function (req, res) {
-    connection.query('SELECT genres.id, genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC', function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.status(200).send(results);
-      }
-    });
-  });
+    connection.query(
+      'SELECT genres.id, genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC',
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.status(200).send(results)
+        }
+      })
+  })
 
   /**
    * @swagger
@@ -629,14 +676,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Server error
    */
   app.get('/getTopUsers', function (req, res) {
-    connection.query('SELECT users.id,users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id GROUP BY status_list.user_id ORDER BY count DESC', function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
+    connection.query(
+      'SELECT users.id,users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id GROUP BY status_list.user_id ORDER BY count DESC',
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /getUserInfoEmail/{email}:
@@ -661,14 +710,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: error
    */
   app.get('/getUserInfoEmail/:email', function (req, res) {
-    connection.query('SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE email=?', [req.params.email], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
+    connection.query(
+      'SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE email=?',
+      [req.params.email], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /getUserInfo/{userID}:
@@ -693,21 +744,24 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: error
    */
   app.get('/getUserInfo/:userID', function (req, res) {
-    connection.query('SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE id=' + req.params.userID, function (error, userResults) {
+    connection.query('SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE id=' +
+      req.params.userID, function (error, userResults) {
       if (error) {
-        res.status(500).send(error);
+        res.status(500).send(error)
       } else {
-        connection.query('SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?', [req.params.userID], function (error, results) {
-          if (error) {
-            res.status(500).send(error);
-          } else {
-            userResults.skillset = results;
-            res.status(200).send(userResults)
-          }
-        });
+        connection.query(
+          'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
+          [req.params.userID], function (error, results) {
+            if (error) {
+              res.status(500).send(error)
+            } else {
+              userResults.skillset = results
+              res.status(200).send(userResults)
+            }
+          })
       }
-    });
-  });
+    })
+  })
   /**
    * @swagger
    * /updateUserInfo:
@@ -750,83 +804,89 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to update
    */
   app.post('/updateUserInfo', function (req, res) {
-    var body = req.body;
+    var body = req.body
     waterfall([
         function (callback) {
           if (body.hasOwnProperty('genre_id')) {
-            connection.query('UPDATE users SET genre_id=?  WHERE id=?', [req.body.genre_id,req.body.userID], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback();
-              }
-            });
-          }else{
-            callback();
+            connection.query('UPDATE users SET genre_id=?  WHERE id=?',
+              [req.body.genre_id, req.body.userID], function (error) {
+                if (error) {
+                  callback(error)
+                } else {
+                  callback()
+                }
+              })
+          } else {
+            callback()
           }
         },
         function (callback) {
           if (body.hasOwnProperty('distance_id')) {
-            connection.query('UPDATE users SET distance_id=? WHERE id=?', [req.body.distance_id,req.body.userID], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback();
-              }
-            });
-          }else{
-            callback();
+            connection.query('UPDATE users SET distance_id=? WHERE id=?',
+              [req.body.distance_id, req.body.userID], function (error) {
+                if (error) {
+                  callback(error)
+                } else {
+                  callback()
+                }
+              })
+          } else {
+            callback()
           }
         },
         function (callback) {
           if (body.hasOwnProperty('last_login_timestamp')) {
-            connection.query('UPDATE users SET last_login_timestamp=?  WHERE id=?', [req.body.last_login_timestamp,req.body.userID], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback();
-              }
-            });
-          }else{
-            callback();
+            connection.query(
+              'UPDATE users SET last_login_timestamp=?  WHERE id=?',
+              [req.body.last_login_timestamp, req.body.userID], function (error) {
+                if (error) {
+                  callback(error)
+                } else {
+                  callback()
+                }
+              })
+          } else {
+            callback()
           }
         },
         function (callback) {
           if (body.hasOwnProperty('profilepic_url')) {
-            connection.query('UPDATE users SET profilepic_url=? WHERE id=?', [req.body.profilepic_url, req.body.userID], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback();
-              }
-            });
-          }else{
-            callback();
+            connection.query('UPDATE users SET profilepic_url=? WHERE id=?',
+              [req.body.profilepic_url, req.body.userID], function (error) {
+                if (error) {
+                  callback(error)
+                } else {
+                  callback()
+                }
+              })
+          } else {
+            callback()
           }
         },
         function (callback) {
           if (body.hasOwnProperty('description')) {
-            connection.query('UPDATE users SET description=? WHERE id=?', [req.body.description,req.body.userID], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback();
-              }
-            });
-          }else{
-            callback();
+            connection.query('UPDATE users SET description=? WHERE id=?',
+              [req.body.description, req.body.userID], function (error) {
+                if (error) {
+                  callback(error)
+                } else {
+                  callback()
+                }
+              })
+          } else {
+            callback()
           }
-        }
+        },
       ],
       function (err) {
         if (err) {
           console.log(err)
-          res.status(500).send(err);
+          res.status(500).send(err)
         }
-        res.sendStatus(200);
-      });
+        res.sendStatus(200)
+      })
 
-  });
+  })
   /**
    * @swagger
    * /updateUserSkills:
@@ -855,27 +915,31 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.post('/updateUserSkills', function (req, res) {
     async.map(req.body.skillsIDs, function (id, cb) {
-      connection.query('DELETE FROM user_skills WHERE user_skills.id = ? AND user_skills.skill_id = ?', [req.body.userID, id], function (error) {
-        if (error) {
-          cb(error)
-        } else {
-          connection.query('INSERT INTO `user_skills` (`id`, `user_id`, `skill_id`) VALUES (NULL, ?, ?)', [req.body.userID, id], function (error) {
-            if (error) {
-              cb(error)
-            } else {
-              cb();
-            }
-          });
-        }
-      });
+      connection.query(
+        'DELETE FROM user_skills WHERE user_skills.id = ? AND user_skills.skill_id = ?',
+        [req.body.userID, id], function (error) {
+          if (error) {
+            cb(error)
+          } else {
+            connection.query(
+              'INSERT INTO `user_skills` (`id`, `user_id`, `skill_id`) VALUES (NULL, ?, ?)',
+              [req.body.userID, id], function (error) {
+                if (error) {
+                  cb(error)
+                } else {
+                  cb()
+                }
+              })
+          }
+        })
     }, function (err) {
       if (err) {
-        res.status(500).send(err);
+        res.status(500).send(err)
       } else {
-        res.sendStatus(200);
+        res.sendStatus(200)
       }
-    });
-  });
+    })
+  })
   /**
    * @swagger
    * /reportUser:
@@ -908,14 +972,19 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to report
    */
   app.post('/reportUser', function (req, res) {
-    connection.query('INSERT INTO `user_reports` (`id`, `userThatReported`, `userThatGotReported`, `reason`) VALUES (NULL, ?, ?, ?)', [req.body.userThatReported, req.body.userThatGotReported, req.body.reason], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
+    connection.query(
+      'INSERT INTO `user_reports` (`id`, `userThatReported`, `userThatGotReported`, `reason`) VALUES (NULL, ?, ?, ?)',
+      [
+        req.body.userThatReported,
+        req.body.userThatGotReported,
+        req.body.reason], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /followUser/{activeuserID}/{userIDToFollow}:
@@ -943,33 +1012,41 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to follow the user
    */
   app.get('/followUser/:activeuserID/:userIDToFollow', function (req, res) {
-    connection.query('INSERT INTO `followers` (`user_id`, `liked_id`, `timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))', [req.params.activeuserID, req.params.userIDToFollow], function (error) {
+    connection.query(
+      'INSERT INTO `followers` (`user_id`, `liked_id`, `timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
+      [req.params.activeuserID, req.params.userIDToFollow], function (error) {
         if (error) {
           console.log(error)
         } else {
-          connection.query('SELECT * FROM `followers` WHERE  user_id=? AND liked_id=?', [req.params.userIDToFollow, req.params.activeuserID], function (error2, results) {
+          connection.query(
+            'SELECT * FROM `followers` WHERE  user_id=? AND liked_id=?',
+            [req.params.userIDToFollow, req.params.activeuserID],
+            function (error2, results) {
               if (error2) {
-                res.status(500).send(error2);
+                res.status(500).send(error2)
               } else {
                 if (results.length != 0) {
-                  connection.query('INSERT INTO `friends` (`user1_id`, `user2_id`, `timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))', [req.params.activeuserID, req.params.userIDToFollow], function (error) {
-                    if (error) {
-                      res.status(500).send(error);
-                    }
-                    res.sendStatus(200);
-                  });
+                  connection.query(
+                    'INSERT INTO `friends` (`user1_id`, `user2_id`, `timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
+                    [req.params.activeuserID, req.params.userIDToFollow],
+                    function (error) {
+                      if (error) {
+                        res.status(500).send(error)
+                      }
+                      res.sendStatus(200)
+                    })
                 }
                 else {
-                  res.sendStatus(200);
+                  res.sendStatus(200)
                 }
               }
             }
-          );
+          )
         }
       }
     )
-    ;
-  });
+
+  })
   /**
    * @swagger
    * /getFollowing/{userID}:
@@ -994,14 +1071,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get the followers
    */
   app.get('/getFollowing/:userID', function (req, res) {
-    connection.query('SELECT followers.liked_id, users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ?', [req.params.userID], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
+    connection.query(
+      'SELECT followers.liked_id, users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ?',
+      [req.params.userID], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /stopFollowing/{currentUserID}/{stopUserID}:
@@ -1029,19 +1108,26 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to stop following the user
    */
   app.get('/stopFollowing/:currentUserID/:stopUserID', function (req, res) {
-    connection.query('DELETE FROM followers WHERE user_id=? AND liked_id=?', [req.params.currentUserID, req.params.stopUserID], function (error) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        connection.query('DELETE from friends where (user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?)', [req.params.activeuserID, req.params.userIDToFollow, req.params.userIDToFollow, req.params.activeuserID], function (error) {
-          if (error) {
-            res.status(500).send(error);
-          }
-          res.sendStatus(200);
-        });
-      }
-    });
-  });
+    connection.query('DELETE FROM followers WHERE user_id=? AND liked_id=?',
+      [req.params.currentUserID, req.params.stopUserID], function (error) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          connection.query(
+            'DELETE from friends where (user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?)',
+            [
+              req.params.activeuserID,
+              req.params.userIDToFollow,
+              req.params.userIDToFollow,
+              req.params.activeuserID], function (error) {
+              if (error) {
+                res.status(500).send(error)
+              }
+              res.sendStatus(200)
+            })
+        }
+      })
+  })
   /**
    * @swagger
    * /getFriends/{userID}:
@@ -1066,36 +1152,40 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get the users friends
    */
   app.get('/getFriends/:userID', function (req, res) {
-    var FriendList = [];
+    var FriendList = []
     waterfall([
         function (callback) {
-          connection.query('SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ?', [req.params.userID], function (error, result) {
-            if (error) {
-              callback(error)
-            } else {
-              FriendList.push(result);
-              callback();
-            }
-          });
+          connection.query(
+            'SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ?',
+            [req.params.userID], function (error, result) {
+              if (error) {
+                callback(error)
+              } else {
+                FriendList.push(result)
+                callback()
+              }
+            })
         },
         function (callback) {
-          connection.query('SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user1_id = users.id WHERE user2_id = ?', [req.params.userID], function (error, result) {
-            if (error) {
-              callback(error)
-            } else {
-              FriendList.push(result);
-              callback();
-            }
-          });
-        }
+          connection.query(
+            'SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user1_id = users.id WHERE user2_id = ?',
+            [req.params.userID], function (error, result) {
+              if (error) {
+                callback(error)
+              } else {
+                FriendList.push(result)
+                callback()
+              }
+            })
+        },
       ],
       function (err) {
         if (err) {
-          res.status(500).send(err);
+          res.status(500).send(err)
         }
-        res.send(FriendList);
-      });
-  });
+        res.send(FriendList)
+      })
+  })
 
   /**
    * @swagger
@@ -1115,12 +1205,12 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getSkills', function (req, res) {
     connection.query('SELECT * FROM `skills`', function (error, results) {
       if (error) {
-        res.status(500).send(error);
+        res.status(500).send(error)
       } else {
-        res.send(results);
+        res.send(results)
       }
-    });
-  });
+    })
+  })
 
   /**
    * @swagger
@@ -1156,59 +1246,68 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get the statuses
    */
   app.get('/getStatuses/:userID/:offset/:limit', function (req, res) {
-    var IDsToFetch = [];
+    var IDsToFetch = []
     parallel([
         function (callback) {
-          connection.query('SELECT liked_id AS id FROM followers WHERE user_id = ?', [req.params.userID], function (error, results) {
-            if (error) {
-              console.log(error)
-            } else {
-              results.forEach(function (item) {
-                IDsToFetch.push(item.id);
-              });
-              callback(null);
-            }
-          });
+          connection.query(
+            'SELECT liked_id AS id FROM followers WHERE user_id = ?',
+            [req.params.userID], function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                results.forEach(function (item) {
+                  IDsToFetch.push(item.id)
+                })
+                callback(null)
+              }
+            })
         },
         function (callback) {
-          connection.query('SELECT user2_id AS id FROM friends WHERE user1_id = ?', [req.params.userID], function (error, results) {
-            if (error) {
-              console.log(error)
-            } else {
-              results.forEach(function (item) {
-                IDsToFetch.push(item.id);
-              });
-              callback(null);
-            }
-          });
+          connection.query(
+            'SELECT user2_id AS id FROM friends WHERE user1_id = ?',
+            [req.params.userID], function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                results.forEach(function (item) {
+                  IDsToFetch.push(item.id)
+                })
+                callback(null)
+              }
+            })
         },
         function (callback) {
-          connection.query('SELECT user1_id AS id FROM friends WHERE user2_id = ?', [req.params.userID], function (error, results) {
-            if (error) {
-              console.log(error)
-            } else {
-              results.forEach(function (item) {
-                IDsToFetch.push(item.id);
-              });
-              callback(null);
-            }
-          });
-        }
+          connection.query(
+            'SELECT user1_id AS id FROM friends WHERE user2_id = ?',
+            [req.params.userID], function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                results.forEach(function (item) {
+                  IDsToFetch.push(item.id)
+                })
+                callback(null)
+              }
+            })
+        },
       ],
       function (err, results) {
-        var where = "";
+        var where = ''
         IDsToFetch.forEach(function (ID) {
-          where = where + " OR status_list.user_id=" + ID + " ";
-        });
-        connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' + req.params.userID + ' ' + where + ' ORDER BY status_list.timestamp LIMIT ' + req.params.limit + ' OFFSET ' + req.params.offset, function (error, results) {
+          where = where + ' OR status_list.user_id=' + ID + ' '
+        })
+        connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' +
+          req.params.userID + ' ' + where +
+          ' ORDER BY status_list.timestamp LIMIT ' + req.params.limit +
+          ' OFFSET ' + req.params.offset, function (error, results) {
           if (error) {
-            res.status(500).send(error);
+            res.status(500).send(error)
           } else {
-            res.send(results);
+            res.send(results)
           }
-        });
-      });
-  });
+        })
+      })
+  })
   /**
    * @swagger
    * /setStatus:
@@ -1238,14 +1337,17 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to create status
    */
   app.post('/setStatus', function (req, res) {
-    connection.query('INSERT INTO `status_list` (`user_id`, `timestamp`, `status`, `extra_info`) VALUES (?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ?, ?)', [req.body.userID, req.body.status, req.body.extraInfo], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.sendStatus(200);
-      }
-    });
-  });
+    connection.query(
+      'INSERT INTO `status_list` (`user_id`, `timestamp`, `status`, `extra_info`) VALUES (?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ?, ?)',
+      [req.body.userID, req.body.status, req.body.extraInfo],
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
   /**
    * @swagger
    * /flagStatus:
@@ -1275,14 +1377,17 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to report
    */
   app.post('/flagStatus', function (req, res) {
-    connection.query('INSERT INTO `status_reports` (`id`, `status_id`, `reporterUser_id`, `reason`) VALUES (NULL, ?, ?, ?)', [req.body.status_id, req.body.reporterUser_id, req.body.reason], function (error) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.sendStatus(200);
-      }
-    });
-  });
+    connection.query(
+      'INSERT INTO `status_reports` (`id`, `status_id`, `reporterUser_id`, `reason`) VALUES (NULL, ?, ?, ?)',
+      [req.body.status_id, req.body.reporterUser_id, req.body.reason],
+      function (error) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
   /**
    * @swagger
    * /likeStatus/{userID}/{statusID}:
@@ -1312,20 +1417,24 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to like
    */
   app.get('/likeStatus/:userID/:statusID', function (req, res) {
-    connection.query('INSERT INTO `status_likes` (`id`, `status_id`, `likerUser_id`) VALUES (NULL, ?, ?)', [req.params.statusID, req.params.userID], function (error) {
-      if (error) {
-        res.status(404).send(error);
-      } else {
-        connection.query('UPDATE `status_list` SET flagged=(flagged+1)  WHERE id=?', [req.params.statusID], function (error) {
-          if (error) {
-            res.status(500).send(error);
-          } else {
-            res.sendStatus(200);
-          }
-        });
-      }
-    });
-  });
+    connection.query(
+      'INSERT INTO `status_likes` (`id`, `status_id`, `likerUser_id`) VALUES (NULL, ?, ?)',
+      [req.params.statusID, req.params.userID], function (error) {
+        if (error) {
+          res.status(404).send(error)
+        } else {
+          connection.query(
+            'UPDATE `status_list` SET flagged=(flagged+1)  WHERE id=?',
+            [req.params.statusID], function (error) {
+              if (error) {
+                res.status(500).send(error)
+              } else {
+                res.sendStatus(200)
+              }
+            })
+        }
+      })
+  })
 
   /**
    * @swagger
@@ -1354,14 +1463,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to create a chat
    */
   app.get('/createChat/:UserID1/:UserID2', function (req, res) {
-    connection.query('INSERT INTO `chats` (`user1_id`, `user2_id`, `start_timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))', [req.params.UserID1, req.params.UserID2], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.sendStatus(200)
-      }
-    });
-  });
+    connection.query(
+      'INSERT INTO `chats` (`user1_id`, `user2_id`, `start_timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
+      [req.params.UserID1, req.params.UserID2], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
   /**
    * @swagger
    * /sendMessage:
@@ -1394,18 +1505,22 @@ module.exports = function (app, passport, swaggerSpec) {
    */
 
   app.post('/sendMessage', function (req, res) {
-    connection.query('INSERT INTO `message_list` (`message`, `timestamp`, `is_read`, `sender_id`, `chat_id`) VALUES (?,  ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 0, ?, ?)', [req.body.message, req.body.userID, req.body.chatID], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        connection.query('SELECT * FROM `message_list` WHERE `id`= ?', [results.insertId], function (error, result) {
-          if (error) res.status(500).send(error);
+    connection.query(
+      'INSERT INTO `message_list` (`message`, `timestamp`, `is_read`, `sender_id`, `chat_id`) VALUES (?,  ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 0, ?, ?)',
+      [req.body.message, req.body.userID, req.body.chatID],
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          connection.query('SELECT * FROM `message_list` WHERE `id`= ?',
+            [results.insertId], function (error, result) {
+              if (error) res.status(500).send(error)
 
-          res.status(200).send(result);
-        });
-      }
-    });
-  });
+              res.status(200).send(result)
+            })
+        }
+      })
+  })
   /**
    * @swagger
    * /getMessages/{chatID}:
@@ -1430,14 +1545,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get messages
    */
   app.get('/getMessages/:chatID', function (req, res) {
-    connection.query('SELECT * FROM `message_list` WHERE 	chat_id=? ORDER BY timestamp ASC', [req.params.chatID], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
+    connection.query(
+      'SELECT * FROM `message_list` WHERE 	chat_id=? ORDER BY timestamp ASC',
+      [req.params.chatID], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /getChats/{userID}:
@@ -1462,14 +1579,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get chats
    */
   app.get('/getChats/:userID', function (req, res) {
-    connection.query('SELECT * FROM `chats` WHERE user1_id=? OR user2_id=? ORDER BY start_timestamp ASC', [req.params.userID, req.params.userID], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
+    connection.query(
+      'SELECT * FROM `chats` WHERE user1_id=? OR user2_id=? ORDER BY start_timestamp ASC',
+      [req.params.userID, req.params.userID], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /messageIsRead:
@@ -1491,23 +1610,25 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to mark the messages as read
    */
   app.post('/messagesAreRead', function (req, res) {
-    var messageIds = req.body.messageIds;
+    var messageIds = req.body.messageIds
     async.map(messageIds, function (id, cb) {
-      connection.query('UPDATE message_list SET message_list.is_read = true WHERE id=?', [id], function (error) {
-        if (error) {
-          cb(error)
-        } else {
-          cb();
-        }
-      });
+      connection.query(
+        'UPDATE message_list SET message_list.is_read = true WHERE id=?', [id],
+        function (error) {
+          if (error) {
+            cb(error)
+          } else {
+            cb()
+          }
+        })
     }, function (err) {
       if (err) {
-        res.status(500).send(err);
+        res.status(500).send(err)
       } else {
-        res.sendStatus(200);
+        res.sendStatus(200)
       }
-    });
-  });
+    })
+  })
   /**
    * @swagger
    * /deleteMessages:
@@ -1529,23 +1650,24 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to delete the messages as read
    */
   app.post('/deleteMessages', function (req, res) {
-    var messageIds = req.body.messageIds;
+    var messageIds = req.body.messageIds
     async.map(messageIds, function (id, cb) {
-      connection.query('DELETE FROM message_list WHERE message_list.id=?', [id], function (error) {
-        if (error) {
-          cb(error)
-        } else {
-          cb();
-        }
-      });
+      connection.query('DELETE FROM message_list WHERE message_list.id=?', [id],
+        function (error) {
+          if (error) {
+            cb(error)
+          } else {
+            cb()
+          }
+        })
     }, function (err) {
       if (err) {
-        res.status(500).send(err);
+        res.status(500).send(err)
       } else {
-        res.sendStatus(200);
+        res.sendStatus(200)
       }
-    });
-  });
+    })
+  })
 
   /**
    * @swagger
@@ -1569,38 +1691,42 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to find strangers
    */
   app.get('/getNearbyStrangers/:userID', function (req, res) {
-    var DistanceUpperBound = 10;
-    var Longitude = null;
-    var Latitude = null;
-    var Users = [];
+    var DistanceUpperBound = 10
+    var Longitude = null
+    var Latitude = null
+    var Users = []
     /*var Following = [];
     var Followed = [];
     var Friend1 = [];
     var Friend2 = [];*/
     parallel([
         function (callback) {
-          connection.query('SELECT distances.distance AS search_distance,users.longitude,users.latitude FROM users INNER JOIN distances on distance_id=distances.id WHERE users.id = ?', [req.params.userID], function (error, results) {
-            if (error) {
-              callback(error)
-            } else {
-              if (results.length != 0) {
-                DistanceUpperBound = results[0].search_distance;
-                Longitude = results[0].longitude;
-                Latitude = results[0].latitude;
+          connection.query(
+            'SELECT distances.distance AS search_distance,users.longitude,users.latitude FROM users INNER JOIN distances on distance_id=distances.id WHERE users.id = ?',
+            [req.params.userID], function (error, results) {
+              if (error) {
+                callback(error)
+              } else {
+                if (results.length != 0) {
+                  DistanceUpperBound = results[0].search_distance
+                  Longitude = results[0].longitude
+                  Latitude = results[0].latitude
+                }
+                callback(null, 'one')
               }
-              callback(null, 'one');
-            }
-          });
+            })
         },
         function (callback) {
-          connection.query('SELECT users.id, users.longitude,users.latitude FROM users WHERE users.id != ?  AND users.longitude IS NOT NULL', [req.params.userID], function (error, results) {
-            if (error) {
-              callback(error)
-            } else {
-              Users = results;
-              callback(null, 'one');
-            }
-          });
+          connection.query(
+            'SELECT users.id, users.longitude,users.latitude FROM users WHERE users.id != ?  AND users.longitude IS NOT NULL',
+            [req.params.userID], function (error, results) {
+              if (error) {
+                callback(error)
+              } else {
+                Users = results
+                callback(null, 'one')
+              }
+            })
         }/*,
                 function (callback) {
                     connection.query('SELECT liked_id AS id FROM followers WHERE user_id = ?', [req.params.userID], function (error, results) {
@@ -1660,11 +1786,12 @@ module.exports = function (app, passport, swaggerSpec) {
              });
          });*/
         if (err) {
-          res.status(500).send(err);
+          res.status(500).send(err)
         }
-        res.send(filterDistance(Users, DistanceUpperBound, Longitude, Latitude));
-      });
-  });
+        res.send(
+          filterDistance(Users, DistanceUpperBound, Longitude, Latitude))
+      })
+  })
   /**
    * @swagger
    * /setUserLocation/{userID}/{latitude}/{longitude}:
@@ -1697,14 +1824,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to set
    */
   app.get('/setUserLocation/:userID/:latitude/:longitude', function (req, res) {
-    connection.query('UPDATE users SET longitude=?, latitude=? WHERE id=?', [req.params.longitude, req.params.latitude, req.params.userID], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.sendStatus(200);
-      }
-    });
-  });
+    connection.query('UPDATE users SET longitude=?, latitude=? WHERE id=?',
+      [req.params.longitude, req.params.latitude, req.params.userID],
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
   /**
    * @swagger
    * /clearUserLocation/{userID}:
@@ -1727,14 +1856,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to clear the users location
    */
   app.get('/clearUserLocation/:userID', function (req, res) {
-    connection.query('UPDATE users SET longitude=NULL, latitude=NULL  WHERE id=?', [req.params.userID], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
+    connection.query(
+      'UPDATE users SET longitude=NULL, latitude=NULL  WHERE id=?',
+      [req.params.userID], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /getDistances:
@@ -1753,14 +1884,15 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: An error occurred
    */
   app.get('/getDistances', function (req, res) {
-    connection.query('SELECT id, distance FROM `distances`', function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
+    connection.query('SELECT id, distance FROM `distances`',
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
 
   /**
    * @swagger
@@ -1799,15 +1931,21 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to create the event
    */
   app.post('/createEvent', function (req, res) {
-    connection.query('INSERT INTO `events` (`id`, `title`, `date`, `description`, `duration`, `user_id`,`createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
-      [req.body.title, req.body.date, req.body.description, req.body.duration, req.body.user_id], function (error, results) {
+    connection.query(
+      'INSERT INTO `events` (`id`, `title`, `date`, `description`, `duration`, `user_id`,`createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
+      [
+        req.body.title,
+        req.body.date,
+        req.body.description,
+        req.body.duration,
+        req.body.user_id], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.sendStatus(200);
+          res.sendStatus(200)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /cancelEvent/{eventID}:
@@ -1833,19 +1971,19 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('delete from events where events.id = ?',
       [req.params.eventID], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
           connection.query('delete from invites where invites.event_id = ?',
             [req.params.eventID], function (error, results) {
               if (error) {
-                res.status(500).send(error);
+                res.status(500).send(error)
               } else {
-                res.send(results);
+                res.send(results)
               }
-            });
+            })
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /getEvents/{userID}:
@@ -1876,12 +2014,12 @@ module.exports = function (app, passport, swaggerSpec) {
       'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.send(results);
+          res.send(results)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /getUsersEvents/{userID}:
@@ -1906,15 +2044,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get a users events
    */
   app.get('/getUsersEvents/:userID', function (req, res) {
-    connection.query('SELECT events.* FROM events WHERE events.user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+    connection.query(
+      'SELECT events.* FROM events WHERE events.user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.send(results);
+          res.send(results)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /getFinishedUsersEvents/{userID}:
@@ -1939,15 +2078,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get a users finished events
    */
   app.get('/getFinishedUsersEvents/:userID', function (req, res) {
-    connection.query('SELECT events.* FROM events WHERE events.user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+    connection.query(
+      'SELECT events.* FROM events WHERE events.user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.send(results);
+          res.send(results)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /getFinishedEvents/{userID}:
@@ -1978,12 +2118,12 @@ module.exports = function (app, passport, swaggerSpec) {
       'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.send(results);
+          res.send(results)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /sendInvite:
@@ -2017,15 +2157,20 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to invited
    */
   app.post('/sendInvite', function (req, res) {
-    connection.query('INSERT INTO `invites` (`id`, `sender_user_id`, `receiver_user_id`, `response_id`, `event_id`, `message`) VALUES (NULL, ?, ?, 2, ?, ?)',
-      [req.body.sender_user_id, req.body.receiver_user_id, req.body.event_id, req.body.message], function (error, results) {
+    connection.query(
+      'INSERT INTO `invites` (`id`, `sender_user_id`, `receiver_user_id`, `response_id`, `event_id`, `message`) VALUES (NULL, ?, ?, 2, ?, ?)',
+      [
+        req.body.sender_user_id,
+        req.body.receiver_user_id,
+        req.body.event_id,
+        req.body.message], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
           res.sendStatus(200)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /respondToInvite:
@@ -2051,15 +2196,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to respond
    */
   app.post('/respondToInvite', function (req, res) {
-    connection.query('UPDATE `invites` SET `response_id` = ? WHERE `invites`.`id` = ?;',
+    connection.query(
+      'UPDATE `invites` SET `response_id` = ? WHERE `invites`.`id` = ?;',
       [req.body.response_id, req.body.id], function (error) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
           res.sendStatus(200)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /getResponses:
@@ -2080,12 +2226,12 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getResponses', function (req, res) {
     connection.query('SELECT * FROM `responses`', function (error, results) {
       if (error) {
-        res.status(500).send(error);
+        res.status(500).send(error)
       } else {
-        res.status(200).send(results);
+        res.status(200).send(results)
       }
-    });
-  });
+    })
+  })
   /**
    * @swagger
    * /getEventResponses/{eventID}:
@@ -2104,15 +2250,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get responses
    */
   app.get('/getEventResponses/:eventID', function (req, res) {
-    connection.query('SELECT invites.id AS response_id, responses.response, users.id AS user_id, users.username  FROM invites INNER JOIN users ON users.id = receiver_user_id  INNER JOIN responses ON responses.id = invites.response_id WHERE invites.event_id =?',
+    connection.query(
+      'SELECT invites.id AS response_id, responses.response, users.id AS user_id, users.username  FROM invites INNER JOIN users ON users.id = receiver_user_id  INNER JOIN responses ON responses.id = invites.response_id WHERE invites.event_id =?',
       [req.params.eventID], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.status(200).send(results);
+          res.status(200).send(results)
         }
-      });
-  });
+      })
+  })
 
   /**
    * @swagger
@@ -2138,15 +2285,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to clear the users location
    */
   app.get('/getEventSkill/:eventID', function (req, res) {
-    connection.query('SELECT events_skills.* from events_skills INNER JOIN events on events.id = events_skills.event_id WHERE events_skills.event_id=?',
+    connection.query(
+      'SELECT events_skills.* from events_skills INNER JOIN events on events.id = events_skills.event_id WHERE events_skills.event_id=?',
       [req.params.eventID], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.status(200).send(results);
+          res.status(200).send(results)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /confirmEventSkill/{event_skillID}:
@@ -2172,12 +2320,12 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('UPDATE events_skills SET status = TRUE WHERE id=?',
       [req.params.event_skillID], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.sendStatus(200);
+          res.sendStatus(200)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /unconfirmEventSkill/{event_skillID}:
@@ -2203,12 +2351,12 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('UPDATE events_skills SET status = FALSE WHERE id=?',
       [req.params.event_skillID], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.sendStatus(200);
+          res.sendStatus(200)
         }
-      });
-  });
+      })
+  })
   /**
    * @swagger
    * /addEventSkill/{event_id}/{skill_id}:
@@ -2236,15 +2384,16 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: The skill failed at being added to the event
    */
   app.get('/addEventSkill/:event_id/:skill_id', function (req, res) {
-    connection.query('INSERT INTO `events_skills` (`id`, `event_id`, `skill_id`, `status`) VALUES (NULL, ?, ?, FALSE)',
+    connection.query(
+      'INSERT INTO `events_skills` (`id`, `event_id`, `skill_id`, `status`) VALUES (NULL, ?, ?, FALSE)',
       [req.params.event_id, req.params.skill_id], function (error, results) {
         if (error) {
-          res.status(500).send(error);
+          res.status(500).send(error)
         } else {
-          res.sendStatus(200);
+          res.sendStatus(200)
         }
-      });
-  });
+      })
+  })
 
   /**
    * @swagger
@@ -2278,14 +2427,17 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to report
    */
   app.post('/sendRequestToJoinEvent', function (req, res) {
-    connection.query('INSERT INTO `event_request` (`id`, `event_id`, `sender_user_id`, `reason`, `timestamp`, `responses_id`) VALUES (NULL, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 2)', [req.body.event_id, req.body.sender_user_id, req.body.reason], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.sendStatus(200)
-      }
-    });
-  });
+    connection.query(
+      'INSERT INTO `event_request` (`id`, `event_id`, `sender_user_id`, `reason`, `timestamp`, `responses_id`) VALUES (NULL, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 2)',
+      [req.body.event_id, req.body.sender_user_id, req.body.reason],
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
   /**
    * @swagger
    * /getRequestedInvites/{eventID}:
@@ -2303,61 +2455,101 @@ module.exports = function (app, passport, swaggerSpec) {
    *         type: integer
    *     responses:
    *       200:
-   *         description: Successfully got
+   *         description: Array of event request objects
+   *         schema:
+   *           $ref: '#/definitions/event_request'
    *       500:
    *         description: Failed to get
    */
   app.get('/getRequestedInvites/:eventID', function (req, res) {
-    connection.query('SELECT * FROM `event_request` WHERE event_request.event_id=? AND event_request.responses_id!=3', [req.params.eventID], function (error, results) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        res.send(results);
-      }
-    });
-  });
-
+    connection.query(
+      'SELECT * FROM `event_request` WHERE event_request.event_id=? AND event_request.responses_id!=3',
+      [req.params.eventID], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /updateRequestResponse/{responseID}/{responseID}:
+   *   get:
+   *     tags:
+   *       - eventRequest
+   *     description: Updates the request to join an events reponse
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: eventID
+   *         description: The event ID
+   *         in: path
+   *         required: true
+   *         type: integer
+   *       - name: responseID
+   *         description: The Response ID
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Successfully updated
+   *       500:
+   *         description: Failed to update
+   */
+  app.get('/updateRequestResponse/:eventID/:responseID', function (req, res) {
+    connection.query('UPDATE event_request SET responses_id=? WHERE event_id=?',
+      [req.params.responseID, req.params.eventID], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
 
   app.get('/swagger.json', function (req, res) {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
-  });
-};
-
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated())
-    return next();
-  res.redirect('/');
+    res.setHeader('Content-Type', 'application/json')
+    res.send(swaggerSpec)
+  })
 }
 
-function filterDistance(array, distance, longitude, latitude) {
-  var EndUsers = [];
+function isLoggedIn (req, res, next) {
+  if (req.isAuthenticated())
+    return next()
+  res.redirect('/')
+}
+
+function filterDistance (array, distance, longitude, latitude) {
+  var EndUsers = []
   array.forEach(function (user) {
-    var km = calcCrow(user.latitude, user.longitude, latitude, longitude);
+    var km = calcCrow(user.latitude, user.longitude, latitude, longitude)
     console.log(distance)
     console.log(km)
-    console.log(user + " " + user.latitude + " " + user.longitude + " " + longitude + " " + latitude)
+    console.log(user + ' ' + user.latitude + ' ' + user.longitude + ' ' +
+      longitude + ' ' + latitude)
     if (km <= distance) {
-      EndUsers.push({ user: user, km: km });
+      EndUsers.push({user: user, km: km})
     }
-  });
-  return EndUsers;
+  })
+  return EndUsers
 }
 
-function calcCrow(lat1, lon1, lat2, lon2) {
-  var R = 6371; // km
-  var dLat = toRad(lat2 - lat1);
-  var dLon = toRad(lon2 - lon1);
-  var lat1 = toRad(lat1);
-  var lat2 = toRad(lat2);
+function calcCrow (lat1, lon1, lat2, lon2) {
+  var R = 6371 // km
+  var dLat = toRad(lat2 - lat1)
+  var dLon = toRad(lon2 - lon1)
+  var lat1 = toRad(lat1)
+  var lat2 = toRad(lat2)
 
   var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c;
-  return d;
+    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  var d = R * c
+  return d
 }
 
-function toRad(Value) {
-  return Value * Math.PI / 180;
+function toRad (Value) {
+  return Value * Math.PI / 180
 }
