@@ -716,9 +716,10 @@ module.exports = function (app, passport, swaggerSpec) {
         if (error) {
           res.status(500).send(error)
         } else {
+          userResults=userResults[0]
           connection.query(
             'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
-            [userResults.insertId], function (error, results) {
+            [userResults.id], function (error, results) {
               if (error) {
                 res.status(500).send(error)
               } else {
@@ -758,9 +759,10 @@ module.exports = function (app, passport, swaggerSpec) {
       if (error) {
         res.status(500).send(error)
       } else {
+        userResults=userResults[0]
         connection.query(
           'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
-          [userResults.insertId], function (error, results) {
+          [userResults.id], function (error, results) {
             if (error) {
               res.status(500).send(error)
             } else {
