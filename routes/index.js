@@ -716,7 +716,16 @@ module.exports = function (app, passport, swaggerSpec) {
         if (error) {
           res.status(500).send(error)
         } else {
-          res.send(results)
+          connection.query(
+            'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
+            [req.params.userID], function (error, results) {
+              if (error) {
+                res.status(500).send(error)
+              } else {
+                userResults.skillset = results
+                res.status(200).send(userResults)
+              }
+            })
         }
       })
   })
@@ -1186,6 +1195,42 @@ module.exports = function (app, passport, swaggerSpec) {
         res.send(FriendList)
       })
   })
+  /**
+   * @swagger
+   * /setCity:
+   *   post:
+   *     tags:
+   *       - users
+   *     description: Updates a users city
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: userID
+   *         description: The event ID
+   *         in: body
+   *         required: true
+   *         type: integer
+   *       - name: city
+   *         description: The Response ID
+   *         in: body
+   *         required: true
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: Successfully set the city
+   *       500:
+   *         description: Failed to set the city
+   */
+  app.get('/setCity', function (req, res) {
+    connection.query('UPDATE users SET users.city=? WHERE users.id=?',
+      [req.body.city, req.body.userID], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
 
   /**
    * @swagger
@@ -1298,7 +1343,7 @@ module.exports = function (app, passport, swaggerSpec) {
         })
         connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' +
           req.params.userID + ' ' + where +
-          ' ORDER BY status_list.timestamp LIMIT ' + req.params.limit +
+          ' ORDER BY status_list.timestamp DESC LIMIT ' + req.params.limit +
           ' OFFSET ' + req.params.offset, function (error, results) {
           if (error) {
             res.status(500).send(error)
@@ -1469,7 +1514,11 @@ module.exports = function (app, passport, swaggerSpec) {
         if (error) {
           res.status(500).send(error)
         } else {
-          res.sendStatus(200)
+          connection.query('SELECT * FROM `chats` WHERE `id`= ?',
+            [results.insertId], function (error, result) {
+              if (error) res.status(500).send(error)
+              res.status(200).send(result)
+            })
         }
       })
   })
@@ -1702,7 +1751,7 @@ module.exports = function (app, passport, swaggerSpec) {
     parallel([
         function (callback) {
           connection.query(
-            'SELECT distances.distance AS search_distance,users.longitude,users.latitude FROM users INNER JOIN distances on distance_id=distances.id WHERE users.id = ?',
+            'SELECT distances.distance AS search_distance,users.city,users.longitude,users.latitude FROM users INNER JOIN distances on distance_id=distances.id WHERE users.id = ?',
             [req.params.userID], function (error, results) {
               if (error) {
                 callback(error)
@@ -1718,7 +1767,7 @@ module.exports = function (app, passport, swaggerSpec) {
         },
         function (callback) {
           connection.query(
-            'SELECT users.id, users.longitude,users.latitude FROM users WHERE users.id != ?  AND users.longitude IS NOT NULL',
+            'SELECT users.id, users.city, users.longitude,users.latitude FROM users WHERE users.id != ?  AND users.longitude IS NOT NULL',
             [req.params.userID], function (error, results) {
               if (error) {
                 callback(error)
@@ -2525,12 +2574,8 @@ function filterDistance (array, distance, longitude, latitude) {
   var EndUsers = []
   array.forEach(function (user) {
     var km = calcCrow(user.latitude, user.longitude, latitude, longitude)
-    console.log(distance)
-    console.log(km)
-    console.log(user + ' ' + user.latitude + ' ' + user.longitude + ' ' +
-      longitude + ' ' + latitude)
     if (km <= distance) {
-      EndUsers.push({user: user, km: km})
+      EndUsers.push({user: user, km: km, city: user.city})
     }
   })
   return EndUsers
