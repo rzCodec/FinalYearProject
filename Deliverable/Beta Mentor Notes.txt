@@ -1,0 +1,43 @@
+Mentor Notes
+============
+
+
+External From Alpha - "Focus on the user journey from a musician's perspective throughout the website and mobile app. 
+Remember to show us what you can do and not just tell us about what you're doing or are going to do in the future."
+
+Operational Reports counts for 10 marks in Beta
+
+These reports with business decision making based on detailed statistics and report generation.
+For our project, something like a count of the number of people with certain skills or genre within certain areas.
+
+An example of areas can be cities in South Africa or just focus on cities within Gauteng for now.
+Wthin each city, you can count each user's skills and their genres.
+Now you'll have a list of skills with a count value as well as a list of genres and a count value.
+
+An example
+
+User                Skills                    Genre
+ A           Guitar, Vocals, Piano            Jazz
+ B           Flute, Piano, Song Writer        Jazz
+ C           DJ, Vocals, Drums                Rock
+ D           Vocals, Flute                   Classic
+
+From the list of skills, the most common ones are Vocals as it appears 3 times followed by Piano and Flute
+Jazz is most preferred genre among these users as it appears twice
+
+Studios will be interested in this information when they look at the website.
+It can help determine which skills people are focusing on the most including the genre.
+Studio managers can then decide to advertise to hire people following the trend if the studio is focused on class/jazz with vocals or use a different
+strategy such as releasing their music in a different area or city where people will most likely be interested in based on the Events created and people
+found in the Radar. 
+
+Another idea you can add is app usage vs website usage in terms of registration, login and viewing.
+This is more abstract and how you define the type of business decision that can be made is more flexible.
+You can use this as verification and evidence to make a claim. 
+
+An example "Many musicians are busy and are constantly finding people of a particular genre or skill."
+"This is based on the number of registered accounts and logins usage from the app vs website, many people prefer the website for account creation because
+ it looks good and the user feels part of a music network. After registering they immediately go to the Radar and Events as you can see by the graphs/charts. 
+ Most business decisions are made early in each month because the website views spike in the first week as show by the line graph. This is because they
+ want to stay ahead of the competition."
+ 
