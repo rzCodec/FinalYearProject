@@ -712,13 +712,13 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getUserInfoEmail/:email', function (req, res) {
     connection.query(
       'SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE email=?',
-      [req.params.email], function (error, results) {
+      [req.params.email], function (error, userResults) {
         if (error) {
           res.status(500).send(error)
         } else {
           connection.query(
             'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
-            [req.params.userID], function (error, results) {
+            [userResults.insertId], function (error, results) {
               if (error) {
                 res.status(500).send(error)
               } else {
@@ -760,7 +760,7 @@ module.exports = function (app, passport, swaggerSpec) {
       } else {
         connection.query(
           'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
-          [req.params.userID], function (error, results) {
+          [userResults.insertId], function (error, results) {
             if (error) {
               res.status(500).send(error)
             } else {
