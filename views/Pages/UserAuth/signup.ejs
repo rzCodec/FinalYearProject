@@ -80,7 +80,9 @@
                             <select class="error browser-default" id="skill" name="skill"
                                     data-error=".errorTxt6888" >
                                 <option value="" disabled="" selected="" >Skill</option >
-                                <% skills.forEach(function(t){
+                                <%
+                                    console.log(skills)
+                                skills.forEach(function(t){
                                 %>
                                 <option value="<%= t.id %>" ><%= t.name %></option >
                                 <%
