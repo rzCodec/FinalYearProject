@@ -5,6 +5,7 @@ var parallel = require('async/parallel')
 var dbconfig = require('../config/database')
 var connection = mysql.createConnection(dbconfig.connection)
 var request = require('request')
+var website = process.env.website || 'http://localhost:8080';
 connection.query('USE informatics')
 module.exports = function (app, passport, swaggerSpec) {
   /**
@@ -239,6 +240,7 @@ module.exports = function (app, passport, swaggerSpec) {
       connection.query('SELECT * FROM `distances` ORDER By distance ASC',
         function (err, distances) {
           connection.query('SELECT * FROM `skills`', function (err, skills) {
+            console.log(skills)
             res.render('Pages/UserAuth/signup.ejs', {
               genres: genres,
               distances: distances,
@@ -274,10 +276,12 @@ module.exports = function (app, passport, swaggerSpec) {
       }
       parallel([
           function (callback) {
+        console.log(website)
             request({
-              url: 'https://www.eternalvibes.me/getStatuses/' + req.user.id,
+              url: website+'/getStatuses/' + req.user.id+'/0/10',
               json: true,
             }, function (error, response, body) {
+              console.log(body)
               if (error) {
                 console.log(error)
               }
@@ -287,7 +291,7 @@ module.exports = function (app, passport, swaggerSpec) {
           },
           function (callback) {
             request({
-              url: 'https://www.eternalvibes.me/getTopGenres',
+              url: website+'/getTopGenres',
               json: true,
             }, function (error, response, body) {
               if (error) {
@@ -299,7 +303,7 @@ module.exports = function (app, passport, swaggerSpec) {
           },
           function (callback) {
             request({
-              url: 'https://www.eternalvibes.me/getTopArtists',
+              url: website+'/getTopUsers',
               json: true,
             }, function (error, response, body) {
               if (error) {
@@ -316,6 +320,7 @@ module.exports = function (app, passport, swaggerSpec) {
           })
         })
     } else {
+      console.log("asdas")
       res.redirect('/broadcast')
     }
 
