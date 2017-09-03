@@ -6,37 +6,47 @@
 <body >
 <%- include ./partials/nav.ejs %>
 <main >
-    <div class="container" >
-        <div class="page-header text-center" >
-            <h1 ></span > Profile Page</h1 >
-            <a href="/logout" class="btn btn-default btn-sm" >Logout</a >
-        </div >
-        <div class="row" >
-            <div class="col-sm-12" >
-                <div class="well" style="text-align: center;" >
-                <h3 ><span class=" fa fa-user" ></span > Profile</h3 >
-                <p >
-                    <strong >Firstname: </strong >: <%= user.firstname %><br >
-                    <strong >Surname: </strong >: <%= user.surname %><br >
-                    <strong >Username: </strong >: <%= user.username %><br >
-                    <strong >Email: </strong >: <%= user.email %><br >
-                    <strong >Song_link: </strong >: <%= user.song_link %><br >
-                    <strong >Username: </strong >: <%= user.username %><br >
-                    <strong >Latitude: </strong >: <%= user.latitude %><br >
-                    <strong >Longitude: </strong >: <%= user.longitude %><br >
-                    <strong >Join Date: </strong >: <%= user.join_timestamp %><br >
-                    <strong >profilepic_url: </strong >: <%= user.profilepic_url %><br >
-                    <strong >Description: </strong >: <%= user.description %><br >
-                    <strong >Skill: </strong >: <%= user.skill %><br >
-                    <strong >Search Distance: </strong >: <%= user.distance %>km<br >
-                    <strong >Genre: </strong >: <%= user.genre %>km<br >
+    <div class="card white darken-1 center" style="margin-top: 5%; margin-right: 8%; margin-left: 8%" >
+        <div class="card-content" >
+            <span class="card-title" ><img class="circle" src="images/empty.png"alt= "" width="150" height="150" >
+                <p><h6>Username</h6></p>
+            </span >
+            <p> <h3> Name and Surname</h3></p>
+            <p>Description</p>
+            <p><i class="medium material-icons ">headset</i></p>
+            <br>
+            <p class="left-align">followers:</p>
+            <p class="left-align">following:</p>
+            <p class="left-align"><i class="material-icons right-align">palette</i></p>
+            <p class="left-align"><i class="material-icons">insert_link</i><a id="link"></a> </p>
 
-                </p >
-            </div >
         </div >
     </div >
-    </div >
+    <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
+        <div>
+            <ul id="posts" class="collection truncate">
+
+            </ul>
+        </div>
+    </div>
 </main >
 <%- include ../../Partials/footer.ejs %>
+<script>
+    function getPosts()
+    {
+    for(var i = 0; i < 10; i++)
+    {
+    var first= ' <li class="collection-item avatar"> ';
+        first +='<div><img src="images/empty.png" alt="" class="circle">';
+            first +='<span class="title">' + i + '</span>';
+            first +='<p>First Line <br> Second Line';
+                first +='</p></div><a href="" class="secondary-content"><i class="material-icons">grade</i></a>';
+        first +='<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
+    $("#posts").append(first);
+    }
+
+    }
+    $("#Timeline").onload(getPosts());
+</script>
 </body >
 </html >

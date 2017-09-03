@@ -12,42 +12,20 @@
                 <li class="" style="transform: translateX(0px); opacity: 0;" >
                     <div class="card white darken-1" >
                         <div class="card-content" >
-                        <span class="card-title" >Welcome <%= UserInfo.info.username %> <img class="circle"
-                                                                                             src="<%= UserInfo.info.profilepic_url %>"
-                                                                                             width="64"
-                                                                                             height="64" ></span >
+                        <span class="card-title center-align" >
+                            <img class="circle" src="images/empty.png"alt= ""
+                                 width="64" height="64" ><p>Welcome <%= UserInfo.info.username %></p></span >
 
                         </div >
                     </div >
                 </li >
-                <%
-                UserInfo.Status.forEach(function (output, index) { %>
-                <li class="" style="transform: translateX(0px); opacity: 0;" >
-                    <div class="card white darken-4 black-text" >
-                        <div class="card-content activator" >
-                            <div class="valign-wrapper" >
-                                <div class="col s3" ><img class="circle"
-                                                          src="<%= output.profilepic_url %>"
-                                                          width="64" height="64" >
-                                    <div class="chip" >
-                                        <%= output.username %>
-                                    </div >
-                                </div >
-                                <div class="col s6" > <%= output.status %></div >
-                                <div class="col s2" > <%= output.timestamp %></div >
-                                <div class="col s1" ><i class="material-icons" >done</i ><i
-                                            class="material-icons activator" >info_outline</i >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="card-reveal" >
-                        <span class="card-title grey-text text-darken-4" >Extra Info<i
-                                    class="material-icons right" >close</i ></span >
-                            <p ><%= output.extra_info %></p >
-                        </div >
-                    </div >
-                </li >
-                <% }); %>
+                <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%">
+                    <div>
+                        <ul id="posts" class="collection truncate">
+
+                        </ul>
+                    </div>
+                </div>
             </ul >
         </div >
         <div class="col s4" >
@@ -68,10 +46,10 @@
                         <ul class="collection" >
                             <% UserInfo.TopArtists.forEach(function (output) { %>
                             <li class="collection-item avatar" >
-                                <img src="<%= output.profilepic_url %>" alt=""
+                                <img src="<%= output.profilepic_url %>" alt="images/empty.png"
                                      class="circle" >
                                 <span class="title" ><%= output.username %></span >
-                                <p >Swimming Pools
+                                <p ><%= output.status %>
                                 </p >
                                 <a href="#" class="secondary-content" ><%= output.liked %></a >
                             </li >
@@ -125,6 +103,23 @@
     }
     return color;
   }
+
+  function getPosts()
+  {
+      for(var i = 0; i < 10; i++)
+      {
+          var first= ' <li class="collection-item avatar"> ';
+          first +='<div><img src="images/empty.png" alt="" class="circle">';
+          first +='<span class="title">' + i + '</span>';
+          first +='<p>First Line <br> Second Line';
+          first +='</p></div><a href="" class="secondary-content"><i class="material-icons">grade</i></a>';
+          first +='<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
+          $("#posts").append(first);
+      }
+
+  }
+  $("#Timeline").onload(getPosts());
+
 </script >
 
 </body >
