@@ -2,100 +2,250 @@
 <html lang="en" >
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
+    <!-- Menu Design for Tablets and Phone screen -->
+    <div class="col s3 hide-on-large-only" >
+        <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons" >menu</i ></a >
+        <ul id="slide-out" class="side-nav" >
+            <li >
+                <div class="userView" >
+                    <div class="background" >
+                        <img src="images/background/background1.jpg" >
+                    </div >
+                    <a href="#!user" ><img class="circle"
+                                           src="<%= info.profilepic_url %>" ></a >
+                    <a href="#!name" ><span class="white-text name" ><%= info.username %></span ></a >
+                    <a href="#!email" ><span class="white-text email" ><%= info.email %></span ></a >
+                </div >
+            </li >
+
+            <li ><a class="subheader"  ><i class="material-icons right" >thumbs_up_down</i >Flagged</a ></li >
+            <li ><a href="#flUsers" onclick="Materialize.showStaggeredList('#fUserList')" >Flagged Users</a ></li >
+            <li ><a href="#flPosts" onclick="Materialize.showStaggeredList('#fPostList')" >Flagged Posts</a ></li >
+            <li >
+                <div class="divider" ></div >
+            </li >
+            <li ><a href="#Skills" onclick="Materialize.showStaggeredList('#AddSkill')" >Add Skills</a ></li >
+            <li class='active' ><a href="#Genre" onclick="Materialize.showStaggeredList('#AddGenre')">
+                    Add Genres</a ></li >
+            <li ><a href="/reports" >Reports</a ></li >
+            <li >
+                <div class="divider" ></div >
+            </li >
+            <li ><a href="/dashBoard" ><i class="material-icons right" >power_settings_new</i >Admin</a ></li >
+
+        </ul >
+    </div>
+
+
+    <h1 class="center-align"><img height="10%" width="10%" src="images/empty.png" alt=""
+                                  class="circle"> <a href="/profile"><%= info.username %></a></h1></header>
+
+
+    <!-- Menu Design for laptop and computer screen -->
+    <ul class="tabs center-align hide-on-med-and-down" style="margin-top: 5%">
+
+        <li id="flPosts" class="tab col s3">
+            <a href="#FlaggedPosts" onclick="Materialize.showStaggeredList('#FlaggedPosts')">
+                <i class="medium material-icons right-align">feedback</i>Flagged Posts
+                <span id="numPosts" class="new badge">15</span></a></li>
+
+        <li id="flUsers" class="tab col s3"><a href="#FlaggedUsers" onclick="Materialize.showStaggeredList('#FlaggedUsers')">
+                <i class="medium material-icons left-align">assignment_ind</i>Flagged Users
+                <span id="numUsers" class="new badge"> 15</span></a></li>
+
+        <li id="Genre" class="tab col s3">
+            <a href="#AddGenre">
+                <i class="medium material-icons right-align">library_music</i>Add Genres</a></li>
+
+        <li id="Skills" class="tab col s3"><a href="#AddSkill">
+                <i class="medium material-icons right-align">palette</i>Add Skills</a></li>
+
+    </ul>
 </head >
 <body >
 <main >
-    <div class="row" >
-        <%- include ./partials/nav.ejs %>
-        <div class="col s8" >
-            <div class="valign-wrapper" >
-                <h2 class="center-align" style='width:100%;' >Flagged Posts</h2 >
-            </div >
-            <ul id="staggered-test" >
 
-                <li class="" style="transform: translateX(0px); opacity: 0; " >
+    <div id="FlaggedPosts" class="col s12" style="margin-left: 10%; margin-right: 10%;margin-top: 5%;margin-bottom: 10%">
+        <div>
+            <ul id="fPostList" class="collection truncate">
 
-                </li >
-                <li class="" style="transform: translateX(0px); opacity: 0; margin-top:100px;" >
-                    <div class="carousel carousel-slider center" data-indicators="true" >
-                        <div class="carousel-fixed-item center" >
+            </ul>
+        </div>
+    </div>
+    <div id="FlaggedUsers" class="col s12" style="margin-left: 10%; margin-right: 10%;margin-top: 5%;margin-bottom: 10%">
+        <div>
+            <ul id="fUserList" class="collection truncate">
 
-                            <a id='accept' class="waves-effect waves-light btn" ><i
-                                        class="material-icons left" >thumb_up</i >Accept</a >
-                            <a class="waves-effect waves-light btn" ><i class="material-icons right" >thumb_down</i >Remove</a >
+            </ul>
+        </div>
+    </div>
 
-                        </div >
-                        <div class="carousel-item transparent white-text" href="#one!" >
-                            <div class='container' >
+    <div id="AddGenre" class="col s12 center-align"
+         style="margin-left: 10%; margin-right: 10%;margin-top: 10%;margin-bottom: 10%; border: groove">
+            <form class="col s12">
+                <div class="row">
+                    <label for="icon_prefix2">Add Genres</label>
+                    <div style="margin-left: 3%; margin-right: 3%">
+                        <i class="material-icons prefix center-align">mode_edit</i>
+                        <textarea id="icon_prefix2" class="materialize-textarea" ></textarea>
+                    </div>
+                    <button class="right-align brown white-text"><i class="material-icons">done</i> Submit</button>
+                </div>
+            </form>
+    </div>
 
-                                <div class="card white darken-4 black-text" >
-                                    <div class="card-content" >
+    <div id="AddSkill" class="col s12 center-align"
+         style="margin-left: 10%; margin-right: 10%;margin-top: 10%;margin-bottom: 10%; border: groove">
+        <form class="col s12">
+            <div class="row">
+                <label for="icon_prefix2">Add Skills</label>
+                <div style="margin-left: 3%; margin-right: 3%">
+                    <i class="material-icons prefix center-align">mode_edit</i>
+                    <textarea id="icon_prefix2" class="materialize-textarea" ></textarea>
+                </div>
+                <button class="right-align brown white-text"><i class="material-icons">done</i> Submit</button>
+            </div>
+        </form>
+    </div>
 
-                                        <span class="card-title" >Kendrick Lamar </span >
-                                        <p >Hey i hate all you guys and i am very angry and look at these bad words
-                                            @#&@^#@
-                                            you ^#@*#@#</p >
-                                        <p >No. of reports: 2</p >
-                                    </div >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="carousel-item transparent white-text" href="#two!" >
-                            <div class='container' >
-                                <div class="card white darken-4 black-text" >
-                                    <div class="card-content" >
+    <!-- THis is for broadcasting to  Users -->
+    <div class="fixed-action-btn click-to-toggle">
+        <a class=" waves-effect waves-light btn floating purple tooltipped "
+           data-position="top" data-delay="50" data-tooltip="Send Braodcast">
+            <i class="large material-icons">keyboard</i></a>
+        <ul>
+            <li><a class="waves-effect waves-light btn floating red large modal-trigger tooltipped"
+                   href="#SendToAll" data-delay="50" data-tooltip="Send To All" >
+                    <i class="large material-icons">message</i></a></li>
 
-                                        <span class="card-title" >J.Cole </span >
-                                        <p >Sometimes i just hate songs and the babies that you make man</p >
-                                        <p >No. of reports: 3</p >
-                                    </div >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="carousel-item transparent white-text" href="#three!" >
-                            <div class='container' >
-                                <div class="card white darken-4 black-text" >
-                                    <div class="card-content" >
+            <li><a href="#SpecifyUsers" class="waves-effect waves-light btn floating blue large tooltipped"
+                   data-delay="50" data-tooltip="Specify Users">
+                    <i class="large material-icons">edit</i></a></li>
+        </ul>
+    </div>
 
-                                        <span class="card-title" >Elton John </span >
-                                        <p >Hey guys! Visit this site to become a instant millionaire</p >
-                                        <p >No. of reports: 5</p >
-                                    </div >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="carousel-item transparent white-text" href="#four!" >
-                            <div class='container' >
-                                <div class="card white darken-4 black-text" >
-                                    <div class="card-content" >
+    <div id="SpecifyUsers" class="modal bottom-sheet">
+        <div class="modal-content">
+            <h4>Broadcast To:</h4>
+            <div class="chips chips-placeholder">
 
-                                        <span class="card-title" >Joe Jackson </span >
-                                        <p >Time to blow up trump</p >
-                                        <p >No. of reports: 2</p >
-                                    </div >
-                                </div >
-                            </div >
-                        </div >
-                    </div >
-                </li >
-            </ul >
-        </div >
+            </div>
+            <div style="margin-left: 3%; margin-right: 3%">
+                <i class="material-icons prefix center-align">mode_edit</i>
+                <textarea id="icon_prefix2" class="materialize-textarea" ></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat left-align">Cancel</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="Send">Send</a>
+        </div>
+    </div>
 
-    </div >
+
+
+    <div id="SendToAll" class="modal bottom-sheet">
+        <div class="modal-content">
+            <h4>Broadcast To All Users</h4>
+            <div style="margin-left: 3%; margin-right: 3%">
+                <i class="material-icons prefix center-align">mode_edit</i>
+                <textarea id="icon_prefix2" class="materialize-textarea" ></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat left-align">Cancel</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="SendAll">Send</a>
+        </div>
+    </div>
+
+    <div class="row modal-overlay" id="S">
+        <form class="col s12">
+            <div class="row">
+                <div class="modal-content">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">mode_edit</i>
+                        <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
+                        <label for="icon_prefix2">Message</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
 
 </main >
+<!-- Menu Design for broadcasts -->
+<%- include ../../Partials/footer.ejs %>
 <script >
-  Materialize.showStaggeredList('#staggered-test');
 
-  // Initialize collapse button
-  $(".button-collapse").sideNav();
-  $('.carousel.carousel-slider').carousel({ fullWidth: true });
-  $(document).ready(function () {
-    $(".carousel-fixed-item").on('click', '.btn', function () {
-      $('.carousel').carousel('next');
-      Materialize.toast('Judged!', 2000, 'rounded')
+    function addUsers()
+    {
+        for(var i = 0; i < 10; i++)
+        {
+            var first= ' <li class="collection-item avatar dismissable"> ';
+            first += '<img src="images/empty.png" alt="" class="circle">';
+            first += '<span class="title">' + i + '</span>';
+            first += '<p>First Line <br> Second Line';
+            first += '</p><a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>';
+            first += '</li>';
+            $("#fUserList").append(first);
+        }
+
+    };
+
+    function addPosts()
+    {
+        for(var i = 0; i < 10; i++)
+        {
+            var first= ' <li class="collection-item avatar"> ';
+            first +='<div><img src="images/empty.png" alt="" class="circle">';
+            first +='<span class="title">' + i + '</span>';
+            first +='<p>First Line <br> Second Line';
+            first +='</p></div><a href="" class="secondary-content"><i class="material-icons">thumb_up</i></a>';
+            first +='<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
+            $("#fPostList").append(first);
+        }
+
+    };
+
+       $("#flUsers").click(addUsers());
+
+    $("#flPosts").click(addPosts());
+
+    $(document).ready(function(){
+        // the "href" attribute of the modal trigger specifies the modal ID that wants to be triggered
+        $('.modal').modal();
     });
-  });
+
+    $('.chips').material_chip();
+
+    $('.chips-autocomplete').material_chip({
+        autocompleteOptions: {
+            data: {
+                'Examples': null,
+                'Marc': null,
+                'Ronald': null,
+                'DV': null,
+                'David': null
+            },
+            limit: Infinity,
+            minLength: 1
+        }
+    });
+
+    $('#SendToAll').modal('open');
+    $(document).ready(function(){
+        $('ul.tabs').tabs();
+    });
+    $(document).ready(function(){
+        $('ul.tabs').tabs('select_tab', '');
+    });
+   $('#UserProfile').append('')
+    Materialize.showStaggeredList('#staggered-test');
+
+    // Initialize collapse button
+    $(".button-collapse").sideNav();
 
 </script >
 
