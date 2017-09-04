@@ -304,7 +304,7 @@ module.exports = function (app, passport, swaggerSpec) {
         },
         function (callback) {
           connection.query(
-            'SELECT users.*, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=?',
+            'SELECT users.*, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=? AND users.is_banned != 1',
             [req.user.id], function (error, results) {
               if (error) {
                 callback(error)
@@ -393,7 +393,7 @@ module.exports = function (app, passport, swaggerSpec) {
 
   app.get('/flaggedposts', isLoggedIn, function (req, res) {
     connection.query(
-      'SELECT status_reports.*, status_list.user_id,status_list.timestamp,status_list.status,status_list.extra_info,status_list.liked, users.username FROM `status_reports` INNER JOIN status_list ON status_list.id = status_reports.status_id INNER JOIN users ON users.id = status_list.user_id',
+      'SELECT status_reports.*, status_list.user_id,status_list.timestamp,status_list.status,status_list.extra_info,status_list.liked, users.username FROM `status_reports` INNER JOIN status_list ON status_list.id = status_reports.status_id INNER JOIN users ON users.id = status_list.user_id WHERE users.is_banned != 1',
       function (error, results) {
         if (error) {
           res.status(500).send(error)
@@ -409,7 +409,7 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   app.get('/flaggedusers', isLoggedIn, function (req, res) {
     connection.query(
-      'SELECT users.username,user_reports.userThatReported,user_reports.userThatGotReported,user_reports.reason FROM `user_reports` INNER JOIN users ON users.id = user_reports.userThatGotReported',
+      'SELECT users.username,user_reports.userThatReported,user_reports.userThatGotReported,user_reports.reason FROM `user_reports` INNER JOIN users ON users.id = user_reports.userThatGotReported WHERE users.is_banned != 1',
       function (error, results) {
         if (error) {
           res.status(500).send(error)
@@ -494,7 +494,7 @@ module.exports = function (app, passport, swaggerSpec) {
         },
         function (callback) {
           connection.query(
-            'SELECT skills.name, COUNT(user_skills.skill_id) as count FROM user_skills INNER JOIN skills ON skills.id = user_skills.skill_id GROUP BY user_skills.skill_id',
+            'SELECT skills.id,skills.name, COUNT(user_skills.skill_id) as count FROM user_skills INNER JOIN skills ON skills.id = user_skills.skill_id GROUP BY user_skills.skill_id',
             function (error, results) {
               if (error) {
                 console.log(error)
@@ -560,7 +560,7 @@ module.exports = function (app, passport, swaggerSpec) {
         },
         function (callback) {
           connection.query(
-            'SELECT genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC',
+            'SELECT genres.id,genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC',
             function (error, results) {
               if (error) {
                 console.log(error)
@@ -878,7 +878,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getTopUsers', function (req, res) {
     connection.query(
-      'SELECT users.id,users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id GROUP BY status_list.user_id ORDER BY count DESC',
+      'SELECT users.id,users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id WHERE users.is_banned != 1 GROUP BY status_list.user_id ORDER BY count DESC',
       function (error, results) {
         if (error) {
           res.status(500).send(error)
@@ -912,7 +912,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getUserInfoEmail/:email', function (req, res) {
     connection.query(
-      'SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE email=?',
+      'SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE email=? AND users.is_banned != 1',
       [req.params.email], function (error, userResults) {
         if (error) {
           res.status(500).send(error)
@@ -955,8 +955,8 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: error
    */
   app.get('/getUserInfo/:userID', function (req, res) {
-    connection.query('SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE id=' +
-      req.params.userID, function (error, userResults) {
+    connection.query('SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE id=? AND users.is_banned != 1',
+      [req.params.userID], function (error, userResults) {
       if (error) {
         res.status(500).send(error)
       } else {
@@ -1284,7 +1284,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getFollowing/:userID', function (req, res) {
     connection.query(
-      'SELECT followers.liked_id, users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ?',
+      'SELECT followers.liked_id, users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ? AND users.is_banned != 1',
       [req.params.userID], function (error, results) {
         if (error) {
           res.status(500).send(error)
@@ -1368,7 +1368,7 @@ module.exports = function (app, passport, swaggerSpec) {
     waterfall([
         function (callback) {
           connection.query(
-            'SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ?',
+            'SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ? AND users.is_banned != 1',
             [req.params.userID], function (error, result) {
               if (error) {
                 callback(error)
@@ -1380,7 +1380,7 @@ module.exports = function (app, passport, swaggerSpec) {
         },
         function (callback) {
           connection.query(
-            'SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user1_id = users.id WHERE user2_id = ?',
+            'SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user1_id = users.id WHERE user2_id = ? AND users.is_banned != 1',
             [req.params.userID], function (error, result) {
               if (error) {
                 callback(error)
@@ -1546,7 +1546,7 @@ module.exports = function (app, passport, swaggerSpec) {
         })
         connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' +
           req.params.userID + ' ' + where +
-          ' ORDER BY status_list.timestamp DESC LIMIT ' + req.params.limit +
+          ' AND users.is_banned != 1 ORDER BY status_list.timestamp DESC LIMIT ' + req.params.limit +
           ' OFFSET ' + req.params.offset, function (error, results) {
           if (error) {
             res.status(500).send(error)
@@ -1648,161 +1648,7 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       })
   })
-  app.post('/deleteStatus', function (req, res) {
-    waterfall([
-        function (callback) {
-          connection.query('SELECT * FROM `status_list` WHERE id = ?',
-            [req.body.statusId], function (error, results) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null, results[0])
-              }
-            })
-        },
-        function (flaggedPost, callback) {
-          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (' +
-            flaggedPost.id + ', ' + flaggedPost.user_id + ', ' +
-            flaggedPost.timestamp + ', ' + flaggedPost.status + ',  ' +
-            flaggedPost.extra_info + ', ' + flaggedPost.liked + ')',
-            function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null)
-              }
-            })
-        },
-        function (callback) {
-          connection.query('DELETE FROM status_list WHERE status_list.id=?',
-            [req.body.statusId], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null)
-              }
-            })
-        },
-        function (callback) {
-          connection.query(
-            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
-            [req.body.statusId], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null)
-              }
-            })
-        },
-      ],
-      function (err) {
-        if (err) {
-          console.log(err)
-          res.status(500).send(err)
-        }
-        res.sendStatus(200)
-      })
-  })
-  app.post('/pardonStatus', function (req, res) {
-    waterfall([
-        function (callback) {
-          connection.query(
-            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
-            [req.body.statusId], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null)
-              }
-            })
-        },
-      ],
-      function (err) {
-        if (err) {
-          console.log(err)
-          res.status(500).send(err)
-        }
-        res.sendStatus(200)
-      })
-  })
 
-  app.post('/banUser', function (req, res) {
-    waterfall([
-        function (callback) {
-          connection.query('SELECT * FROM `status_list` WHERE id = ?',
-            [req.body.statusId], function (error, results) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null, results[0])
-              }
-            })
-        },
-        function (flaggedPost, callback) {
-          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (' +
-            flaggedPost.id + ', ' + flaggedPost.user_id + ', ' +
-            flaggedPost.timestamp + ', ' + flaggedPost.status + ',  ' +
-            flaggedPost.extra_info + ', ' + flaggedPost.liked + ')',
-            function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null)
-              }
-            })
-        },
-        function (callback) {
-          connection.query('DELETE FROM status_list WHERE status_list.id=?',
-            [req.body.statusId], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null)
-              }
-            })
-        },
-        function (callback) {
-          connection.query(
-            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
-            [req.body.statusId], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null)
-              }
-            })
-        },
-      ],
-      function (err) {
-        if (err) {
-          console.log(err)
-          res.status(500).send(err)
-        }
-        res.sendStatus(200)
-      })
-  })//TODO
-  app.post('/pardonUser', function (req, res) {
-    waterfall([
-        function (callback) {
-          connection.query(
-            'SELECT * FROM `user_reports` WHERE user_reports.userThatGotReported=?',
-            [req.body.userId], function (error) {
-              if (error) {
-                callback(error)
-              } else {
-                callback(null)
-              }
-            })
-        },
-      ],
-      function (err) {
-        if (err) {
-          console.log(err)
-          res.status(500).send(err)
-        }
-        res.sendStatus(200)
-      })
-  })
   /**
    * @swagger
    * /likeStatus/{userID}/{statusID}:
@@ -2121,7 +1967,7 @@ module.exports = function (app, passport, swaggerSpec) {
     parallel([
         function (callback) {
           connection.query(
-            'SELECT distances.distance AS search_distance,users.city,users.longitude,users.latitude FROM users INNER JOIN distances on distance_id=distances.id WHERE users.id = ?',
+            'SELECT distances.distance AS search_distance,users.city,users.longitude,users.latitude FROM users INNER JOIN distances on distance_id=distances.id WHERE users.id = ? AND users.is_banned != 1',
             [req.params.userID], function (error, results) {
               if (error) {
                 callback(error)
@@ -2137,7 +1983,7 @@ module.exports = function (app, passport, swaggerSpec) {
         },
         function (callback) {
           connection.query(
-            'SELECT users.id, users.city, users.longitude,users.latitude FROM users WHERE users.id != ?  AND users.longitude IS NOT NULL',
+            'SELECT users.id, users.city, users.longitude,users.latitude FROM users WHERE users.id != ?  AND users.longitude IS NOT NULL AND users.is_banned != 1',
             [req.params.userID], function (error, results) {
               if (error) {
                 callback(error)
@@ -2670,7 +2516,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getEventResponses/:eventID', function (req, res) {
     connection.query(
-      'SELECT invites.id AS response_id, responses.response, users.id AS user_id, users.username  FROM invites INNER JOIN users ON users.id = receiver_user_id  INNER JOIN responses ON responses.id = invites.response_id WHERE invites.event_id =?',
+      'SELECT invites.id AS response_id, responses.response, users.id AS user_id, users.username  FROM invites INNER JOIN users ON users.id = receiver_user_id  INNER JOIN responses ON responses.id = invites.response_id WHERE invites.event_id =? AND users.is_banned != 1',
       [req.params.eventID], function (error, results) {
         if (error) {
           res.status(500).send(error)
@@ -2882,7 +2728,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getRequestedInvites/:eventID', function (req, res) {
     connection.query(
-      'SELECT event_request.*, users.username FROM `event_request` INNER JOIN users ON users.id= event_request.sender_user_id WHERE event_request.event_id=? AND event_request.responses_id!=3',
+      'SELECT event_request.*, users.username FROM `event_request` INNER JOIN users ON users.id= event_request.sender_user_id WHERE event_request.event_id=? AND event_request.responses_id!=3 AND users.is_banned != 1',
       [req.params.eventID], function (error, results) {
         if (error) {
           res.status(500).send(error)
@@ -2930,6 +2776,128 @@ module.exports = function (app, passport, swaggerSpec) {
           }
         })
     })
+
+  app.post('/deleteStatus', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query('SELECT * FROM `status_list` WHERE id = ?',
+            [req.body.statusId], function (error, results) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null, results[0])
+              }
+            })
+        },
+        function (flaggedPost, callback) {
+          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (' +
+            flaggedPost.id + ', ' + flaggedPost.user_id + ', ' +
+            flaggedPost.timestamp + ', ' + flaggedPost.status + ',  ' +
+            flaggedPost.extra_info + ', ' + flaggedPost.liked + ')',
+            function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query('DELETE FROM status_list WHERE status_list.id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })
+  app.post('/pardonStatus', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })
+  app.post('/banUser', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query(
+            'UPDATE users set users.is_banned=1 WHERE users.id=?',
+            [req.body.userId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })//TODO
+  app.post('/pardonUser', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `user_reports` WHERE user_reports.userThatGotReported=?',
+            [req.body.userId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })
 
   app.get('/swagger.json', function (req, res) {
     res.setHeader('Content-Type', 'application/json')

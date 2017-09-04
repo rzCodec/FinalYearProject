@@ -14,7 +14,7 @@ module.exports = function (passport) {
     done(null, user.id)
   })
   passport.deserializeUser(function (id, done) {
-    connection.query('SELECT * FROM users WHERE id = ? ', [id],
+    connection.query('SELECT * FROM users WHERE id = ? AND users.is_banned != 1', [id],
       function (err, rows) {
         done(err, rows[0])
       })
@@ -28,7 +28,7 @@ module.exports = function (passport) {
         passReqToCallback: true,
       },
       function (req, username, password, done) {
-        connection.query('SELECT * FROM users WHERE username = ?', [username],
+        connection.query('SELECT * FROM users WHERE username = ? AND users.is_banned != 1', [username],
           function (err, rows) {
             if (err)
               return done(err)
@@ -107,7 +107,7 @@ module.exports = function (passport) {
         passReqToCallback: true,
       },
       function (req, username, password, done) {
-        connection.query('SELECT * FROM informatics.users WHERE email= ? ',
+        connection.query('SELECT * FROM informatics.users WHERE email= ? AND users.is_banned != 1',
           [username], function (err, rows) {
             if (err)
               return done(err)
