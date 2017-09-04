@@ -19,34 +19,109 @@
             <p class="left-align">following:</p>
             <p class="left-align"><i class="material-icons right-align">palette</i></p>
             <p class="left-align"><i class="material-icons">insert_link</i><a id="link"></a> </p>
-
         </div >
     </div >
-    <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
+    <ul class="tabs center-align" style="margin-top: 3%">
+
+        <li id="Posts" class="tab col s3">
+            <a href="#Timeline" onclick="Materialize.showStaggeredList('#Timeline')">
+                <i class="medium material-icons right-align">dehaze</i>Timeline
+                <span id="numPosts" class="new badge">15</span></a></li>
+
+        <li id="Attended" class="tab col s3"><a href="#AttendedEvents"
+                                                onclick="Materialize.showStaggeredList('#AttendedEvents')">
+                <i class="medium material-icons left-align">event_available</i>Events Attended
+                <span id="numUsers" class="new badge"> 15</span></a></li>
+
+        <li id="Upcoming" class="tab col s3">
+            <a href="#UpcomingEvents" onclick="Materialize.showStaggeredList('#UpcomingEvents')">
+                <i class="medium material-icons right-align">event_seat</i>Upcoming Events</a></li>
+
+    </ul>
+
+    <div id="Timeline" class="col s12"
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
         <div>
             <ul id="posts" class="collection truncate">
 
             </ul>
         </div>
     </div>
+
+    <div id="AttendedEvents" class="col s12"
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
+        <div>
+            <ul id="posts" class="collection truncate">
+
+            </ul>
+        </div>
+    </div>
+
+    <div id="UpcomingEvents" class="col s12"
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
+        <div>
+            <ul id="posts" class="collection truncate">
+
+            </ul>
+        </div>
+    </div>
+
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script>
     function getPosts()
     {
-    for(var i = 0; i < 10; i++)
-    {
-    var first= ' <li class="collection-item avatar"> ';
-        first +='<div><img src="images/empty.png" alt="" class="circle">';
+        for(var i = 0; i < 10; i++)
+        {
+        var first= ' <li class="collection-item avatar"> ';
+            first +='<div><img src="images/empty.png" alt="" class="circle">';
             first +='<span class="title">' + i + '</span>';
             first +='<p>First Line <br> Second Line';
-                first +='</p></div><a href="" class="secondary-content"><i class="material-icons">grade</i></a>';
-        first +='<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
-    $("#posts").append(first);
+            first +='</p></div><a href="" class="secondary-content"><i class="material-icons">grade</i></a>';
+            first +='<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
+        $("#posts").append(first);
+        }
     }
 
+
+    function getAttended()
+    {
+        for(var i = 0; i < 10; i++)
+        {
+            var first= '<li class="collection-item avatar"> ';
+            first +='<img src="images/empty.png" alt="" width="50" height="50" class="circle">';
+            first +='<p><span class="title">' + i + '</span><p>';
+            first +='<p>Event Name <br> Created By <br> Date';
+            first +='</p></li>';
+            $("#AttendedEvents").append(first);
+        }
     }
-    $("#Timeline").onload(getPosts());
+
+    function getUpcoming()
+    {
+        for(var i = 0; i < 10; i++)
+        {
+            var first='<li class="collection-item avatar"> ';
+            first +='<img src="images/empty.png" alt="" width="50" height="50" class="circle">';
+            first +='<p><span class="title">' + i + '</span><p>';
+            first +='<p>Event Name <br> Second Line';
+            first +='</p></li>';
+            $("#UpcomingEvents").append(first);
+        }
+    }
+
+    $("#Timeline").click(getPosts());
+    $("#Attended").click(getAttended());
+    $("#Upcoming").click(getUpcoming());
+
+    $(document).ready(function(){
+        $('ul.tabs').tabs();
+    });
+    $(document).ready(function(){
+        $('ul.tabs').tabs('select_tab', '');
+    });
+    Materialize.showStaggeredList('');
+
 </script>
 </body >
 </html >
