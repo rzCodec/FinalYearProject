@@ -2796,19 +2796,18 @@ module.exports = function (app, passport, swaggerSpec) {
         function (callback) {
           connection.query('SELECT * FROM `status_list` WHERE id = ?',
             [req.body.statusId], function (error, results) {
-              if (error) {
+              if (error || results.length==0) {
                 callback(error)
               } else {
+                console.log(results)
                 callback(null, results[0])
               }
             })
         },
         function (flaggedPost, callback) {
-          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (' +
-            flaggedPost.id + ', ' + flaggedPost.user_id + ', ' +
-            flaggedPost.timestamp + ', ' + flaggedPost.status + ',  ' +
-            flaggedPost.extra_info + ', ' + flaggedPost.liked + ')',
-            function (error) {
+          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (?,?,?,?,?,?)',
+            [flaggedPost.id,flaggedPost.user_id,flaggedPost.timestamp,flaggedPost.status,flaggedPost.extra_info,flaggedPost.liked]
+            ,function (error) {
               if (error) {
                 callback(error)
               } else {
@@ -2873,6 +2872,18 @@ module.exports = function (app, passport, swaggerSpec) {
         function (callback) {
           connection.query(
             'UPDATE users set users.is_banned=1 WHERE users.id=?',
+            [req.body.userId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+
+        function (callback) {
+          connection.query(
+            'DELETE FROM user_reports WHERE user_reports.userThatGotReported=?',
             [req.body.userId], function (error) {
               if (error) {
                 callback(error)
