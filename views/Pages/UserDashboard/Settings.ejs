@@ -8,18 +8,16 @@
 
 <%- include ./partials/nav.ejs %>
 <div >
-    <ul id="slide-out" class="tabs center-align">
-        <li id="generalSettings" class="tab col s3"><a href="#general">General Settings</a></li>
-        <li id="personalSettings" class="tab col s3"><a href="#personal">Personal Settings</a></li>
-    </ul>
+    <ul id="slide-out" class="tabs center-align" >
+        <li id="personalSettings" class="tab col s3" ><a href="#personal" >Personal Settings</a ></li >
+    </ul >
 
-    <div id="personal" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%">
+    <div id="personal" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
         <div class='container center-align' >
 
             <div class="card white darken-1" >
 
-
-                <div  class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
+                <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
                     <span class="card-title" ><h1 >Personal Settings</h1 ></span >
                     <span class="card-title" >What personal information do you want to change?</span >
 
@@ -62,56 +60,16 @@
                     <a href="/dashboard" class="btn btn-default left-align" >Reset</a >
                     <a href="/dashboard" class="btn btn-default right-align" >Save</a >
                 </div >
-            </div>
-        </div>
-    </div>
+            </div >
+        </div >
+    </div >
 
-    <div id="general" style="margin-bottom:7%; margin-top: 3%">
-        <ul id="staggered-test" >
-                <div class='container' >
-                    <div class="card white darken-1" >
-                        <div  class="card-content center-align" >
-
-                        <span class="card-title" ><h1 >Settings</h1 ></span >
-                        <span class="card-title" >What do you want to see on your timeline?</span >
-
-                        <div class="switch" ><h4 >New Friends </h4 >
-                            <label >
-                                Off
-                                <input type="checkbox" >
-                                <span class="lever" ></span >
-                                On
-                            </label >
-                        </div >
-                        <div class="switch" ><h4 >Popular Artists </h4 >
-                            <label >
-                                Off
-                                <input type="checkbox" >
-                                <span class="lever" ></span >
-                                On
-                            </label >
-                        </div >
-                        <div class="switch" ><h4 >Event Reminders </h4 >
-                            <label >
-                                Off
-                                <input type="checkbox" >
-                                <span class="lever" ></span >
-                                On
-                            </label >
-                        </div >
-                        <a href="/dashboard" class="btn btn-default left-align" >Reset</a >
-                        <a href="/dashboard" class="btn btn-default right-align" >Save</a >
-                    </div >
-        </ul >
-    </div>
-
-
-</div>
+</div >
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
-  Materialize.showStaggeredList('#staggered-test');
-  $("#personalsettings").click('#personal');
+  Materialize.showStaggeredList('#staggered-test')
+  $('#personalsettings').click('#personal')
 </script >
 
 </body >

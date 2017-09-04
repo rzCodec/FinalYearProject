@@ -307,6 +307,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'SELECT users.*, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=? AND users.is_banned != 1',
             [req.user.id], function (error, results) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 userInfo = results
@@ -396,6 +397,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT status_reports.*, status_list.user_id,status_list.timestamp,status_list.status,status_list.extra_info,status_list.liked, users.username FROM `status_reports` INNER JOIN status_list ON status_list.id = status_reports.status_id INNER JOIN users ON users.id = status_list.user_id WHERE users.is_banned != 1',
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.render('Pages/AdminDashboard/FlaggedPosts.ejs',
@@ -412,6 +414,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT users.username,user_reports.userThatReported,user_reports.userThatGotReported,user_reports.reason FROM `user_reports` INNER JOIN users ON users.id = user_reports.userThatGotReported WHERE users.is_banned != 1',
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.render('Pages/AdminDashboard/FlaggedUsers.ejs',
@@ -800,6 +803,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT id, name, created_timestamp, updated_timestamp FROM genres',
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -812,6 +816,7 @@ module.exports = function (app, passport, swaggerSpec) {
       [req.body.genreName],
       function (error) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -824,6 +829,7 @@ module.exports = function (app, passport, swaggerSpec) {
       [req.body.skillName],
       function (error) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -852,6 +858,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT genres.id, genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC',
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.status(200).send(results)
@@ -881,6 +888,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT users.id,users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id WHERE users.is_banned != 1 GROUP BY status_list.user_id ORDER BY count DESC',
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -915,6 +923,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE email=? AND users.is_banned != 1',
       [req.params.email], function (error, userResults) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           userResults = userResults[0]
@@ -922,6 +931,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
             [userResults.id], function (error, results) {
               if (error) {
+                console.log(error)
                 res.status(500).send(error)
               } else {
                 userResults.skillset = results
@@ -958,6 +968,7 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE id=? AND users.is_banned != 1',
       [req.params.userID], function (error, userResults) {
       if (error) {
+        console.log(error)
         res.status(500).send(error)
       } else {
         userResults = userResults[0]
@@ -965,6 +976,7 @@ module.exports = function (app, passport, swaggerSpec) {
           'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
           [userResults.id], function (error, results) {
             if (error) {
+              console.log(error)
               res.status(500).send(error)
             } else {
               userResults.skillset = results
@@ -1023,6 +1035,7 @@ module.exports = function (app, passport, swaggerSpec) {
             connection.query('UPDATE users SET genre_id=?  WHERE id=?',
               [req.body.genre_id, req.body.userID], function (error) {
                 if (error) {
+                  console.log(error)
                   callback(error)
                 } else {
                   callback()
@@ -1037,6 +1050,7 @@ module.exports = function (app, passport, swaggerSpec) {
             connection.query('UPDATE users SET distance_id=? WHERE id=?',
               [req.body.distance_id, req.body.userID], function (error) {
                 if (error) {
+                  console.log(error)
                   callback(error)
                 } else {
                   callback()
@@ -1052,6 +1066,7 @@ module.exports = function (app, passport, swaggerSpec) {
               'UPDATE users SET last_login_timestamp=?  WHERE id=?',
               [req.body.last_login_timestamp, req.body.userID], function (error) {
                 if (error) {
+                  console.log(error)
                   callback(error)
                 } else {
                   callback()
@@ -1066,6 +1081,7 @@ module.exports = function (app, passport, swaggerSpec) {
             connection.query('UPDATE users SET profilepic_url=? WHERE id=?',
               [req.body.profilepic_url, req.body.userID], function (error) {
                 if (error) {
+                  console.log(error)
                   callback(error)
                 } else {
                   callback()
@@ -1080,6 +1096,7 @@ module.exports = function (app, passport, swaggerSpec) {
             connection.query('UPDATE users SET description=? WHERE id=?',
               [req.body.description, req.body.userID], function (error) {
                 if (error) {
+                  console.log(error)
                   callback(error)
                 } else {
                   callback()
@@ -1131,12 +1148,14 @@ module.exports = function (app, passport, swaggerSpec) {
         'DELETE FROM user_skills WHERE user_skills.id = ? AND user_skills.skill_id = ?',
         [req.body.userID, id], function (error) {
           if (error) {
+            console.log(error)
             cb(error)
           } else {
             connection.query(
               'INSERT INTO `user_skills` (`id`, `user_id`, `skill_id`) VALUES (NULL, ?, ?)',
               [req.body.userID, id], function (error) {
                 if (error) {
+                  console.log(error)
                   cb(error)
                 } else {
                   cb()
@@ -1191,6 +1210,7 @@ module.exports = function (app, passport, swaggerSpec) {
         req.body.userThatGotReported,
         req.body.reason], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -1235,6 +1255,7 @@ module.exports = function (app, passport, swaggerSpec) {
             [req.params.userIDToFollow, req.params.activeuserID],
             function (error2, results) {
               if (error2) {
+                console.log(error2)
                 res.status(500).send(error2)
               } else {
                 if (results.length != 0) {
@@ -1243,6 +1264,7 @@ module.exports = function (app, passport, swaggerSpec) {
                     [req.params.activeuserID, req.params.userIDToFollow],
                     function (error) {
                       if (error) {
+                        console.log(error)
                         res.status(500).send(error)
                       }
                       res.sendStatus(200)
@@ -1287,6 +1309,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT followers.liked_id, users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ? AND users.is_banned != 1',
       [req.params.userID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -1323,6 +1346,7 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('DELETE FROM followers WHERE user_id=? AND liked_id=?',
       [req.params.currentUserID, req.params.stopUserID], function (error) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           connection.query(
@@ -1333,6 +1357,7 @@ module.exports = function (app, passport, swaggerSpec) {
               req.params.userIDToFollow,
               req.params.activeuserID], function (error) {
               if (error) {
+                console.log(error)
                 res.status(500).send(error)
               }
               res.sendStatus(200)
@@ -1371,6 +1396,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user2_id = users.id WHERE user1_id = ? AND users.is_banned != 1',
             [req.params.userID], function (error, result) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 FriendList.push(result)
@@ -1383,6 +1409,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'SELECT friends.*,  users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `friends` INNER JOIN users ON friends.user1_id = users.id WHERE user2_id = ? AND users.is_banned != 1',
             [req.params.userID], function (error, result) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 FriendList.push(result)
@@ -1428,6 +1455,7 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('UPDATE users SET users.city=? WHERE users.id=?',
       [req.body.city, req.body.userID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -1453,6 +1481,7 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getSkills', function (req, res) {
     connection.query('SELECT * FROM `skills`', function (error, results) {
       if (error) {
+        console.log(error)
         res.status(500).send(error)
       } else {
         res.send(results)
@@ -1549,6 +1578,7 @@ module.exports = function (app, passport, swaggerSpec) {
           ' AND users.is_banned != 1 ORDER BY status_list.timestamp DESC LIMIT ' + req.params.limit +
           ' OFFSET ' + req.params.offset, function (error, results) {
           if (error) {
+            console.log(error)
             res.status(500).send(error)
           } else {
             res.send(results)
@@ -1562,6 +1592,7 @@ module.exports = function (app, passport, swaggerSpec) {
       [req.params.userID, req.params.limit, req.params.offset],
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.status(200).send(results)
@@ -1602,6 +1633,7 @@ module.exports = function (app, passport, swaggerSpec) {
       [req.body.userID, req.body.status, req.body.extraInfo],
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -1642,6 +1674,7 @@ module.exports = function (app, passport, swaggerSpec) {
       [req.body.status_id, req.body.reporterUser_id, req.body.reason],
       function (error) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -1682,12 +1715,14 @@ module.exports = function (app, passport, swaggerSpec) {
       'INSERT INTO `status_likes` (`id`, `status_id`, `likerUser_id`) VALUES (NULL, ?, ?)',
       [req.params.statusID, req.params.userID], function (error) {
         if (error) {
+          console.log(error)
           res.status(404).send(error)
         } else {
           connection.query(
             'UPDATE `status_list` SET flagged=(flagged+1)  WHERE id=?',
             [req.params.statusID], function (error) {
               if (error) {
+                console.log(error)
                 res.status(500).send(error)
               } else {
                 res.sendStatus(200)
@@ -1728,6 +1763,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'INSERT INTO `chats` (`user1_id`, `user2_id`, `start_timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
       [req.params.UserID1, req.params.UserID2], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           connection.query('SELECT * FROM `chats` WHERE `id`= ?',
@@ -1775,6 +1811,7 @@ module.exports = function (app, passport, swaggerSpec) {
       [req.body.message, req.body.userID, req.body.chatID],
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           connection.query('SELECT * FROM `message_list` WHERE `id`= ?',
@@ -1814,6 +1851,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT * FROM `message_list` WHERE 	chat_id=? ORDER BY timestamp ASC',
       [req.params.chatID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -1848,6 +1886,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT * FROM `chats` WHERE user1_id=? OR user2_id=? ORDER BY start_timestamp ASC',
       [req.params.userID, req.params.userID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -1881,6 +1920,7 @@ module.exports = function (app, passport, swaggerSpec) {
         'UPDATE message_list SET message_list.is_read = true WHERE id=?', [id],
         function (error) {
           if (error) {
+            console.log(error)
             cb(error)
           } else {
             cb()
@@ -1920,6 +1960,7 @@ module.exports = function (app, passport, swaggerSpec) {
       connection.query('DELETE FROM message_list WHERE message_list.id=?', [id],
         function (error) {
           if (error) {
+            console.log(error)
             cb(error)
           } else {
             cb()
@@ -1970,6 +2011,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'SELECT distances.distance AS search_distance,users.city,users.longitude,users.latitude FROM users INNER JOIN distances on distance_id=distances.id WHERE users.id = ? AND users.is_banned != 1',
             [req.params.userID], function (error, results) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 if (results.length != 0) {
@@ -1986,6 +2028,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'SELECT users.id, users.city, users.longitude,users.latitude FROM users WHERE users.id != ?  AND users.longitude IS NOT NULL AND users.is_banned != 1',
             [req.params.userID], function (error, results) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 Users = results
@@ -2093,6 +2136,7 @@ module.exports = function (app, passport, swaggerSpec) {
       [req.params.longitude, req.params.latitude, req.params.userID],
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -2125,6 +2169,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'UPDATE users SET longitude=NULL, latitude=NULL  WHERE id=?',
       [req.params.userID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -2152,6 +2197,7 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('SELECT id, distance FROM `distances`',
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -2205,6 +2251,7 @@ module.exports = function (app, passport, swaggerSpec) {
         req.body.duration,
         req.body.user_id], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -2236,11 +2283,13 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('delete from events where events.id = ?',
       [req.params.eventID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           connection.query('delete from invites where invites.event_id = ?',
             [req.params.eventID], function (error, results) {
               if (error) {
+                console.log(error)
                 res.status(500).send(error)
               } else {
                 res.send(results)
@@ -2279,6 +2328,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -2313,6 +2363,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT events.* FROM events WHERE events.user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -2347,6 +2398,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT events.* FROM events WHERE events.user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -2383,6 +2435,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -2430,6 +2483,7 @@ module.exports = function (app, passport, swaggerSpec) {
         req.body.event_id,
         req.body.message], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -2465,6 +2519,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'UPDATE `invites` SET `response_id` = ? WHERE `invites`.`id` = ?;',
       [req.body.response_id, req.body.id], function (error) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -2491,6 +2546,7 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getResponses', function (req, res) {
     connection.query('SELECT * FROM `responses`', function (error, results) {
       if (error) {
+        console.log(error)
         res.status(500).send(error)
       } else {
         res.status(200).send(results)
@@ -2519,6 +2575,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT invites.id AS response_id, responses.response, users.id AS user_id, users.username  FROM invites INNER JOIN users ON users.id = receiver_user_id  INNER JOIN responses ON responses.id = invites.response_id WHERE invites.event_id =? AND users.is_banned != 1',
       [req.params.eventID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.status(200).send(results)
@@ -2554,6 +2611,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT events_skills.* from events_skills INNER JOIN events on events.id = events_skills.event_id WHERE events_skills.event_id=?',
       [req.params.eventID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.status(200).send(results)
@@ -2585,6 +2643,7 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('UPDATE events_skills SET status = TRUE WHERE id=?',
       [req.params.event_skillID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -2616,6 +2675,7 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query('UPDATE events_skills SET status = FALSE WHERE id=?',
       [req.params.event_skillID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -2653,6 +2713,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'INSERT INTO `events_skills` (`id`, `event_id`, `skill_id`, `status`) VALUES (NULL, ?, ?, FALSE)',
       [req.params.event_id, req.params.skill_id], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -2697,6 +2758,7 @@ module.exports = function (app, passport, swaggerSpec) {
       [req.body.event_id, req.body.sender_user_id, req.body.reason],
       function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.sendStatus(200)
@@ -2731,6 +2793,7 @@ module.exports = function (app, passport, swaggerSpec) {
       'SELECT event_request.*, users.username FROM `event_request` INNER JOIN users ON users.id= event_request.sender_user_id WHERE event_request.event_id=? AND event_request.responses_id!=3 AND users.is_banned != 1',
       [req.params.eventID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -2742,9 +2805,10 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query(
       'SELECT event_request.*,events.date,events.title,events.description,events.duration,events.user_id AS hostUserId FROM `event_request` \n' +
       'INNER JOIN events on events.id = event_request.event_id \n' +
-      'WHERE event_request.responses_id!=3 AND sender_user_id=? ORDER BY `responses_id` ASC',
+      'WHERE event_request.responses_id!=3 AND sender_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000) ORDER BY `responses_id` ASC',
       [req.params.userID], function (error, results) {
         if (error) {
+          console.log(error)
           res.status(500).send(error)
         } else {
           res.send(results)
@@ -2784,6 +2848,7 @@ module.exports = function (app, passport, swaggerSpec) {
         [req.params.responseID, req.params.eventRequestID],
         function (error, results) {
           if (error) {
+            console.log(error)
             res.status(500).send(error)
           } else {
             res.send(results)
@@ -2797,6 +2862,7 @@ module.exports = function (app, passport, swaggerSpec) {
           connection.query('SELECT * FROM `status_list` WHERE id = ?',
             [req.body.statusId], function (error, results) {
               if (error || results.length==0) {
+                console.log(error)
                 callback(error)
               } else {
                 console.log(results)
@@ -2809,6 +2875,7 @@ module.exports = function (app, passport, swaggerSpec) {
             [flaggedPost.id,flaggedPost.user_id,flaggedPost.timestamp,flaggedPost.status,flaggedPost.extra_info,flaggedPost.liked]
             ,function (error) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 callback(null)
@@ -2819,6 +2886,7 @@ module.exports = function (app, passport, swaggerSpec) {
           connection.query('DELETE FROM status_list WHERE status_list.id=?',
             [req.body.statusId], function (error) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 callback(null)
@@ -2830,6 +2898,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
             [req.body.statusId], function (error) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 callback(null)
@@ -2852,6 +2921,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
             [req.body.statusId], function (error) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 callback(null)
@@ -2874,6 +2944,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'UPDATE users set users.is_banned=1 WHERE users.id=?',
             [req.body.userId], function (error) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 callback(null)
@@ -2886,6 +2957,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'DELETE FROM user_reports WHERE user_reports.userThatGotReported=?',
             [req.body.userId], function (error) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 callback(null)
@@ -2908,6 +2980,7 @@ module.exports = function (app, passport, swaggerSpec) {
             'SELECT * FROM `user_reports` WHERE user_reports.userThatGotReported=?',
             [req.body.userId], function (error) {
               if (error) {
+                console.log(error)
                 callback(error)
               } else {
                 callback(null)
