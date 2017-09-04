@@ -2,6 +2,11 @@
 <html lang="en" >
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
+
+    <h1 class="center-align"><img height="10%" width="10%" src="images/empty.png" alt=""
+                                  class="circle"> <a href="/profile"><%= info.username %></a></h1></header>
+
+
     <!-- Menu Design for Tablets and Phone screen -->
     <div class="col s3 hide-on-large-only" >
         <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons" >menu</i ></a >
@@ -12,19 +17,19 @@
                         <img src="images/background/background1.jpg" >
                     </div >
                     <a href="#!user" ><img class="circle"
-                                           src="<%= info.profilepic_url %>" ></a >
+                                           src="images/empty.png" ></a >
                     <a href="#!name" ><span class="white-text name" ><%= info.username %></span ></a >
                     <a href="#!email" ><span class="white-text email" ><%= info.email %></span ></a >
                 </div >
             </li >
 
             <li ><a class="subheader"  ><i class="material-icons right" >thumbs_up_down</i >Flagged</a ></li >
-            <li ><a href="#flUsers" onclick="Materialize.showStaggeredList('#fUserList')" >Flagged Users</a ></li >
-            <li ><a href="#flPosts" onclick="Materialize.showStaggeredList('#fPostList')" >Flagged Posts</a ></li >
+            <li ><a id="flagUsers" class="tab" href="#flUsers" onclick="Materialize.showStaggeredList('#fUserList')" >Flagged Users</a ></li >
+            <li ><a id="flagPosts" class="tab" href="#flPosts" onclick="Materialize.showStaggeredList('#fPostList')" >Flagged Posts</a ></li >
             <li >
                 <div class="divider" ></div >
             </li >
-            <li ><a href="#Skills" onclick="Materialize.showStaggeredList('#AddSkill')" >Add Skills</a ></li >
+            <li ><a href="#Skills" class="tab" onclick="Materialize.showStaggeredList('#AddSkill')" >Add Skills</a ></li >
             <li class='active' ><a href="#Genre" onclick="Materialize.showStaggeredList('#AddGenre')">
                     Add Genres</a ></li >
             <li ><a href="/reports" >Reports</a ></li >
@@ -37,11 +42,7 @@
     </div>
 
 
-    <h1 class="center-align"><img height="10%" width="10%" src="images/empty.png" alt=""
-                                  class="circle"> <a href="/profile"><%= info.username %></a></h1></header>
-
-
-    <!-- Menu Design for laptop and computer screen -->
+       <!-- Menu Design for laptop and computer screen -->
     <ul class="tabs center-align hide-on-med-and-down" style="margin-top: 5%">
 
         <li id="flPosts" class="tab col s3">
@@ -65,6 +66,7 @@
 <body >
 <main >
 
+    <!-- Information displayed in each tab-->
     <div id="FlaggedPosts" class="col s12" style="margin-left: 10%; margin-right: 10%;margin-top: 5%;margin-bottom: 10%">
         <div>
             <ul id="fPostList" class="collection truncate">
@@ -72,6 +74,7 @@
             </ul>
         </div>
     </div>
+    <!--FlaggedUsers Tab-->
     <div id="FlaggedUsers" class="col s12" style="margin-left: 10%; margin-right: 10%;margin-top: 5%;margin-bottom: 10%">
         <div>
             <ul id="fUserList" class="collection truncate">
@@ -80,6 +83,7 @@
         </div>
     </div>
 
+    <!--FlaggedUsers Tab-->
     <div id="AddGenre" class="col s12 center-align"
          style="margin-left: 10%; margin-right: 10%;margin-top: 10%;margin-bottom: 10%; border: groove">
             <form class="col s12">
@@ -123,7 +127,7 @@
                     <i class="large material-icons">edit</i></a></li>
         </ul>
     </div>
-
+    <!--Modal For Sending a broadcast-->
     <div id="SpecifyUsers" class="modal bottom-sheet">
         <div class="modal-content">
             <h4>Broadcast To:</h4>
@@ -142,7 +146,7 @@
     </div>
 
 
-
+    <!--Modal to broadcsast to All Users-->
     <div id="SendToAll" class="modal bottom-sheet">
         <div class="modal-content">
             <h4>Broadcast To All Users</h4>
@@ -179,6 +183,7 @@
 <%- include ../../Partials/footer.ejs %>
 <script >
 
+    //Generate Flagged Users
     function addUsers()
     {
         for(var i = 0; i < 10; i++)
@@ -194,6 +199,7 @@
 
     };
 
+    //Generate Flagged User Posts
     function addPosts()
     {
         for(var i = 0; i < 10; i++)
@@ -209,9 +215,21 @@
 
     };
 
-       $("#flUsers").click(addUsers());
+    function UsersVisible()
+    {
+        $('#flagUsers').visibility = true;
+        addPosts();
+        $('#flagPosts').visibility = false;
 
-    $("#flPosts").click(addPosts());
+    }
+
+    //Add Information to flagged Users
+       $("#flUsers").click(addUsers());
+    $("#flUsers").click(addUsers());
+
+    //Add Information to flagged Users posts
+    $("#flagPosts").click(addPosts());
+    $("#flagUsers").click(UsersVisible);
 
     $(document).ready(function(){
         // the "href" attribute of the modal trigger specifies the modal ID that wants to be triggered
