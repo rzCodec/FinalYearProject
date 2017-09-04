@@ -5,7 +5,7 @@ var parallel = require('async/parallel')
 var dbconfig = require('../config/database')
 var connection = mysql.createConnection(dbconfig.connection)
 var request = require('request')
-var website = process.env.website || 'http://localhost:8080';
+var website = process.env.website || 'http://localhost:8080'
 connection.query('USE informatics')
 module.exports = function (app, passport, swaggerSpec) {
   /**
@@ -270,15 +270,16 @@ module.exports = function (app, passport, swaggerSpec) {
       })
   })
   app.get('/dashBoard', isLoggedIn, function (req, res) {
-    if (req.user.admin == '0') {
+    var defaultt = 0
+    if (req.user.admin.toString() === defaultt.toString()) {
       var UserInfo = {
         info: req.user,
       }
       parallel([
           function (callback) {
-        console.log(website)
+            console.log(website)
             request({
-              url: website+'/getStatuses/' + req.user.id+'/0/10',
+              url: website + '/getStatuses/' + req.user.id + '/0/10',
               json: true,
             }, function (error, response, body) {
               console.log(body)
@@ -291,7 +292,7 @@ module.exports = function (app, passport, swaggerSpec) {
           },
           function (callback) {
             request({
-              url: website+'/getTopGenres',
+              url: website + '/getTopGenres',
               json: true,
             }, function (error, response, body) {
               if (error) {
@@ -303,7 +304,7 @@ module.exports = function (app, passport, swaggerSpec) {
           },
           function (callback) {
             request({
-              url: website+'/getTopUsers',
+              url: website + '/getTopUsers',
               json: true,
             }, function (error, response, body) {
               if (error) {
@@ -320,7 +321,7 @@ module.exports = function (app, passport, swaggerSpec) {
           })
         })
     } else {
-      console.log("asdas")
+      console.log('asdas')
       res.redirect('/broadcast')
     }
 
@@ -343,15 +344,35 @@ module.exports = function (app, passport, swaggerSpec) {
       })
   })
   app.get('/flaggedposts', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/FlaggedPosts.ejs', {info: req.user},
-      function (err, html) {
-        res.send(html)
+    connection.query(
+      'SELECT status_reports.*, status_list.user_id,status_list.timestamp,status_list.status,status_list.extra_info,status_list.liked, users.username FROM `status_reports` INNER JOIN status_list ON status_list.id = status_reports.status_id INNER JOIN users ON users.id = status_list.user_id',
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.render('Pages/AdminDashboard/FlaggedPosts.ejs',
+            {info: req.user, flaggedPosts: results},
+            function (err, html) {
+              res.send(html)
+            })
+        }
       })
+
   })
   app.get('/flaggedusers', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/FlaggedUsers.ejs', {info: req.user},
-      function (err, html) {
-        res.send(html)
+    connection.query(
+      'SELECT users.username,user_reports.userThatReported,user_reports.userThatGotReported,user_reports.reason FROM `user_reports` INNER JOIN users ON users.id = user_reports.userThatGotReported',
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.render('Pages/AdminDashboard/FlaggedUsers.ejs',
+            {info: req.user, flaggedUsers: results},
+            function (err, html) {
+            console.log(err)
+              res.send(html)
+            })
+        }
       })
   })
   app.get('/settings', isLoggedIn, function (req, res) {
@@ -359,11 +380,33 @@ module.exports = function (app, passport, swaggerSpec) {
       res.send(html)
     })
   })
-  app.get('/addStudio', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/AddStudio.ejs', {info: req.user},
-      function (err, html) {
+  app.get('/addGenres', isLoggedIn, function (req, res) {
+    request({
+      url: website + '/getGenres',
+      json: true,
+    }, function (error, response, body) {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500)
+      }
+      res.render('Pages/AdminDashboard/AddGenres.ejs',{info: req.user, genres: body}, function (err, html) {
         res.send(html)
       })
+    })
+  })
+  app.get('/addSkills', isLoggedIn, function (req, res) {
+    request({
+      url: website + '/getSkills',
+      json: true,
+    }, function (error, response, body) {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500)
+      }
+      res.render('Pages/AdminDashboard/AddSkills.ejs',{info: req.user, skills: body}, function (err, html) {
+        res.send(html)
+      })
+    })
   })
   app.get('/reports', isLoggedIn, function (req, res) {
     var Reports = {
@@ -634,6 +677,28 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       })
   })
+  app.post('/addGenre', function (req, res) {
+    connection.query(
+      'INSERT INTO `genres` (`id`, `name`, `created_timestamp`, `updated_timestamp`) VALUES (NULL, ?,ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',[req.body.genreName],
+      function (error) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
+  app.post('/addSkill', function (req, res) {
+    connection.query(
+      'INSERT INTO `skills` (`id`, `name`) VALUES (NULL, ?)',[req.body.skillName],
+      function (error) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
   /**
    * @swagger
    * /getTopGenres:
@@ -721,7 +786,7 @@ module.exports = function (app, passport, swaggerSpec) {
         if (error) {
           res.status(500).send(error)
         } else {
-          userResults=userResults[0]
+          userResults = userResults[0]
           connection.query(
             'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
             [userResults.id], function (error, results) {
@@ -764,7 +829,7 @@ module.exports = function (app, passport, swaggerSpec) {
       if (error) {
         res.status(500).send(error)
       } else {
-        userResults=userResults[0]
+        userResults = userResults[0]
         connection.query(
           'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
           [userResults.id], function (error, results) {
@@ -1228,7 +1293,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: Failed to set the city
    */
-  app.get('/setCity', function (req, res) {
+  app.post('/setCity', function (req, res) {
     connection.query('UPDATE users SET users.city=? WHERE users.id=?',
       [req.body.city, req.body.userID], function (error, results) {
         if (error) {
@@ -1438,6 +1503,161 @@ module.exports = function (app, passport, swaggerSpec) {
         } else {
           res.sendStatus(200)
         }
+      })
+  })
+  app.post('/deleteStatus', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query('SELECT * FROM `status_list` WHERE id = ?',
+            [req.body.statusId], function (error, results) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null, results[0])
+              }
+            })
+        },
+        function (flaggedPost, callback) {
+          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (' +
+            flaggedPost.id + ', ' + flaggedPost.user_id + ', ' +
+            flaggedPost.timestamp + ', ' + flaggedPost.status + ',  ' +
+            flaggedPost.extra_info + ', ' + flaggedPost.liked + ')',
+            function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query('DELETE FROM status_list WHERE status_list.id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })
+  app.post('/pardonStatus', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })
+
+  app.post('/banUser', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query('SELECT * FROM `status_list` WHERE id = ?',
+            [req.body.statusId], function (error, results) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null, results[0])
+              }
+            })
+        },
+        function (flaggedPost, callback) {
+          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (' +
+            flaggedPost.id + ', ' + flaggedPost.user_id + ', ' +
+            flaggedPost.timestamp + ', ' + flaggedPost.status + ',  ' +
+            flaggedPost.extra_info + ', ' + flaggedPost.liked + ')',
+            function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query('DELETE FROM status_list WHERE status_list.id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })//TODO
+  app.post('/pardonUser', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `user_reports` WHERE user_reports.userThatGotReported=?',
+            [req.body.userId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        }
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
       })
   })
   /**
@@ -2065,7 +2285,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getEvents/:userID', function (req, res) {
     connection.query('SELECT events.*, invites.message,invites.id AS invite_id,invites.sender_user_id FROM invites \n' +
-      'INNER JOIN events on events.id = invites.id \n' +
+      'INNER JOIN events on events.id = invites.event_id \n' +
       'INNER JOIN responses ON responses.id = invites.response_id \n' +
       'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
@@ -2519,7 +2739,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getRequestedInvites/:eventID', function (req, res) {
     connection.query(
-      'SELECT * FROM `event_request` WHERE event_request.event_id=? AND event_request.responses_id!=3',
+      'SELECT event_request.*, users.username FROM `event_request` INNER JOIN users ON users.id= event_request.sender_user_id WHERE event_request.event_id=? AND event_request.responses_id!=3',
       [req.params.eventID], function (error, results) {
         if (error) {
           res.status(500).send(error)
@@ -2538,8 +2758,8 @@ module.exports = function (app, passport, swaggerSpec) {
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: eventID
-   *         description: The event ID
+   *       - name: eventRequestID
+   *         description: The event request ID
    *         in: path
    *         required: true
    *         type: integer
@@ -2554,16 +2774,19 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: Failed to update
    */
-  app.get('/updateRequestResponse/:eventID/:responseID', function (req, res) {
-    connection.query('UPDATE event_request SET responses_id=? WHERE event_id=?',
-      [req.params.responseID, req.params.eventID], function (error, results) {
-        if (error) {
-          res.status(500).send(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
+  app.get('/updateRequestResponse/:eventRequestID/:responseID',
+    function (req, res) {
+      connection.query(
+        'UPDATE event_request SET responses_id=? WHERE event_request.id=?\n',
+        [req.params.responseID, req.params.eventRequestID],
+        function (error, results) {
+          if (error) {
+            res.status(500).send(error)
+          } else {
+            res.send(results)
+          }
+        })
+    })
 
   app.get('/swagger.json', function (req, res) {
     res.setHeader('Content-Type', 'application/json')
