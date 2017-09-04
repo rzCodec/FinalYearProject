@@ -14,7 +14,8 @@ module.exports = function (passport) {
     done(null, user.id)
   })
   passport.deserializeUser(function (id, done) {
-    connection.query('SELECT * FROM users WHERE id = ? AND users.is_banned != 1', [id],
+    connection.query(
+      'SELECT * FROM users WHERE id = ? AND users.is_banned != 1', [id],
       function (err, rows) {
         done(err, rows[0])
       })
@@ -28,7 +29,9 @@ module.exports = function (passport) {
         passReqToCallback: true,
       },
       function (req, username, password, done) {
-        connection.query('SELECT * FROM users WHERE username = ? AND users.is_banned != 1', [username],
+        connection.query(
+          'SELECT * FROM users WHERE username = ? AND users.is_banned != 1',
+          [username],
           function (err, rows) {
             if (err)
               return done(err)
@@ -107,7 +110,8 @@ module.exports = function (passport) {
         passReqToCallback: true,
       },
       function (req, username, password, done) {
-        connection.query('SELECT * FROM informatics.users WHERE email= ? AND users.is_banned != 1',
+        connection.query(
+          'SELECT * FROM informatics.users WHERE email= ? AND users.is_banned != 1',
           [username], function (err, rows) {
             if (err)
               return done(err)
@@ -116,11 +120,19 @@ module.exports = function (passport) {
                 req.flash('loginMessage', 'No user found.'))
             }
 
-            if (!bcrypt.compareSync(password, rows[0].password))
+            if (!bcrypt.compareSync(password, rows[0].password)){
               return done(null, false,
                 req.flash('loginMessage', 'Oops! Wrong password.'))
-            return done(null, rows[0])
+            }else{
+              connection.query(
+                'UPDATE users SET users.last_login_timestamp=ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000) WHERE users.id=?',
+                [rows[0].id], function (err) {
+                  return done(null, rows[0])
+                })
+
+            }
           })
       })
   )
 }
+
