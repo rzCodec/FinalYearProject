@@ -17,8 +17,28 @@
                     <div class='container' >
                         <div class="card white darken-4 black-text" >
                             <div class="card-content" >
-                                <h1 >Genre percentages</h1 >
+                                <h1 >Spread of genres</h1 >
                                 <canvas id="myChart" width="400" height="400" ></canvas >
+                            </div >
+                        </div >
+                    </div >
+                </li >
+                <li class="" style="transform: translateX(0px); opacity: 0; " >
+                    <div class='container' >
+                        <div class="card white darken-4 black-text" >
+                            <div class="card-content" >
+                                <h1 >Spread of skills</h1 >
+                                <canvas id="myChartSkills" width="400" height="400" ></canvas >
+                            </div >
+                        </div >
+                    </div >
+                </li >
+                <li class="" style="transform: translateX(0px); opacity: 0; " >
+                    <div class='container' >
+                        <div class="card white darken-4 black-text" >
+                            <div class="card-content" >
+                                <h1 >Location spread</h1 >
+                                <canvas id="myChartLocationSpread" width="400" height="400" ></canvas >
                             </div >
                         </div >
                     </div >
@@ -33,12 +53,24 @@
                         </div >
                     </div >
                 </li >
+
                 <li class="" style="transform: translateX(0px); opacity: 0; " >
                     <div class='container' >
                         <div class="card white darken-4 black-text" >
                             <div class="card-content" >
-                                <h1 >Skill Percentages</h1 >
-                                <canvas id="myChartSkills" width="400" height="400" ></canvas >
+                                <h1 >Posts per week</h1 >
+                                <canvas id="myChartPostsPerDay" width="400" height="400" ></canvas >
+                            </div >
+                        </div >
+                    </div >
+                </li >
+
+                <li class="" style="transform: translateX(0px); opacity: 0; " >
+                    <div class='container' >
+                        <div class="card white darken-4 black-text" >
+                            <div class="card-content" >
+                                <h1 >Events per week</h1 >
+                                <canvas id="myChartEventsPerDay" width="400" height="400" ></canvas >
                             </div >
                         </div >
                     </div >
@@ -93,7 +125,18 @@
         data: [<% Reports.genres.forEach(function (genre) { %>
             <%= genre.count %>,
             <% }) %>],
-        borderWidth: 1
+        borderWidth: 1,
+        backgroundColor: [
+            <% Reports.genres.forEach(function (genre) { %>
+          'rgba(255, 99, 132, 0.2)',
+            <% }) %>
+        ],
+        borderColor: [
+            <% Reports.genres.forEach(function (genre) { %>
+          'rgba(255, 99, 132, 0.2)',
+            <% }) %>
+        ],
+
       }]
     },
     options: {
@@ -131,18 +174,16 @@
     }
   });
 
-  var ctx3 = document.getElementById("myChartSkills").getContext('2d');
-  var myChart3 = new Chart(ctx3, {
+  var ctx4 = document.getElementById("myChartPostsPerDay").getContext('2d');
+  var myChart4 = new Chart(ctx4, {
     type: 'bar',
     data: {
-      labels: [<% Reports.skills.forEach(function (skill) { %>
-        "<%= skill.name %>",
-          <% }) %>],
+      labels: [
+        "Week4","Week3","Week2","Week1"
+      ],
       datasets: [{
-        label: '# of skills',
-        data: [<% Reports.skills.forEach(function (skill) { %>
-            <%= skill.count %>,
-            <% }) %>],
+        label: '# of posts per week',
+        data: [<%=Reports.postsWeek4%>,<%=Reports.postsWeek3%>,<%=Reports.postsWeek2%>,<%=Reports.postsWeek1%>],
         borderWidth: 1
       }]
     },
@@ -156,6 +197,104 @@
       }
     }
   });
+
+  var ctx5 = document.getElementById("myChartEventsPerDay").getContext('2d');
+  var myChart5 = new Chart(ctx5, {
+    type: 'bar',
+    data: {
+      labels: [
+        "Week4","Week3","Week2","Week1"
+      ],
+      datasets: [{
+        label: '# of events created per week',
+        data: [<%=Reports.eventsWeek4%>,<%=Reports.eventsWeek3%>,<%=Reports.eventsWeek2%>,<%=Reports.eventsWeek1%>],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+
+  var ctx6 = document.getElementById("myChartLocationSpread").getContext('2d');
+  var myChart6 = new Chart(ctx6, {
+    type: 'bar',
+    data: {
+      labels: [<% Reports.cities.forEach(function (city) { %>
+        "<%= city.name %>",
+          <% }) %>],
+      datasets: [{
+        label: '# of users from location',
+        data: [<% Reports.cities.forEach(function (city) { %>
+            <%= city.count %>,
+            <% }) %>],
+        borderWidth: 1,
+        backgroundColor: [
+            <% Reports.cities.forEach(function (city) { %>
+          'rgba(255, 99, 132, 0.2)',
+            <% }) %>
+        ],
+        borderColor: [
+            <% Reports.cities.forEach(function (city) { %>
+          'rgba(255, 99, 132, 0.2)',
+            <% }) %>
+        ],
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+
+  var ctx7 = document.getElementById("myChartSkills").getContext('2d');
+  var myChart7 = new Chart(ctx7, {
+    type: 'bar',
+    data: {
+      labels: [<% Reports.skills.forEach(function (skill) { %>
+        "<%= skill.name %>",
+          <% }) %>],
+      datasets: [{
+        label: '# of users with the skill',
+        data: [<% Reports.skills.forEach(function (skill) { %>
+            <%= skill.count %>,
+            <% }) %>],
+        borderWidth: 1,
+        backgroundColor: [
+            <% Reports.skills.forEach(function (skill) { %>
+          'rgba(255, 99, 132, 0.2)',
+            <% }) %>
+        ],
+        borderColor: [
+            <% Reports.skills.forEach(function (skill) { %>
+          'rgba(255, 99, 132, 0.2)',
+            <% }) %>
+        ],
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+
+
 </script >
 <script >
   Materialize.showStaggeredList('#staggered-test');

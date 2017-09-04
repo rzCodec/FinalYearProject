@@ -469,6 +469,15 @@ module.exports = function (app, passport, swaggerSpec) {
       usersWeek2: null,
       usersWeek3: null,
       usersWeek4: null,
+      cities: null,
+      eventsWeek1: null,
+      eventsWeek2: null,
+      eventsWeek3: null,
+      eventsWeek4: null,
+      postsWeek1: null,
+      postsWeek2: null,
+      postsWeek3: null,
+      postsWeek4: null,
     }
     parallel([
         function (callback) {
@@ -537,7 +546,6 @@ module.exports = function (app, passport, swaggerSpec) {
               }
             })
         },
-
         function (callback) {
           connection.query(
             'SELECT COUNT(*) AS count FROM `users` WHERE users.last_login_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000)',
@@ -550,7 +558,6 @@ module.exports = function (app, passport, swaggerSpec) {
               }
             })
         },
-
         function (callback) {
           connection.query(
             'SELECT genres.name, COUNT(users.genre_id) AS count FROM users INNER JOIN genres on genres.id = users.genre_id GROUP BY genre_id ORDER BY count DESC',
@@ -561,6 +568,78 @@ module.exports = function (app, passport, swaggerSpec) {
                 Reports.genres = results
                 callback()
               }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT users.city AS name, COUNT(*) AS count FROM users GROUP BY users.city ORDER BY users.city',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.cities = results
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM status_list WHERE status_list.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-604800000)',
+            function (error1, results1) {
+              Reports.postsWeek1 = results1[0].count
+              connection.query(
+                'SELECT COUNT(*) AS count FROM status_list WHERE status_list.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1209600000)',
+                function (error2, results2) {
+                  Reports.postsWeek2 = results2[0].count - Reports.postsWeek1
+                  connection.query(
+                    'SELECT COUNT(*) AS count FROM status_list WHERE status_list.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1814400000)',
+                    function (error3, results3) {
+                      Reports.postsWeek3 = results3[0].count -
+                        Reports.postsWeek2 - Reports.postsWeek1
+                      connection.query(
+                        'SELECT COUNT(*) AS count FROM status_list WHERE status_list.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2419200000)',
+                        function (error4, results4) {
+                          if (error4) {
+                            console.log(error4)
+                          } else {
+                            Reports.postsWeek4 = results4[0].count -
+                              Reports.postsWeek3 - Reports.postsWeek2 -
+                              Reports.postsWeek1
+                            callback()
+                          }
+                        })
+                    })
+                })
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM events WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-604800000)',
+            function (error1, results1) {
+              Reports.eventsWeek1 = results1[0].count
+              connection.query(
+                'SELECT COUNT(*) AS count FROM events WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1209600000)',
+                function (error2, results2) {
+                  Reports.eventsWeek2 = results2[0].count - Reports.eventsWeek1
+                  connection.query(
+                    'SELECT COUNT(*) AS count FROM events WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1814400000)',
+                    function (error3, results3) {
+                      Reports.eventsWeek3 = results3[0].count -
+                        Reports.eventsWeek2 - Reports.eventsWeek1
+                      connection.query(
+                        'SELECT COUNT(*) AS count FROM events WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2419200000)',
+                        function (error4, results4) {
+                          if (error4) {
+                            console.log(error4)
+                          } else {
+                            Reports.eventsWeek4 = results4[0].count -
+                              Reports.eventsWeek3 - Reports.eventsWeek2 -
+                              Reports.eventsWeek1
+                            callback()
+                          }
+                        })
+                    })
+                })
             })
         },
       ],

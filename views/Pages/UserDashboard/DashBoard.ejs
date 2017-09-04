@@ -13,19 +13,19 @@
                     <div class="card white darken-1" >
                         <div class="card-content" >
                         <span class="card-title center-align" >
-                            <img class="circle" src="images/empty.png"alt= ""
-                                 width="64" height="64" ><p>Welcome <%= UserInfo.info.username %></p></span >
+                            <img class="circle" src="images/empty.png" alt=""
+                                 width="64" height="64" ><p >Welcome <%= UserInfo.info.username %></p ></span >
 
                         </div >
                     </div >
                 </li >
-                <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%">
-                    <div>
-                        <ul id="posts" class="collection truncate">
+                <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%" >
+                    <div >
+                        <ul id="posts" class="collection truncate" >
 
-                        </ul>
-                    </div>
-                </div>
+                        </ul >
+                    </div >
+                </div >
             </ul >
         </div >
         <div class="col s4" >
@@ -95,7 +95,7 @@
     }
   });
 
-  function getRandomColor() {
+  function getRandomColor () {
     var letters = '0123456789ABCDEF'.split('');
     var color = '#';
     for (var i = 0; i < 6; i++) {
@@ -104,20 +104,19 @@
     return color;
   }
 
-  function getPosts()
-  {
-      for(var i = 0; i < 10; i++)
-      {
-          var first= ' <li class="collection-item avatar"> ';
-          first +='<div><img src="images/empty.png" alt="" class="circle">';
-          first +='<span class="title">' + i + '</span>';
-          first +='<p>First Line <br> Second Line';
-          first +='</p></div><a href="" class="secondary-content"><i class="material-icons">grade</i></a>';
-          first +='<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
-          $("#posts").append(first);
-      }
+  function getPosts () {
+    for (var i = 0; i < 10; i++) {
+      var first = ' <li class="collection-item avatar"> ';
+      first += '<div><img src="images/empty.png" alt="" class="circle">';
+      first += '<span class="title">' + i + '</span>';
+      first += '<p>First Line <br> Second Line';
+      first += '</p></div><a href="" class="secondary-content"><i class="material-icons">grade</i></a>';
+      first += '<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
+      $("#posts").append(first);
+    }
 
   }
+
   $("#Timeline").onload(getPosts());
 
 </script >
