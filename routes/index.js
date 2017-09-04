@@ -2737,6 +2737,20 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       })
   })
+
+  app.get('/getRequestedEvents/:userID', function (req, res) {
+    connection.query(
+      'SELECT event_request.*,events.date,events.title,events.description,events.duration,events.user_id AS hostUserId FROM `event_request` \n' +
+      'INNER JOIN events on events.id = event_request.event_id \n' +
+      'WHERE event_request.responses_id!=3 AND sender_user_id=? ORDER BY `responses_id` ASC',
+      [req.params.userID], function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /updateRequestResponse/{responseID}/{responseID}:
@@ -2875,7 +2889,7 @@ module.exports = function (app, passport, swaggerSpec) {
         }
         res.sendStatus(200)
       })
-  })//TODO
+  })
   app.post('/pardonUser', function (req, res) {
     waterfall([
         function (callback) {
