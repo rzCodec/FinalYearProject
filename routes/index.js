@@ -257,16 +257,71 @@ module.exports = function (app, passport, swaggerSpec) {
     failureFlash: true,
   }))
   app.get('/profile', isLoggedIn, function (req, res) {
-    connection.query(
-      'SELECT users.*, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=?',
-      [req.user.id], function (error, results) {
-        if (error) {
-          console.log(error)
-        } else {
-          res.render('Pages/UserDashboard/profile.ejs', {
-            user: results[0],
+    var userInfo
+    var UserFinishedEvents
+    var UserUpcomingEvents
+    var UserPosts
+    parallel([
+        function (callback) {
+          request({
+            url: website + '/getFinishedEvents/' + req.user.id,
+            json: true,
+          }, function (error, response, body) {
+            console.log(body)
+            if (error) {
+              console.log(error)
+              callback(error)
+            }
+            UserFinishedEvents = body
+            callback(null)
           })
-        }
+        },
+        function (callback) {
+          request({
+            url: website + '/getEvents/' + req.user.id,
+            json: true,
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error)
+              callback(error)
+            }
+            UserUpcomingEvents = body
+            callback(null)
+          })
+        },
+        function (callback) {
+          request({
+            url: website + '/getUserStatuses/' + req.user.id + '/0/10',
+            json: true,
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error)
+              callback(error)
+            }
+            UserPosts = body
+            callback(null)
+          })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT users.*, genres.name AS genre,distances.distance AS distance FROM users INNER JOIN distances ON users.distance_id = distances.id INNER JOIN genres on users.genre_id = genres.id WHERE users.id=?',
+            [req.user.id], function (error, results) {
+              if (error) {
+                callback(error)
+              } else {
+                userInfo = results
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err, results) {
+        res.render('Pages/UserDashboard/profile.ejs', {
+          user: userInfo,
+          UserFinishedEvents: UserFinishedEvents,
+          UserPosts: UserPosts,
+          UserUpcomingEvents: UserUpcomingEvents,
+        })
       })
   })
   app.get('/dashBoard', isLoggedIn, function (req, res) {
@@ -321,8 +376,7 @@ module.exports = function (app, passport, swaggerSpec) {
           })
         })
     } else {
-      console.log('asdas')
-      res.redirect('/broadcast')
+      res.redirect('/flaggedposts')
     }
 
   })
@@ -336,13 +390,7 @@ module.exports = function (app, passport, swaggerSpec) {
       res.send(html)
     })
   })
-  app.get('/broadcast', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/Broadcast.ejs', {info: req.user},
-      function (err, html) {
 
-        res.send(html)
-      })
-  })
   app.get('/flaggedposts', isLoggedIn, function (req, res) {
     connection.query(
       'SELECT status_reports.*, status_list.user_id,status_list.timestamp,status_list.status,status_list.extra_info,status_list.liked, users.username FROM `status_reports` INNER JOIN status_list ON status_list.id = status_reports.status_id INNER JOIN users ON users.id = status_list.user_id',
@@ -369,7 +417,7 @@ module.exports = function (app, passport, swaggerSpec) {
           res.render('Pages/AdminDashboard/FlaggedUsers.ejs',
             {info: req.user, flaggedUsers: results},
             function (err, html) {
-            console.log(err)
+              console.log(err)
               res.send(html)
             })
         }
@@ -389,9 +437,10 @@ module.exports = function (app, passport, swaggerSpec) {
         console.log(error)
         res.sendStatus(500)
       }
-      res.render('Pages/AdminDashboard/AddGenres.ejs',{info: req.user, genres: body}, function (err, html) {
-        res.send(html)
-      })
+      res.render('Pages/AdminDashboard/AddGenres.ejs',
+        {info: req.user, genres: body}, function (err, html) {
+          res.send(html)
+        })
     })
   })
   app.get('/addSkills', isLoggedIn, function (req, res) {
@@ -403,9 +452,10 @@ module.exports = function (app, passport, swaggerSpec) {
         console.log(error)
         res.sendStatus(500)
       }
-      res.render('Pages/AdminDashboard/AddSkills.ejs',{info: req.user, skills: body}, function (err, html) {
-        res.send(html)
-      })
+      res.render('Pages/AdminDashboard/AddSkills.ejs',
+        {info: req.user, skills: body}, function (err, html) {
+          res.send(html)
+        })
     })
   })
   app.get('/reports', isLoggedIn, function (req, res) {
@@ -679,7 +729,8 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   app.post('/addGenre', function (req, res) {
     connection.query(
-      'INSERT INTO `genres` (`id`, `name`, `created_timestamp`, `updated_timestamp`) VALUES (NULL, ?,ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',[req.body.genreName],
+      'INSERT INTO `genres` (`id`, `name`, `created_timestamp`, `updated_timestamp`) VALUES (NULL, ?,ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
+      [req.body.genreName],
       function (error) {
         if (error) {
           res.status(500).send(error)
@@ -690,7 +741,8 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   app.post('/addSkill', function (req, res) {
     connection.query(
-      'INSERT INTO `skills` (`id`, `name`) VALUES (NULL, ?)',[req.body.skillName],
+      'INSERT INTO `skills` (`id`, `name`) VALUES (NULL, ?)',
+      [req.body.skillName],
       function (error) {
         if (error) {
           res.status(500).send(error)
@@ -1425,6 +1477,18 @@ module.exports = function (app, passport, swaggerSpec) {
         })
       })
   })
+  app.get('/getUserStatuses/:userID/:offset/:limit', function (req, res) {
+    connection.query(
+      'SELECT * FROM `status_list` WHERE user_id=? ORDER BY timestamp DESC LIMIT ? OFFSET ?',
+      [req.params.userID, req.params.limit, req.params.offset],
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.status(200).send(results)
+        }
+      })
+  })
   /**
    * @swagger
    * /setStatus:
@@ -1650,7 +1714,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 callback(null)
               }
             })
-        }
+        },
       ],
       function (err) {
         if (err) {
