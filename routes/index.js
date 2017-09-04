@@ -270,7 +270,8 @@ module.exports = function (app, passport, swaggerSpec) {
       })
   })
   app.get('/dashBoard', isLoggedIn, function (req, res) {
-    if (req.user.admin == '0') {
+    var defaultt = 0
+    if (req.user.admin.toString() === defaultt.toString()) {
       var UserInfo = {
         info: req.user,
       }
@@ -343,15 +344,35 @@ module.exports = function (app, passport, swaggerSpec) {
       })
   })
   app.get('/flaggedposts', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/FlaggedPosts.ejs', {info: req.user},
-      function (err, html) {
-        res.send(html)
+    connection.query(
+      'SELECT status_reports.*, status_list.user_id,status_list.timestamp,status_list.status,status_list.extra_info,status_list.liked, users.username FROM `status_reports` INNER JOIN status_list ON status_list.id = status_reports.status_id INNER JOIN users ON users.id = status_list.user_id',
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.render('Pages/AdminDashboard/FlaggedPosts.ejs',
+            {info: req.user, flaggedPosts: results},
+            function (err, html) {
+              res.send(html)
+            })
+        }
       })
+
   })
   app.get('/flaggedusers', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/FlaggedUsers.ejs', {info: req.user},
-      function (err, html) {
-        res.send(html)
+    connection.query(
+      'SELECT users.username,user_reports.userThatReported,user_reports.userThatGotReported,user_reports.reason FROM `user_reports` INNER JOIN users ON users.id = user_reports.userThatGotReported',
+      function (error, results) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.render('Pages/AdminDashboard/FlaggedUsers.ejs',
+            {info: req.user, flaggedUsers: results},
+            function (err, html) {
+            console.log(err)
+              res.send(html)
+            })
+        }
       })
   })
   app.get('/settings', isLoggedIn, function (req, res) {
@@ -359,11 +380,33 @@ module.exports = function (app, passport, swaggerSpec) {
       res.send(html)
     })
   })
-  app.get('/addStudio', isLoggedIn, function (req, res) {
-    res.render('Pages/AdminDashboard/AddStudio.ejs', {info: req.user},
-      function (err, html) {
+  app.get('/addGenres', isLoggedIn, function (req, res) {
+    request({
+      url: website + '/getGenres',
+      json: true,
+    }, function (error, response, body) {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500)
+      }
+      res.render('Pages/AdminDashboard/AddGenres.ejs',{info: req.user, genres: body}, function (err, html) {
         res.send(html)
       })
+    })
+  })
+  app.get('/addSkills', isLoggedIn, function (req, res) {
+    request({
+      url: website + '/getSkills',
+      json: true,
+    }, function (error, response, body) {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500)
+      }
+      res.render('Pages/AdminDashboard/AddSkills.ejs',{info: req.user, skills: body}, function (err, html) {
+        res.send(html)
+      })
+    })
   })
   app.get('/reports', isLoggedIn, function (req, res) {
     var Reports = {
@@ -631,6 +674,28 @@ module.exports = function (app, passport, swaggerSpec) {
           res.status(500).send(error)
         } else {
           res.send(results)
+        }
+      })
+  })
+  app.post('/addGenre', function (req, res) {
+    connection.query(
+      'INSERT INTO `genres` (`id`, `name`, `created_timestamp`, `updated_timestamp`) VALUES (NULL, ?,ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',[req.body.genreName],
+      function (error) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
+  app.post('/addSkill', function (req, res) {
+    connection.query(
+      'INSERT INTO `skills` (`id`, `name`) VALUES (NULL, ?)',[req.body.skillName],
+      function (error) {
+        if (error) {
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
         }
       })
   })
@@ -1438,6 +1503,161 @@ module.exports = function (app, passport, swaggerSpec) {
         } else {
           res.sendStatus(200)
         }
+      })
+  })
+  app.post('/deleteStatus', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query('SELECT * FROM `status_list` WHERE id = ?',
+            [req.body.statusId], function (error, results) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null, results[0])
+              }
+            })
+        },
+        function (flaggedPost, callback) {
+          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (' +
+            flaggedPost.id + ', ' + flaggedPost.user_id + ', ' +
+            flaggedPost.timestamp + ', ' + flaggedPost.status + ',  ' +
+            flaggedPost.extra_info + ', ' + flaggedPost.liked + ')',
+            function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query('DELETE FROM status_list WHERE status_list.id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })
+  app.post('/pardonStatus', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })
+
+  app.post('/banUser', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query('SELECT * FROM `status_list` WHERE id = ?',
+            [req.body.statusId], function (error, results) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null, results[0])
+              }
+            })
+        },
+        function (flaggedPost, callback) {
+          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (' +
+            flaggedPost.id + ', ' + flaggedPost.user_id + ', ' +
+            flaggedPost.timestamp + ', ' + flaggedPost.status + ',  ' +
+            flaggedPost.extra_info + ', ' + flaggedPost.liked + ')',
+            function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query('DELETE FROM status_list WHERE status_list.id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
+            [req.body.statusId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
+      })
+  })//TODO
+  app.post('/pardonUser', function (req, res) {
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT * FROM `user_reports` WHERE user_reports.userThatGotReported=?',
+            [req.body.userId], function (error) {
+              if (error) {
+                callback(error)
+              } else {
+                callback(null)
+              }
+            })
+        }
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }
+        res.sendStatus(200)
       })
   })
   /**
@@ -2554,16 +2774,19 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: Failed to update
    */
-  app.get('/updateRequestResponse/:eventRequestID/:responseID', function (req, res) {
-    connection.query('UPDATE event_request SET responses_id=? WHERE event_request.id=?\n',
-      [req.params.responseID, req.params.eventRequestID], function (error, results) {
-        if (error) {
-          res.status(500).send(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
+  app.get('/updateRequestResponse/:eventRequestID/:responseID',
+    function (req, res) {
+      connection.query(
+        'UPDATE event_request SET responses_id=? WHERE event_request.id=?\n',
+        [req.params.responseID, req.params.eventRequestID],
+        function (error, results) {
+          if (error) {
+            res.status(500).send(error)
+          } else {
+            res.send(results)
+          }
+        })
+    })
 
   app.get('/swagger.json', function (req, res) {
     res.setHeader('Content-Type', 'application/json')

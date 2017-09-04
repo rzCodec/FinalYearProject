@@ -12,78 +12,24 @@
                 <h2 class="center-align" style='width:100%;' >Flagged Users</h2 >
             </div >
             <ul id="staggered-test" >
-
                 <li class="" style="transform: translateX(0px); opacity: 0; " >
-
                 </li >
                 <li class="" style="transform: translateX(0px); opacity: 0; margin-top:100px;" >
-                    <div class="carousel carousel-slider center" data-indicators="true" >
-                        <div class="carousel-fixed-item center" >
-
-                            <a id='accept' class="waves-effect waves-light btn" ><i
-                                        class="material-icons left" >thumb_up</i >Pardon</a >
-                            <a class="waves-effect waves-light btn" ><i
-                                        class="material-icons right" >thumb_down</i >Ban</a >
-
-                        </div >
-                        <div class="carousel-item transparent white-text" href="#one!" >
-                            <div class='container' >
-
-                                <div class="card white darken-4 black-text" >
-                                    <div class="card-content" >
-
-                                        <span class="card-title" >Kendrick Lamar </span >
-                                        <p >No. of reports: 2</p >
-                                        <p >No. of Pardons: 1</p >
-                                        <p >Overall Reason: Spam</p >
-                                        <p >Join Date: 12 March 2017</p >
-                                    </div >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="carousel-item transparent white-text" href="#two!" >
-                            <div class='container' >
-                                <div class="card white darken-4 black-text" >
-                                    <div class="card-content" >
-
-                                        <span class="card-title" >J.Cole </span >
-                                        <p >No. of reports: 4</p >
-                                        <p >No. of Pardons: 2</p >
-                                        <p >Overall Reason: Offensive</p >
-                                        <p >Join Date: 13 March 2017</p >
-                                    </div >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="carousel-item transparent white-text" href="#three!" >
-                            <div class='container' >
-                                <div class="card white darken-4 black-text" >
-                                    <div class="card-content" >
-
-                                        <span class="card-title" >Elton John </span >
-                                        <p >No. of reports: 12</p >
-                                        <p >No. of Pardons: 0</p >
-                                        <p >Overall Reason: Offensive</p >
-                                        <p >Join Date: 11 March 2017</p >
-                                    </div >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="carousel-item transparent white-text" href="#four!" >
-                            <div class='container' >
-                                <div class="card white darken-4 black-text" >
-                                    <div class="card-content" >
-
-                                        <span class="card-title" >Joe Jackson </span >
-                                        <p >No. of reports: 122</p >
-                                        <p >No. of Pardons: 0</p >
-                                        <p >Overall Reason: Spam</p >
-                                        <p >Join Date: 11 March 2017</p >
-                                    </div >
-                                </div >
-                            </div >
-                        </div >
-                    </div >
+                    <ul class="collection" >
+                        <%
+                        flaggedUsers.forEach(function (user) { %>
+                        <li class="collection-item avatar" >
+                            <img src="images/profilePics/<%= user.userThatGotReported %>.png" alt="" class="circle" >
+                            <span class="title" >Username: <%= user.username  %></span >
+                            <p >UserId that reported: <%= user.userThatReported %></p >
+                            <p >Reason: <%= user.reason %></p >
+                            <a class="waves-effect waves-light btn" onclick="pardonUser(<%= user.userThatGotReported %>);" ><i
+                                        class="material-icons left" >cloud</i >Pardon</a >
+                            <a class="waves-effect waves-light btn" onclick="banUser(<%= user.userThatGotReported %>);" ><i
+                                        class="material-icons left" >cloud</i >Ban</a >
+                        </li >
+                        <% }) %>
+                    </ul >
                 </li >
             </ul >
         </div >
@@ -93,9 +39,28 @@
 <script >
   Materialize.showStaggeredList('#staggered-test');
 
-  // Initialize collapse button
+  function banUser (id) {
+    $.post("https://www.eternalvibes.me/banUser",
+      {
+        userId: id
+      },
+      function (data, status) {
+        console.log("Data: " + data + "\nStatus: " + status);
+      });
+  }
+
+  function pardonUser (id) {
+    $.post("https://www.eternalvibes.me/pardonUser",
+      {
+        userId: id
+      },
+      function (data, status) {
+        console.log("Data: " + data + "\nStatus: " + status);
+      });
+  }
+
   $(".button-collapse").sideNav();
-  $('.carousel.carousel-slider').carousel({ fullWidth: true });
+  $('.carousel.carousel-slider').carousel({fullWidth: true});
   $(document).ready(function () {
     $(".carousel-fixed-item").on('click', '.btn', function () {
       $('.carousel').carousel('next');
