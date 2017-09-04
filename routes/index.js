@@ -5,7 +5,7 @@ var parallel = require('async/parallel')
 var dbconfig = require('../config/database')
 var connection = mysql.createConnection(dbconfig.connection)
 var request = require('request')
-var website = process.env.website || 'http://localhost:8080';
+var website = process.env.website || 'http://localhost:8080'
 connection.query('USE informatics')
 module.exports = function (app, passport, swaggerSpec) {
   /**
@@ -276,9 +276,9 @@ module.exports = function (app, passport, swaggerSpec) {
       }
       parallel([
           function (callback) {
-        console.log(website)
+            console.log(website)
             request({
-              url: website+'/getStatuses/' + req.user.id+'/0/10',
+              url: website + '/getStatuses/' + req.user.id + '/0/10',
               json: true,
             }, function (error, response, body) {
               console.log(body)
@@ -291,7 +291,7 @@ module.exports = function (app, passport, swaggerSpec) {
           },
           function (callback) {
             request({
-              url: website+'/getTopGenres',
+              url: website + '/getTopGenres',
               json: true,
             }, function (error, response, body) {
               if (error) {
@@ -303,7 +303,7 @@ module.exports = function (app, passport, swaggerSpec) {
           },
           function (callback) {
             request({
-              url: website+'/getTopUsers',
+              url: website + '/getTopUsers',
               json: true,
             }, function (error, response, body) {
               if (error) {
@@ -320,7 +320,7 @@ module.exports = function (app, passport, swaggerSpec) {
           })
         })
     } else {
-      console.log("asdas")
+      console.log('asdas')
       res.redirect('/broadcast')
     }
 
@@ -721,7 +721,7 @@ module.exports = function (app, passport, swaggerSpec) {
         if (error) {
           res.status(500).send(error)
         } else {
-          userResults=userResults[0]
+          userResults = userResults[0]
           connection.query(
             'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
             [userResults.id], function (error, results) {
@@ -764,7 +764,7 @@ module.exports = function (app, passport, swaggerSpec) {
       if (error) {
         res.status(500).send(error)
       } else {
-        userResults=userResults[0]
+        userResults = userResults[0]
         connection.query(
           'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
           [userResults.id], function (error, results) {
@@ -1228,7 +1228,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: Failed to set the city
    */
-  app.get('/setCity', function (req, res) {
+  app.post('/setCity', function (req, res) {
     connection.query('UPDATE users SET users.city=? WHERE users.id=?',
       [req.body.city, req.body.userID], function (error, results) {
         if (error) {
@@ -2065,7 +2065,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getEvents/:userID', function (req, res) {
     connection.query('SELECT events.*, invites.message,invites.id AS invite_id,invites.sender_user_id FROM invites \n' +
-      'INNER JOIN events on events.id = invites.id \n' +
+      'INNER JOIN events on events.id = invites.event_id \n' +
       'INNER JOIN responses ON responses.id = invites.response_id \n' +
       'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
@@ -2519,7 +2519,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getRequestedInvites/:eventID', function (req, res) {
     connection.query(
-      'SELECT * FROM `event_request` WHERE event_request.event_id=? AND event_request.responses_id!=3',
+      'SELECT event_request.*, users.username FROM `event_request` INNER JOIN users ON users.id= event_request.sender_user_id WHERE event_request.event_id=? AND event_request.responses_id!=3',
       [req.params.eventID], function (error, results) {
         if (error) {
           res.status(500).send(error)
@@ -2538,8 +2538,8 @@ module.exports = function (app, passport, swaggerSpec) {
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: eventID
-   *         description: The event ID
+   *       - name: eventRequestID
+   *         description: The event request ID
    *         in: path
    *         required: true
    *         type: integer
@@ -2554,9 +2554,9 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: Failed to update
    */
-  app.get('/updateRequestResponse/:eventID/:responseID', function (req, res) {
-    connection.query('UPDATE event_request SET responses_id=? WHERE event_id=?',
-      [req.params.responseID, req.params.eventID], function (error, results) {
+  app.get('/updateRequestResponse/:eventRequestID/:responseID', function (req, res) {
+    connection.query('UPDATE event_request SET responses_id=? WHERE event_request.id=?\n',
+      [req.params.responseID, req.params.eventRequestID], function (error, results) {
         if (error) {
           res.status(500).send(error)
         } else {
