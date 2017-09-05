@@ -1724,7 +1724,7 @@ module.exports = function (app, passport, swaggerSpec) {
           res.status(404).send(error)
         } else {
           connection.query(
-            'UPDATE `status_list` SET flagged=(flagged+1)  WHERE id=?',
+            'UPDATE `status_list` SET liked=(liked+1)  WHERE id=?',
             [req.params.statusID], function (error) {
               if (error) {
                 console.log(error)
