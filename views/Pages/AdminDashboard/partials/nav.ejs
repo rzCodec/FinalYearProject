@@ -1,30 +1,12 @@
-<div class="col s3" >
-    <ul id="slide-out" class="side-nav fixed" >
-        <li >
-            <div class="userView" >
-                <div class="background" >
-                    <img src="images/background/background1.jpg" >
-                </div >
-                <a href="#!user" ><img class="circle"
-                                       src="/images/profilePics/<%= info.id %>.png" ></a >
-                <a href="#!name" ><span class="white-text name" ><%= info.username %></span ></a >
-                <a href="#!email" ><span class="white-text email" ><%= info.email %></span ></a >
-            </div >
-        </li >
+<nav class="white" role="navigation" >
+    <div class="nav-wrapper container" >
+        <a href="/dashboard" class="brand-logo brown-text" ><i class="material-icons" >cloud</i >ETERNAL VIBES</a >
+        <ul class="right hide-on-med-and-down" >
+            <li ><a onClick="history.go(0)" VALUE="Refresh" ><i class="material-icons" >refresh</i ></a ></li >
+            <li ><a href="/profile" > <i class="material-icons" >assignment_ind</i ></a ></li >
+            <li ><a href="/settings" > <i class="material-icons" >settings</i ></a ></li >
+            <li ><a href="/logout" > <i class="material-icons" >power_settings_new</i ></a ></li >
+        </ul >
+    </div >
 
-        <li ><a class="subheader" ><i class="material-icons right" >thumbs_up_down</i >Flagged</a ></li >
-        <li ><a href="/flaggedusers" >Users</a ></li >
-        <li ><a href="/flaggedposts" >Posts</a ></li >
-        <li >
-            <div class="divider" ></div >
-        </li >
-        <li ><a class="subheader" ><i class="material-icons right" >power_settings_new</i >Admin</a ></li >
-        <li ><a href="/broadcast" >Broadcast Message</a ></li >
-        <li ><a href="/addSkills" >Add Skills</a ></li >
-        <li ><a href="/addGenres" >Add Genres</a ></li >
-        <li ><a href="/reports" >Reports</a ></li >
-
-    </ul >
-    <a href="#" data-activates="slide-out" class="button-collapse" ><i class="material-icons" >menu</i ></a >
-
-</div >
+</nav >
