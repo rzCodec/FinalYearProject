@@ -22,11 +22,12 @@
                 <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%" >
                     <div >
                         <ul id="posts" class="collection truncate" >
-                            <%UserInfo.statuses.forEach(function(data){%>
+                            <%UserInfo.Status.forEach(function(status){%>
+
                             <li class="collection-item avatar">
-                                <div><img src="images/empty.png" alt="" class="circle">
-                                    <span class="title">Username goes here</span>
-                                    <p>Statuse goes here</p>
+                                <div><img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
+                                    <span class="title"><%=status.username%></span>
+                                    <p class="flow-text"><%=status.status%></p>
                                 </div>
                             </li>
                             <%})%>
@@ -45,10 +46,11 @@
                         <ul class="collection" >
                             <% UserInfo.TopArtists.forEach(function (output) { %>
                             <li class="collection-item avatar" >
-                                <img   alt="images/empty.png"
+                                <%console.log(output)%>
+                                <img src="images/profilePics/<%= output.id %>.png"  alt="images/profilePics/<%= output.id %>.png"
                                      class="circle" >
                                 <span class="title" ><%= output.username %></span >
-                                <p ><%= output.status %>
+                                <p >Rating: <%= output.count %>
                                 </p >
                                 <a href="#" class="secondary-content" ><%= output.liked %></a >
                             </li >

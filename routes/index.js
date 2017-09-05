@@ -887,7 +887,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getTopUsers', function (req, res) {
     connection.query(
-      'SELECT users.id,users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id WHERE users.is_banned != 1 GROUP BY status_list.user_id ORDER BY count DESC',
+      'SELECT users.id,users.username, COUNT(status_list.id) AS count FROM users INNER JOIN status_list on status_list.user_id = users.id WHERE users.is_banned != 1 GROUP BY status_list.user_id ORDER BY count DESC LIMIT 5',
       function (error, results) {
         if (error) {
           console.log(error)
@@ -1592,8 +1592,8 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   app.get('/getUserStatuses/:userID/:offset/:limit', function (req, res) {
     connection.query(
-      'SELECT * FROM `status_list` WHERE user_id=? ORDER BY timestamp DESC LIMIT ? OFFSET ?',
-      [req.params.userID, req.params.limit, req.params.offset],
+      'SELECT * FROM `status_list` WHERE user_id=? ORDER BY timestamp DESC LIMIT '+req.params.limit+' OFFSET '+req.params.offset+'',
+      [req.params.userID ],
       function (error, results) {
         if (error) {
           console.log(error)
