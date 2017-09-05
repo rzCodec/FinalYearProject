@@ -429,7 +429,8 @@ module.exports = function (app, passport, swaggerSpec) {
       })
   })
   app.get('/settings', isLoggedIn, function (req, res) {
-    res.render('Pages/UserDashboard/Settings.ejs', function (err, html) {
+    res.render('Pages/UserDashboard/Settings.ejs',{user:req.user}, function (err, html) {
+      console.log(err)
       res.send(html)
     })
   })
