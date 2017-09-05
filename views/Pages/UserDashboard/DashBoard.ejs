@@ -22,7 +22,14 @@
                 <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%" >
                     <div >
                         <ul id="posts" class="collection truncate" >
-
+                            <%UserInfo.statuses.forEach(function(data){%>
+                            <li class="collection-item avatar">
+                                <div><img src="images/empty.png" alt="" class="circle">
+                                    <span class="title">Username goes here</span>
+                                    <p>Statuse goes here</p>
+                                </div>
+                            </li>
+                            <%})%>
                         </ul >
                     </div >
                 </div >
@@ -113,20 +120,6 @@
     }
   }
 
-  function getPosts () {
-    for (var i = 0; i < 10; i++) {
-      var first = ' <li class="collection-item avatar"> ';
-      first += '<div><img src="images/empty.png" alt="" class="circle">';
-      first += '<span class="title">' + i + '</span>';
-      first += '<p>First Line <br> Second Line';
-      first += '</p></div><a href="" class="secondary-content"><i class="material-icons">grade</i></a>';
-      first += '<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
-      $("#posts").append(first);
-    }
-
-  }
-
-  $("#Timeline").onload(getPosts());
 
 </script >
 

@@ -12,7 +12,7 @@
         <li id="personalSettings" class="tab col s3" ><a href="#personal" >Personal Settings</a ></li >
     </ul >
 
-    <div id="personal" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
+    <div id="personal" class="formValidate col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
         <div class='container center-align' >
 
             <div class="card white darken-1" >
@@ -57,8 +57,8 @@
                         <input id="confirmpassword" type="password" name="confirmpassword" data-error=".errorTxt4" >
                         <div class="errorTxt4" ></div >
                     </div >
-                    <a href="/dashboard" class="btn btn-default left-align" >Reset</a >
-                    <a href="/dashboard" class="btn btn-default right-align" >Save</a >
+                    <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
+                    <a href="/dashboard" class="btn btn-default right-align" onclick="updateInfo()" >Save</a >
                 </div >
             </div >
         </div >
@@ -68,8 +68,59 @@
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
+
+    function updateInfo()
+    {
+        $.post("https://www.eternalvibes.me/addSkill",
+            {
+                firstname:$('#add_skill').textContent,
+                surname:$('#add_skill').textContent,
+                username:$('#realUserName').textContent,
+                password:$('#add_skill').textContent,
+                description:$('#add_skill').textContent
+            },
+            function (data, status)
+            {
+                console.log("Data: " + data + "\nStatus: " + status);
+            });
+    }
   Materialize.showStaggeredList('#staggered-test')
-  $('#personalsettings').click('#personal')
+  $('#personalsettings').click('#personal');
+    $("#formValidate").validate({
+        rules:
+            {
+            firstname: {
+                required: true,
+                minlength: 2
+            },
+            surname: {
+                required: true,
+                minlength: 2
+            },
+            realUserName: {
+                required: true,
+                minlength: 5
+            },
+            password: {
+                required: true,
+                minlength: 5
+            },
+            confirmpassword: {
+                required: true,
+                minlength: 5,
+                equalTo: "#password"
+            }
+        },
+        errorElement: 'div',
+        errorPlacement: function (error, element) {
+            var placement = $(element).data('error');
+            if (placement) {
+                $(placement).append(error)
+            } else {
+                error.insertAfter(element);
+            }
+        }
+    });
 </script >
 
 </body >
