@@ -327,8 +327,9 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   app.get('/dashBoard', isLoggedIn, function (req, res) {
     var defaultt = 0
+    var UserInfo;
     if (req.user.admin.toString() === defaultt.toString()) {
-      var UserInfo = {
+      UserInfo = {
         info: req.user,
       }
       parallel([
@@ -374,6 +375,7 @@ module.exports = function (app, passport, swaggerSpec) {
         function (err, results) {
           res.render('Pages/UserDashboard/DashBoard.ejs', {
             UserInfo: UserInfo,
+
           })
         })
     } else {
@@ -965,26 +967,27 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: error
    */
   app.get('/getUserInfo/:userID', function (req, res) {
-    connection.query('SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE id=? AND users.is_banned != 1',
+    connection.query(
+      'SELECT id, firstname, surname, email, username, genre_id, song_link, latitude, longitude, distance_id, profilepic_url, description, genre_id FROM `users` WHERE id=? AND users.is_banned != 1',
       [req.params.userID], function (error, userResults) {
-      if (error) {
-        console.log(error)
-        res.status(500).send(error)
-      } else {
-        userResults = userResults[0]
-        connection.query(
-          'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
-          [userResults.id], function (error, results) {
-            if (error) {
-              console.log(error)
-              res.status(500).send(error)
-            } else {
-              userResults.skillset = results
-              res.status(200).send(userResults)
-            }
-          })
-      }
-    })
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          userResults = userResults[0]
+          connection.query(
+            'SELECT skills.* FROM `user_skills` INNER JOIN skills ON user_skills.skill_id = skills.id WHERE user_skills.user_id = ?',
+            [userResults.id], function (error, results) {
+              if (error) {
+                console.log(error)
+                res.status(500).send(error)
+              } else {
+                userResults.skillset = results
+                res.status(200).send(userResults)
+              }
+            })
+        }
+      })
   })
   /**
    * @swagger
@@ -1575,7 +1578,8 @@ module.exports = function (app, passport, swaggerSpec) {
         })
         connection.query('SELECT status_list.*, users.firstname,users.surname,users.email,users.username,users.profilepic_url FROM `status_list` INNER JOIN users ON status_list.user_id = users.id WHERE status_list.user_id=' +
           req.params.userID + ' ' + where +
-          ' AND users.is_banned != 1 ORDER BY status_list.timestamp DESC LIMIT ' + req.params.limit +
+          ' AND users.is_banned != 1 ORDER BY status_list.timestamp DESC LIMIT ' +
+          req.params.limit +
           ' OFFSET ' + req.params.offset, function (error, results) {
           if (error) {
             console.log(error)
@@ -2861,7 +2865,7 @@ module.exports = function (app, passport, swaggerSpec) {
         function (callback) {
           connection.query('SELECT * FROM `status_list` WHERE id = ?',
             [req.body.statusId], function (error, results) {
-              if (error || results.length==0) {
+              if (error || results.length == 0) {
                 console.log(error)
                 callback(error)
               } else {
@@ -2871,9 +2875,16 @@ module.exports = function (app, passport, swaggerSpec) {
             })
         },
         function (flaggedPost, callback) {
-          connection.query('INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (?,?,?,?,?,?)',
-            [flaggedPost.id,flaggedPost.user_id,flaggedPost.timestamp,flaggedPost.status,flaggedPost.extra_info,flaggedPost.liked]
-            ,function (error) {
+          connection.query(
+            'INSERT INTO `removed_status` (`post_id`, `user_id`, `timestamp`, `status`, `extra_info`, `liked`) VALUES (?,?,?,?,?,?)',
+            [
+              flaggedPost.id,
+              flaggedPost.user_id,
+              flaggedPost.timestamp,
+              flaggedPost.status,
+              flaggedPost.extra_info,
+              flaggedPost.liked]
+            , function (error) {
               if (error) {
                 console.log(error)
                 callback(error)
