@@ -8,88 +8,102 @@
 <main >
     <div class="card white darken-1 center" style="margin-top: 5%; margin-right: 8%; margin-left: 8%" >
         <div class="card-content" >
-            <span class="card-title" ><img class="circle" src=images/empty.png" alt=""  width="150" height="150" >
-                <p><h6>Username</h6></p>
+            <%
+            user = user[0]
+            %>
+            <span class="card-title" ><img class="circle" src="images/profilePics/<%= user.id %>.png" alt="" width="150"
+                                           height="150" >
+                <p ><h6 ><%= user.username %></h6 ></p>
             </span >
-            <p> <h3> Name and  Surname</h3></p>
-            <p>Description</p>
-            <p><i class="medium material-icons ">headset</i>Genre></p>
-            <br>
-            <p class="left-align">followers:</p>
-            <p class="left-align">following: </p>
-            <p class="left-align"><i class="material-icons right-align">palette</i>Skills</p>
+            <p >
+            <h3 ><%= user.firstname %> <%= user.surname %></h3 ></p>
         </div >
     </div >
-    <ul class="tabs center-align" style="margin-top: 3%">
+    <ul class="tabs center-align" style="margin-top: 3%" >
 
-        <li id="Posts" class="tab col s3">
-            <a href="#Timeline" onclick="Materialize.showStaggeredList('#Timeline')">
-                <i class="medium material-icons right-align">dehaze</i>Timeline
-                <span id="numPosts" class="new badge">15</span></a></li>
+        <li id="Posts" class="tab col s3" >
+            <a href="#Timeline" onclick="Materialize.showStaggeredList('#Timeline')" >
+                <i class="medium material-icons right-align" >dehaze</i >Timeline
+                <span id="numPosts" class="new badge" >15</span ></a ></li >
 
-        <li id="Attended" class="tab col s3"><a href="#AttendedEvents"
-                                                onclick="Materialize.showStaggeredList('#AttendedEvents')">
-                <i class="medium material-icons left-align">event_available</i>Events Attended
-                <span id="numUsers" class="new badge"> 15</span></a></li>
+        <li id="Attended" class="tab col s3" ><a href="#AttendedEvents"
+                                                 onclick="Materialize.showStaggeredList('#AttendedEvents')" >
+                <i class="medium material-icons left-align" >event_available</i >Events Attended
+                <span id="numUsers" class="new badge" > 15</span ></a ></li >
 
-        <li id="Upcoming" class="tab col s3">
-            <a href="#UpcomingEvents" onclick="Materialize.showStaggeredList('#UpcomingEvents')">
-                <i class="medium material-icons right-align">event_seat</i>Upcoming Events</a></li>
+        <li id="Upcoming" class="tab col s3" >
+            <a href="#UpcomingEvents" onclick="Materialize.showStaggeredList('#UpcomingEvents')" >
+                <i class="medium material-icons right-align" >event_seat</i >Upcoming Events</a ></li >
 
-    </ul>
+    </ul >
 
     <div id="Timeline" class="col s12"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
-        <div>
-            <ul id="posts" class="collection truncate">
-                <%console.log(user)%>
-                <li class="collection-item avatar"><div><img src="/images/profilePics/user ID goes her.png" alt= "images/empty.png" class="circle">
-                        <span class="title">Username goes here</span><p>Status goes here</p></div>
-                </li>
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%" >
+        <div >
 
-            </ul>
-        </div>
-    </div>
+            <ul id="posts" class="collection truncate" >
+                <% UserPosts.forEach(function (post) {
+                %>
+                <li class="collection-item avatar" >
+                    <img src="images/profilePics/<%= post.user_id %>.png" alt="" width="50" height="50" class="circle" >
+                    <p ><span class="title" ><%= post.status %></span >
+                    <p > <%= post.liked %> likes</p >
+                </li >
+                <% }) %>
+            </ul >
+        </div >
+    </div >
 
     <div id="AttendedEvents" class="col s12"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
-        <div>
-            <ul id="posts" class="collection truncate">
-                <li class="collection-item avatar">
-                    <img src="images/empty.png" alt="" width="50" height="50" class="circle">
-                    <p><span class="title">' + i + '</span><p>
-                    <p>Event Name <br> Created By <br> Date</p>
-                </li>
-            </ul>
-        </div>
-    </div>
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%" >
+        <div >
+            <ul id="posts" class="collection truncate" >
+
+                <% UserFinishedEvents.forEach(function (event) { %>
+                <li class="collection-item avatar" >
+                    <div ><img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png"
+                               class="circle" >
+                        <span class="title" >Title: <%= event.title %></span >
+                        <p ><%= event.description %></p ></div >
+                </li >
+                <% }) %>
+            </ul >
+        </div >
+    </div >
 
     <div id="UpcomingEvents" class="col s12"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
-        <div>
-            <ul id="posts" class="collection truncate">
-                <li class="collection-item avatar"><img src="images/empty.png" alt="" width="50" height="50" class="circle">
-                    <p><span class="title">' + i + '</span><p><p>Event Name <br> Event Details</p></li>
-            </ul>
-        </div>
-    </div>
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%" >
+        <div >
+            <ul id="posts" class="collection truncate" >
+                <% UserUpcomingEvents.forEach(function (event) {  %>
+
+                <li class="collection-item avatar" >
+                    <div ><img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png"
+                               class="circle" >
+                        <span class="title" >Title: <%= event.title %></span >
+                        <p ><%= event.description %></p ></div >
+                </li >
+                <% }) %>
+            </ul >
+        </div >
+    </div >
 
 </main >
 <%- include ../../Partials/footer.ejs %>
-<script>
+<script >
 
-    $("#Timeline").click(getPosts());
-    $("#Attended").click(getAttended());
-    $("#Upcoming").click(getUpcoming());
+  $('#Timeline').click(getPosts())
+  $('#Attended').click(getAttended())
+  $('#Upcoming').click(getUpcoming())
 
-    $(document).ready(function(){
-        $('ul.tabs').tabs();
-    });
-    $(document).ready(function(){
-        $('ul.tabs').tabs('select_tab', '');
-    });
-    Materialize.showStaggeredList('');
+  $(document).ready(function () {
+    $('ul.tabs').tabs()
+  })
+  $(document).ready(function () {
+    $('ul.tabs').tabs('select_tab', '')
+  })
+  Materialize.showStaggeredList('')
 
-</script>
+</script >
 </body >
 </html >
