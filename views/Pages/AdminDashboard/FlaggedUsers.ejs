@@ -7,66 +7,67 @@
 <main >
     <div class="row" >
         <%- include ./partials/nav.ejs %>
-        <div class="col s8" >
-            <div class="valign-wrapper" >
-                <h2 class="center-align" style='width:100%;' >Flagged Users</h2 >
-            </div >
-            <ul id="staggered-test" >
-                <li class="" style="transform: translateX(0px); opacity: 0; " >
-                </li >
-                <li class="" style="transform: translateX(0px); opacity: 0; margin-top:100px;" >
-                    <ul class="collection" >
-                        <%
-                        flaggedUsers.forEach(function (user) { %>
-                        <li class="collection-item avatar" >
-                            <img src="images/profilePics/<%= user.userThatGotReported %>.png" alt="" class="circle" >
-                            <span class="title" >Username: <%= user.username  %></span >
-                            <p >UserId that reported: <%= user.userThatReported %></p >
-                            <p >Reason: <%= user.reason %></p >
-                            <a class="waves-effect waves-light btn" onclick="pardonUser(<%= user.userThatGotReported %>);" ><i
-                                        class="material-icons left" >cloud</i >Pardon</a >
-                            <a class="waves-effect waves-light btn" onclick="banUser(<%= user.userThatGotReported %>);" ><i
-                                        class="material-icons left" >cloud</i >Ban</a >
-                        </li >
-                        <% }) %>
-                    </ul >
-                </li >
-            </ul >
-        </div >
+
+        <!--FlaggedUsers Tab-->
+        <div id="FlaggedUsers" class="col s12" style="margin-left: 5%; margin-right: 5%;margin-top: 5%;margin-bottom: 10%">
+            <div>
+                <ul id="fUserList" class="collection truncate">
+                    <% console.log(flaggedUsers);
+                    flaggedUsers.forEach(function (user) { %>
+                    <li class="collection-item avatar">
+                        <div><img src="images/empty.png" alt="" class="circle">
+                            <span class="title"> <h3><%=user.username%> </h3></span>
+                            <p>Reason for flag: <%=user.reason%></p>
+                        </div>
+                        </br>
+                        <a class="waves-effect waves-light btn" onclick="pardonUser(<%= user.userThatGotReported %>)">
+                            <i class="material-icons left">thumb_up</i>Pardon</a>
+                        <a class="waves-effect waves-light btn red" onclick="banUser(<%= user.userThatGotReported %>)">
+                            <i class="material-icons left">thumb_down</i>Ban</a>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
 
     </div >
 </main >
+<%- include ../../Partials/footer.ejs %>
 <script >
-  Materialize.showStaggeredList('#staggered-test');
+    Materialize.showStaggeredList('#staggered-test');
 
-  function banUser (id) {
-    $.post("https://www.eternalvibes.me/banUser",
-      {
-        userId: id
-      },
-      function (data, status) {
-        console.log("Data: " + data + "\nStatus: " + status);
-      });
-  }
+    function banUser (id) {
+        Materialize.toast('Banned User', 500);
+        $.post("https://www.eternalvibes.me/banUser",
+            {
+                userId: id
+            },
+            function (data, status) {
+                console.log("Data: " + data + "\nStatus: " + status);
+            });
+        location.reload();
+    }
 
-  function pardonUser (id) {
-    $.post("https://www.eternalvibes.me/pardonUser",
-      {
-        userId: id
-      },
-      function (data, status) {
-        console.log("Data: " + data + "\nStatus: " + status);
-      });
-  }
+    function pardonUser (id) {
+        Materialize.toast('Pardoned User', 500);
+        $.post("https://www.eternalvibes.me/pardonUser",
+            {
+                userId: id
+            },
+            function (data, status) {
+                console.log("Data: " + data + "\nStatus: " + status);
+            });
+        location.reload();
+    }
 
-  $(".button-collapse").sideNav();
-  $('.carousel.carousel-slider').carousel({fullWidth: true});
-  $(document).ready(function () {
-    $(".carousel-fixed-item").on('click', '.btn', function () {
-      $('.carousel').carousel('next');
-      Materialize.toast('Judged!', 2000, 'rounded')
+    $(".button-collapse").sideNav();
+    $('.carousel.carousel-slider').carousel({fullWidth: true});
+    $(document).ready(function () {
+        $(".carousel-fixed-item").on('click', '.btn', function () {
+            $('.carousel').carousel('next');
+            Materialize.toast('Judged!', 2000, 'rounded')
+        });
     });
-  });
 
 </script >
 

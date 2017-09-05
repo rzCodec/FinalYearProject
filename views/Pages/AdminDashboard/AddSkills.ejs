@@ -1,5 +1,56 @@
-You have access to skills
+<!DOCTYPE html>
+<html lang="en" >
+<head >
+    <%- include ../../Partials/AboveFold.ejs %>
+</head>
+<body >
+<main>
+    <div class="row" >
+        <%- include ./partials/nav.ejs %>
+        <div class="center-align col s3" style="margin-top: 5%">
+            <h2 align="center">Add Skills</h2>
+            <div class="form-group">
+                <form name="add_skill" id="add_skill">
+                    <div id="dynamic_field">
+                        <input type="text" name="genre[]" placeholder="Enter New Skill" class="form-control name_list" />
+                        <button type="button" name="add" id="add" class="btn btn-success">Add More</button>
+                    </div>
+                    <br/>
+                    <p/>
+                    <input type="button" name="submit" id="submit" class="btn btn-info" value="Submit" />
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<%- include ../../Partials/footer.ejs %>
+</body>
+<script>
+    $(document).ready(function(){
+        var i=1;
+        $('#add').click(function(){
+            i++;
+            $('#dynamic_field').append('<div id="row'+i+'">' +
+                '<input type="text" name="genre[]" placeholder="Enter New Skill" class="form-control name_list" />' +
+                '<button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">Cancel</button></div>');
+        });
+        $(document).on('click', '.btn_remove', function(){
+            var button_id = $(this).attr("id");
+            $('#row'+button_id+'').remove();
+        });
 
+        $('#submit').click(function()
+        {
+            $.post("https://www.eternalvibes.me/addSkill",
+                {
+                    skillName:$('#add_skill').serialize()
+                },
+                function (data, status)
+                {
+                    console.log("Data: " + data + "\nStatus: " + status);
+                });
+        });
+    });
+</script>
 
-To add a skill do post request to addSkill with variable genreName in body
-
+</html>
