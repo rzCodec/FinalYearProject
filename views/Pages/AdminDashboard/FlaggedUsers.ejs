@@ -37,37 +37,38 @@
     Materialize.showStaggeredList('#staggered-test');
 
     function banUser (id) {
-        Materialize.toast('Banned User', 500);
+
         $.post("https://www.eternalvibes.me/banUser",
             {
                 userId: id
             },
-            function (data, status) {
-                console.log("Data: " + data + "\nStatus: " + status);
+            function (data) {
+                console.log("Data: " + data);
+                if(data == 200)
+                {
+                    location.reload();
+                    Materialize.toast('Banned User', 500);
+                }
             });
-        location.reload();
     }
 
     function pardonUser (id) {
-        Materialize.toast('Pardoned User', 500);
+
         $.post("https://www.eternalvibes.me/pardonUser",
             {
                 userId: id
             },
-            function (data, status) {
-                console.log("Data: " + data + "\nStatus: " + status);
+            function (data) {
+                console.log("Data: " + data);
+                if(data == 200)
+                {
+                    Materialize.toast('Pardoned User', 500);
+                    location.reload();
+                }
             });
-        location.reload();
     }
 
     $(".button-collapse").sideNav();
-    $('.carousel.carousel-slider').carousel({fullWidth: true});
-    $(document).ready(function () {
-        $(".carousel-fixed-item").on('click', '.btn', function () {
-            $('.carousel').carousel('next');
-            Materialize.toast('Judged!', 2000, 'rounded')
-        });
-    });
 
 </script >
 
