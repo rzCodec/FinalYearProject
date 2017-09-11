@@ -3,27 +3,29 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
-<body >
+<body class="center brown-text text-darken-2">
 <main >
-    <div class="row" >
+    <div class="row center-align" >
         <%- include ./partials/nav.ejs %>
 
         <!--FlaggedUsers Tab-->
-        <div id="FlaggedUsers" class="col s12" style="margin-left: 5%; margin-right: 5%;margin-top: 5%;margin-bottom: 10%">
+        <div id="FlaggedUsers" class="col s6 offset-s3" style="margin-top: 5%">
+            <h2 align="center">Flagged Users</h2>
             <div>
                 <ul id="fUserList" class="collection truncate">
                     <% console.log(flaggedUsers);
                     flaggedUsers.forEach(function (user) { %>
                     <li class="collection-item avatar">
-                        <div><img src="images/empty.png" alt="" class="circle">
+                        <div card white darken-4><img src="images/profilePics/<%= user.userId %>.png" alt="" class="circle">
                             <span class="title"> <h3><%=user.username%> </h3></span>
                             <p>Reason for flag: <%=user.reason%></p>
-                        </div>
+
                         </br>
                         <a class="waves-effect waves-light btn" onclick="pardonUser(<%= user.userThatGotReported %>)">
                             <i class="material-icons left">thumb_up</i>Pardon</a>
                         <a class="waves-effect waves-light btn red" onclick="banUser(<%= user.userThatGotReported %>)">
                             <i class="material-icons left">thumb_down</i>Ban</a>
+                        </div>
                     </li>
                     <% }) %>
                 </ul>
@@ -34,7 +36,7 @@
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
-    Materialize.showStaggeredList('#staggered-test');
+    Materialize.showStaggeredList('#FlaggedUsers');
 
     function banUser (id) {
 
