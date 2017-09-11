@@ -1,63 +1,70 @@
-<h1 class="center-align"><img height="10%" width="10%" src="images/profilePics/<%= info.id %>.png" alt=""
-                              class="circle"> <a href="/profile"><%= info.username %></a></h1></header>
-
 
 <!-- Menu Design for Tablets and Phone screen -->
-<div class="col s3 hide-on-large-only" >
-    <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons" >menu</i ></a >
+<div class="col s3 row hide-on-large-only" style="margin-left: 7%" >
+    <a href="#" data-activates="slide-out" class="button-collapse"><i class="large material-icons" >menu</i ></a >
     <ul id="slide-out" class="side-nav" >
         <li >
             <div class="userView" >
                 <div class="background" >
                     <img src="images/background/background1.jpg" >
                 </div >
-                <a href="#!user" ><img class="circle"
-                                       src="images/profilePics/<%= info.id %>.png" ></a >
+                <a href="#!user" >
+                    <img class="circle" src="images/profilePics/<%= info.id %>.png" ></a >
                 <a href="#!name" ><span class="white-text name" ><%= info.username %></span ></a >
                 <a href="#!email" ><span class="white-text email" ><%= info.email %></span ></a >
             </div >
         </li >
 
         <li ><a class="subheader"  ><i class="material-icons right" >thumbs_up_down</i >Flagged</a ></li >
-        <li ><a id="flagUsers" class="tab" href="#flUsers" onclick="Materialize.showStaggeredList('#fUserList')" >Flagged Users</a ></li >
-        <li ><a id="flagPosts" class="tab" href="#flPosts" onclick="Materialize.showStaggeredList('#fPostList')" >Flagged Posts</a ></li >
+        <li ><a class="brown-text text-darken-5" id="flagUsers" class="tab" href="/FlaggedUsers" onclick="Materialize.showStaggeredList('#fUserList')" >Flagged Users</a ></li >
+        <li ><a class="brown-text text-darken-5" id="flagPosts" class="tab" href="#FlaggedPosts" onclick="Materialize.showStaggeredList('#fPostList')" >Flagged Posts</a ></li >
         <li >
             <div class="divider" ></div >
         </li >
-        <li ><a href="#Skills" class="tab" onclick="Materialize.showStaggeredList('#AddSkill')" >Add Skills</a ></li >
-        <li class='active' ><a href="#Genre" onclick="Materialize.showStaggeredList('#AddGenre')">
+        <li ><a class="brown-text text-darken-5" href="/AddSkills" class="tab" onclick="Materialize.showStaggeredList('#AddSkill')" >Add Skills</a ></li >
+        <li class='active' ><a class="brown-text text-darken-5" href="/AddGenre" onclick="Materialize.showStaggeredList('#AddGenre')">
                 Add Genres</a ></li >
         <li ><a href="/reports" >Reports</a ></li >
         <li >
             <div class="divider" ></div >
         </li >
-        <li ><a href="/dashBoard" ><i class="material-icons right" >power_settings_new</i >Admin</a ></li >
+        <li ><a class="brown-text text-darken-5" href="/dashBoard" ><i class="material-icons right" >power_settings_new</i >Admin</a ></li >
 
     </ul >
 </div>
 
 
 <!-- Menu Design for laptop and computer screen -->
-<ul class="center hide-on-med-and-down" style="margin-top: 5%; margin-left: 15%">
-    <li id="flPosts" class="  col s2">
-        <a href="/FlaggedPosts">
-            <i class="medium material-icons right-align">feedback</i>Flagged Posts
-            <span id="numPosts" class="new badge">15</span></a></li>
+<h1 class="center-align hide-on-med-and-down"><img height="10%" width="10%" src="images/profilePics/<%= info.id %>.png" alt=""
+                              class="circle"> <a href="/profile"><%= info.username %></a></h1></header>
+<ul class="center-align hide-on-med-and-down " style="margin-top: 5%; margin-left: 15%">
+    <li id="flPosts" class=" tab col s2">
+        <a class="brown-text text-darken-5" href="/FlaggedPosts">
+            <i class="medium material-icons right-align brown-text text-darken-5 ">feedback</i>Flagged Posts
+            <span id="numPosts" class="new badge"></span></a></li>
 
-    <li id="flUsers" class=" tab col s2"><a href="/FlaggedUsers">
-            <i class="medium material-icons left-align">assignment_ind</i>Flagged Users
-            <span id="numUsers" class="new badge"> 15</span></a></li>
+    <li id="flUsers" class=" tab col s2">
+        <a class="brown-text text-darken-5" href="/FlaggedUsers">
+            <i class="medium material-icons left-align brown-text text-darken-5">assignment_ind</i>Flagged Users
+            <span id="numUsers" class="new badge"></span></a></li>
 
-    <li id="Genre" class=" tab col s2">
-        <a href="/AddGenres">
+    <li id="Genre" class=" tab col s2 brown-text text-darken-5">
+        <a class="brown-text text-darken-5" href="/AddGenres">
             <i class="medium material-icons right-align">library_music</i>Add Genres</a></li>
 
-    <li id="Skills" class="col s2"><a href="/AddSkills">
-            <i class="medium material-icons right-align">palette</i>Add Skills</a></li>
+    <li id="Skills" class=" tab col s2">
+        <a class="brown-text text-darken-5" href="/AddSkills">
+            <i class="medium material-icons right-align brown-text text-darken-5">palette</i>Add Skills</a></li>
 
-    <li id="Reports" class="tab col s2"><a href="/reports">
-            <i class="medium material-icons right-align">multiline_chart</i>Reports</a></li>
+    <li id="Reports" class="tab col s2">
+        <a class="brown-text text-darken-5" href="/reports">
+            <i class="medium material-icons right-align brown-text text-darken-5">multiline_chart</i>Reports</a></li>
 
 
 
 </ul>
+
+<script>
+
+
+</script>
