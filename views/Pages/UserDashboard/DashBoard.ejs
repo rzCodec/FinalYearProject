@@ -13,22 +13,45 @@
                     <div class="card white darken-1" >
                         <div class="card-content" >
                         <span class="card-title center-align" >
+                            <%console.log(UserInfo.info)%>
                             <img class="circle" src="/images/profilePics/<%= UserInfo.info.id %>.png"  alt=""
-                                 width="64" height="64" ><p >Welcome <%= UserInfo.info.username %></p ></span >
+                                 width="64" height="64" ><br><p >Welcome <%= UserInfo.info.firstname %>  <%= UserInfo.info.surname %></p ></span >
+                            <p class="center"> <%= UserInfo.info.username%> </p>
+                            <br>
+                            <p class="center">Location: <%= UserInfo.info.city%></p>
 
                         </div >
                     </div >
                 </li >
-                <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%" >
+                <form class="card ">
+
+                    <div class="card-content input-field">
+                        <i class="material-icons prefix">border_color</i>
+                        <textarea id="txtPost" class="materialize-textarea" placeholder="What's the vibe?"></textarea>
+                        <div class="collapsed"><a id="post" class="btn waves-effect waves-light disabled" type="submit" name="action">Post
+                                <i class="material-icons right">send</i>
+                            </a>
+                        </div>
+
+                    </div>
+
+                </form>
+                <div id="Timeline" class="col s12 card " style="margin-top: 5%;margin-bottom: 10%" >
                     <div >
                         <ul id="posts" class="collection truncate" >
                             <%UserInfo.Status.forEach(function(status){%>
 
-                            <li class="collection-item avatar">
+                            <li class="collection-item avatar card-content">
                                 <div><img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
                                     <span class="title"><%=status.username%></span>
+                                    <p>
+                                    <p>
                                     <p class="flow-text"><%=status.status%></p>
                                 </div>
+                                <a id="par<%=status.id%>" name="pardon<%=status.id%>" class="waves-effect waves-light btn btn_pardon" onclick="LikeStatus(<%= status.id %>)">
+                                    <i class="material-icons left">thumb_up</i>Like (<%=status.liked%>)</a>
+                                <a id="rem<%=status.id%>" name="remove<%=status.id%>" class=" right waves-effect waves-light btn red btn_delete" onclick="FlagStatus(<%= status.id %>)">
+                                    <i class="material-icons left">thumb_down</i>Flag</a>
                             </li>
                             <%})%>
                         </ul >
@@ -73,6 +96,13 @@
 <script >
   Materialize.showStaggeredList('#staggered-test');
   Materialize.showStaggeredList('#staggered-test2');
+  $('txtPost').onclick(function ()
+  {
+
+          $('#post').disabled(false);
+  });
+
+
   var ctx = document.getElementById("myChart");
   var label = [];
   var count = [];
