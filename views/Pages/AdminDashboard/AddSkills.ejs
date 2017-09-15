@@ -7,38 +7,77 @@
 <main>
     <div class="row" >
         <%- include ./partials/nav.ejs %>
-        <div class="center-align col s4 offset-s4" style="margin-top: 5%">
-            <h2 align="center">Add Skills</h2>
-            <div class="form-group">
-                <form name="add_skill" id="add_skill">
-                    <div id="dynamic_field">
-                        <input type="text" name="add_skill" id="add_skill" placeholder="Enter New Skill" class="form-control name_list" />
-                    </div>
-                    <br/>
-                    <p/>
-                    <button name="submit" id="submit_skill" class="btn" value="Submit">Submit</button>
-                </form>
+        <div  class="center col s4 offset-s4 " style="margin-top: 5%">
+            <h2 align="center">Available Skills</h2>
+            <div id='sList' class="card" style="margin-top: 5%">
+                <ul class=" card-content" >
+
+                </ul>
+                <a id="add" data-target="addSkill"
+                   class="modal-trigger waves-effect waves-light brown white-text btn right">Add New Skill</a>
             </div>
         </div>
     </div>
+
+    <div id="addskill" class="modal bottom-sheet">
+        <div class="modal-content center">
+            <h2 class="brown-text modal-ux-header">Add Skill</h2>
+            <h5>Add a new skill for users</h5>
+            <input type="text" id="add_skill" placeholder="Enter New Skill" />
+            <br/>
+            <div class="modal-footer">
+                <a id="submit_skill" onclick="addSkill()"
+                   class="modal-action modal-close waves-effect waves-light btn-flat brown-text">Submit</a>
+                <a class="modal-action modal-close waves-effect waves-light btn-flat red-text left">Cancel</a>
+            </div>
+        </div>
+    </div>
+
 </main>
 <%- include ../../Partials/footer.ejs %>
 </body>
 <script>
-    $('#submit_skill').click(function()
-    {
-        Materialize.toast($('#add_skill').value, 500);
-        $.post("https://www.eternalvibes.me/addSkill",
-            {
-                skillName: $('#add_skill').value
-            },
-            function (data, status)
-            {
-                console.log("Data: " + data + "\nStatus: " + status);
-            });
-        $('#add_skill').reset();
+
+    $(document).ready(function(){
+        $('.modal').modal();
 
     });
+
+    $('#add').click(function()
+    {
+        $('#addskill').modal('open');
+    });
+
+    function addSkill()
+    {
+        var skill = $('#add_skill').val();
+        console.log('this skill' + skill);
+        if(skill == '')
+        {
+            materialize.toast("please enter a skill",5000);
+        }
+        else
+        { $.post("https://www.eternalvibes.me/addSkill",
+            {
+                skillName: skill
+            },
+            function (data) {
+                console.log("Data: " + data);
+                if(data == 200)
+                {
+
+
+                }
+            });
+            materialize.toast(skill + " has been added", 500);
+            $('#add_skill').val('');
+            $('#sList').reload(true);
+        }
+
+        /**/
+
+
+    };
 </script>
 
 </html>
