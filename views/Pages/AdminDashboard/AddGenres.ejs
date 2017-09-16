@@ -12,12 +12,11 @@
             <div class="form-group">
                 <form name="add_genre" id="add_genre">
                     <div id="dynamic_field">
-                        <input type="text" name="genre[]" placeholder="Enter Genre" class="form-control name_list" />
-                        <button type="button" name="add" id="add" class="btn btn-success">Add More</button>
+                        <input type="text" name="add_genre" id="add_genre" placeholder="Enter Genre" class="form-control name_list" />
                     </div>
                     <br/>
                     <p/>
-                    <input type="button" name="submit" id="submit" class="btn btn-info" value="Submit" />
+                    <button name="submit" id="submit_genre" class="btn btn-info" value="Submit">Submit</button>
                 </form>
             </div>
         </div>
@@ -26,30 +25,19 @@
 <%- include ../../Partials/footer.ejs %>
 </body>
 <script>
-    $(document).ready(function(){
-        var i=1;
-        $('#add').click(function(){
-            i++;
-            $('#dynamic_field').append('<div id="row'+i+'">' +
-                '<input type="text" name="genre[]" placeholder="Enter New Genre" class="form-control name_list" />' +
-                '<button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">Cancel</button></div>');
-        });
-        $(document).on('click', '.btn_remove', function(){
-            var button_id = $(this).attr("id");
-            $('#row'+button_id+'').remove();
-        });
 
-        $('#submit').click(function()
-        {
-            $.post("https://www.eternalvibes.me/addGenrer",
-                {
-                    genreName:$('#add_genre').serialize()
-                },
-                function (data, status)
-                {
-                    console.log("Data: " + data + "\nStatus: " + status);
-                });
-        });
+    $('#submit_genre').click(function()
+    {
+        $.post("https://www.eternalvibes.me/addGenres",
+            {
+                genreName: $('#add_genre').value
+            },
+            function (data, status)
+            {
+                console.log("Data: " + data + "\nStatus: " + status);
+
+            });
+        $('#add_genre').reset();
     });
 </script>
 
