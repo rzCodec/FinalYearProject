@@ -151,68 +151,6 @@ module.exports = function (app, passport, swaggerSpec) {
    *         type: integer
    *       start_timestamp:
    *         type: integer
-   *   eventSkill:
-   *     properties:
-   *       id:
-   *         type: integer
-   *       event_id:
-   *         type: string
-   *       skill_id:
-   *         type: integer
-   *       status:
-   *         type: boolean
-   *   event:
-   *     properties:
-   *       id:
-   *         type: integer
-   *       title:
-   *         type: string
-   *       date:
-   *         type: integer
-   *       description:
-   *         type: string
-   *       duration:
-   *         type: integer
-   *       user_id:
-   *         type: integer
-   *       createdTimestamp:
-   *         type: integer
-   *       message:
-   *         type: string
-   *       invite_id:
-   *         type: integer
-   *       sender_user_id:
-   *         type: integer
-   *   responses:
-   *     properties:
-   *       id:
-   *         type: integer
-   *       response:
-   *         type: string
-   *   inviteResponse:
-   *     properties:
-   *       response_id:
-   *         type: integer
-   *       response:
-   *         type: string
-   *       user_id:
-   *         type: integer
-   *       username:
-   *         type: string
-   *   event_request:
-   *     properties:
-   *       id:
-   *         type: integer
-   *       event_id:
-   *         type: integer
-   *       sender_user_id:
-   *         type: integer
-   *       reason:
-   *         type: string
-   *       timestamp:
-   *         type: string
-   *       responses_id:
-   *         type: integer
    */
   app.get('/', function (req, res) {
     res.render('Pages/HomePage/Landing.ejs')
@@ -264,7 +202,7 @@ module.exports = function (app, passport, swaggerSpec) {
     parallel([
         function (callback) {
           request({
-            url: website + '/getFinishedEvents/' + req.user.id,
+            url: website + '/getEventsAttended/' + req.user.id,
             json: true,
           }, function (error, response, body) {
             console.log(body)
@@ -278,7 +216,7 @@ module.exports = function (app, passport, swaggerSpec) {
         },
         function (callback) {
           request({
-            url: website + '/getEvents/' + req.user.id,
+            url: website + '/getEventsAttending/' + req.user.id,
             json: true,
           }, function (error, response, body) {
             if (error) {
@@ -327,7 +265,7 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   app.get('/dashBoard', isLoggedIn, function (req, res) {
     var defaultt = 0
-    var UserInfo;
+    var UserInfo
     if (req.user.admin.toString() === defaultt.toString()) {
       UserInfo = {
         info: req.user,
@@ -429,10 +367,11 @@ module.exports = function (app, passport, swaggerSpec) {
       })
   })
   app.get('/settings', isLoggedIn, function (req, res) {
-    res.render('Pages/UserDashboard/Settings.ejs',{user:req.user}, function (err, html) {
-      console.log(err)
-      res.send(html)
-    })
+    res.render('Pages/UserDashboard/Settings.ejs', {user: req.user},
+      function (err, html) {
+        console.log(err)
+        res.send(html)
+      })
   })
   app.get('/addGenres', isLoggedIn, function (req, res) {
     request({
@@ -1440,7 +1379,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *       - application/json
    *     parameters:
    *       - name: userID
-   *         description: The event ID
+   *         description: The user ID
    *         in: body
    *         required: true
    *         type: integer
@@ -1593,8 +1532,9 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   app.get('/getUserStatuses/:userID/:offset/:limit', function (req, res) {
     connection.query(
-      'SELECT * FROM `status_list` WHERE user_id=? ORDER BY timestamp DESC LIMIT '+req.params.limit+' OFFSET '+req.params.offset+'',
-      [req.params.userID ],
+      'SELECT * FROM `status_list` WHERE user_id=? ORDER BY timestamp DESC LIMIT ' +
+      req.params.limit + ' OFFSET ' + req.params.offset + '',
+      [req.params.userID],
       function (error, results) {
         if (error) {
           console.log(error)
@@ -1724,7 +1664,7 @@ module.exports = function (app, passport, swaggerSpec) {
           res.status(404).send(error)
         } else {
           connection.query(
-            'UPDATE `status_list` SET flagged=(flagged+1)  WHERE id=?',
+            'UPDATE `status_list` SET liked=(liked+1)  WHERE id=?',
             [req.params.statusID], function (error) {
               if (error) {
                 console.log(error)
@@ -2215,406 +2155,304 @@ module.exports = function (app, passport, swaggerSpec) {
    * /createEvent:
    *   post:
    *     tags:
-   *       - events
-   *     description: Creates an event
+   *       - event
+   *     description: Create an event, and return it
    *     produces:
    *       - application/json
    *     parameters:
+   *       - name: events_types_id
+   *         description: The type of the event
+   *         in: body
+   *         required: true
+   *         type: integer
+   *       - name: events_visibilitys_id
+   *         description: The visibility of the event
+   *         in: body
+   *         required: true
+   *         type: integer
+   *       - name: events_locations_id
+   *         description: The location of the event
+   *         in: body
+   *         required: true
+   *         type: integer
+   *       - name: host_user_id
+   *         description: The Id of the user hosting the event
+   *         in: body
+   *         required: true
+   *         type: integer
    *       - name: title
    *         description: The title of the event
    *         in: body
+   *         required: true
    *         type: string
    *       - name: date
-   *         description: The timestamp of the event start
+   *         description: The date of the event in milliseconds
    *         in: body
-   *         type: integer
+   *         required: true
+   *         type: string
    *       - name: description
    *         description: The description of the event
    *         in: body
+   *         required: true
    *         type: string
    *       - name: duration
-   *         description: The duration of the event in seconds
+   *         description: The duration of the event
    *         in: body
-   *         type: integer
-   *       - name: user_id
-   *         description: The id of the user who is hosting the event
-   *         in: body
-   *         type: integer
+   *         required: true
+   *         type: string
    *     responses:
    *       200:
-   *         description: Successfully created the event
+   *         description: General
    *       500:
-   *         description: Failed to create the event
+   *         description: Error
    */
   app.post('/createEvent', function (req, res) {
     connection.query(
-      'INSERT INTO `events` (`id`, `title`, `date`, `description`, `duration`, `user_id`,`createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
+      'INSERT INTO `events` (`id`, `events_types_id`, `events_visibilitys_id`, `events_locations_id`, `host_user_id`, `title`, `date`, `description`, `duration`, `createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, , ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [
+        req.body.events_types_id,
+        req.body.events_visibilitys_id,
+        req.body.events_locations_id,
+        req.body.host_user_id,
         req.body.title,
         req.body.date,
         req.body.description,
-        req.body.duration,
-        req.body.user_id], function (error, results) {
+        req.body.duration], function (error, results) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
         } else {
-          res.sendStatus(200)
-        }
-      })
-  })
-  /**
-   * @swagger
-   * /cancelEvent/{eventID}:
-   *   get:
-   *     tags:
-   *       - events
-   *     description: Deletes a event from the database and all invites associated with it
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: eventID
-   *         description: The event that is going to be cancelled
-   *         in: path
-   *         required: true
-   *         type: integer
-   *     responses:
-   *       200:
-   *         description: Cleared the users location successfully
-   *       500:
-   *         description: Failed to clear the users location
-   */
-  app.get('/cancelEvent/:eventID', function (req, res) {
-    connection.query('delete from events where events.id = ?',
-      [req.params.eventID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          connection.query('delete from invites where invites.event_id = ?',
-            [req.params.eventID], function (error, results) {
-              if (error) {
-                console.log(error)
-                res.status(500).send(error)
-              } else {
-                res.send(results)
-              }
+          connection.query('SELECT * FROM `events` WHERE `id`= ?',
+            [results.insertId], function (error, result) {
+              if (error) res.status(500).send(error)
+              res.status(200).send(result)
             })
         }
       })
   })
   /**
    * @swagger
-   * /getEvents/{userID}:
-   *   get:
-   *     tags:
-   *       - events
-   *     description: Gets the events associated to a user
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: userID
-   *         description: The id of the user who's events need to be fetched
-   *         in: path
-   *         required: true
-   *         type: integer
-   *     responses:
-   *       200:
-   *         description: Array of event objects
-   *         schema:
-   *           $ref: '#/definitions/event'
-   *       500:
-   *         description: Failed to get a users events
-   */
-  app.get('/getEvents/:userID', function (req, res) {
-    connection.query('SELECT events.*, invites.message,invites.id AS invite_id,invites.sender_user_id FROM invites \n' +
-      'INNER JOIN events on events.id = invites.event_id \n' +
-      'INNER JOIN responses ON responses.id = invites.response_id \n' +
-      'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.userID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
-  /**
-   * @swagger
-   * /getUsersEvents/{userID}:
-   *   get:
-   *     tags:
-   *       - events
-   *     description: Gets the events a user has created
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: userID
-   *         description: The id of the user who's created events need to be fetched
-   *         in: path
-   *         required: true
-   *         type: integer
-   *     responses:
-   *       200:
-   *         description: Array of event objects
-   *         schema:
-   *           $ref: '#/definitions/event'
-   *       500:
-   *         description: Failed to get a users events
-   */
-  app.get('/getUsersEvents/:userID', function (req, res) {
-    connection.query(
-      'SELECT events.* FROM events WHERE events.user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.userID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
-  /**
-   * @swagger
-   * /getFinishedUsersEvents/{userID}:
-   *   get:
-   *     tags:
-   *       - events
-   *     description: Gets the finished events a user has created
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: userID
-   *         description: The id of the user who's finished created events need to be fetched
-   *         in: path
-   *         required: true
-   *         type: integer
-   *     responses:
-   *       200:
-   *         description: Array of event objects
-   *         schema:
-   *           $ref: '#/definitions/event'
-   *       500:
-   *         description: Failed to get a users finished events
-   */
-  app.get('/getFinishedUsersEvents/:userID', function (req, res) {
-    connection.query(
-      'SELECT events.* FROM events WHERE events.user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.userID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
-  /**
-   * @swagger
-   * /getFinishedEvents/{userID}:
-   *   get:
-   *     tags:
-   *       - events
-   *     description: Gets the finished events that a user was invited to
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: userID
-   *         description: The id of the user who's finished events need to be fetched
-   *         in: path
-   *         required: true
-   *         type: integer
-   *     responses:
-   *       200:
-   *         description: Array of event objects
-   *         schema:
-   *           $ref: '#/definitions/event'
-   *       500:
-   *         description: Failed to get a users events
-   */
-  app.get('/getFinishedEvents/:userID', function (req, res) {
-    connection.query('SELECT events.*, invites.message,invites.id AS invite_id,invites.sender_user_id FROM invites \n' +
-      'INNER JOIN events on events.id = invites.id \n' +
-      'INNER JOIN responses ON responses.id = invites.response_id \n' +
-      'WHERE invites.receiver_user_id = ? AND response_id !=3 AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.userID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
-  /**
-   * @swagger
-   * /sendInvite:
+   * /setEventLocation:
    *   post:
    *     tags:
-   *       - events
-   *     description: Sends an invite to an event
+   *       - event
+   *     description: Sets the location of an event
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: sender_user_id
-   *         description: The inviter user id
+   *       - name: latitude
    *         in: body
+   *         required: true
    *         type: integer
-   *       - name: receiver_user_id
-   *         description: The invitee user id
+   *       - name: longitude
    *         in: body
+   *         required: true
    *         type: integer
-   *       - name: event_id
-   *         description: The id of the event that is being invited to
+   *       - name: address
    *         in: body
-   *         type: integer
-   *       - name: message
-   *         description: Invite message
-   *         in: body
+   *         required: true
    *         type: string
+   *       - name: events_id
+   *         in: body
+   *         required: true
+   *         type: integer
    *     responses:
    *       200:
-   *         description: Successfully invited
+   *         description: General
    *       500:
-   *         description: Failed to invited
+   *         description: Error
    */
-  app.post('/sendInvite', function (req, res) {
+  app.post('/setEventLocation', function (req, res) {
     connection.query(
-      'INSERT INTO `invites` (`id`, `sender_user_id`, `receiver_user_id`, `response_id`, `event_id`, `message`) VALUES (NULL, ?, ?, 2, ?, ?)',
+      'INSERT INTO `events_locations` (`id`, `latitude`, `longitude`, `address`, `events_id`) VALUES (NULL, ?, ?, ?, ?)',
       [
-        req.body.sender_user_id,
-        req.body.receiver_user_id,
-        req.body.event_id,
-        req.body.message], function (error, results) {
+        req.body.latitude,
+        req.body.longitude,
+        req.body.address,
+        req.body.events_id], function (error, results) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
         } else {
-          res.sendStatus(200)
+          connection.query(
+            'UPDATE events SET events_locations_id = ? WHERE events.id=?',
+            [results.insertId, req.body.events_id], function (error, result) {
+              if (error) res.status(500).send(error)
+              res.status(200).send(result)
+            })
         }
       })
   })
   /**
    * @swagger
-   * /respondToInvite:
+   * /setEventSkill:
    *   post:
    *     tags:
-   *       - events
-   *     description: Responds to an invite
+   *       - event
+   *     description: Sets the skills of an event
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: id
-   *         description: The id of the event to respond to
+   *       - name: skills
+   *         description: Array of skill ids
    *         in: body
-   *         type: integer
-   *       - name: response_id
-   *         description: The id of the response that was selected
+   *         required: true
+   *         type: array
+   *       - name: events_id
    *         in: body
+   *         required: true
    *         type: integer
    *     responses:
    *       200:
-   *         description: Successfully responded
+   *         description: General
    *       500:
-   *         description: Failed to respond
+   *         description: Error
    */
-  app.post('/respondToInvite', function (req, res) {
-    connection.query(
-      'UPDATE `invites` SET `response_id` = ? WHERE `invites`.`id` = ?;',
-      [req.body.response_id, req.body.id], function (error) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.sendStatus(200)
-        }
-      })
-  })
-  /**
-   * @swagger
-   * /getResponses:
-   *   get:
-   *     tags:
-   *       - events
-   *     description: Gets the responses that can be responded to an event
-   *     produces:
-   *       - application/json
-   *     responses:
-   *       200:
-   *         description: Array of response objects
-   *         schema:
-   *           $ref: '#/definitions/responses'
-   *       500:
-   *         description: Failed to get responses
-   */
-  app.get('/getResponses', function (req, res) {
-    connection.query('SELECT * FROM `responses`', function (error, results) {
+  app.post('/setEventSkill', function (req, res) {
+    async.eachOfLimit(req.body.skills, 1, function (skill, i, cb) {
+      connection.query(
+        'INSERT INTO `events_skills` (`id`, `events_id`, `skills_id`, `status`) VALUES (NULL, ?, ?, FALSE)',
+        [req.body.events_id, skill], function (error) {
+          if (error) {
+            cb(error)
+          } else {
+            cb()
+          }
+        })
+    }, function (error) {
       if (error) {
         console.log(error)
         res.status(500).send(error)
       } else {
-        res.status(200).send(results)
+        res.sendStatus(200)
       }
     })
   })
   /**
    * @swagger
-   * /getEventResponses/{eventID}:
+   * /cancelEvent/{events_id}:
    *   get:
    *     tags:
    *       - events
-   *     description: Gets the responses of a events invites and includes the user information
+   *     description: Deletes a event from the database and all other event tables
    *     produces:
    *       - application/json
+   *     parameters:
+   *       - name: events_id
+   *         description: The event that is going to be cancelled
+   *         in: path
+   *         required: true
+   *         type: integer
    *     responses:
    *       200:
-   *         description: Array of inviteResponse objects
-   *         schema:
-   *           $ref: '#/definitions/inviteResponse'
+   *         description: General
    *       500:
-   *         description: Failed to get responses
+   *         description: Error
    */
-  app.get('/getEventResponses/:eventID', function (req, res) {
-    connection.query(
-      'SELECT invites.id AS response_id, responses.response, users.id AS user_id, users.username  FROM invites INNER JOIN users ON users.id = receiver_user_id  INNER JOIN responses ON responses.id = invites.response_id WHERE invites.event_id =? AND users.is_banned != 1',
-      [req.params.eventID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
+  app.get('/cancelEvent/:events_id', function (req, res) {//TODO
+    var eventId = null
+    waterfall([
+        function (cb) {
+          connection.query('SELECT id from events where events.id = ?',
+            [req.params.events_id], function (error, results) {
+              if (error || results.length === 0) {
+                cb(error)
+              } else {
+                eventId = results[0].id
+                cb()
+              }
+            })
+        },
+        function (cb) {
+          connection.query('delete from events where events.id = ?',
+            [req.params.events_id], function (error, results) {
+              if (error) {
+                cb(error)
+              } else {
+                cb()
+              }
+            })
+        },
+        function (cb) {
+          connection.query(
+            'delete from events_attendees where events_attendees.events_id = ?',
+            [req.params.events_id], function (error, results) {
+              if (error) {
+                cb(error)
+              } else {
+                cb()
+              }
+            })
+        },
+        function (cb) {
+          connection.query(
+            'delete from events_invites where events_invites.events_id = ?',
+            [req.params.events_id], function (error, results) {
+              if (error) {
+                cb(error)
+              } else {
+                cb()
+              }
+            })
+        },
+        function (cb) {
+          connection.query(
+            'delete from events_locations where events_locations.events_id = ?',
+            [req.params.events_id], function (error, results) {
+              if (error) {
+                cb(error)
+              } else {
+                cb()
+              }
+            })
+        },
+        function (cb) {
+          connection.query(
+            'delete from events_requests where events_requests.events_id = ?',
+            [req.params.events_id], function (error, results) {
+              if (error) {
+                cb(error)
+              } else {
+                cb()
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
         } else {
-          res.status(200).send(results)
+          res.status(200).send(eventId)
         }
       })
-  })
 
+  })
   /**
    * @swagger
-   * /getEventSkills/{eventID}:
+   * /getEventsSkills/{events_id}:
    *   get:
    *     tags:
-   *       - eventSkills
+   *       - events
    *     description: Gets the skills associated with an event
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: eventID
-   *         description: The id of th event
+   *       - name: events_id
+   *         description: The id of the event
    *         in: path
    *         required: true
    *         type: integer
    *     responses:
    *       200:
    *         description: An Array of skills associated with an event
-   *         schema:
-   *           $ref: '#/definitions/eventSkill'
    *       500:
    *         description: Failed to clear the users location
    */
-  app.get('/getEventSkill/:eventID', function (req, res) {
+  app.get('/getEventsSkill/:events_id', function (req, res) {
     connection.query(
-      'SELECT events_skills.* from events_skills INNER JOIN events on events.id = events_skills.event_id WHERE events_skills.event_id=?',
-      [req.params.eventID], function (error, results) {
+      'SELECT events_skills.* from events_skills WHERE events_skills.events_id=?',
+      [req.params.events_id], function (error, results) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
@@ -2625,119 +2463,15 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   /**
    * @swagger
-   * /confirmEventSkill/{event_skillID}:
-   *   get:
-   *     tags:
-   *       - eventSkills
-   *     description: Confirm an event skill
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: event_skillID
-   *         description: The id of th event skill
-   *         in: path
-   *         required: true
-   *         type: integer
-   *     responses:
-   *       200:
-   *         description: The skill was confirmed
-   *       500:
-   *         description: The skill failed to confirm
-   */
-  app.get('/confirmEventSkill/:event_skillID', function (req, res) {
-    connection.query('UPDATE events_skills SET status = TRUE WHERE id=?',
-      [req.params.event_skillID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.sendStatus(200)
-        }
-      })
-  })
-  /**
-   * @swagger
-   * /unconfirmEventSkill/{event_skillID}:
-   *   get:
-   *     tags:
-   *       - eventSkills
-   *     description: Unconfirm an event skill
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: event_skillID
-   *         description: The id of th event skill
-   *         in: path
-   *         required: true
-   *         type: integer
-   *     responses:
-   *       200:
-   *         description: The skill was unconfirmed
-   *       500:
-   *         description: The skill failed to unconfirm
-   */
-  app.get('/unconfirmEventSkill/:event_skillID', function (req, res) {
-    connection.query('UPDATE events_skills SET status = FALSE WHERE id=?',
-      [req.params.event_skillID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.sendStatus(200)
-        }
-      })
-  })
-  /**
-   * @swagger
-   * /addEventSkill/{event_id}/{skill_id}:
-   *   get:
-   *     tags:
-   *       - eventSkills
-   *     description: Add a skill needed to an event
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: event_id
-   *         description: The id of the event
-   *         in: path
-   *         required: true
-   *         type: integer
-   *       - name: skill_id
-   *         description: The id of the skill
-   *         in: path
-   *         required: true
-   *         type: integer
-   *     responses:
-   *       200:
-   *         description: The skill was added to the event successfully
-   *       500:
-   *         description: The skill failed at being added to the event
-   */
-  app.get('/addEventSkill/:event_id/:skill_id', function (req, res) {
-    connection.query(
-      'INSERT INTO `events_skills` (`id`, `event_id`, `skill_id`, `status`) VALUES (NULL, ?, ?, FALSE)',
-      [req.params.event_id, req.params.skill_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.sendStatus(200)
-        }
-      })
-  })
-
-  /**
-   * @swagger
-   * /sendRequestToJoinEvent:
+   * /sendEventRequest:
    *   post:
    *     tags:
-   *       - eventRequest
+   *       - events
    *     description: Creates a request to join an event
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: event_id
-   *         description: event id
+   *       - name: skills_id
    *         in: body
    *         required: true
    *         type: integer
@@ -2746,8 +2480,15 @@ module.exports = function (app, passport, swaggerSpec) {
    *         in: body
    *         required: true
    *         type: integer
-   *       - name: reason
-   *         description: Treason
+   *       - name: events_id
+   *         in: body
+   *         required: true
+   *         type: integer
+   *       - name: message
+   *         in: body
+   *         required: true
+   *         type: string
+   *       - name: reply
    *         in: body
    *         required: true
    *         type: string
@@ -2755,12 +2496,18 @@ module.exports = function (app, passport, swaggerSpec) {
    *       200:
    *         description: Successfully created
    *       500:
-   *         description: Failed to report
+   *         description: Failed to request
    */
-  app.post('/sendRequestToJoinEvent', function (req, res) {
+  app.post('/sendEventRequest', function (req, res) {
     connection.query(
-      'INSERT INTO `event_request` (`id`, `event_id`, `sender_user_id`, `reason`, `timestamp`, `responses_id`) VALUES (NULL, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), 2)',
-      [req.body.event_id, req.body.sender_user_id, req.body.reason],
+      'INSERT INTO `event_request` (`id`, `event_id`, `sender_user_id`, `reason`, `timestamp`, `responses_id`) VALUES (NULL, ?, ?, ?, , )',
+      'INSERT INTO `events_requests` (`id`, `skills_id`, `sender_user_id`, `events_responses_id`, `events_id`, `message`, `reply`, `timestamp`) VALUES (NULL, ?, ?, 2, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))'
+        [
+        req.body.skills_id,
+          req.body.sender_user_id,
+          req.body.events_id,
+          req.body.message,
+          req.body.reply],
       function (error, results) {
         if (error) {
           console.log(error)
@@ -2772,15 +2519,55 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   /**
    * @swagger
-   * /getRequestedInvites/{eventID}:
+   * /updateRequestResponse/{events_requests_id}/{events_responses_id}:
    *   get:
    *     tags:
    *       - eventRequest
+   *     description: Updates the request to join an events reponse
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: events_requests_id
+   *         description: The event request ID
+   *         in: path
+   *         required: true
+   *         type: integer
+   *       - name: events_responses_id
+   *         description: The Response ID
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Successfully updated
+   *       500:
+   *         description: Failed to update
+   */
+  app.get('/updateRequestResponse/:events_requests_id/:events_responses_id',
+    function (req, res) {
+      connection.query(
+        'UPDATE events_requests SET events_responses_id=? WHERE events_requests.id=?',
+        [req.params.events_requests_id, req.params.events_responses_id],
+        function (error, results) {
+          if (error) {
+            console.log(error)
+            res.status(500).send(error)
+          } else {
+            res.send(results)
+          }
+        })
+    })
+  /**
+   * @swagger
+   * /getEventsRequests/{events_id}:
+   *   get:
+   *     tags:
+   *       - events
    *     description: getRequestedInvites
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: eventID
+   *       - name: events_id
    *         description: event id
    *         in: path
    *         required: true
@@ -2788,15 +2575,13 @@ module.exports = function (app, passport, swaggerSpec) {
    *     responses:
    *       200:
    *         description: Array of event request objects
-   *         schema:
-   *           $ref: '#/definitions/event_request'
    *       500:
    *         description: Failed to get
    */
-  app.get('/getRequestedInvites/:eventID', function (req, res) {
+  app.get('/getEventsRequests/:events_id', function (req, res) {
     connection.query(
-      'SELECT event_request.*, users.username FROM `event_request` INNER JOIN users ON users.id= event_request.sender_user_id WHERE event_request.event_id=? AND event_request.responses_id!=3 AND users.is_banned != 1',
-      [req.params.eventID], function (error, results) {
+      'SELECT events_requests.*, users.username FROM `events_requests` INNER JOIN users ON users.id= events_requests.sender_user_id WHERE events_requests.events_id=? AND events_requests.events_responses_id!=3 AND users.is_banned != 1',
+      [req.params.events_id], function (error, results) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
@@ -2805,12 +2590,427 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       })
   })
-
-  app.get('/getRequestedEvents/:userID', function (req, res) {
+  /**
+   * @swagger
+   * /getUserRequestedEvents/{user_id}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: getUserRequestedEvents
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         description: user_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event request objects
+   *       500:
+   *         description: Failed to get
+   */
+  app.get('/getUserRequestedEvents/:user_id', function (req, res) {
     connection.query(
-      'SELECT event_request.*,events.date,events.title,events.description,events.duration,events.user_id AS hostUserId FROM `event_request` \n' +
-      'INNER JOIN events on events.id = event_request.event_id \n' +
-      'WHERE event_request.responses_id!=3 AND sender_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000) ORDER BY `responses_id` ASC',
+      'SELECT events_requests.*,events.date,events.title,events.description,events.duration,events.host_user_id AS host_user_id FROM `events_requests` \n' +
+      'INNER JOIN events on events.id = events_requests.events_id \n' +
+      'WHERE events_requests.events_responses_id!=3 AND sender_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000) ORDER BY `events_responses_id` ASC',
+      [req.params.user_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /sendEventInvite:
+   *   post:
+   *     tags:
+   *       - events
+   *     description: Sends an invite to an event
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: receiver_user_id
+   *         description: receiver_user_id
+   *         in: body
+   *         type: integer
+   *       - name: events_responses_id
+   *         description: events_responses_id
+   *         in: body
+   *         type: integer
+   *       - name: events_id
+   *         description: events_id
+   *         in: body
+   *         type: integer
+   *       - name: message
+   *         description: message
+   *         in: body
+   *         type: string
+   *       - name: reply
+   *         description: reply
+   *         in: body
+   *         type: string
+   *       - name: skills_id
+   *         description: skills_id
+   *         in: body
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Successfully invited
+   *       500:
+   *         description: Failed to invited
+   */
+  app.post('/sendEventInvite', function (req, res) {
+    connection.query(
+      'INSERT INTO `events_invites` (`id`, `receiver_user_id`, `events_responses_id`, `events_id`, `message`, `reply`, `skills_id`) VALUES (NULL, ?, ?, ?, ?, ?, ?)',
+      [
+        req.body.receiver_user_id,
+        req.body.events_responses_id,
+        req.body.events_id,
+        req.body.message,
+        req.body.reply,
+        req.body.skills_id], function (error) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /respondToEventInvite:
+   *   post:
+   *     tags:
+   *       - events
+   *     description: Responds to an invite
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: events_responses_id
+   *         description: The id of the event to respond to
+   *         in: body
+   *         type: integer
+   *       - name: events_invites_id
+   *         description: The id of the response that was selected
+   *         in: body
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Successfully responded
+   *       500:
+   *         description: Failed to respond
+   */
+  app.post('/respondToEventInvite', function (req, res) {
+    connection.query(
+      'UPDATE `events_invites` SET `events_responses_id` = ? WHERE `events_invites`.`id` = ?;',
+      [req.body.events_responses_id, req.body.events_invites_id],
+      function (error) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          if (req.body.events_responses_id === 1) {
+            async.waterfall([
+              function (cb) {
+                connection.query(
+                  'SELECT * FROM `events_invites` WHERE events_invites=?',
+                  [req.body.events_invites_id], function (error, response) {
+                    if (error || response.length === 0) {
+                      cb(error)
+                    } else {
+                      cb(null, response[0].receiver_user_id, response[0].id)
+                    }
+                  })
+              },
+              function (user_id, events_id, cb) {
+                connection.query(
+                  'INSERT INTO `events_attendees` (`id`, `user_id`, `events_id`, `attended`) VALUES (NULL, ?, ?, 0)',
+                  [user_id, events_id], function (error) {
+                    if (error) {
+                      console.log(error)
+                      cb(error)
+                    } else {
+                      cb()
+                    }
+                  })
+              },
+            ], function (err) {
+              if (err) {
+                console.log(err)
+                res.sendStatus(500)
+              } else {
+                res.sendStatus(200)
+              }
+
+            })
+          } else {
+            res.sendStatus(200)
+          }
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getUsersReceivedInvitesUpcoming/{user_id}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: User received invites for upcoming events
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         description:
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *       500:
+   *         description: Failed to get a users events
+   */
+  app.get('/getUsersReceivedInvitesUpcoming/:user_id', function (req, res) {
+    connection.query(
+      'SELECT events_invites.* FROM events_invites WHERE events_invites.receiver_user_id=? AND events_invites.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      [req.params.user_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getUsersReceivedInvitesFinished/{user_id}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: User received invites for Finished events
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         description:
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *       500:
+   *         description: Failed to get a users events
+   */
+  app.get('/getUsersReceivedInvitesFinished/:user_id', function (req, res) {
+    connection.query(
+      'SELECT events_invites.* FROM events_invites WHERE events_invites.receiver_user_id=? AND events_invites.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      [req.params.user_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getEventsSentInvitesUpcoming/{events_id}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: An events invites that are upcoming
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: events_id
+   *         description:
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *       500:
+   *         description: Failed to get a users events
+   */
+  app.get('/getEventsSentInvitesUpcoming/:events_id', function (req, res) {
+    connection.query(
+      'SELECT events_invites.* FROM events_invites WHERE events_invites.events_id=? AND events_invites.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      [req.params.events_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getEventsSentInvitesFinished/{events_id}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: An events invites that are upcoming
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: events_id
+   *         description:
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *       500:
+   *         description: Failed to get a users events
+   */
+  app.get('/getEventsSentInvitesFinished/:events_id', function (req, res) {
+    connection.query(
+      'SELECT events_invites.* FROM events_invites WHERE events_invites.events_id=? AND events_invites.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      [req.params.events_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getEventsAttending/{user_id}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: Events thhat the user is an attendee for that are upcoming
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         description:
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *       500:
+   *         description: Failed to get a users events
+   */
+  app.get('/getEventsAttending/:user_id', function (req, res) {
+    connection.query(
+      'SELECT events.*,events_attendees.id AS events_attendees_id, events_attendees.attended FROM events_attendees INNER JOIN events ON events.id = events_attendees.events_id WHERE events_attendees.user_id=? AND events_attendees.attended=0',
+      [req.params.user_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getEventsAttended/{user_id}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: Events thhat the user is an attendee for that are finished
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         description:
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *       500:
+   *         description: Failed to get a users events
+   */
+  app.get('/getEventsAttended/:user_id', function (req, res) {
+    connection.query(
+      'SELECT events.*,events_attendees.id AS events_attendees_id, events_attendees.attended FROM events_attendees INNER JOIN events ON events.id = events_attendees.events_id WHERE events_attendees.user_id=? AND events_attendees.attended=1',
+      [req.params.user_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /setUserAttended/{events_attendees_id}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: setUserAttended
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: events_attendees_id
+   *         description:
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: General
+   *       500:
+   *         description: General
+   */
+  app.get('/setUserAttended/:events_attendees_id', function (req, res) {
+    connection.query(
+      'UPDATE events_attendees SET events_attendees.attended=1 WHERE events_attendees.id=?',
+      [req.params.events_attendees_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getUpcomingUserCreatedEvents/{user_id}:
+   *   get:
+   *     tags:
+   *       - events
+   *     description: getUpcomingUserCreatedEvents
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         description: user_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: General
+   *       500:
+   *         description: General
+   */
+  app.get('/getUpcomingUserCreatedEvents/:user_id', function (req, res) {
+    connection.query(
+      'SELECT events.* FROM events WHERE events.host_user_id=? AND events_invites.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
           console.log(error)
@@ -2822,44 +3022,38 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   /**
    * @swagger
-   * /updateRequestResponse/{responseID}/{responseID}:
+   * /getFinishedUserCreatedEvents/{user_id}:
    *   get:
    *     tags:
-   *       - eventRequest
-   *     description: Updates the request to join an events reponse
+   *       - events
+   *     description: getFinishedUserCreatedEvents
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: eventRequestID
-   *         description: The event request ID
-   *         in: path
-   *         required: true
-   *         type: integer
-   *       - name: responseID
-   *         description: The Response ID
+   *       - name: user_id
+   *         description: user_id
    *         in: path
    *         required: true
    *         type: integer
    *     responses:
    *       200:
-   *         description: Successfully updated
+   *         description: General
    *       500:
-   *         description: Failed to update
+   *         description: General
    */
-  app.get('/updateRequestResponse/:eventRequestID/:responseID',
-    function (req, res) {
-      connection.query(
-        'UPDATE event_request SET responses_id=? WHERE event_request.id=?\n',
-        [req.params.responseID, req.params.eventRequestID],
-        function (error, results) {
-          if (error) {
-            console.log(error)
-            res.status(500).send(error)
-          } else {
-            res.send(results)
-          }
-        })
-    })
+  app.get('/getFinishedUserCreatedEvents/:user_id', function (req, res) {
+    connection.query(
+      'SELECT events.* FROM events WHERE events.host_user_id=? AND events_invites.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      [req.params.userID], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+
 
   app.post('/deleteStatus', function (req, res) {
     waterfall([
