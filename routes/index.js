@@ -2208,11 +2208,10 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.post('/createEvent', function (req, res) {
     connection.query(
-      'INSERT INTO `events` (`id`, `events_types_id`, `events_visibilitys_id`, `events_locations_id`, `host_user_id`, `title`, `date`, `description`, `duration`, `createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, , ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      'INSERT INTO `events` (`id`, `events_types_id`, `events_visibilitys_id`, `host_user_id`, `title`, `date`, `description`, `duration`, `createdTimestamp`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
       [
         req.body.events_types_id,
         req.body.events_visibilitys_id,
-        req.body.events_locations_id,
         req.body.host_user_id,
         req.body.title,
         req.body.date,
@@ -2274,12 +2273,7 @@ module.exports = function (app, passport, swaggerSpec) {
           console.log(error)
           res.status(500).send(error)
         } else {
-          connection.query(
-            'UPDATE events SET events_locations_id = ? WHERE events.id=?',
-            [results.insertId, req.body.events_id], function (error, result) {
-              if (error) res.status(500).send(error)
-              res.status(200).send(result)
-            })
+          res.status(200).send(result)
         }
       })
   })
@@ -2333,7 +2327,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /cancelEvent/{events_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: Deletes a event from the database and all other event tables
    *     produces:
    *       - application/json
@@ -2433,7 +2427,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getEventsSkills/{events_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: Gets the skills associated with an event
    *     produces:
    *       - application/json
@@ -2466,7 +2460,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /sendEventRequest:
    *   post:
    *     tags:
-   *       - events
+   *       - event
    *     description: Creates a request to join an event
    *     produces:
    *       - application/json
@@ -2522,7 +2516,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /updateRequestResponse/{events_requests_id}/{events_responses_id}:
    *   get:
    *     tags:
-   *       - eventRequest
+   *       - event
    *     description: Updates the request to join an events reponse
    *     produces:
    *       - application/json
@@ -2562,7 +2556,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getEventsRequests/{events_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: getRequestedInvites
    *     produces:
    *       - application/json
@@ -2595,7 +2589,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getUserRequestedEvents/{user_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: getUserRequestedEvents
    *     produces:
    *       - application/json
@@ -2630,7 +2624,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /sendEventInvite:
    *   post:
    *     tags:
-   *       - events
+   *       - event
    *     description: Sends an invite to an event
    *     produces:
    *       - application/json
@@ -2688,7 +2682,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /respondToEventInvite:
    *   post:
    *     tags:
-   *       - events
+   *       - event
    *     description: Responds to an invite
    *     produces:
    *       - application/json
@@ -2761,7 +2755,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getUsersReceivedInvitesUpcoming/{user_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: User received invites for upcoming events
    *     produces:
    *       - application/json
@@ -2779,7 +2773,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getUsersReceivedInvitesUpcoming/:user_id', function (req, res) {
     connection.query(
-      'SELECT events_invites.* FROM events_invites WHERE events_invites.receiver_user_id=? AND events_invites.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.receiver_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.user_id], function (error, results) {
         if (error) {
           console.log(error)
@@ -2794,7 +2788,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getUsersReceivedInvitesFinished/{user_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: User received invites for Finished events
    *     produces:
    *       - application/json
@@ -2812,7 +2806,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getUsersReceivedInvitesFinished/:user_id', function (req, res) {
     connection.query(
-      'SELECT events_invites.* FROM events_invites WHERE events_invites.receiver_user_id=? AND events_invites.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.receiver_user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.user_id], function (error, results) {
         if (error) {
           console.log(error)
@@ -2827,7 +2821,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getEventsSentInvitesUpcoming/{events_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: An events invites that are upcoming
    *     produces:
    *       - application/json
@@ -2845,7 +2839,8 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getEventsSentInvitesUpcoming/:events_id', function (req, res) {
     connection.query(
-      'SELECT events_invites.* FROM events_invites WHERE events_invites.events_id=? AND events_invites.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      '\n' +
+      'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.events_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.events_id], function (error, results) {
         if (error) {
           console.log(error)
@@ -2860,7 +2855,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getEventsSentInvitesFinished/{events_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: An events invites that are upcoming
    *     produces:
    *       - application/json
@@ -2878,7 +2873,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getEventsSentInvitesFinished/:events_id', function (req, res) {
     connection.query(
-      'SELECT events_invites.* FROM events_invites WHERE events_invites.events_id=? AND events_invites.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.events_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.events_id], function (error, results) {
         if (error) {
           console.log(error)
@@ -2893,7 +2888,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getEventsAttending/{user_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: Events thhat the user is an attendee for that are upcoming
    *     produces:
    *       - application/json
@@ -2926,7 +2921,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getEventsAttended/{user_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: Events thhat the user is an attendee for that are finished
    *     produces:
    *       - application/json
@@ -2959,7 +2954,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /setUserAttended/{events_attendees_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: setUserAttended
    *     produces:
    *       - application/json
@@ -2992,7 +2987,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getUpcomingUserCreatedEvents/{user_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: getUpcomingUserCreatedEvents
    *     produces:
    *       - application/json
@@ -3010,7 +3005,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getUpcomingUserCreatedEvents/:user_id', function (req, res) {
     connection.query(
-      'SELECT events.* FROM events WHERE events.host_user_id=? AND events_invites.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
           console.log(error)
@@ -3025,7 +3020,7 @@ module.exports = function (app, passport, swaggerSpec) {
    * /getFinishedUserCreatedEvents/{user_id}:
    *   get:
    *     tags:
-   *       - events
+   *       - event
    *     description: getFinishedUserCreatedEvents
    *     produces:
    *       - application/json
@@ -3043,7 +3038,7 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.get('/getFinishedUserCreatedEvents/:user_id', function (req, res) {
     connection.query(
-      'SELECT events.* FROM events WHERE events.host_user_id=? AND events_invites.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+      'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
       [req.params.userID], function (error, results) {
         if (error) {
           console.log(error)
