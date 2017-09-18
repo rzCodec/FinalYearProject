@@ -2170,11 +2170,6 @@ module.exports = function (app, passport, swaggerSpec) {
    *         in: body
    *         required: true
    *         type: integer
-   *       - name: events_locations_id
-   *         description: The location of the event
-   *         in: body
-   *         required: true
-   *         type: integer
    *       - name: host_user_id
    *         description: The Id of the user hosting the event
    *         in: body
@@ -3048,7 +3043,6 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       })
   })
-
 
   app.post('/deleteStatus', function (req, res) {
     waterfall([
