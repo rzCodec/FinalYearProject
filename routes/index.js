@@ -367,11 +367,32 @@ module.exports = function (app, passport, swaggerSpec) {
       })
   })
   app.get('/settings', isLoggedIn, function (req, res) {
-    res.render('Pages/UserDashboard/Settings.ejs', {user: req.user},
-      function (err, html) {
-        console.log(err)
-        res.send(html)
+    var UserInfo = {
+      info:{},
+    }
+    parallel([
+        function (callback) {
+          request({
+            url: website + '/getUserInfoEmail/'+req.user.email,
+            json: true,
+          }, function (error, response, body) {
+            console.log(body)
+            if (error) {
+              console.log(error)
+            }
+            UserInfo.info = body
+            callback(null)
+          })
+        },
+      ],
+      function (err) {
+        res.render('Pages/UserDashboard/Settings.ejs', {user: req.user, userInfo: UserInfo},
+          function (err, html) {
+            console.log(err)
+            res.send(html)
+          })
       })
+
   })
   app.get('/addGenres', isLoggedIn, function (req, res) {
     request({
@@ -2195,6 +2216,11 @@ module.exports = function (app, passport, swaggerSpec) {
    *         in: body
    *         required: true
    *         type: string
+   *       - name: skills
+   *         description: Array of skill IDs
+   *         in: body
+   *         required: true
+   *         type: array
    *     responses:
    *       200:
    *         description: General
@@ -2216,11 +2242,30 @@ module.exports = function (app, passport, swaggerSpec) {
           console.log(error)
           res.status(500).send(error)
         } else {
-          connection.query('SELECT * FROM `events` WHERE `id`= ?',
-            [results.insertId], function (error, result) {
-              if (error) res.status(500).send(error)
-              res.status(200).send(result)
-            })
+          var eventId = results.insertId
+          async.eachOfLimit(req.body.skills, 1, function (skill, i, cb) {
+            connection.query(
+              'INSERT INTO `events_skills` (`id`, `events_id`, `skills_id`, `status`) VALUES (NULL, ?, ?, FALSE)',
+              [eventId, skill], function (error) {
+                if (error) {
+                  cb(error)
+                } else {
+                  cb()
+                }
+              })
+          }, function (error) {
+            if (error) {
+              console.log(error)
+              res.status(500).send(error)
+            } else {
+              connection.query('SELECT * FROM `events` WHERE `id`= ?',
+                [reventId], function (error, result) {
+                  if (error) res.status(500).send(error)
+                  res.status(200).send(result)
+                })
+            }
+          })
+
         }
       })
   })
@@ -3001,7 +3046,7 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getUpcomingUserCreatedEvents/:user_id', function (req, res) {
     connection.query(
       'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.userID], function (error, results) {
+      [req.params.user_id], function (error, results) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
@@ -3034,7 +3079,7 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getFinishedUserCreatedEvents/:user_id', function (req, res) {
     connection.query(
       'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.userID], function (error, results) {
+      [req.params.user_id], function (error, results) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
