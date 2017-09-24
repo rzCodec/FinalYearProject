@@ -2259,7 +2259,7 @@ module.exports = function (app, passport, swaggerSpec) {
               res.status(500).send(error)
             } else {
               connection.query('SELECT * FROM `events` WHERE `id`= ?',
-                [reventId], function (error, result) {
+                [eventId], function (error, result) {
                   if (error) res.status(500).send(error)
                   res.status(200).send(result)
                 })
