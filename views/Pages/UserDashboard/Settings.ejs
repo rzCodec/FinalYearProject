@@ -10,9 +10,11 @@
 <div >
     <ul id="slide-out" class="tabs center-align" >
         <li id="personalSettings" class="tab col s3" ><a href="#personal" >Personal Settings</a ></li >
+        <li id="password" class="tab col s3" ><a href="#passwords" >Change Password</a ></li >
+        <li id="genreAndSkill" class="tab col s3" ><a href="#genreAndSkills" >Genre and Skills</a ></li >
     </ul >
 
-    <div id="personal" class="formValidate col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
+    <div id="personal" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
         <div class='container center-align' >
 
             <div class="card white darken-1" >
@@ -23,29 +25,22 @@
 
                     <div class="input-field col s6 center-align" >
                         <label for="firstname" >First Name</label >
-                        <input id="firstname" placeholder="<%=user.firstname%>" name="firstname" type="text" data-error=".errorTxt1" >
+                        <input id="firstname" value="<%=user.firstname%>" name="firstname" type="text" data-error=".errorTxt1" >
                         <div class="errorTxt1" ></div >
                     </div >
 
                     <div class="input-field col s6 center-align" >
                         <label for="surname" >Surname</label >
-                        <input id="surname" placeholder="<%=user.surname%>" name="surname" type="text" data-error=".errorTxt22" >
+                        <input id="surname" value="<%=user.surname%>" name="surname" type="text" data-error=".errorTxt22" >
                         <div class="errorTxt22" ></div >
                     </div >
 
                     <div class="input-field col s12" >
-                        <label for="realUserName" >Username</label >
-                        <input id="realUserName" placeholder="<%=user.username%>" name="realUserName" type="text" data-error=".errorTxt23" >
-                        <div class="errorTxt23" ></div >
-                    </div >
-
-                    <div class="input-field col s12" >
-                        <textarea id="description" placeholder="<%=user.description%>" name="description" class="materialize-textarea validate"
+                        <textarea id="description" value="<%=user.description%>" name="description" class="materialize-textarea validate"
                                   data-error=".errorTxt7" ></textarea >
                         <label for="description" >Description</label >
                         <div class="errorTxt7" ></div >
                     </div >
-
 
                     <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
                     <a href="/dashboard" class="btn btn-default right-align" onclick="updateInfo()" >Save</a >
@@ -54,26 +49,118 @@
         </div >
     </div >
 
+    <div id="passwords" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
+        <div class='container center-align' >
+
+            <div class="card white darken-1" >
+
+                <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
+                    <span class="card-title" ><h1 >Change Password</h1 ></span >
+                    <span class="card-title" >Change Your Password</span >
+
+                    <div class="input-field col s6 center-align" >
+                        <label for="Current Password" >Current Password</label >
+                        <input id="current" type="password" data-error=".errorTxt1" >
+                        <div class="errorTxt1" ></div >
+                    </div >
+
+                    <div class="input-field col s6 center-align" >
+                        <label for="newPass" >New Password</label >
+                        <input id="newPass" type="password" data-error=".errorTxt22" >
+                        <div class="errorTxt22" ></div >
+                    </div >
+
+                    <div class="input-field col s12" >
+                        <textarea id="confirm" type="password" class="materialize-textarea validate"
+                                  data-error=".errorTxt7" ></textarea >
+                        <label for="confirm" >Confirm</label >
+                        <div class="errorTxt7" ></div >
+                    </div >
+
+                    <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
+                    <a href="/dashboard" class="btn btn-default right-align" onclick="updatePassword()">Save</a >
+                </div >
+            </div >
+        </div >
+    </div >
+
+    <div id="genreAndSkills" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
+        <div class='container center-align' >
+
+            <div class="card white darken-1" >
+
+                <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
+                    <span class="card-title" ><h1 >Genre and Skill</h1 ></span >
+                    <span class="card-title" >Update Your Genre and Skills</span >
+
+                    <div class="input-field col s12">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                        <label>Materialize Select</label>
+                    </div>
+
+                    <div class="input-field col s12">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                        <label>Materialize Select</label>
+                    </div>
+
+                    <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
+                    <a href="/dashboard" class="btn btn-default right-align" onclick="updateInfo()" >Save</a >
+                </div >
+            </div >
+        </div >
+    </div >
+
+
 </div >
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
 
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+
     function updateInfo()
     {
-        $.post("https://www.eternalvibes.me/addSkill",
+        $.post("https://www.eternalvibes.me/updateUserInfo",
             {
-                firstname:$('#add_skill').textContent,
-                surname:$('#add_skill').textContent,
-                username:$('#realUserName').textContent,
-                password:$('#add_skill').textContent,
-                description:$('#add_skill').textContent
+                firstname:$('#firstname').value,
+                surname:$('#surname').value,
+                description:$('#description').value
             },
-            function (data, status)
+            function (data)
             {
-                console.log("Data: " + data + "\nStatus: " + status);
+                if(data == 200)
+                {
+                    Materialize.toast("Updated User Info", 5000);
+                }
             });
     }
+
+    function updatePassword()
+    {
+        $.post("https://eternalvibes.me/updatePassword",
+            {
+                currentPass: $("#current").value(),
+                NewPass: $("#newPass").value()
+
+            },
+            function (data)
+            {
+
+            });
+    }
+
   Materialize.showStaggeredList('#staggered-test')
   $('#personalsettings').click('#personal');
     $("#formValidate").validate({
@@ -86,10 +173,6 @@
             surname: {
                 required: true,
                 minlength: 2
-            },
-            realUserName: {
-                required: true,
-                minlength: 5
             },
             password: {
                 required: true,
