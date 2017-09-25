@@ -15,11 +15,22 @@
                         <span class="card-title center-align" >
                             <%console.log(UserInfo.info)%>
                             <img class="circle" src="/images/profilePics/<%= UserInfo.info.id %>.png"  alt=""
-                                 width="64" height="64" ><br><p >Welcome <%= UserInfo.info.firstname %>  <%= UserInfo.info.surname %></p ></span >
+                                 width="64" height="64" >
+                            <br>
+                            <br>
+                            <p ><%= UserInfo.info.firstname %>  <%= UserInfo.info.surname %>
+                            </p >
+                        </span >
                             <p class="center"> <%= UserInfo.info.username%> </p>
                             <br>
-                            <p class="center">Location: <%= UserInfo.info.city%></p>
-
+                            <i class="left small material-icons">music_note</i><%= UserInfo.info.genre%>
+                            &emsp;<div><i class="left small material-icons">insert_link</i>
+                                <a href="<%= UserInfo.info.song_link%>"><%= UserInfo.info.song_link%></a></div>
+                            <br>
+                            <i class="left small material-icons">location_on</i><%= UserInfo.info.city%>
+                            <br>
+                            <br>
+                            Followers: &emsp;&emsp; Following:
                         </div >
                     </div >
                 </li >
@@ -39,8 +50,9 @@
                 <div id="Timeline" class="col s12 card " style="margin-top: 5%;margin-bottom: 10%" >
                     <div >
                         <ul id="posts" class="collection truncate" >
-                            <%UserInfo.Status.forEach(function(status){%>
-
+                            <%UserInfo.Status.forEach(function(status){
+                            if(status.user_id == UserInfo.info.id)
+                            {%>
                             <li class="collection-item avatar card-content">
                                 <div><img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
                                     <span class="title"><%=status.username%></span>
@@ -48,12 +60,37 @@
                                     <p>
                                     <p class="flow-text"><%=status.status%></p>
                                 </div>
-                                <a id="par<%=status.id%>" name="pardon<%=status.id%>" class="waves-effect waves-light btn btn_pardon" onclick="LikeStatus(<%= status.id %>)">
-                                    <i class="material-icons left">thumb_up</i>Like (<%=status.liked%>)</a>
-                                <a id="rem<%=status.id%>" name="remove<%=status.id%>" class=" right waves-effect waves-light btn red btn_delete" onclick="FlagStatus(<%= status.id %>)">
-                                    <i class="material-icons left">thumb_down</i>Flag</a>
+                                <a id="del<%=status.id%>"
+                                   class="waves-effect right waves-light"
+                                   onclick="LikeStatus(<%= status.id %>)">
+                                    <i class="material-icons left">delete</i>
+                                </a>
                             </li>
-                            <%})%>
+                            <%}else
+                            {%>
+                                <li class="collection-item avatar card-content">
+                                    <div>
+                                        <img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
+                                        <%var theDate = new Date(status.timestamp* 1000); %>
+                                        <span class="title"><%=status.username%> &emsp; &emsp; &emsp;
+                                            &emsp; &emsp; &emsp; <%= theDate.toDateString()%>
+                                        </span>
+                                        <br>
+                                        <br>
+                                        <p class="flow-text"><%=status.status%></p>
+                                    </div>
+                                    <a id="like<%=status.id%>"
+                                       class="waves-effect waves-light" onclick="LikeStatus(<%= status.id %>)">
+                                        <i class="material-icons brown-text left-align tooltipped" data-tooltip="Like Post">
+                                            star_border</i>(<%=status.liked%>)
+                                    </a>
+                                    <a id="flag<%=status.id%>" class=" right waves-effect waves-light btn_delete"
+                                       onclick="FlagStatus(<%= status.id %>)">
+                                        <i class="material-icons left brown-text tooltipped"
+                                           data-tooltip="Report Post">thumb_down</i>
+                                    </a>
+                                </li>
+                            <%}})%>
                         </ul >
                     </div >
                 </div >
