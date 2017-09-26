@@ -2474,7 +2474,7 @@ module.exports = function (app, passport, swaggerSpec) {
           console.log(err)
           res.status(500).send(err)
         } else {
-          res.status(200).send(eventId)
+          res.send({eventId:eventId})
         }
       })
 
@@ -2767,7 +2767,7 @@ module.exports = function (app, passport, swaggerSpec) {
           console.log(error)
           res.status(500).send(error)
         } else {
-          if (req.body.events_responses_id === 1) {
+          if (req.body.events_responses_id === '1') {
             async.waterfall([
               function (cb) {
                 connection.query(
@@ -2829,16 +2829,73 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get a users events
    */
   app.get('/getUsersReceivedInvitesUpcoming/:user_id', function (req, res) {
-    connection.query(
-      'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.receiver_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.user_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
+    var output=[];
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.receiver_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+            [req.params.user_id], function (error, results) {
+              if (error) {
+                console.log(error)
+                callback(error)
+              } else {
+                output=results
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          async.eachOfLimit(output, 1, function (invite, i, cb) {
+            connection.query(
+              'SELECT * FROM events WHERE events.id=?',
+              [invite.events_id], function (error, results) {
+                if (error) {
+                  cb(error)
+                } else {
+                  output[i]['event']=results[0]
+                  console.log(output)
+                  cb(null)
+                }
+              })
+
+          }, function (error) {
+            if (error) {
+              callback(error)
+            } else {
+              callback()
+            }
+          })
+        },
+        function (callback) {
+          async.eachOfLimit(output, 1, function (invite, i, cb) {
+            connection.query(
+              'SELECT * FROM users WHERE users.id=?',
+              [invite.event.host_user_id], function (error, results) {
+                if (error) {
+                  cb(error)
+                } else {
+                  output[i]['hostUser']=results[0]
+                  cb(null)
+                }
+              })
+          }, function (error) {
+            if (error) {
+              callback(error)
+            } else {
+              callback()
+            }
+          })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }else{
+          res.send(output)
         }
       })
+
   })
   /**
    * @swagger
@@ -2965,6 +3022,39 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query(
       'SELECT events.*,events_attendees.id AS events_attendees_id, events_attendees.attended FROM events_attendees INNER JOIN events ON events.id = events_attendees.events_id WHERE events_attendees.user_id=? AND events_attendees.attended=0',
       [req.params.user_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getEvent/{events_id}:
+   *   get:
+   *     tags:
+   *       - event
+   *     description: get an event
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: events_id
+   *         description:
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *       500:
+   *         description: Failed to get a users events
+   */
+  app.get('/getEvent/:events_id', function (req, res) {
+    connection.query(
+      'SELECT events.*,events_attendees.id AS events_attendees_id, events_attendees.attended FROM events_attendees INNER JOIN events ON events.id = events_attendees.events_id WHERE events_attendees.user_id=? AND events_attendees.attended=0',
+      [req.params.events_id], function (error, results) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
