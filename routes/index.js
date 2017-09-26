@@ -3151,14 +3151,49 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: General
    */
   app.get('/getUpcomingUserCreatedEvents/:user_id', function (req, res) {
-    connection.query(
-      'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.user_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
+    var output=[];
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+            [req.params.user_id], function (error, results) {
+              if (error) {
+                console.log(error)
+                callback(error)
+              } else {
+                output=results
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          async.eachOfLimit(output, 1, function (event, i, cb) {
+            connection.query(
+              'SELECT events_skills.skills_id, skills.name FROM `events_skills` INNER JOIN skills ON skills.id= events_skills.skills_id WHERE events_skills.events_id=?',
+              [event.id], function (error, results) {
+                if (error) {
+                  cb(error)
+                } else {
+                  output[i]['event_skills']=results
+                  cb(null)
+                }
+              })
+
+          }, function (error) {
+            if (error) {
+              callback(error)
+            } else {
+              callback()
+            }
+          })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }else{
+          res.send(output)
         }
       })
   })
@@ -3184,14 +3219,49 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: General
    */
   app.get('/getFinishedUserCreatedEvents/:user_id', function (req, res) {
-    connection.query(
-      'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.user_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
+    var output=[];
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+            [req.params.user_id], function (error, results) {
+              if (error) {
+                console.log(error)
+                callback(error)
+              } else {
+                output=results
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          async.eachOfLimit(output, 1, function (event, i, cb) {
+            connection.query(
+              'SELECT events_skills.skills_id, skills.name FROM `events_skills` INNER JOIN skills ON skills.id= events_skills.skills_id WHERE events_skills.events_id=?',
+              [event.id], function (error, results) {
+                if (error) {
+                  cb(error)
+                } else {
+                  output[i]['event_skills']=results
+                  cb(null)
+                }
+              })
+
+          }, function (error) {
+            if (error) {
+              callback(error)
+            } else {
+              callback()
+            }
+          })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }else{
+          res.send(output)
         }
       })
   })
