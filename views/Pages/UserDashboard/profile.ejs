@@ -30,6 +30,26 @@
             <br>
 
         </div >
+        <%  var followers, numFollowers, followings, numFollowing;
+        function getFollowers()
+        {
+            $.get("https://eternalvibes.me/getFriends/" + user.id,
+            function(data)
+            {
+
+            })
+        }
+        function getFollowing()
+        {
+            $.get("https://eternalvibes.me/getFollowing/" + user.id,
+            function(data)
+            {
+
+            })
+        }
+        %>
+        <p class="center-align">Followers: <%= numFollowers%>   &emsp;&emsp;       Following: <%=numFollowing%></p>
+        <br>
     </div >
     <ul class="tabs center-align" style="margin-top: 3%" >
 
@@ -69,7 +89,7 @@
                     </br>
                     <p > <%= post.liked %> likes  &emsp; &emsp;
                         <%= post.flag %> flags &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;
-                        <a class="btn-flat right"><i class="medium material-icons ">delete</i></a>
+                        <a class="btn-flat right"><i class="medium material-icons tooltipped" data-tooltip="Delete Post">delete</i></a>
                     </p >
                 </li >
                 <% }) %>
@@ -77,11 +97,11 @@
         </div >
     </div >
 
-    <div id="AttendedEvents" class="col s12"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%" >
+    <div id="AttendedEvents" class="col s12 modal-trigger"
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%" data-target="finDetails" >
         <div >
             <ul id="posts" class="collection truncate" >
-
+                <% console.log(UserFinishedEvents);%>
                 <% UserFinishedEvents.forEach(function (event) { %>
                 <li class="collection-item avatar" >
                     <div ><img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png"
@@ -111,10 +131,43 @@
         </div >
     </div >
 
+
+    <div id="finDetails" class="modal">
+        <div class="modal-content">
+            <div class="card-content">
+                Event Name:
+                Event Details
+                Event Date
+                Overall Ratig for event
+                <br>
+                Users: + Skill and Rating
+                <br>
+                Comments ordered by User
+            </div>
+        </div>
+
+    </div>
+
+    <div id="upcomingDetails" class="modal">
+        <div class="modal-content">
+            <div class="card-content">
+                Event Name:
+                Event Details
+                Event Date
+                <br>
+                Users: + Skill
+            </div>
+        </div>
+
+    </div>
+
+
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
-
+    $(document).ready(function(){
+        $('.modal').modal();
+    });
   $('#Timeline').click(getPosts())
   $('#Attended').click(getAttended())
   $('#Upcoming').click(getUpcoming())
