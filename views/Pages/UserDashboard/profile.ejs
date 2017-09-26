@@ -19,18 +19,23 @@
                     <i class="medium material-icons left-align">settings_applications</i> Edit Profile
                 </a>
             </span >
-            <h4 ><%= user.username %></h4 >&emsp;<%=user.description%>
+            <h4 ><%= user.username %></h4 >
+            <%if((user.description != "nothing for now") || (user.description != null)) {%>
+            &emsp;<%=user.description%>
             <br>
+            <%}%>
             <br>
             <i class="left small material-icons">music_note</i><%= user.genre%>
+            <%if(user.song_link != null) {%>
             &emsp;<div><i class="left small material-icons">insert_link</i>
                 <a href="<%= user.song_link%>"><%= user.song_link%></a></div>
+            <%}%>
             <br>
             <i class="left small material-icons">location_on</i><%= user.city%>
             <br>
 
         </div >
-        <%  var followers, numFollowers, followings, numFollowing;
+        <%  var numFollowers, numFollowing;
         function getFollowers()
         {
             $.get("https://eternalvibes.me/getFriends/" + user.id,
@@ -48,7 +53,8 @@
             })
         }
         %>
-        <p class="center-align">Followers: <%= numFollowers%>   &emsp;&emsp;       Following: <%=numFollowing%></p>
+        <p class="center-align"><a class="btn-flat">Followers: <%= numFollowers%></a>   &emsp;&emsp;
+            <a class="btn-flat">Following: <%= numFollowing%></a></p>
         <br>
     </div >
     <ul class="tabs center-align" style="margin-top: 3%" >

@@ -22,7 +22,7 @@
                 <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
                     <span class="card-title" ><h1 >Personal Settings</h1 ></span >
                     <span class="card-title" >What personal information do you want to change?</span >
-
+                    <%console.log(user)%>
                     <div class="input-field col s6 center-align" >
                         <label for="firstname" >First Name</label >
                         <input id="firstname" value="<%=user.firstname%>" name="firstname" type="text" data-error=".errorTxt1" >
@@ -153,6 +153,31 @@
             {
                 currentPass: $("#current").value(),
                 NewPass: $("#newPass").value()
+
+            },
+            function (data)
+            {
+
+            });
+    }
+
+
+    function updateGenre_Skills(id, genre, skills)
+    {
+        $.post("https://eternalvibes.me/updateUserSkills",
+            {
+                Id: id,
+                skills: $("#skills").value()
+
+            },
+            function (data)
+            {
+
+            });
+        $.post("https://eternalvibes.me/updateUserGenres",
+            {
+                Id: id,
+                skills: $("#skills").value()
 
             },
             function (data)
