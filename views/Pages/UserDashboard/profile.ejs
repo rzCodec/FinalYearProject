@@ -35,26 +35,13 @@
             <br>
 
         </div >
-        <%  var numFollowers, numFollowing;
-        function getFollowers()
-        {
-            $.get("https://eternalvibes.me/getFriends/" + user.id,
-            function(data)
-            {
-
-            })
-        }
-        function getFollowing()
-        {
-            $.get("https://eternalvibes.me/getFollowing/" + user.id,
-            function(data)
-            {
-
-            })
-        }
+        <%
+        console.log(numFollowers);
         %>
-        <p class="center-align"><a class="btn-flat">Followers: <%= numFollowers%></a>   &emsp;&emsp;
-            <a class="btn-flat">Following: <%= numFollowing%></a></p>
+        <p class="center-align">
+            <a data-target="followers"  class="modal-trigger btn-flat">Followers: <%= numFollowers%></a>   &emsp;&emsp;
+            <a data-target="following" class="btn-flat modal-trigger">Following: <%= numFollowing%></a>
+        </p>
         <br>
     </div >
     <ul class="tabs center-align" style="margin-top: 3%" >
@@ -88,7 +75,7 @@
                              alt="<%= user.username %>" width="100" height="100" class="circle" >
                         <%var theDate = new Date(post.timestamp* 1000); %>
                         <strong><%= user.firstname %> <%= user.surname %></strong> &emsp; <%= user.username %>
-                        &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; <%= theDate.toDateString()%>
+                        &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;<%= theDate.getFullYear()%> <%= theDate.toLocaleTimeString()%>
                     </div>
                     </br>
                     <p ><span class="title" ><%= post.status %></span ></p>
@@ -164,15 +151,83 @@
                 Users: + Skill
             </div>
         </div>
-
     </div>
+
+
+    <div id="followers" class="modal">
+        <div class="modal-panel">
+            <h2 class="card-title" style="margin-bottom: 10%"> Followers </h2>
+            <ul>
+                <li class="card-content"></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="following" class="modal">
+        <div class="modal-panel">
+            <h2 class="card-title" style="margin-bottom: 10%"> Followers </h2>
+            <ul>
+                <li class="card-content"></li>
+            </ul>
+        </div>
+    </div>
+
+
 
 
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
+
+    var numFollowers, numFollowing;
+    function getFollowers()
+    {
+        $.ajax({
+            type: "GET",
+            url: "https://eternalvibes.me/getFriends/" + user.id,
+            cache: false,
+            dataType: "jsonp",
+            success: function (data){
+                console.log(data);
+                numFollowers = data;
+            },
+            error: function (data) {
+                console.log("error");
+                numFollowers = data;
+            }}).then(function()
+        {
+            return numFollowers;
+        });
+    }
+    function getFollowing()
+    {
+        $.ajax({
+            type: "GET",
+            url: "https://eternalvibes.me/getFollowing/",
+            cache: false,
+            data:user.id,
+            dataType: "jsonp",
+            success: function (data)
+            {
+                console.log(data);
+                numFollowing = data;
+            },
+            error: function (data)
+            {
+                console.log("error");
+                numFollowing = data;
+            }}).then(function()
+        {
+            return numFollowing;
+        });
+    }
+
+
+
     $(document).ready(function(){
         $('.modal').modal();
+        getFollowers();
+        getFollowing();
     });
   $('#Timeline').click(getPosts())
   $('#Attended').click(getAttended())
