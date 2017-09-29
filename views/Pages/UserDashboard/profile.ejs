@@ -35,12 +35,9 @@
             <br>
 
         </div >
-        <%
-        console.log(numFollowers);
-        %>
         <p class="center-align">
-            <a data-target="followers"  class="modal-trigger btn-flat">Followers: <%= numFollowers%></a>   &emsp;&emsp;
-            <a data-target="following" class="btn-flat modal-trigger">Following: <%= numFollowing%></a>
+            <a data-target="followers"  class="modal-trigger btn-flat">Followers: 4</a>   &emsp;&emsp;
+            <a data-target="following" class="btn-flat modal-trigger">Following: 3</a>
         </p>
         <br>
     </div >
@@ -155,19 +152,44 @@
 
 
     <div id="followers" class="modal">
-        <div class="modal-panel">
-            <h2 class="card-title" style="margin-bottom: 10%"> Followers </h2>
-            <ul>
-                <li class="card-content"></li>
+        <div class="card-panel">
+            <h2 class="card-title center" style="margin-bottom: 10%"> Followers </h2>
+            <ul class="card-content">
+                <li class="card-content" style="margin-bottom: 10%">
+                <img src="images/profilePics/303346733.png"width="50" height="50">
+                    <SPAN><strong>Ronald Lai</strong>   rzCodec</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346736.png"width="50" height="50">
+                    <SPAN><strong>John Crester</strong>   theJC</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346740.png"width="50" height="50">
+                    <SPAN><strong>Devandrin Kuni</strong>   Vanneh</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346779.png"width="50" height="50">
+                    <SPAN><strong>yackon hex</strong>   yice</SPAN>
+                </li>
             </ul>
         </div>
     </div>
 
     <div id="following" class="modal">
-        <div class="modal-panel">
-            <h2 class="card-title" style="margin-bottom: 10%"> Followers </h2>
-            <ul>
-                <li class="card-content"></li>
+        <div class="card-panel">
+            <h2 class="card-title center" style="margin-bottom: 10%"> Following </h2>
+            <ul class="card-content">
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346733.png"width="50" height="50">
+                    <SPAN><strong>Ronald Lai</strong>   rzCodec</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346736.png"width="50" height="50">
+                    <SPAN><strong>John Crester</strong>   theJC</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346740.png"width="50" height="50">
+                    <SPAN><strong>Devandrin Kuni</strong>   Vanneh</SPAN>
             </ul>
         </div>
     </div>
@@ -178,6 +200,23 @@
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
+
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://eternalvibes.me/getFriends/303346737",
+        "method": "GET",
+        "headers": {
+            "cache-control": "no-cache",
+        }
+    }
+
+    $.ajax(settings).done(function (response)
+    {
+        numFollowers = response;
+        console.log(response);
+    });
+
 
     var numFollowers, numFollowing;
     function getFollowers()
@@ -228,6 +267,7 @@
         $('.modal').modal();
         getFollowers();
         getFollowing();
+        console.log(user.id);
     });
   $('#Timeline').click(getPosts())
   $('#Attended').click(getAttended())
