@@ -2833,7 +2833,7 @@ module.exports = function (app, passport, swaggerSpec) {
     waterfall([
         function (callback) {
           connection.query(
-            'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.receiver_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000) AND events.events_responses_id=2',
+            'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.receiver_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000) AND events_invites.events_responses_id=2',
             [req.params.user_id], function (error, results) {
               if (error) {
                 console.log(error)
