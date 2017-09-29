@@ -254,13 +254,17 @@ module.exports = function (app, passport, swaggerSpec) {
             })
         },
       ],
-      function (err, results) {
-        res.render('Pages/UserDashboard/profile.ejs', {
-          user: userInfo,
-          UserFinishedEvents: UserFinishedEvents,
-          UserPosts: UserPosts,
-          UserUpcomingEvents: UserUpcomingEvents,
-        })
+      function (err) {
+        if (err) {
+          console.log(err)
+        } else {
+          res.render('Pages/UserDashboard/profile.ejs', {
+            user: userInfo,
+            UserFinishedEvents: UserFinishedEvents,
+            UserPosts: UserPosts,
+            UserUpcomingEvents: UserUpcomingEvents,
+          })
+        }
       })
   })
   app.get('/dashBoard', isLoggedIn, function (req, res) {
@@ -310,11 +314,14 @@ module.exports = function (app, passport, swaggerSpec) {
             })
           },
         ],
-        function (err, results) {
-          res.render('Pages/UserDashboard/DashBoard.ejs', {
-            UserInfo: UserInfo,
-
-          })
+        function (err) {
+          if (err) {
+            console.log(err)
+          } else {
+            res.render('Pages/UserDashboard/DashBoard.ejs', {
+              UserInfo: UserInfo,
+            })
+          }
         })
     } else {
       res.redirect('/flaggedposts')
@@ -367,10 +374,35 @@ module.exports = function (app, passport, swaggerSpec) {
       })
   })
   app.get('/settings', isLoggedIn, function (req, res) {
-    res.render('Pages/UserDashboard/Settings.ejs', {user: req.user},
-      function (err, html) {
-        console.log(err)
-        res.send(html)
+    var UserInfo = {
+      info: {},
+    }
+    parallel([
+        function (callback) {
+          request({
+            url: website + '/getUserInfoEmail/' + req.user.email,
+            json: true,
+          }, function (error, response, body) {
+            console.log(body)
+            if (error) {
+              console.log(error)
+            }
+            UserInfo.info = body
+            callback(null)
+          })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+        } else {
+          res.render('Pages/UserDashboard/Settings.ejs',
+            {user: req.user, userInfo: UserInfo},
+            function (err, html) {
+              if (err) console.log(err)
+              else res.send(html)
+            })
+        }
       })
   })
   app.get('/addGenres', isLoggedIn, function (req, res) {
@@ -588,13 +620,18 @@ module.exports = function (app, passport, swaggerSpec) {
             })
         },
       ],
-      function (err, results) {
-        res.render('Pages/AdminDashboard/reports.ejs', {
-          Reports: Reports,
-          info: req.user,
-        }, function (err, html) {
-          res.send(html)
-        })
+      function (err) {
+        if (err) {
+          console.log(err)
+        } else {
+          res.render('Pages/AdminDashboard/reports.ejs', {
+            Reports: Reports,
+            info: req.user,
+          }, function (err, html) {
+            if (err) console.log(err)
+            else res.send(html)
+          })
+        }
       })
 
   })
@@ -639,7 +676,7 @@ module.exports = function (app, passport, swaggerSpec) {
       failureRedirect: '/MobileLogin?status=false',
       failureFlash: true,
     }),
-    function (req, res) {
+    function (req) {
       if (req.body.remember) {
         req.session.cookie.maxAge = 1000 * 60 * 3
       } else {
@@ -1201,7 +1238,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 console.log(error2)
                 res.status(500).send(error2)
               } else {
-                if (results.length != 0) {
+                if (results.length !== 0) {
                   connection.query(
                     'INSERT INTO `friends` (`user1_id`, `user2_id`, `timestamp`) VALUES (?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
                     [req.params.activeuserID, req.params.userIDToFollow],
@@ -1511,7 +1548,8 @@ module.exports = function (app, passport, swaggerSpec) {
             })
         },
       ],
-      function (err, results) {
+      function (err) {
+        if (err) console.log(err)
         var where = ''
         IDsToFetch.forEach(function (ID) {
           where = where + ' OR status_list.user_id=' + ID + ' '
@@ -1576,7 +1614,7 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query(
       'INSERT INTO `status_list` (`user_id`, `timestamp`, `status`, `extra_info`) VALUES (?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000), ?, ?)',
       [req.body.userID, req.body.status, req.body.extraInfo],
-      function (error, results) {
+      function (error) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
@@ -1959,7 +1997,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 console.log(error)
                 callback(error)
               } else {
-                if (results.length != 0) {
+                if (results.length !== 0) {
                   DistanceUpperBound = results[0].search_distance
                   Longitude = results[0].longitude
                   Latitude = results[0].latitude
@@ -2022,7 +2060,7 @@ module.exports = function (app, passport, swaggerSpec) {
                     });
                 }*/
       ],
-      function (err, results) {
+      function (err) {
         /* Following.forEach(function (t) {
              Users = Users.filter(function (obj) {
                  return obj.id !== t.id;
@@ -2079,7 +2117,7 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/setUserLocation/:userID/:latitude/:longitude', function (req, res) {
     connection.query('UPDATE users SET longitude=?, latitude=? WHERE id=?',
       [req.params.longitude, req.params.latitude, req.params.userID],
-      function (error, results) {
+      function (error) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
@@ -2195,6 +2233,11 @@ module.exports = function (app, passport, swaggerSpec) {
    *         in: body
    *         required: true
    *         type: string
+   *       - name: skills
+   *         description: Array of skill IDs
+   *         in: body
+   *         required: true
+   *         type: array
    *     responses:
    *       200:
    *         description: General
@@ -2216,11 +2259,30 @@ module.exports = function (app, passport, swaggerSpec) {
           console.log(error)
           res.status(500).send(error)
         } else {
-          connection.query('SELECT * FROM `events` WHERE `id`= ?',
-            [results.insertId], function (error, result) {
-              if (error) res.status(500).send(error)
-              res.status(200).send(result)
-            })
+          var eventId = results.insertId
+          async.eachOfLimit(req.body.skills, 1, function (skill, i, cb) {
+            connection.query(
+              'INSERT INTO `events_skills` (`id`, `events_id`, `skills_id`, `status`) VALUES (NULL, ?, ?, FALSE)',
+              [eventId, skill], function (error) {
+                if (error) {
+                  cb(error)
+                } else {
+                  cb()
+                }
+              })
+          }, function (error) {
+            if (error) {
+              console.log(error)
+              res.status(500).send(error)
+            } else {
+              connection.query('SELECT * FROM `events` WHERE `id`= ?',
+                [eventId], function (error, result) {
+                  if (error) res.status(500).send(error)
+                  res.status(200).send(result)
+                })
+            }
+          })
+
         }
       })
   })
@@ -2263,7 +2325,7 @@ module.exports = function (app, passport, swaggerSpec) {
         req.body.latitude,
         req.body.longitude,
         req.body.address,
-        req.body.events_id], function (error, results) {
+        req.body.events_id], function (error) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
@@ -2354,7 +2416,7 @@ module.exports = function (app, passport, swaggerSpec) {
         },
         function (cb) {
           connection.query('delete from events where events.id = ?',
-            [req.params.events_id], function (error, results) {
+            [req.params.events_id], function (error) {
               if (error) {
                 cb(error)
               } else {
@@ -2365,7 +2427,7 @@ module.exports = function (app, passport, swaggerSpec) {
         function (cb) {
           connection.query(
             'delete from events_attendees where events_attendees.events_id = ?',
-            [req.params.events_id], function (error, results) {
+            [req.params.events_id], function (error) {
               if (error) {
                 cb(error)
               } else {
@@ -2376,7 +2438,7 @@ module.exports = function (app, passport, swaggerSpec) {
         function (cb) {
           connection.query(
             'delete from events_invites where events_invites.events_id = ?',
-            [req.params.events_id], function (error, results) {
+            [req.params.events_id], function (error) {
               if (error) {
                 cb(error)
               } else {
@@ -2387,7 +2449,7 @@ module.exports = function (app, passport, swaggerSpec) {
         function (cb) {
           connection.query(
             'delete from events_locations where events_locations.events_id = ?',
-            [req.params.events_id], function (error, results) {
+            [req.params.events_id], function (error) {
               if (error) {
                 cb(error)
               } else {
@@ -2398,7 +2460,7 @@ module.exports = function (app, passport, swaggerSpec) {
         function (cb) {
           connection.query(
             'delete from events_requests where events_requests.events_id = ?',
-            [req.params.events_id], function (error, results) {
+            [req.params.events_id], function (error) {
               if (error) {
                 cb(error)
               } else {
@@ -2412,7 +2474,7 @@ module.exports = function (app, passport, swaggerSpec) {
           console.log(err)
           res.status(500).send(err)
         } else {
-          res.status(200).send(eventId)
+          res.send({eventId:eventId})
         }
       })
 
@@ -2489,15 +2551,15 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.post('/sendEventRequest', function (req, res) {
     connection.query(
-      'INSERT INTO `event_request` (`id`, `event_id`, `sender_user_id`, `reason`, `timestamp`, `responses_id`) VALUES (NULL, ?, ?, ?, , )',
-      'INSERT INTO `events_requests` (`id`, `skills_id`, `sender_user_id`, `events_responses_id`, `events_id`, `message`, `reply`, `timestamp`) VALUES (NULL, ?, ?, 2, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))'
-        [
+      'INSERT INTO `events_requests` (`id`, `skills_id`, `sender_user_id`, `events_responses_id`, `events_id`, `message`, `reply`, `timestamp`) ' +
+      'VALUES (NULL, ?, ?, 2, ?, ?, ?, ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000))',
+      [
         req.body.skills_id,
-          req.body.sender_user_id,
-          req.body.events_id,
-          req.body.message,
-          req.body.reply],
-      function (error, results) {
+        req.body.sender_user_id,
+        req.body.events_id,
+        req.body.message,
+        req.body.reply],
+      function (error) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
@@ -2698,23 +2760,24 @@ module.exports = function (app, passport, swaggerSpec) {
    */
   app.post('/respondToEventInvite', function (req, res) {
     connection.query(
-      'UPDATE `events_invites` SET `events_responses_id` = ? WHERE `events_invites`.`id` = ?;',
+      'UPDATE `events_invites` SET `events_responses_id` = ? WHERE `events_invites`.`id` = ?',
       [req.body.events_responses_id, req.body.events_invites_id],
       function (error) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
         } else {
-          if (req.body.events_responses_id === 1) {
+          if (req.body.events_responses_id === '1') {
             async.waterfall([
               function (cb) {
                 connection.query(
-                  'SELECT * FROM `events_invites` WHERE events_invites=?',
+                  'SELECT * FROM `events_invites` WHERE events_invites.id=?',
                   [req.body.events_invites_id], function (error, response) {
                     if (error || response.length === 0) {
                       cb(error)
                     } else {
-                      cb(null, response[0].receiver_user_id, response[0].id)
+                      cb(null, response[0].receiver_user_id,
+                        response[0].events_id)
                     }
                   })
               },
@@ -2737,7 +2800,6 @@ module.exports = function (app, passport, swaggerSpec) {
               } else {
                 res.sendStatus(200)
               }
-
             })
           } else {
             res.sendStatus(200)
@@ -2767,16 +2829,73 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get a users events
    */
   app.get('/getUsersReceivedInvitesUpcoming/:user_id', function (req, res) {
-    connection.query(
-      'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.receiver_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.user_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
+    var output=[];
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT events_invites.* FROM events_invites INNER JOIN events ON events.id = events_invites.events_id WHERE events_invites.receiver_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000) AND events_invites.events_responses_id=2',
+            [req.params.user_id], function (error, results) {
+              if (error) {
+                console.log(error)
+                callback(error)
+              } else {
+                output=results
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          async.eachOfLimit(output, 1, function (invite, i, cb) {
+            connection.query(
+              'SELECT * FROM events WHERE events.id=?',
+              [invite.events_id], function (error, results) {
+                if (error) {
+                  cb(error)
+                } else {
+                  output[i]['event']=results[0]
+                  console.log(output)
+                  cb(null)
+                }
+              })
+
+          }, function (error) {
+            if (error) {
+              callback(error)
+            } else {
+              callback()
+            }
+          })
+        },
+        function (callback) {
+          async.eachOfLimit(output, 1, function (invite, i, cb) {
+            connection.query(
+              'SELECT * FROM users WHERE users.id=?',
+              [invite.event.host_user_id], function (error, results) {
+                if (error) {
+                  cb(error)
+                } else {
+                  output[i]['hostUser']=results[0]
+                  cb(null)
+                }
+              })
+          }, function (error) {
+            if (error) {
+              callback(error)
+            } else {
+              callback()
+            }
+          })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }else{
+          res.send(output)
         }
       })
+
   })
   /**
    * @swagger
@@ -2913,6 +3032,39 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   /**
    * @swagger
+   * /getEvent/{events_id}:
+   *   get:
+   *     tags:
+   *       - event
+   *     description: get an event
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: events_id
+   *         description:
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Array of event objects
+   *       500:
+   *         description: Failed to get a users events
+   */
+  app.get('/getEvent/:events_id', function (req, res) {
+    connection.query(
+      'SELECT events.*,events_attendees.id AS events_attendees_id, events_attendees.attended FROM events_attendees INNER JOIN events ON events.id = events_attendees.events_id WHERE events_attendees.user_id=? AND events_attendees.attended=0',
+      [req.params.events_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
    * /getEventsAttended/{user_id}:
    *   get:
    *     tags:
@@ -2968,7 +3120,7 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/setUserAttended/:events_attendees_id', function (req, res) {
     connection.query(
       'UPDATE events_attendees SET events_attendees.attended=1 WHERE events_attendees.id=?',
-      [req.params.events_attendees_id], function (error, results) {
+      [req.params.events_attendees_id], function (error) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
@@ -2999,14 +3151,48 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: General
    */
   app.get('/getUpcomingUserCreatedEvents/:user_id', function (req, res) {
-    connection.query(
-      'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.userID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
+    var output=[];
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date>=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+            [req.params.user_id], function (error, results) {
+              if (error) {
+                console.log(error)
+                callback(error)
+              } else {
+                output=results
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          async.eachOfLimit(output, 1, function (event, i, cb) {
+            connection.query(
+              'SELECT events_skills.skills_id, skills.name FROM `events_skills` INNER JOIN skills ON skills.id= events_skills.skills_id WHERE events_skills.events_id=?',
+              [event.id], function (error, results) {
+                if (error) {
+                  cb(error)
+                } else {
+                  output[i]['event_skills']=results
+                  cb(null)
+                }
+              })
+          }, function (error) {
+            if (error) {
+              callback(error)
+            } else {
+              callback()
+            }
+          })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }else{
+          res.send(output)
         }
       })
   })
@@ -3032,14 +3218,49 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: General
    */
   app.get('/getFinishedUserCreatedEvents/:user_id', function (req, res) {
-    connection.query(
-      'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
-      [req.params.userID], function (error, results) {
-        if (error) {
-          console.log(error)
-          res.status(500).send(error)
-        } else {
-          res.send(results)
+    var output=[];
+    waterfall([
+        function (callback) {
+          connection.query(
+            'SELECT events.* FROM events WHERE events.host_user_id=? AND events.date<=(UNIX_TIMESTAMP(CURTIME(4)) * 1000)',
+            [req.params.user_id], function (error, results) {
+              if (error) {
+                console.log(error)
+                callback(error)
+              } else {
+                output=results
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          async.eachOfLimit(output, 1, function (event, i, cb) {
+            connection.query(
+              'SELECT events_skills.skills_id, skills.name FROM `events_skills` INNER JOIN skills ON skills.id= events_skills.skills_id WHERE events_skills.events_id=?',
+              [event.id], function (error, results) {
+                if (error) {
+                  cb(error)
+                } else {
+                  output[i]['event_skills']=results
+                  cb(null)
+                }
+              })
+
+          }, function (error) {
+            if (error) {
+              callback(error)
+            } else {
+              callback()
+            }
+          })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+          res.status(500).send(err)
+        }else{
+          res.send(output)
         }
       })
   })
@@ -3049,7 +3270,7 @@ module.exports = function (app, passport, swaggerSpec) {
         function (callback) {
           connection.query('SELECT * FROM `status_list` WHERE id = ?',
             [req.body.statusId], function (error, results) {
-              if (error || results.length == 0) {
+              if (error || results.length === 0) {
                 console.log(error)
                 callback(error)
               } else {
@@ -3225,8 +3446,7 @@ function calcCrow (lat1, lon1, lat2, lon2) {
   var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  var d = R * c
-  return d
+  return (R * c)
 }
 
 function toRad (Value) {
