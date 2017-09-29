@@ -92,25 +92,36 @@
                 <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
                     <span class="card-title" ><h1 >Genre and Skill</h1 ></span >
                     <span class="card-title" >Update Your Genre and Skills</span >
-
                     <div class="input-field col s12">
+
                         <select>
-                            <option value="" disabled selected>Choose your option</option>
-                            <option value="1">Option 1</option>
-                            <option value="2">Option 2</option>
-                            <option value="3">Option 3</option>
+                            <option value="" disabled selected>Choose your Genre</option>
+                            
                         </select>
-                        <label>Materialize Select</label>
+                        <label>Genre</label>
                     </div>
 
                     <div class="input-field col s12">
-                        <select>
-                            <option value="" disabled selected>Choose your option</option>
-                            <option value="1">Option 1</option>
-                            <option value="2">Option 2</option>
-                            <option value="3">Option 3</option>
+                        <select multiple>
+                            <option value="" disabled selected>Choose your Skills</option>
+                            <option value="7" cted>Backup vocalist</option>
+                            <option value="0" >DJ</option>
+                            <option value="9">Drummer</option>
+                            <option value="13">Event Management</option>
+                            <option value="12">Flute</option>
+                            <option value="8">Guitarist</option>
+                            <option value="2">Mixer</option>
+                            <option value="23">Music Critic</option>
+                            <option value="11">Piano</option>
+                            <option value="5">Rapper</option>
+                            <option value="10">Saxophone</option>
+                            <option value="4">Singer</option>
+                            <option value="1">Song writer</option>
+                            <option value="19">Sound Engineer</option>
+                            <option value="6">Vocalist</option>
+                            <option value="3">Producer</option>
                         </select>
-                        <label>Materialize Select</label>
+                        <label>Skills</label>
                     </div>
 
                     <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
@@ -125,10 +136,58 @@
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
+    var sSkills, Genres;
+
+
 
     $(document).ready(function() {
         $('select').material_select();
+        getSkills();
+
+
     });
+
+    function getSkills()
+    {
+        $.ajax({
+            type: "GET",
+            url: "https://eternalvibes.me/getSkills",
+            cache: false,
+            dataType: "jsonp",
+            success: function (data){
+                Materialize.toast(data, 500);
+                sSkills = data;
+            },
+            error: function (data) {
+                console.log("error");
+                sSkills = data;
+            }})
+            .then(function(){
+                return sSkills;
+            });
+        Materialize.toast("this function works" + sSkills,5000);
+    }
+
+
+    function getGenres()
+    {
+        $.ajax({
+            type: "GET",
+            url: "https://eternalvibes.me/getGenres",
+            cache: false,
+            dataType: "jsonp",
+            success: function (data){
+                console.log(data);
+                genres = data;
+            },
+            error: function (data) {
+                console.log("error");
+                genres = data;
+            }})
+            .then(function(){
+                return genres;
+            });
+    }
 
     function updateInfo()
     {
@@ -174,10 +233,10 @@
             {
 
             });
-        $.post("https://eternalvibes.me/updateUserGenres",
+        $.post("https://eternalvibes.me/updateUserInfo",
             {
                 Id: id,
-                skills: $("#skills").value()
+                gebre_id: $("#genre").value()
 
             },
             function (data)
