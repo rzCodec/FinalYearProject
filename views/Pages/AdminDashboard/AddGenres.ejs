@@ -8,10 +8,15 @@
     <div class="row" >
         <%- include ./partials/nav.ejs %>
         <div  class="center col s4 offset-s4 " style="margin-top: 5%">
-            <h2 align="center">Available Genres</h2>
-            <div id='gList' class="card" style="margin-top: 5%">
-                <ul class=" card-content" >
+            <h2 class="card-title" align="center">Available Genres</h2>
 
+            <div id='gList' class="card" style="margin-top: 5%">
+
+                <ul class=" card-panel" >
+                    <% genres.forEach(function(genre)
+                    {%>
+                        <li class="card-content"><%= genre.name%></li>
+                    <%})%>
                 </ul>
                 <a id="addG" data-target="addGenre"
                    class="modal-trigger waves-effect waves-light brown white-text btn right">Add New Genre</a>
@@ -46,6 +51,26 @@
 
     });
 
+    var genres;
+    function getGenres()
+    {
+        $.ajax({
+            type: "GET",
+            url: "https://eternalvibes.me/getGenres",
+            cache: false,
+            dataType: "jsonp",
+            success: function (data){
+                console.log(data);
+                genres = data;
+            },
+            error: function (data) {
+                console.log("error");
+                genres = data;
+            }})
+            .then(function(){
+                return genres;
+            });
+    }
 
     function addGenre()
     {

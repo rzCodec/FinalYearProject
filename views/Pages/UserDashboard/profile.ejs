@@ -6,18 +6,40 @@
 <body >
 <%- include ./partials/nav.ejs %>
 <main >
-    <div class="card white darken-1 center" style="margin-top: 5%; margin-right: 8%; margin-left: 8%" >
+    <div class="card white darken-1" style="margin-top: 5%; margin-right: 8%; margin-left: 8%" >
         <div class="card-content" >
             <%
-            user = user[0]
+                 user = user[0]
+                 console.log(user);
             %>
-            <span class="card-title" ><img class="circle" src="images/profilePics/<%= user.id %>.png" alt="" width="150"
-                                           height="150" >
-                <p ><h6 ><%= user.username %></h6 ></p>
+            <span class="card-title left-align" ><img class="circle"
+                 src="images/profilePics/<%= user.id %>.png" alt="" width="100" height="100" >&emsp;
+                <%= user.firstname %> <%= user.surname %>&emsp;
+                <a class="btn-flat right-aligned" href="/settings">
+                    <i class="medium material-icons left-align">settings_applications</i> Edit Profile
+                </a>
             </span >
-            <p >
-            <h3 ><%= user.firstname %> <%= user.surname %></h3 ></p>
+            <h4 ><%= user.username %></h4 >
+            <%if((user.description != "nothing for now") || (user.description != null)) {%>
+            &emsp;<%=user.description%>
+            <br>
+            <%}%>
+            <br>
+            <i class="left small material-icons">music_note</i><%= user.genre%>
+            <%if(user.song_link != null) {%>
+            &emsp;<div><i class="left small material-icons">insert_link</i>
+                <a href="<%= user.song_link%>"><%= user.song_link%></a></div>
+            <%}%>
+            <br>
+            <i class="left small material-icons">location_on</i><%= user.city%>
+            <br>
+
         </div >
+        <p class="center-align">
+            <a data-target="followers"  class="modal-trigger btn-flat">Followers: 4</a>   &emsp;&emsp;
+            <a data-target="following" class="btn-flat modal-trigger">Following: 3</a>
+        </p>
+        <br>
     </div >
     <ul class="tabs center-align" style="margin-top: 3%" >
 
@@ -45,20 +67,31 @@
                 <% UserPosts.forEach(function (post) {
                 %>
                 <li class="collection-item avatar" >
-                    <img src="images/profilePics/<%= post.user_id %>.png" alt="" width="50" height="50" class="circle" >
-                    <p ><span class="title" ><%= post.status %></span >
-                    <p > <%= post.liked %> likes</p >
+                    <div>
+                        <img src="images/profilePics/<%= post.user_id %>.png"
+                             alt="<%= user.username %>" width="100" height="100" class="circle" >
+                        <%var theDate = new Date(post.timestamp* 1000); %>
+                        <strong><%= user.firstname %> <%= user.surname %></strong> &emsp; <%= user.username %>
+                        &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;<%= theDate.getFullYear()%> <%= theDate.toLocaleTimeString()%>
+                    </div>
+                    </br>
+                    <p ><span class="title" ><%= post.status %></span ></p>
+                    </br>
+                    <p > <%= post.liked %> likes  &emsp; &emsp;
+                        <%= post.flag %> flags &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;
+                        <a class="btn-flat right"><i class="medium material-icons tooltipped" data-tooltip="Delete Post">delete</i></a>
+                    </p >
                 </li >
                 <% }) %>
             </ul >
         </div >
     </div >
 
-    <div id="AttendedEvents" class="col s12"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%" >
+    <div id="AttendedEvents" class="col s12 modal-trigger"
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%" data-target="finDetails" >
         <div >
             <ul id="posts" class="collection truncate" >
-
+                <% console.log(UserFinishedEvents);%>
                 <% UserFinishedEvents.forEach(function (event) { %>
                 <li class="collection-item avatar" >
                     <div ><img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png"
@@ -88,10 +121,154 @@
         </div >
     </div >
 
+
+    <div id="finDetails" class="modal">
+        <div class="modal-content">
+            <div class="card-content">
+                Event Name:
+                Event Details
+                Event Date
+                Overall Ratig for event
+                <br>
+                Users: + Skill and Rating
+                <br>
+                Comments ordered by User
+            </div>
+        </div>
+
+    </div>
+
+    <div id="upcomingDetails" class="modal">
+        <div class="modal-content">
+            <div class="card-content">
+                Event Name:
+                Event Details
+                Event Date
+                <br>
+                Users: + Skill
+            </div>
+        </div>
+    </div>
+
+
+    <div id="followers" class="modal">
+        <div class="card-panel">
+            <h2 class="card-title center" style="margin-bottom: 10%"> Followers </h2>
+            <ul class="card-content">
+                <li class="card-content" style="margin-bottom: 10%">
+                <img src="images/profilePics/303346733.png"width="50" height="50">
+                    <SPAN><strong>Ronald Lai</strong>   rzCodec</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346736.png"width="50" height="50">
+                    <SPAN><strong>John Crester</strong>   theJC</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346740.png"width="50" height="50">
+                    <SPAN><strong>Devandrin Kuni</strong>   Vanneh</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346779.png"width="50" height="50">
+                    <SPAN><strong>yackon hex</strong>   yice</SPAN>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="following" class="modal">
+        <div class="card-panel">
+            <h2 class="card-title center" style="margin-bottom: 10%"> Following </h2>
+            <ul class="card-content">
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346733.png"width="50" height="50">
+                    <SPAN><strong>Ronald Lai</strong>   rzCodec</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346736.png"width="50" height="50">
+                    <SPAN><strong>John Crester</strong>   theJC</SPAN>
+                </li>
+                <li class="card-content" style="margin-bottom: 10%">
+                    <img src="images/profilePics/303346740.png"width="50" height="50">
+                    <SPAN><strong>Devandrin Kuni</strong>   Vanneh</SPAN>
+            </ul>
+        </div>
+    </div>
+
+
+
+
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
 
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://eternalvibes.me/getFriends/303346737",
+        "method": "GET",
+        "headers": {
+            "cache-control": "no-cache",
+        }
+    }
+
+    $.ajax(settings).done(function (response)
+    {
+        numFollowers = response;
+        console.log(response);
+    });
+
+
+    var numFollowers, numFollowing;
+    function getFollowers()
+    {
+        $.ajax({
+            type: "GET",
+            url: "https://eternalvibes.me/getFriends/" + user.id,
+            cache: false,
+            dataType: "jsonp",
+            success: function (data){
+                console.log(data);
+                numFollowers = data;
+            },
+            error: function (data) {
+                console.log("error");
+                numFollowers = data;
+            }}).then(function()
+        {
+            return numFollowers;
+        });
+    }
+    function getFollowing()
+    {
+        $.ajax({
+            type: "GET",
+            url: "https://eternalvibes.me/getFollowing/",
+            cache: false,
+            data:user.id,
+            dataType: "jsonp",
+            success: function (data)
+            {
+                console.log(data);
+                numFollowing = data;
+            },
+            error: function (data)
+            {
+                console.log("error");
+                numFollowing = data;
+            }}).then(function()
+        {
+            return numFollowing;
+        });
+    }
+
+
+
+    $(document).ready(function(){
+        $('.modal').modal();
+        getFollowers();
+        getFollowing();
+        console.log(user.id);
+    });
   $('#Timeline').click(getPosts())
   $('#Attended').click(getAttended())
   $('#Upcoming').click(getUpcoming())

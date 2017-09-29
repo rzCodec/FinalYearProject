@@ -10,8 +10,11 @@
         <div  class="center col s4 offset-s4 " style="margin-top: 5%">
             <h2 align="center">Available Skills</h2>
             <div id='sList' class="card" style="margin-top: 5%">
-                <ul class=" card-content" >
-
+                <ul id="skills" class=" card-content" >
+                    <%skills.forEach(function(skill)
+                    {%>
+                    <li class="card-content"> <%= skill.name%></li>
+                    <%})%>
                 </ul>
                 <a id="add" data-target="addSkill"
                    class="modal-trigger waves-effect waves-light brown white-text btn right">Add New Skill</a>
@@ -38,9 +41,33 @@
 </body>
 <script>
 
+    var skills;
+
+    function getSkills()
+    {
+        $.ajax({
+            type: "GET",
+            url: "https://eternalvibes.me/getSkills",
+            cache: false,
+            dataType: "jsonp",
+            success: function (data){
+                console.log(data);
+                skills = data;
+            },
+            error: function (data) {
+                console.log("error");
+                skills = data;
+            }})
+            .then(function(){
+                return skills;
+            });
+    }
+
+    Materialize.toast(skills);
+
     $(document).ready(function(){
         $('.modal').modal();
-
+        getSkills();
     });
 
     $('#add').click(function()
