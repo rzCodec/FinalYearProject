@@ -9,15 +9,14 @@
         <%- include ./partials/nav.ejs %>
         <div  class="center col s4 offset-s4 " style="margin-top: 5%">
             <h2 align="center">Available Skills</h2>
-            <%console.log(skills)%>
             <div id='sList' class="card" style="margin-top: 5%">
                 <ul id="skills" class=" card-content" >
                     <%skills.forEach(function(skill)
                     {%>
-                    <li> <%= skill.name%></li>
+                    <li class="card-content"> <%= skill.name%></li>
                     <%})%>
                 </ul>
-                <a id="add" data-target="addSkill" onclick="getSkills()"
+                <a id="add" data-target="addSkill"
                    class="modal-trigger waves-effect waves-light brown white-text btn right">Add New Skill</a>
             </div>
         </div>

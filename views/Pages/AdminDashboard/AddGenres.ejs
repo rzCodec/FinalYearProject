@@ -8,14 +8,14 @@
     <div class="row" >
         <%- include ./partials/nav.ejs %>
         <div  class="center col s4 offset-s4 " style="margin-top: 5%">
-            <h2 align="center">Available Genres</h2>
+            <h2 class="card-title" align="center">Available Genres</h2>
 
             <div id='gList' class="card" style="margin-top: 5%">
 
-                <ul class=" card-content" >
+                <ul class=" card-panel" >
                     <% genres.forEach(function(genre)
                     {%>
-                        <li><%= genre.name%></li>
+                        <li class="card-content"><%= genre.name%></li>
                     <%})%>
                 </ul>
                 <a id="addG" data-target="addGenre"
