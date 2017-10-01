@@ -5,6 +5,7 @@
 </head>
 <body >
 <main>
+    <%var edtSkill%>
     <div class="row" >
         <%- include ./partials/nav.ejs %>
         <div  class="center col s4 offset-s4 " style="margin-top: 5%">
@@ -14,7 +15,8 @@
                     <%skills.forEach(function(skill)
                     {%>
                     <li class="center waves-effect waves-teal card-content" >
-                        <a id="skill<%= skill.id%>" class="btn-flat modal-trigger" data-target="edtSkill">
+                        <a id="skill<%= skill.id%>" class="btn-flat modal-trigger" data-target="edtSkill"
+                           onclick="getSkill(<%= skill%>)">
                             <%= skill.name%>
                         </a>
 
@@ -33,7 +35,19 @@
          </a>
     </div>
 
-
+    <div id="edtSkill" class="modal">
+        <div class="modal-content center">
+            <h2 class="brown-text modal-ux-header">Edit Skill</h2>
+            <h5>Edit Skill name</h5>
+            <input type="text" value="" id="edit_skill" placeholder="Enter New Skill" />
+            <br/>
+            <div class="modal-footer">
+                <a id="submit_skill" onclick="editSkill()"
+                   class="modal-action modal-close waves-effect waves-light btn-flat brown-text">Submit</a>
+                <a class="modal-action modal-close waves-effect waves-light btn-flat red-text left">Cancel</a>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -93,6 +107,7 @@
             materialize.toast(skill + " has been added", 500);
 
         }
+        $('#add_genre').reset();
         $('#sList').reload(true);
     }
 
