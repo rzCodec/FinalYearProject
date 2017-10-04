@@ -3404,11 +3404,11 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: ID of the user being reviewed
    *         in: body
    *         type: integer
-   *        - name: events_id
+   *       - name: events_id
    *         description: The even that was attendeds id
    *         in: body
    *         type: integer
-   *        - name: skill_id
+   *       - name: skill_id
    *         description: The id of the skill being rated
    *         in: body
    *         type: integer
@@ -3449,15 +3449,15 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: ID of the user being reviewed
    *         in: body
    *         type: integer
-   *        - name: events_id
+   *       - name: events_id
    *         description: The even that was attendeds id
    *         in: body
    *         type: integer
-   *        - name: skill_id
+   *       - name: skill_id
    *         description: The id of the skill being rated
    *         in: body
    *         type: integer
-   *        - name: rating
+   *       - name: rating
    *         description: the rating
    *         in: body
    *         type: integer
