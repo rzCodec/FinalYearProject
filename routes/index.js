@@ -2810,14 +2810,14 @@ module.exports = function (app, passport, swaggerSpec) {
                       cb(error)
                     } else {
                       cb(null, response[0].receiver_user_id,
-                        response[0].events_id)
+                        response[0].events_id,response[0].skills_id)
                     }
                   })
               },
-              function (user_id, events_id, cb) {
+              function (user_id, events_id,skills_id, cb) {
                 connection.query(
-                  'INSERT INTO `events_attendees` (`id`, `user_id`, `events_id`, `attended`) VALUES (NULL, ?, ?, 0)',
-                  [user_id, events_id], function (error) {
+                  'INSERT INTO `events_attendees` (`id`, `user_id`, `events_id`, `attended`,`skills_id`) VALUES (NULL, ?, ?, 0, ?)',
+                  [user_id, events_id,skills_id], function (error) {
                     if (error) {
                       console.log(error)
                       cb(error)
@@ -3382,6 +3382,307 @@ module.exports = function (app, passport, swaggerSpec) {
           res.status(500).send(err)
         }else{
           res.send(output)
+        }
+      })
+  })
+
+  /**
+   * @swagger
+   * /generateEventsReview:
+   *   post:
+   *     tags:
+   *       - event
+   *     description: Responds to an invite
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: 	reviewer_user_id
+   *         description: ID of the user reviewing
+   *         in: body
+   *         type: integer
+   *       - name: reviewee_user_id
+   *         description: ID of the user being reviewed
+   *         in: body
+   *         type: integer
+   *        - name: events_id
+   *         description: The even that was attendeds id
+   *         in: body
+   *         type: integer
+   *        - name: skill_id
+   *         description: The id of the skill being rated
+   *         in: body
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Successfully created
+   *       500:
+   *         description: Failed to create
+   */
+  app.post('/generateEventsReview', function (req, res) {
+    connection.query(
+      'INSERT INTO `events_reviews` (`id`, `reviewer_user_id`, `reviewee_user_id`, `events_id`, `skill_id`, `rating`) VALUES (NULL,?, ?, ?, ?, \'-1\')',
+      [req.body.reviewer_user_id, req.body.reviewee_user_id,req.body.events_id,req.body.skill_id],
+      function (error) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /generateEventsReview:
+   *   post:
+   *     tags:
+   *       - event
+   *     description: Responds to an invite
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: 	reviewer_user_id
+   *         description: ID of the user reviewing
+   *         in: body
+   *         type: integer
+   *       - name: reviewee_user_id
+   *         description: ID of the user being reviewed
+   *         in: body
+   *         type: integer
+   *        - name: events_id
+   *         description: The even that was attendeds id
+   *         in: body
+   *         type: integer
+   *        - name: skill_id
+   *         description: The id of the skill being rated
+   *         in: body
+   *         type: integer
+   *        - name: rating
+   *         description: the rating
+   *         in: body
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: Successfully reviewed
+   *       500:
+   *         description: Failed to review
+   */
+  app.post('/reviewUser', function (req, res) {
+    connection.query(
+      'UPDATE events_reviews \n' +
+      'SET events_reviews.rating = ? \n' +
+      'WHERE events_reviews.reviewer_user_id=? AND events_reviews.reviewee_user_id=? AND events_reviews.events_id=? AND events_reviews.skill_id=?',
+      [req.body.rating,req.body.reviewer_user_id, req.body.reviewee_user_id,req.body.events_id,req.body.skill_id],
+      function (error) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getUnreviewedUsers/{reviewer_user_id}/{events_id}:
+   *   get:
+   *     tags:
+   *       - event
+   *     description: getUnreviewedUsers
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: reviewer_user_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *       - name: events_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: General
+   *       500:
+   *         description: General
+   */
+  app.get('/getUnreviewedUsers/:reviewer_user_id/:events_id', function (req, res) {
+    connection.query(
+      'SELECT events_reviews.*, skills.name FROM events_reviews INNER JOIN skills on skills.id = events_reviews.skill_id WHERE events_reviews.reviewer_user_id=? AND events_reviews.rating=-1 AND events_reviews.events_id=?',
+      [req.params.reviewer_user_id, req.params.events_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          callback(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getReviewedUsers/{reviewer_user_id}/{events_id}:
+   *   get:
+   *     tags:
+   *       - event
+   *     description: getReviewedUsers
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: reviewer_user_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *       - name: events_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: General
+   *       500:
+   *         description: General
+   */
+  app.get('/getReviewedUsers/:reviewer_user_id/:events_id', function (req, res) {
+    connection.query(
+      'SELECT events_reviews.*, skills.name FROM events_reviews INNER JOIN skills on skills.id = events_reviews.skill_id WHERE events_reviews.reviewer_user_id=? AND events_reviews.rating!=-1 AND events_reviews.events_id=?',
+      [req.params.reviewer_user_id, req.params.events_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          callback(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getEventsReviewedUserAverageSkillRatings/{user_id}/{events_id}:
+   *   get:
+   *     tags:
+   *       - event
+   *     description: getEventsReviewedUserAverageSkillRatings
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *       - name: events_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: General
+   *       500:
+   *         description: General
+   */
+  app.get('/getEventsReviewedUserAverageRatings/:user_id/:events_id', function (req, res) {
+    connection.query(
+      'SELECT AVG(events_reviews.rating) FROM events_reviews WHERE events_reviews.reviewee_user_id=? AND events_reviews.events_id=?',
+      [req.params.user_id, req.params.events_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          callback(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getOverallReviewedUserAverageSkillRatings/{user_id}:
+   *   get:
+   *     tags:
+   *       - event
+   *     description: getEventsReviewedUserAverageSkillRatings
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: General
+   *       500:
+   *         description: General
+   */
+  app.get('/getOverallReviewedUserAverageRatings/:user_id', function (req, res) {
+    connection.query(
+      'SELECT AVG(events_reviews.rating) FROM events_reviews WHERE events_reviews.reviewee_user_id=?',
+      [req.params.user_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          callback(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getOverallReviewedUserAverageSkillsRatings/{user_id}:
+   *   get:
+   *     tags:
+   *       - event
+   *     description: getOverallReviewedUserAverageSkillsRatings
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: General
+   *       500:
+   *         description: General
+   */
+  app.get('/getOverallReviewedUserAverageSkillsRatings/:user_id', function (req, res) {
+    connection.query(
+      'SELECT events_reviews.skill_id,skills.name, AVG(events_reviews.rating) FROM events_reviews INNER JOIN skills ON events_reviews.skill_id=skills.id WHERE events_reviews.reviewee_user_id=? GROUP BY events_reviews.skill_id',
+      [req.params.user_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          callback(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getAttendees/{events_id}:
+   *   get:
+   *     tags:
+   *       - event
+   *     description: getAttendees
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: events_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: General
+   *       500:
+   *         description: General
+   */
+  app.get('/getAttendees/:events_id', function (req, res) {
+    connection.query(
+      'SELECT events_attendees.*, users.username, skills.name AS skill_name FROM events_attendees INNER JOIN users on users.id=events_attendees.user_id INNER JOIN skills ON skills.id=events_attendees.skills_id WHERE events_attendees.events_id=?',
+      [req.params.events_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          callback(error)
+        } else {
+          res.send(results)
         }
       })
   })
