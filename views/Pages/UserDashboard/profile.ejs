@@ -6,122 +6,331 @@
 <body >
 <%- include ./partials/nav.ejs %>
 <main >
-    <div class="card white darken-1 center" style="margin-top: 5%; margin-right: 8%; margin-left: 8%" >
+    <div class="card white darken-1" style="margin-top: 5%; margin-right: 25%; margin-left: 25%" >
         <div class="card-content" >
-            <span class="card-title" ><img class="circle" src="images/empty.png"alt= "" width="150" height="150" >
-                <p><h6>Username</h6></p>
+            <%
+                 user = user[0]
+                 console.log(user);
+            %>
+            <div class="header center rectangle" style="width:100%;height:300px;
+            background: url('images/background/background3.jpg')">
+                <div class=" center"><img class="circle center" src="images/profilePics/<%= user.id %>.png" alt=""
+                                          style="width:30%;height:30%;border: solid red">
+                </div>
+                <span class="card-title center" >
+                <%= user.firstname %> <%= user.surname %>&emsp;
+                <a class="btn-flat right-aligned" href="/settings">
+                    <i class="large material-icons left-align">settings_applications</i> Edit Profile
+                </a>
             </span >
-            <p> <h3> Name and Surname</h3></p>
-            <p>Description</p>
-            <p><i class="medium material-icons ">headset</i></p>
+                <%if((user.description != "nothing for now") || (user.description != null)) {%>
+                &emsp;<h4><%=user.description%></h4>
+            </div>
+            &emsp;
+
+            <h4 ><%= user.username %></h4 >
+
             <br>
-            <p class="left-align">followers:</p>
-            <p class="left-align">following:</p>
-            <p class="left-align"><i class="material-icons right-align">palette</i></p>
-            <p class="left-align"><i class="material-icons">insert_link</i><a id="link"></a> </p>
+            <%}%>
+            <br>
+            <i class="left small material-icons">music_note</i><%= user.genre%>
+            <%if(user.song_link != null) {%>
+            &emsp;<div><i class="left small material-icons">insert_link</i>
+                <a href="<%= user.song_link%>"><%= user.song_link%></a></div>
+            <%}%>
+            <br>
+            <i class="left small material-icons">location_on</i><%= user.city%>
+            <br>
+            <span><i class="material-icons">palette</i>
+                <% for(i=0; i < 5; i++)
+                {%>
+                <div class="chip"> Skill Name</div>
+                <%}%></span>
+        </div >
+        <p class="center-align">
+            <a data-target="followers"  class="modal-trigger btn-flat">Followers: 4</a>   &emsp;&emsp;
+            <a data-target="following" class="btn-flat modal-trigger">Following: 3</a>
+        </p>
+        <br>
+    </div >
+
+    <ul class="tabs center-align" style="margin-top: 3%" >
+
+        <li id="Posts" class="tab col s3" >
+            <a href="#Timeline" onclick="Materialize.showStaggeredList('#Timeline')" >
+                <i class="medium material-icons right-align" >dehaze</i >Timeline
+                <span id="numPosts" class="new badge" >15</span ></a ></li >
+
+        <li id="Attended" class="tab col s3" ><a href="#AttendedEvents"
+                                                 onclick="Materialize.showStaggeredList('#AttendedEvents')" >
+                <i class="medium material-icons left-align" >event_available</i >Events Attended
+                <span id="numUsers" class="new badge" > 15</span ></a ></li >
+
+        <li id="Upcoming" class="tab col s3" >
+            <a href="#UpcomingEvents" onclick="Materialize.showStaggeredList('#UpcomingEvents')" >
+                <i class="medium material-icons right-align" >event_seat</i >Upcoming Events</a ></li >
+
+    </ul >
+
+
+    <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%; margin-left: 25%; margin-right:30%" >
+        <div >
+            <ul id="posts" class="collection truncate" >
+                <% UserPosts.forEach(function (post) {
+                %>
+                <li class="collection-item avatar" >
+                    <div>
+                        <img src="images/profilePics/<%= post.user_id %>.png"
+                             alt="<%= user.username %>" width="100" height="100" class="circle" >
+                        <%var theDate = new Date(post.timestamp* 1000); %>
+                        <strong><%= user.firstname %> <%= user.surname %></strong> &emsp; <%= user.username %>
+                        &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;<%= theDate.getDay()%> <%= theDate.getMonth()%> <%= theDate.toLocaleTimeString()%>
+                    </div>
+                    </br>
+                    <p ><span class="title" ><%= post.status %></span ></p>
+                    </br>
+                    <p > <%= post.liked %> likes  &emsp; &emsp;
+                        <%= post.flag %> flags &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;
+                        <a class="btn-flat right"><i class="medium material-icons tooltipped" data-tooltip="Delete Post">delete</i></a>
+                    </p >
+                </li >
+                <% }) %>
+            </ul >
         </div >
     </div >
-    <ul class="tabs center-align" style="margin-top: 3%">
 
-        <li id="Posts" class="tab col s3">
-            <a href="#Timeline" onclick="Materialize.showStaggeredList('#Timeline')">
-                <i class="medium material-icons right-align">dehaze</i>Timeline
-                <span id="numPosts" class="new badge">15</span></a></li>
-
-        <li id="Attended" class="tab col s3"><a href="#AttendedEvents"
-                                                onclick="Materialize.showStaggeredList('#AttendedEvents')">
-                <i class="medium material-icons left-align">event_available</i>Events Attended
-                <span id="numUsers" class="new badge"> 15</span></a></li>
-
-        <li id="Upcoming" class="tab col s3">
-            <a href="#UpcomingEvents" onclick="Materialize.showStaggeredList('#UpcomingEvents')">
-                <i class="medium material-icons right-align">event_seat</i>Upcoming Events</a></li>
-
-    </ul>
-
-    <div id="Timeline" class="col s12"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
-        <div>
-            <ul id="posts" class="collection truncate">
-
-            </ul>
-        </div>
-    </div>
-
-    <div id="AttendedEvents" class="col s12"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
-        <div>
-            <ul id="posts" class="collection truncate">
-
-            </ul>
-        </div>
-    </div>
 
     <div id="UpcomingEvents" class="col s12"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%">
-        <div>
-            <ul id="posts" class="collection truncate">
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%" >
+        <div >
+            <ul id="posts" class="collection truncate" >
+                <%if(UserUpcomingEvents == null || UserUpcomingEvents == "")
+                { %>
+                <div>
+                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%">
+                        <div class="card-content">
+                            <div class="center">
+                                <strong>Start capturing and sharing your moments.</strong>
+                                <br>
+                                Get the app to share your first event.
+                                <br>
+                                <a href="https://play.google.com/store?hl=en" >
+                                    <img alt="Get it on Google Play"
+                                         src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
+                                         width='200' height='70' >
+                                </a >
+                            </div>
 
-            </ul>
-        </div>
-    </div>
+                        </div>
+                    </div>
+
+                    <div class="card col s4 slider" style="width: 50% ;height: 50%">
+                        <ul class="slides">
+                            <li>
+                                <img src="/images/Ad.jpg">
+                            </li>
+                            <li>
+                                <img src="/images/Ad2.jpg">
+                            </li>
+                        </ul>
+
+                    </div>
+
+                </div>
+                <%}else
+                    UserUpcomingEvents.forEach(function (event) {  %>
+
+                <li class="collection-item avatar" >
+                    <div ><img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png"
+                               class="circle" >
+                        <span class="title" >Title: <%= event.title %></span >
+                        <p ><%= event.description %></p ></div >
+                </li >
+                <% }) %>
+            </ul >
+        </div >
+    </div >
+
+    <div id="AttendedEvents" class="col s12 modal-trigger"
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 10%; margin-right: 10%" data-target="finDetails" >
+        <div >
+            <ul id="posts" class="collection truncate collapsible popout" data-collapsible="accordion" >
+                <% console.log(UserFinishedEvents);
+                if(UserFinishedEvents == null || UserFinishedEvents == "")
+                {%>
+                <div>
+                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%">
+                        <div class="card-content">
+                            <div class="center">
+                                <strong>Start capturing and sharing your moments.</strong>
+                                <br>
+                                Get the app to share your first event.
+                                <br>
+                                <a href="https://play.google.com/store?hl=en" >
+                                    <img alt="Get it on Google Play"
+                                         src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
+                                         width='200' height='70' >
+                                </a >
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card col s4 slider" style="width: 50% ;height: 50%">
+                        <ul class="slides">
+                            <li>
+                                <img src="/images/Ad.jpg">
+                            </li>
+                            <li>
+                                <img src="/images/Ad2.jpg">
+                            </li>
+                        </ul>
+
+                    </div>
+
+                </div>
+
+                <%}else
+                    UserFinishedEvents.forEach(function (event) { %>
+                <li class="collection-item avatar" >
+                    <div class="collapsible-header">
+                        <img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png"
+                               class="circle" >
+                        <span class="title" >Title: <%= event.title %></span >
+                        <p ><%= event.description %></p >
+                    </div >
+
+                    <div id="finDetails" class="collapsible-body">
+                        <div>
+                            <div class="card-content">
+                                Event Name:
+                                Event Details
+                                Event Date
+                                Overall Ratig for event
+                                <br>
+                                Users: + Skill and Rating
+                                <br>
+                                Comments ordered by User
+                            </div>
+                        </div>
+
+                    </div>
+
+                </li >
+                <% }) %>
+            </ul >
+        </div >
+    </div >
+
+
+    <ul id="posts" class="collection truncate collapsible popout" data-collapsible="accordion">
+        <%for(i = 0; i< 5; i++) { %>
+        <li class="collection-item avatar" >
+            <div class="collapsible-header" >Hello</div >
+
+            <div id="finDetails" class="collapsible-body">
+                <div>
+                    <div class="card-content">
+                        Event Name:
+                        Event Details
+                        Event Date
+                        Overall Ratig for event
+                        <br>
+                        Users: + Skill and Rating
+                        <br>
+                        Comments ordered by User
+                    </div>
+                </div>
+
+            </div>
+
+        </li >
+        <% } %>
+    </ul >
+
 
 </main >
 <%- include ../../Partials/footer.ejs %>
-<script>
-    function getPosts()
-    {
-        for(var i = 0; i < 10; i++)
-        {
-        var first= ' <li class="collection-item avatar"> ';
-            first +='<div><img src="images/empty.png" alt="" class="circle">';
-            first +='<span class="title">' + i + '</span>';
-            first +='<p>First Line <br> Second Line';
-            first +='</p></div><a href="" class="secondary-content"><i class="material-icons">grade</i></a>';
-            first +='<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
-        $("#posts").append(first);
-        }
-    }
-
-
-    function getAttended()
-    {
-        for(var i = 0; i < 10; i++)
-        {
-            var first= '<li class="collection-item avatar"> ';
-            first +='<img src="images/empty.png" alt="" width="50" height="50" class="circle">';
-            first +='<p><span class="title">' + i + '</span><p>';
-            first +='<p>Event Name <br> Created By <br> Date';
-            first +='</p></li>';
-            $("#AttendedEvents").append(first);
-        }
-    }
-
-    function getUpcoming()
-    {
-        for(var i = 0; i < 10; i++)
-        {
-            var first='<li class="collection-item avatar"> ';
-            first +='<img src="images/empty.png" alt="" width="50" height="50" class="circle">';
-            first +='<p><span class="title">' + i + '</span><p>';
-            first +='<p>Event Name <br> Second Line';
-            first +='</p></li>';
-            $("#UpcomingEvents").append(first);
-        }
-    }
-
-    $("#Timeline").click(getPosts());
-    $("#Attended").click(getAttended());
-    $("#Upcoming").click(getUpcoming());
+<script >
 
     $(document).ready(function(){
-        $('ul.tabs').tabs();
-    });
-    $(document).ready(function(){
-        $('ul.tabs').tabs('select_tab', '');
-    });
-    Materialize.showStaggeredList('');
+        $('.modal').modal();
 
-</script>
+        $('.slider').slider();
+        $('.slider').slider('start');
+        function getFollowers()
+        {
+            var link = "https://eternalvibes.me/getFollowing/" + user.id;
+            $.get(link,function(data){
+
+            }).then(function(){
+                return "hello";
+            });
+        }
+        alert(getFollowers());
+        getFollowing();
+        console.log(user.id);
+    });
+
+    var numFollowers, numFollowing;
+
+
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://eternalvibes.me/getFriends/303346737",
+        "method": "GET",
+        "headers": {
+            "cache-control": "no-cache",
+        }
+    }
+
+    $.ajax(settings).done(function (response)
+    {
+        numFollowers = response;
+        console.log(response);
+    });
+
+
+
+    function getFollowing()
+    {
+        $.ajax({
+            type: "GET",
+            url: "https://eternalvibes.me/getFollowing/",
+            cache: false,
+            data:user.id,
+            dataType: "jsonp",
+            success: function (data)
+            {
+                console.log(data);
+                numFollowing = data;
+            },
+            error: function (data)
+            {
+                console.log("error");
+                numFollowing = data;
+            }}).then(function()
+        {
+            return numFollowing;
+        });
+    }
+
+
+
+
+  $('#Timeline').click(getPosts())
+  $('#Attended').click(getAttended())
+  $('#Upcoming').click(getUpcoming())
+
+  $(document).ready(function () {
+    $('ul.tabs').tabs()
+  })
+  $(document).ready(function () {
+    $('ul.tabs').tabs('select_tab', '')
+  })
+  Materialize.showStaggeredList('')
+
+</script >
 </body >
 </html >

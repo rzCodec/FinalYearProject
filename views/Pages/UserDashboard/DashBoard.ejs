@@ -7,58 +7,126 @@
 <%- include ./partials/nav.ejs %>
 <main >
     <div class="row" >
+
+        <div id="carTop" class="slider col s10 offset-s1" height="5%" width="10%" style="margin-top: 5%">
+            <ul class="slides" height="5%">
+
+            </ul>
+
+        </div >
+
         <div class="col s7 offset-s1" >
             <ul id="staggered-test" >
                 <li class="" style="transform: translateX(0px); opacity: 0;" >
                     <div class="card white darken-1" >
                         <div class="card-content" >
                         <span class="card-title center-align" >
-                            <img class="circle" src="images/empty.png"alt= ""
-                                 width="64" height="64" ><p>Welcome <%= UserInfo.info.username %></p></span >
 
                         </div >
                     </div >
                 </li >
-                <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%">
-                    <div>
-                        <ul id="posts" class="collection truncate">
 
-                        </ul>
+                <form class="card ">
+
+                    <div class="card-content input-field">
+                        <i class="material-icons prefix">border_color</i>
+                        <textarea id="txtPost" class="materialize-textarea" placeholder="What's the vibe?"></textarea>
+                        <div class="collapsed"><a id="post" class="btn waves-effect waves-light disabled" type="submit" name="action">Post
+                                <i class="material-icons right">send</i>
+                            </a>
+                        </div>
+
                     </div>
-                </div>
+                </form>
+
+
+                <div id="Timeline" class="col s12 card " style="margin-top: 5%;margin-bottom: 10%" >
+                    <div >
+                        <ul id="posts" class="collection truncate" >
+                            <%UserInfo.Status.forEach(function(status){
+                            if(status.user_id == UserInfo.info.id)
+                            {%>
+                            <li class="collection-item avatar">
+                                <div class="left-align">
+                                    <img src="images/profilePics/<%=status.user_id%>.png" alt=""
+                                         class="circle">
+                                </div>
+                                <span class="title"><%=status.username%></span>
+                                    <p>
+                                    <br>
+                                    <p class="flow-text"><%=status.status%></p>
+                                <br>
+                                <div class="card-action">
+                                    <a id="del<%=status.id%>"
+                                       class="waves-effect right waves-light"
+                                       onclick="LikeStatus(<%= status.id %>)">
+                                        <i class="material-icons left">delete</i>
+                                    </a>
+                                </div>
+
+                            </li>
+                            <%}else
+                            {%>
+                                <li class="collection-item avatar">
+                                    <div>
+                                        <img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
+                                        <%var theDate = new Date(status.timestamp* 1000); %>
+                                        <span class="title"><%=status.username%> &emsp; &emsp; &emsp;
+                                            &emsp; &emsp; &emsp; <%= theDate.toDateString()%>
+                                        </span>
+                                        <br>
+                                        <br>
+                                        <p class="flow-text"><%=status.status%></p>
+                                    </div>
+                                    <div>
+                                       <a id="like<%=status.id%>"
+                                            class="waves-effect waves-light" onclick="LikeStatus(<%= status.id %>)">
+                                            <i class="material-icons brown-text left-align tooltipped"
+                                               data-tooltip="Like Post">star_border</i>(<%=status.liked%>)
+                                        </a>
+                                        <a id="flag<%=status.id%>" class=" right waves-effect waves-light btn_delete"
+                                            onclick="FlagStatus(<%= status.id %>)">
+                                            <i class="material-icons left brown-text tooltipped"
+                                           data-tooltip="Report Post">thumb_down</i>
+                                    </a>
+                                    </div>
+                                </li>
+                            <hr>
+                            <%}})%>
+                        </ul >
+                    </div >
+                </div >
+
             </ul >
         </div >
+
+
         <div class="col s4" >
             <ul id="staggered-test2" >
                 <li class="" style="transform: translateX(0px); opacity: 0;" >
-                    <div class="card white lighten-2" >
+                    <div class="card white lighten-2 with-header" >
                         <div class="card-content" >
-		<span class="card-title" >Top Artists <div class="chip" >
-     Daily
-  </div >
-  <div class="chip" >
-     Week
-  </div >
-  <div class="chip" >
-     Month
-  </div ></span >
+                            <span class="card-title collection-header" >Top Artists </span >
                         </div >
-                        <ul class="collection" >
+                        <ul class="collection collapsible popout" data-collapsible="accordion" >
                             <% UserInfo.TopArtists.forEach(function (output) { %>
                             <li class="collection-item avatar" >
-                                <img src="<%= output.profilepic_url %>" alt="images/empty.png"
+                                <%console.log(output)%>
+                                <img src="images/profilePics/<%= output.id %>.png"  alt="images/profilePics/<%= output.id %>.png"
                                      class="circle" >
+                                <div class="collapsible-header">
                                 <span class="title" ><%= output.username %></span >
-                                <p ><%= output.status %>
+                                </div>
+                                <p >Rating: <%= output.count %>
                                 </p >
                                 <a href="#" class="secondary-content" ><%= output.liked %></a >
+                                <div class="collapsible-body white"><span>Lorem ipsum dolor sit amet.</span></div>
                             </li >
                             <% }); %>
                         </ul >
                     </div >
                     <div class="card white lighten-2" >
                         <div class="card-content white-text" >
-
                             <canvas id="myChart" width="400" height="400" ></canvas >
                         </div >
                     </div >
@@ -66,12 +134,36 @@
             </ul >
         </div >
     </div >
+
+    </div >
 </main >
 <%- include ../../Partials/footer.ejs %>
 
 <script >
+
+
+    $(document).ready(function(){
+
+        $('.slider').slider();
+        $('.carousel').carousel();
+        $('.collapsible').collapsible();
+
+        console.log(checkCookie(UserInfo.info.id,UserInfo.info.admin));
+    });
+
+    function setBackImage(id)
+    {
+
+    }
   Materialize.showStaggeredList('#staggered-test');
   Materialize.showStaggeredList('#staggered-test2');
+  $('txtPost').onclick(function ()
+  {
+
+          $('#post').disabled(false);
+  });
+
+
   var ctx = document.getElementById("myChart");
   var label = [];
   var count = [];
@@ -80,7 +172,7 @@
   <% UserInfo.TopGenres.forEach(function (output) { %>
   label.push("<%= output.name %>");
   count.push(<%= output.count %>);
-  colours.push(getRandomColor());
+  colours.push(hexToRGB('#' + intToRGB(hashCode('<%= output.name %>')), 0.7));
   <% }); %>
 
   var myChart = new Chart(ctx, {
@@ -95,30 +187,32 @@
     }
   });
 
-  function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+  function hashCode (str) { // java String#hashCode
+    var hash = 0
+    for (var i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash)
     }
-    return color;
+    return hash
   }
 
-  function getPosts()
-  {
-      for(var i = 0; i < 10; i++)
-      {
-          var first= ' <li class="collection-item avatar"> ';
-          first +='<div><img src="images/empty.png" alt="" class="circle">';
-          first +='<span class="title">' + i + '</span>';
-          first +='<p>First Line <br> Second Line';
-          first +='</p></div><a href="" class="secondary-content"><i class="material-icons">grade</i></a>';
-          first +='<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
-          $("#posts").append(first);
-      }
+  function intToRGB (i) {
+    var c = (i & 0x00FFFFFF).toString(16).toUpperCase()
 
+    return '00000'.substring(0, 6 - c.length) + c
   }
-  $("#Timeline").onload(getPosts());
+
+  function hexToRGB (hex, alpha) {
+    var r = parseInt(hex.slice(1, 3), 16),
+      g = parseInt(hex.slice(3, 5), 16),
+      b = parseInt(hex.slice(5, 7), 16)
+
+    if (alpha) {
+      return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')'
+    } else {
+      return 'rgb(' + r + ', ' + g + ', ' + b + ')'
+    }
+  }
+
 
 </script >
 
