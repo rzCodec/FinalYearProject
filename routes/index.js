@@ -2637,7 +2637,43 @@ module.exports = function (app, passport, swaggerSpec) {
             console.log(error)
             res.status(500).send(error)
           } else {
-            res.send(results)
+            if (req.params.events_responses_id === '1') {
+              async.waterfall([
+                function (cb) {
+                  connection.query(
+                    'SELECT * FROM `events_invites` WHERE events_invites.id=?',
+                    [req.params.events_requests_id], function (error, response) {
+                      if (error || response.length === 0) {
+                        cb(error)
+                      } else {
+                        cb(null, response[0].receiver_user_id,
+                          response[0].events_id,response[0].skills_id)
+                      }
+                    })
+                },
+                function (user_id, events_id,skills_id, cb) {
+                  connection.query(
+                    'INSERT INTO `events_attendees` (`id`, `user_id`, `events_id`, `attended`,`skills_id`) VALUES (NULL, ?, ?, 0, ?)',
+                    [user_id, events_id,skills_id], function (error) {
+                      if (error) {
+                        console.log(error)
+                        cb(error)
+                      } else {
+                        cb()
+                      }
+                    })
+                },
+              ], function (err) {
+                if (err) {
+                  console.log(err)
+                  res.sendStatus(500)
+                } else {
+                  res.sendStatus(200)
+                }
+              })
+            } else {
+              res.sendStatus(200)
+            }
           }
         })
     })
@@ -3433,7 +3469,7 @@ module.exports = function (app, passport, swaggerSpec) {
   })
   /**
    * @swagger
-   * /generateEventsReview:
+   * /reviewUser:
    *   post:
    *     tags:
    *       - event
@@ -3582,6 +3618,38 @@ module.exports = function (app, passport, swaggerSpec) {
     connection.query(
       'SELECT AVG(events_reviews.rating) FROM events_reviews WHERE events_reviews.reviewee_user_id=? AND events_reviews.events_id=?',
       [req.params.user_id, req.params.events_id], function (error, results) {
+        if (error) {
+          console.log(error)
+          callback(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  /**
+   * @swagger
+   * /getAllCompletedUserEvents/{user_id}:
+   *   get:
+   *     tags:
+   *       - event
+   *     description: getAllCompletedUserEvents
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: user_id
+   *         in: path
+   *         required: true
+   *         type: integer
+   *     responses:
+   *       200:
+   *         description: General
+   *       500:
+   *         description: General
+   */
+  app.get('/getAllCompletedUserEvents/:user_id', function (req, res) {
+    connection.query(
+      'SELECT events.* FROM events INNER JOIN events_attendees ON events_attendees.events_id = events.id WHERE events.host_user_id=? and events_attendees.user_id=? and events_attendees.attended=1',
+      [req.params.user_id,req.params.user_id], function (error, results) {
         if (error) {
           console.log(error)
           callback(error)
