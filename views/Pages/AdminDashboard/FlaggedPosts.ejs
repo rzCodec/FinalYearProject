@@ -1,269 +1,89 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en" xmlns:width="http://www.w3.org/1999/xhtml">
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
-
-    <h1 class="center-align"><img height="10%" width="10%" src="images/empty.png" alt=""
-                                  class="circle"> <a href="/profile"><%= info.username %></a></h1></header>
-
-
-    <!-- Menu Design for Tablets and Phone screen -->
-    <div class="col s3 hide-on-large-only" >
-        <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons" >menu</i ></a >
-        <ul id="slide-out" class="side-nav" >
-            <li >
-                <div class="userView" >
-                    <div class="background" >
-                        <img src="images/background/background1.jpg" >
-                    </div >
-                    <a href="#!user" ><img class="circle"
-                                           src="images/empty.png" ></a >
-                    <a href="#!name" ><span class="white-text name" ><%= info.username %></span ></a >
-                    <a href="#!email" ><span class="white-text email" ><%= info.email %></span ></a >
-                </div >
-            </li >
-
-            <li ><a class="subheader"  ><i class="material-icons right" >thumbs_up_down</i >Flagged</a ></li >
-            <li ><a id="flagUsers" class="tab" href="#flUsers" onclick="Materialize.showStaggeredList('#fUserList')" >Flagged Users</a ></li >
-            <li ><a id="flagPosts" class="tab" href="#flPosts" onclick="Materialize.showStaggeredList('#fPostList')" >Flagged Posts</a ></li >
-            <li >
-                <div class="divider" ></div >
-            </li >
-            <li ><a href="#Skills" class="tab" onclick="Materialize.showStaggeredList('#AddSkill')" >Add Skills</a ></li >
-            <li class='active' ><a href="#Genre" onclick="Materialize.showStaggeredList('#AddGenre')">
-                    Add Genres</a ></li >
-            <li ><a href="/reports" >Reports</a ></li >
-            <li >
-                <div class="divider" ></div >
-            </li >
-            <li ><a href="/dashBoard" ><i class="material-icons right" >power_settings_new</i >Admin</a ></li >
-
-        </ul >
-    </div>
-
-
-       <!-- Menu Design for laptop and computer screen -->
-    <ul class="tabs center-align hide-on-med-and-down" style="margin-top: 5%">
-
-        <li id="flPosts" class="tab col s3">
-            <a href="#FlaggedPosts" onclick="Materialize.showStaggeredList('#FlaggedPosts')">
-                <i class="medium material-icons right-align">feedback</i>Flagged Posts
-                <span id="numPosts" class="new badge">15</span></a></li>
-
-        <li id="flUsers" class="tab col s3"><a href="#FlaggedUsers" onclick="Materialize.showStaggeredList('#FlaggedUsers')">
-                <i class="medium material-icons left-align">assignment_ind</i>Flagged Users
-                <span id="numUsers" class="new badge"> 15</span></a></li>
-
-        <li id="Genre" class="tab col s3">
-            <a href="#AddGenre">
-                <i class="medium material-icons right-align">library_music</i>Add Genres</a></li>
-
-        <li id="Skills" class="tab col s3"><a href="#AddSkill">
-                <i class="medium material-icons right-align">palette</i>Add Skills</a></li>
-
-    </ul>
 </head >
-<body >
-<main >
+<body  >
+<%-include ../../Partials/UserInfo.ejs%>
+<main>
+    <div class="row brown-text text-darken-5" >
+        <%- include ./partials/nav.ejs %>
+        <!-- Information displayed in each tab-->
+        <div id="FlaggedPosts" class=" col s6 offset-s3 " style="margin-top: 5%" >
+            <h2 align="center">Flagged Posts</h2>
+            </br>
+            <div>
+                <ul id="fPostList"  class="collection truncate"  >
+                    <% flaggedPosts.forEach(function (post) {%>
+                    <li   id="post<%=post.status_id%>"  name="post<%=post.status_id%>" class="collection-item avatar">
+                        <div card white darken-4 ><img src="images/profilePics/<%= post.userId %>.png" alt="" class="circle" width="100px" height="100px">
+                            <span class="title"> <h3><%=post.username%> </h3></span>
+                            <p>Message: <%=post.status%> <br> Reason for flag: <%=post.reason%></p>
+                            <p>No. Likes: <%=post.liked%> <br> No. Flags: <%=post.flags%></p>
 
-    <!-- Information displayed in each tab-->
-    <div id="FlaggedPosts" class="col s12" style="margin-left: 10%; margin-right: 10%;margin-top: 5%;margin-bottom: 10%">
-        <div>
-            <ul id="fPostList" class="collection truncate">
+                            <br>
+                            <a id="par<%=post.status_id%>" name="pardon<%=post.status_id%>" class="waves-effect waves-light btn btn_pardon" onclick="pardonStatus(<%= post.status_id %>)">
+                                <i class="material-icons left">thumb_up</i>Pardon</a>
+                            <a id="rem<%=post.status_id%>" name="remove<%=post.status_id%>" class="waves-effect waves-light btn red btn_delete" onclick="deleteStatus(<%= post.status_id %>)">
+                                <i class="material-icons left">thumb_down</i>Remove</a>
+                        </div>
+                    </li>
+                    <% }) %>
 
-            </ul>
-        </div>
-    </div>
-    <!--FlaggedUsers Tab-->
-    <div id="FlaggedUsers" class="col s12" style="margin-left: 10%; margin-right: 10%;margin-top: 5%;margin-bottom: 10%">
-        <div>
-            <ul id="fUserList" class="collection truncate">
-
-            </ul>
-        </div>
-    </div>
-
-    <!--FlaggedUsers Tab-->
-    <div id="AddGenre" class="col s12 center-align"
-         style="margin-left: 10%; margin-right: 10%;margin-top: 10%;margin-bottom: 10%; border: groove">
-            <form class="col s12">
-                <div class="row">
-                    <label for="icon_prefix2">Add Genres</label>
-                    <div style="margin-left: 3%; margin-right: 3%">
-                        <i class="material-icons prefix center-align">mode_edit</i>
-                        <textarea id="icon_prefix2" class="materialize-textarea" ></textarea>
-                    </div>
-                    <button class="right-align brown white-text"><i class="material-icons">done</i> Submit</button>
-                </div>
-            </form>
-    </div>
-
-    <div id="AddSkill" class="col s12 center-align"
-         style="margin-left: 10%; margin-right: 10%;margin-top: 10%;margin-bottom: 10%; border: groove">
-        <form class="col s12">
-            <div class="row">
-                <label for="icon_prefix2">Add Skills</label>
-                <div style="margin-left: 3%; margin-right: 3%">
-                    <i class="material-icons prefix center-align">mode_edit</i>
-                    <textarea id="icon_prefix2" class="materialize-textarea" ></textarea>
-                </div>
-                <button class="right-align brown white-text"><i class="material-icons">done</i> Submit</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- THis is for broadcasting to  Users -->
-    <div class="fixed-action-btn click-to-toggle">
-        <a class=" waves-effect waves-light btn floating purple tooltipped "
-           data-position="top" data-delay="50" data-tooltip="Send Braodcast">
-            <i class="large material-icons">keyboard</i></a>
-        <ul>
-            <li><a class="waves-effect waves-light btn floating red large modal-trigger tooltipped"
-                   href="#SendToAll" data-delay="50" data-tooltip="Send To All" >
-                    <i class="large material-icons">message</i></a></li>
-
-            <li><a href="#SpecifyUsers" class="waves-effect waves-light btn floating blue large tooltipped"
-                   data-delay="50" data-tooltip="Specify Users">
-                    <i class="large material-icons">edit</i></a></li>
-        </ul>
-    </div>
-    <!--Modal For Sending a broadcast-->
-    <div id="SpecifyUsers" class="modal bottom-sheet">
-        <div class="modal-content">
-            <h4>Broadcast To:</h4>
-            <div class="chips chips-placeholder">
-
-            </div>
-            <div style="margin-left: 3%; margin-right: 3%">
-                <i class="material-icons prefix center-align">mode_edit</i>
-                <textarea id="icon_prefix2" class="materialize-textarea" ></textarea>
+                </ul>
             </div>
         </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat left-align">Cancel</a>
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="Send">Send</a>
-        </div>
-    </div>
 
-
-    <!--Modal to broadcsast to All Users-->
-    <div id="SendToAll" class="modal bottom-sheet">
-        <div class="modal-content">
-            <h4>Broadcast To All Users</h4>
-            <div style="margin-left: 3%; margin-right: 3%">
-                <i class="material-icons prefix center-align">mode_edit</i>
-                <textarea id="icon_prefix2" class="materialize-textarea" ></textarea>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat left-align">Cancel</a>
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="SendAll">Send</a>
-        </div>
-    </div>
-
-    <div class="row modal-overlay" id="S">
-        <form class="col s12">
-            <div class="row">
-                <div class="modal-content">
-                    <div class="input-field col s6">
-                        <i class="material-icons prefix">mode_edit</i>
-                        <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
-                        <label for="icon_prefix2">Message</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
-                </div>
-            </div>
-        </form>
-    </div>
-
+    </div >
 </main >
-<!-- Menu Design for broadcasts -->
 <%- include ../../Partials/footer.ejs %>
 <script >
 
-    //Generate Flagged Users
-    function addUsers()
-    {
-        for(var i = 0; i < 10; i++)
+    $(document).ready(function(){
+        if(info.admin == 0)
         {
-            var first= ' <li class="collection-item avatar dismissable"> ';
-            first += '<img src="images/empty.png" alt="" class="circle">';
-            first += '<span class="title">' + i + '</span>';
-            first += '<p>First Line <br> Second Line';
-            first += '</p><a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>';
-            first += '</li>';
-            $("#fUserList").append(first);
+            history.back();
         }
+    });
 
-    };
+    var postCount = 0;
 
-    //Generate Flagged User Posts
-    function addPosts()
+    Materialize.showStaggeredList('#FlaggedPosts');
+    function deleteStatus (id)
     {
-        for(var i = 0; i < 10; i++)
-        {
-            var first= ' <li class="collection-item avatar"> ';
-            first +='<div><img src="images/empty.png" alt="" class="circle">';
-            first +='<span class="title">' + i + '</span>';
-            first +='<p>First Line <br> Second Line';
-            first +='</p></div><a href="" class="secondary-content"><i class="material-icons">thumb_up</i></a>';
-            first +='<a href="" class="secondary-content pin-bottom"><i class="material-icons">thumb_down</i></a></li>';
-            $("#fPostList").append(first);
-        }
 
-    };
+        $.post("https://www.eternalvibes.me/deleteStatus",
+            {
+                statusId: id
+            },
+            function (data) {
+                console.log("Data: " + data);
+                if(data == 200)
+                {
+                    Materialize.toast('Removed Post', 500);
+                    location.reload();
+                }
+            });
+    }
 
-    function UsersVisible()
-    {
-        $('#flagUsers').visibility = true;
-        addPosts();
-        $('#flagPosts').visibility = false;
+    function pardonStatus (id) {
+
+        $.post("https://www.eternalvibes.me/pardonStatus",
+            {
+                statuId: id
+            },
+            function (data) {
+                console.log("Data: " + data);
+                if(data == 200)
+                {
+                    Materialize.toast('Pardoned Post', 500);
+                    location.reload();
+                }
+            });
 
     }
 
-    //Add Information to flagged Users
-       $("#flUsers").click(addUsers());
-    $("#flUsers").click(addUsers());
 
-    //Add Information to flagged Users posts
-    $("#flagPosts").click(addPosts());
-    $("#flagUsers").click(UsersVisible);
-
-    $(document).ready(function(){
-        // the "href" attribute of the modal trigger specifies the modal ID that wants to be triggered
-        $('.modal').modal();
-    });
-
-    $('.chips').material_chip();
-
-    $('.chips-autocomplete').material_chip({
-        autocompleteOptions: {
-            data: {
-                'Examples': null,
-                'Marc': null,
-                'Ronald': null,
-                'DV': null,
-                'David': null
-            },
-            limit: Infinity,
-            minLength: 1
-        }
-    });
-
-    $('#SendToAll').modal('open');
-    $(document).ready(function(){
-        $('ul.tabs').tabs();
-    });
-    $(document).ready(function(){
-        $('ul.tabs').tabs('select_tab', '');
-    });
-   $('#UserProfile').append('')
-    Materialize.showStaggeredList('#staggered-test');
-
-    // Initialize collapse button
-    $(".button-collapse").sideNav();
 
 </script >
 
