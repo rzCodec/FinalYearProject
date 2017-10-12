@@ -3,28 +3,43 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head>
-<body >
+<body style=" background-image:url('/images/background/background3.jpg');
+background-repeat: no-repeat; background-size: 100%">
+
 <main>
+
     <div class="row" >
         <%- include ./partials/nav.ejs %>
         <div  class="center col s4 offset-s4 " style="margin-top: 5%">
             <h2 class="card-title" align="center">Available Genres</h2>
 
-            <div id='gList' class="card" style="margin-top: 5%">
+            <div id='gList' style="margin-top: 5%">
 
-                <ul class=" card-panel" >
+                <ul class="card collapsible popout" style="background-color: transparent">
                     <% genres.forEach(function(genre)
                     {%>
-                        <li class="card-content"><%= genre.name%></li>
+                        <li class="card-content" >
+                            <div class="collapsible-header" style="background-color: transparent">
+                                <%= genre.name%>
+                            </div>
+                            <div class="collapsible-body">
+                                <label><h3>Rename</h3></label>
+                                <input id="gen<%= genre.id%>" value="<%=genre.name%>">
+                                <a class="btn brown white-text">rename</a>
+                            </div>
+                        </li>
                     <%})%>
                 </ul>
-                <a id="addG" data-target="addGenre"
-                   class="modal-trigger waves-effect waves-light brown white-text btn right">Add New Genre</a>
             </div>
         </div>
     </div>
     </div>
 
+    <div class="fixed-action-btn">
+        <a id="add" data-target="addGenre" class="btn-floating btn-large waves-effect waves-light red">
+            <i class="material-icons">add</i>
+        </a>
+    </div>
     <div id="addGenre" class="modal bottom-sheet">
         <div class="modal-content center">
             <h2 class="brown-text modal-ux-header">Add Genre</h2>
@@ -48,6 +63,10 @@
     $(document).ready(function(){
         // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
         $('.modal').modal();
+        if(info.admin == 0)
+        {
+            history.back();
+        }
 
     });
 
@@ -81,10 +100,9 @@
     Materialize.showStaggeredList('#gList');
 
 </script>
-<script src="javascripts/Genre.js" src="javascripts/materialize.js" type="text/javascript">
+<script src="javascripts/Genre.js"  src="javascripts/Cookies.js" type="text/javascript">
 
-    var genres = Genres.getGenres();
-
+    var genres ="<%=genres%>"
 
 
 </script>
