@@ -3,25 +3,26 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head>
-<body >
+<body style=" background-image:url('/images/background/background3.jpg');background-size: 100%" >
 <main>
     <%var edtSkill%>
     <div class="row" >
         <%- include ./partials/nav.ejs %>
         <div  class="center col s4 offset-s4 " style="margin-top: 5%">
             <h2 align="center">Available Skills</h2>
-            <div id='sList' class="card" style="margin-top: 5%">
-                <ul id="skills" class=" card-content" >
-                    <%skills.forEach(function(skill)
+            <div id='sList' style="margin-top: 5%">
+                <ul class="card collapsible popout" style="background-color: transparent" >
+                    <% skills.forEach(function(skill)
                     {%>
-                    <li class="center waves-effect waves-teal card-content" >
-                        <a id="skill<%= skill.id%>" class="btn-flat modal-trigger" data-target="edtSkill"
-                           onclick="getSkill(<%= skill%>)">
+                    <li class="card-content">
+                        <div class="collapsible-header" style="background-color: transparent">
                             <%= skill.name%>
-                        </a>
-
+                        </div>
+                        <div class="collapsible-body">
+                            <input id="gen<%= skill.id%>" value="<%=skill.name%>">
+                            <a class="btn brown white-text">rename</a>
+                        </div>
                     </li>
-                    <br>
                     <%})%>
                 </ul>
 
@@ -34,22 +35,6 @@
              <i class="material-icons">add</i>
          </a>
     </div>
-
-    <div id="edtSkill" class="modal">
-        <div class="modal-content center">
-            <h2 class="brown-text modal-ux-header">Edit Skill</h2>
-            <h5>Edit Skill name</h5>
-            <input type="text" value="" id="edit_skill" placeholder="Enter New Skill" />
-            <br/>
-            <div class="modal-footer">
-                <a id="submit_skill" onclick="editSkill()"
-                   class="modal-action modal-close waves-effect waves-light btn-flat brown-text">Submit</a>
-                <a class="modal-action modal-close waves-effect waves-light btn-flat red-text left">Cancel</a>
-            </div>
-        </div>
-    </div>
-
-
 
     <div id="addskill" class="modal bottom-sheet">
         <div class="modal-content center">
@@ -72,6 +57,10 @@
 
     $(document).ready(function(){
         $('.modal').modal();
+        if(info.admin == 0)
+        {
+            history.back();
+        }
     });
 
 
@@ -118,7 +107,7 @@
 </script>
 <script src="javascripts/Skills.js" src="javascripts/materialize.js" type="text/javascript">
 
-    var skills = Skills.getSkills();
+
 
 
 
