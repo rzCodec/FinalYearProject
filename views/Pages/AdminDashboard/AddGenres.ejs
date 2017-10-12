@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head >
+    <%- include ../../Partials/AboveFold.ejs %>
+</head>
+<body style=" background-image:url('/images/background/background3.jpg');
+background-repeat: no-repeat; background-size: 100%">
+
+<main>
+
+    <div class="row" >
+        <%- include ./partials/nav.ejs %>
+        <div  class="center col s4 offset-s4 " style="margin-top: 5%">
+            <h2 class="card-title" align="center">Available Genres</h2>
+
+            <div id='gList' style="margin-top: 5%">
+
+                <ul class="card collapsible popout" style="background-color: transparent">
+                    <% genres.forEach(function(genre)
+                    {%>
+                        <li class="card-content" >
+                            <div class="collapsible-header" style="background-color: transparent">
+                                <%= genre.name%>
+                            </div>
+                            <div class="collapsible-body">
+                                <label><h3>Rename</h3></label>
+                                <input id="gen<%= genre.id%>" value="<%=genre.name%>">
+                                <a class="btn brown white-text">rename</a>
+                            </div>
+                        </li>
+                    <%})%>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="fixed-action-btn">
+        <a id="add" data-target="addGenre" class="btn-floating btn-large waves-effect waves-light red">
+            <i class="material-icons">add</i>
+        </a>
+    </div>
+    <div id="addGenre" class="modal bottom-sheet">
+        <div class="modal-content center">
+            <h2 class="brown-text modal-ux-header">Add Genre</h2>
+            <h5>Add a new genre for users</h5>
+            <input type="text" id="add_genre" placeholder="Enter New Genre" />
+            <br/>
+            <div class="modal-footer">
+                <a id="submit_genre" onclick="addGenre()"
+                   class="modal-action modal-close waves-effect waves-light btn-flat brown-text">Submit</a>
+                <a class="modal-action modal-close waves-effect waves-light btn-flat red-text left">Cancel</a>
+            </div>
+        </div>
+    </div>
+
+
+</main>
+<%- include ../../Partials/footer.ejs %>
+</body>
+<script>
+
+    $(document).ready(function(){
+        // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+        $('.modal').modal();
+        if(info.admin == 0)
+        {
+            history.back();
+        }
+
+    });
+
+
+    function addGenre()
+    {
+        var genre = $('#add_genre').val();
+        if(genre == '')
+        {
+            materialize.toast("please enter a skill",5000);
+        }
+        else
+        { $.post("https://www.eternalvibes.me/addGenre",
+            {
+                genreName: genre
+            },
+            function (data) {
+                console.log("Data: " + data);
+                if(data == 200)
+                {
+
+                }
+            });
+            materialize.toast(skill + " has been added", 500);
+            $('#add_genre').reset();
+            $('#gList').reload(true);
+        }
+
+    };
+
+    Materialize.showStaggeredList('#gList');
+
+</script>
+<script src="javascripts/Genre.js"  src="javascripts/Cookies.js" type="text/javascript">
+
+    var genres ="<%=genres%>"
+
+
+</script>
+
+
+</html>

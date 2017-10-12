@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head >
+    <%- include ../../Partials/AboveFold.ejs %>
+</head>
+<body style=" background-image:url('/images/background/background3.jpg');background-size: 100%" >
+<main>
+    <%var edtSkill%>
+    <div class="row" >
+        <%- include ./partials/nav.ejs %>
+        <div  class="center col s4 offset-s4 " style="margin-top: 5%">
+            <h2 align="center">Available Skills</h2>
+            <div id='sList' style="margin-top: 5%">
+                <ul class="card collapsible popout" style="background-color: transparent" >
+                    <% skills.forEach(function(skill)
+                    {%>
+                    <li class="card-content">
+                        <div class="collapsible-header" style="background-color: transparent">
+                            <%= skill.name%>
+                        </div>
+                        <div class="collapsible-body">
+                            <input id="gen<%= skill.id%>" value="<%=skill.name%>">
+                            <a class="btn brown white-text">rename</a>
+                        </div>
+                    </li>
+                    <%})%>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed-action-btn">
+         <a id="add" data-target="addskill" class="btn-floating btn-large waves-effect waves-light red">
+             <i class="material-icons">add</i>
+         </a>
+    </div>
+
+    <div id="addskill" class="modal bottom-sheet">
+        <div class="modal-content center">
+            <h2 class="brown-text modal-ux-header">Add Skill</h2>
+            <h5>Add a new skill for users</h5>
+            <input type="text" id="add_skill" placeholder="Enter New Skill" />
+            <br/>
+            <div class="modal-footer">
+                <a id="submit_skill" onclick="addSkill()"
+                   class="modal-action modal-close waves-effect waves-light btn-flat brown-text">Submit</a>
+                <a class="modal-action modal-close waves-effect waves-light btn-flat red-text left">Cancel</a>
+            </div>
+        </div>
+    </div>
+
+</main>
+<%- include ../../Partials/footer.ejs %>
+</body>
+<script>
+
+    $(document).ready(function(){
+        $('.modal').modal();
+        if(info.admin == 0)
+        {
+            history.back();
+        }
+    });
+
+
+
+    $('#add').click(function()
+    {
+        $('#addskill').modal('open');
+    });
+
+    function addSkill()
+    {
+        //Skills.addSkill($('#add_skill').val());
+        skill = $('#add_skill').val();
+        console.log('this skill' + skill);
+        if (skill == '')
+        {
+            materialize.toast("please enter a skill", 5000);
+        }
+        else {
+            $.post("https://www.eternalvibes.me/addSkill",
+                {
+                    skillName: skill
+                },
+                function (data)
+                {
+                    console.log("Data: " + data);
+                    if (data == 200)
+                    {
+
+
+                    }
+                });
+            materialize.toast(skill + " has been added", 500);
+
+        }
+        $('#add_genre').reset();
+        $('#sList').reload(true);
+    }
+
+
+
+    Materialize.showStaggeredList('#sList');
+
+</script>
+<script src="javascripts/Skills.js" src="javascripts/materialize.js" type="text/javascript">
+
+
+
+
+
+</script>
+
+</html>
