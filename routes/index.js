@@ -3766,7 +3766,7 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getOverallReviewedUserAverageSkillsRatings/:user_id',
     function (req, res) {
       connection.query(
-        'SELECT events_reviews.skill_id,skills.name, AVG(events_reviews.rating) FROM events_reviews INNER JOIN skills ON events_reviews.skill_id=skills.id WHERE events_reviews.reviewee_user_id=? GROUP BY events_reviews.skill_id',
+        'SELECT events_reviews.skill_id,skills.name, AVG(events_reviews.rating), COUNT(events_reviews.rating) AS Total FROM events_reviews INNER JOIN skills ON events_reviews.skill_id=skills.id WHERE events_reviews.reviewee_user_id=? GROUP BY events_reviews.skill_id',
         [req.params.user_id], function (error, results) {
           if (error) {
             console.log(error)
