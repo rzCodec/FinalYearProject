@@ -120,11 +120,11 @@
 
     <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%; margin-left: 25%; margin-right:30%" >
         <div >
-            <ul id="posts" class="collection truncate" >
+            <ul id="posts" class="collection truncate collapsible" >
                 <% UserPosts.forEach(function (post) {
                 %>
-                <li class="collection-item card-content avatar hoverable " >
-                    <div>
+                <li class="collection-item card-content avatar hoverable black-text white " >
+                    <div class="collapsible-header">
                         <img src="images/profilePics/<%= post.user_id %>.png"
                              alt="<%= user.username %>" width="100" height="100" class="circle" >
                         <%var theDate = new Date(post.timestamp* 1000); %>
@@ -132,12 +132,32 @@
                         &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;<%= theDate.getDay()%> <%= theDate.getMonth()%> <%= theDate.toLocaleTimeString()%>
                     </div>
                     </br>
-                    <p ><span class="title" ><%= post.status %></span ></p>
+                    <p class="flow-text"><%= post.status %></p>
                     </br>
                     <p > <%= post.liked %> likes  &emsp; &emsp;
-                        <%= post.flag %> flags &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;
-                        <a class="btn-flat right"><i class="medium material-icons tooltipped" data-tooltip="Delete Post">delete</i></a>
+                        <%= post.flag %> flags
                     </p >
+                    <hr>
+                    <div class="collapsible-body brown-text" style="background-color: white">
+                        <ul>
+                            <a id="like<%=post.id%>" class="collection-item"
+                                onclick="LikeStatus(<%= post.id %>)">
+                                <i class="material-icons brown-text tooltipped"
+                                   data-tooltip="Like Post">star_border
+                                </i> Like
+                            </a>
+                            <a id="del<%=post.id%>" class="collection-item"
+                                onclick="LikeStatus(<%= post.id %>)">
+                                <i class="material-icons left">delete</i>
+                                Delete
+                            </a>
+                            <a class="collection-item"
+                                onclick="Tweet(<%=post.id%>)">Share on Twitter</a>
+                            <a class="collection-item"
+                                onclick="Facebook(<%=post.user_id%>)">Share on Facebook
+                            </a>
+                        </ul>
+                    </div>
                 </li >
                 <% }) %>
             </ul >
@@ -255,7 +275,7 @@
                 <%}else
                     UserFinishedEvents.forEach(function (event) { %>
                 <li class="collection-item avatar" >
-                    <div class="collapsible-header">
+                    <div class="collapsible-header">,
                         <img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png"
                                class="circle" >
                         <span class="title" >Title: <%= event.title %></span >
@@ -265,9 +285,9 @@
                     <div id="finDetails" class="collapsible-body">
                         <div>
                             <div class="card-content">
-                                Event Name:
+
                                 Event Details
-                                Event Date
+                                Date of Event:
                                 Overall Ratig for event
                                 <br>
                                 Users: + Skill and Rating
@@ -289,7 +309,8 @@
 
 
 </main >
-<%- include ../../Partials/footer.ejs %>
+<div class=" hide-on-med-and-down" style="margin-left: 22% "><%- include ../../Partials/footer.ejs %></div>
+<div class=" hide-on-large-only"><%- include ../../Partials/footer.ejs %></div>
 <script >
 
     $(document).ready(function(){

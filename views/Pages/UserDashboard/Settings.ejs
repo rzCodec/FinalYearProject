@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head >
-
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
 <body >
-
 <%- include ./partials/nav.ejs %>
 <div >
     <ul id="slide-out" class="tabs center-align" >
@@ -93,42 +91,21 @@
                     <span class="card-title" ><h1 >Genre and Skill</h1 ></span >
                     <span class="card-title" >Update Your Genre and Skills</span >
                     <div class="input-field col s12">
+                        <script src="javascripts/Genre.js" src="javascripts/materialize.js" type="text/javascript">
 
-                        <select>
+                            var genres = Genres.genres();
+
+                        </script>
+                        <select id="genres">
                             <option value="" disabled selected>Choose your Genre</option>
-                            <option value="1">Rock</option>
-                            <option value="3">Pop</option>
-                            <option value="2">Rap</option>
-                            <option value="0">Jazz</option>
-                            <option value="5">House</option>
-                            <option value="4">Indie</option>
-                            <option value="6">Trap</option>
-                            <option value="7">EDM</option>
-                            <option value="8">Shoegaze</option>
-                            <option value="9">Instrumental</option>
                         </select>
                         <label>Genre</label>
                     </div>
 
                     <div class="input-field col s12">
-                        <select multiple>
+                        <select multiple id="sSkills">
                             <option value="" disabled selected>Choose your Skills</option>
-                            <option value="7" cted>Backup vocalist</option>
-                            <option value="0" >DJ</option>
-                            <option value="9">Drummer</option>
-                            <option value="13">Event Management</option>
-                            <option value="12">Flute</option>
-                            <option value="8">Guitarist</option>
-                            <option value="2">Mixer</option>
-                            <option value="23">Music Critic</option>
-                            <option value="11">Piano</option>
-                            <option value="5">Rapper</option>
-                            <option value="10">Saxophone</option>
-                            <option value="4">Singer</option>
-                            <option value="1">Song writer</option>
-                            <option value="19">Sound Engineer</option>
-                            <option value="6">Vocalist</option>
-                            <option value="3">Producer</option>
+                            <option>Test</option>
                         </select>
                         <label>Skills</label>
                     </div>
@@ -140,63 +117,48 @@
         </div >
     </div >
 
-
+<a id="testing" class="btn-flat">Test</a>
 </div >
 </main >
-<%- include ../../Partials/footer.ejs %>
-<script >
-    var sSkills, Genres;
+<div class=" hide-on-med-and-down" style="margin-left: 22% "><%- include ../../Partials/footer.ejs %></div>
+<div class=" hide-on-large-only"><%- include ../../Partials/footer.ejs %></div>
+<script>
+
+    $(document).ready(function()
+    {
+        var settings =
+            {
+                "async": true,
+                "crossDomain": true,
+                "url": "https://eternalvibes.me/getSkills",
+                "method": "GET"
+            }
+
+        $.ajax(settings).done(function (response)
+        {
+            alert(response);
+        });
 
 
-
-    $(document).ready(function() {
         $('select').material_select();
-        getSkills();
+        alert(getSkills());
 
+        function getSkills()
+        {
+            $.ajax(
+            {
+                type: "GET",
+                async: true,
+                url: "https://eternalvibes.me/getSkills",
+                success: function(data) {  return data; alert('works'); },
+                error: alert('fail')
+            });
+        }
 
     });
 
-    function getSkills()
-    {
-        $.ajax({
-            type: "GET",
-            url: "https://eternalvibes.me/getSkills",
-            cache: false,
-            dataType: "jsonp",
-            success: function (data){
-                Materialize.toast(data, 500);
-                sSkills = data;
-            },
-            error: function (data) {
-                console.log("error");
-                sSkills = data;
-            }})
-            .then(function(){
-                return sSkills;
-            });
-        Materialize.toast("this function works" + sSkills,5000);
-    }
 
-
-    function getGenres()
-    {
-        $.ajax({
-            type: "GET",
-            url: "https://eternalvibes.me/getGenres",
-            cache: false,
-            dataType: "jsonp",
-            success: function (data){
-                console.log(data);
-                genres = data;
-            },
-            error: function (data) {
-                console.log("error");
-                genres = data;
-            }})
-            .then(function(){
-                return genres;
-            });
-    }
+$('#testing').onclick(alert("hello"));
 
     function updateInfo()
     {
@@ -212,20 +174,6 @@
                 {
                     Materialize.toast("Updated User Info", 5000);
                 }
-            });
-    }
-
-    function updatePassword()
-    {
-        $.post("https://eternalvibes.me/updatePassword",
-            {
-                currentPass: $("#current").value(),
-                NewPass: $("#newPass").value()
-
-            },
-            function (data)
-            {
-
             });
     }
 
@@ -245,7 +193,7 @@
         $.post("https://eternalvibes.me/updateUserInfo",
             {
                 Id: id,
-                gebre_id: $("#genre").value()
+                genre_id: $("#genre").value()
 
             },
             function (data)
@@ -254,40 +202,10 @@
             });
     }
 
-  Materialize.showStaggeredList('#staggered-test')
-  $('#personalsettings').click('#personal');
-    $("#formValidate").validate({
-        rules:
-            {
-            firstname: {
-                required: true,
-                minlength: 2
-            },
-            surname: {
-                required: true,
-                minlength: 2
-            },
-            password: {
-                required: true,
-                minlength: 5
-            },
-            confirmpassword: {
-                required: true,
-                minlength: 5,
-                equalTo: "#password"
-            }
-        },
-        errorElement: 'div',
-        errorPlacement: function (error, element) {
-            var placement = $(element).data('error');
-            if (placement) {
-                $(placement).append(error)
-            } else {
-                error.insertAfter(element);
-            }
-        }
-    });
+
 </script >
+
+
 
 </body >
 </html >
