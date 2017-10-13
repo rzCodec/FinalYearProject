@@ -377,6 +377,8 @@ module.exports = function (app, passport, swaggerSpec) {
     var UserInfo = {
       info: {},
     }
+    var skills;
+    var genres;
     parallel([
         function (callback) {
           request({
@@ -391,13 +393,39 @@ module.exports = function (app, passport, swaggerSpec) {
             callback(null)
           })
         },
+        function (callback) {
+          request({
+            url: website + '/getGenres',
+            json: true,
+          }, function (error, response, body) {
+            console.log(body)
+            if (error) {
+              console.log(error)
+            }
+            genres = body
+            callback(null)
+          })
+        },
+        function (callback) {
+          request({
+            url: website + '/getSkills',
+            json: true,
+          }, function (error, response, body) {
+            console.log(body)
+            if (error) {
+              console.log(error)
+            }
+            skills = body
+            callback(null)
+          })
+        },
       ],
       function (err) {
         if (err) {
           console.log(err)
         } else {
           res.render('Pages/UserDashboard/Settings.ejs',
-            {user: req.user, userInfo: UserInfo},
+            {user: req.user, userInfo: UserInfo, skills:skills, genres:genres},
             function (err, html) {
               if (err) console.log(err)
               else res.send(html)
@@ -2474,7 +2502,7 @@ module.exports = function (app, passport, swaggerSpec) {
           console.log(err)
           res.status(500).send(err)
         } else {
-          res.send({eventId:eventId})
+          res.send({eventId: eventId})
         }
       })
 
@@ -2631,7 +2659,7 @@ module.exports = function (app, passport, swaggerSpec) {
     function (req, res) {
       connection.query(
         'UPDATE events_requests SET events_responses_id=? WHERE events_requests.id=?',
-        [req.params.events_requests_id, req.params.events_responses_id],
+        [req.params.events_responses_id, req.params.events_requests_id],
         function (error, results) {
           if (error) {
             console.log(error)
@@ -2641,20 +2669,21 @@ module.exports = function (app, passport, swaggerSpec) {
               async.waterfall([
                 function (cb) {
                   connection.query(
-                    'SELECT * FROM `events_invites` WHERE events_invites.id=?',
-                    [req.params.events_requests_id], function (error, response) {
+                    'SELECT * FROM `events_requests` WHERE events_requests.id=?',
+                    [req.params.events_requests_id],
+                    function (error, response) {
                       if (error || response.length === 0) {
                         cb(error)
                       } else {
-                        cb(null, response[0].receiver_user_id,
-                          response[0].events_id,response[0].skills_id)
+                        cb(null, response[0].sender_user_id,
+                          response[0].events_id, response[0].skills_id)
                       }
                     })
                 },
-                function (user_id, events_id,skills_id, cb) {
+                function (user_id, events_id, skills_id, cb) {
                   connection.query(
                     'INSERT INTO `events_attendees` (`id`, `user_id`, `events_id`, `attended`,`skills_id`) VALUES (NULL, ?, ?, 0, ?)',
-                    [user_id, events_id,skills_id], function (error) {
+                    [user_id, events_id, skills_id], function (error) {
                       if (error) {
                         console.log(error)
                         cb(error)
@@ -2846,14 +2875,14 @@ module.exports = function (app, passport, swaggerSpec) {
                       cb(error)
                     } else {
                       cb(null, response[0].receiver_user_id,
-                        response[0].events_id,response[0].skills_id)
+                        response[0].events_id, response[0].skills_id)
                     }
                   })
               },
-              function (user_id, events_id,skills_id, cb) {
+              function (user_id, events_id, skills_id, cb) {
                 connection.query(
                   'INSERT INTO `events_attendees` (`id`, `user_id`, `events_id`, `attended`,`skills_id`) VALUES (NULL, ?, ?, 0, ?)',
-                  [user_id, events_id,skills_id], function (error) {
+                  [user_id, events_id, skills_id], function (error) {
                     if (error) {
                       console.log(error)
                       cb(error)
@@ -2898,7 +2927,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get a users events
    */
   app.get('/getUsersReceivedInvitesUpcoming/:user_id', function (req, res) {
-    var output=[];
+    var output = []
     waterfall([
         function (callback) {
           connection.query(
@@ -2908,7 +2937,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 console.log(error)
                 callback(error)
               } else {
-                output=results
+                output = results
                 callback()
               }
             })
@@ -2921,7 +2950,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 if (error) {
                   cb(error)
                 } else {
-                  output[i]['event']=results[0]
+                  output[i]['event'] = results[0]
                   console.log(output)
                   cb(null)
                 }
@@ -2943,7 +2972,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 if (error) {
                   cb(error)
                 } else {
-                  output[i]['hostUser']=results[0]
+                  output[i]['hostUser'] = results[0]
                   cb(null)
                 }
               })
@@ -2963,7 +2992,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 if (error) {
                   cb(error)
                 } else {
-                  output[i]['eventsSkills']=results
+                  output[i]['eventsSkills'] = results
                   cb(null)
                 }
               })
@@ -2980,7 +3009,7 @@ module.exports = function (app, passport, swaggerSpec) {
         if (err) {
           console.log(err)
           res.status(500).send(err)
-        }else{
+        } else {
           res.send(output)
         }
       })
@@ -3074,7 +3103,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get a users events
    */
   app.get('/getEventsAttending/:user_id', function (req, res) {
-    var output=[];
+    var output = []
     waterfall([
         function (callback) {
           connection.query(
@@ -3084,7 +3113,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 console.log(error)
                 callback(error)
               } else {
-                output=results
+                output = results
                 callback()
               }
             })
@@ -3097,7 +3126,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 if (error) {
                   cb(error)
                 } else {
-                  output[i]['event_skills']=results
+                  output[i]['event_skills'] = results
                   cb(null)
                 }
               })
@@ -3114,7 +3143,7 @@ module.exports = function (app, passport, swaggerSpec) {
         if (err) {
           console.log(err)
           res.status(500).send(err)
-        }else{
+        } else {
           res.send(output)
         }
       })
@@ -3141,7 +3170,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get a users events
    */
   app.get('/getEvent/:events_id', function (req, res) {
-    var output=[];
+    var output = []
     waterfall([
         function (callback) {
           connection.query(
@@ -3151,7 +3180,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 console.log(error)
                 callback(error)
               } else {
-                output=results
+                output = results
                 callback()
               }
             })
@@ -3164,7 +3193,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 if (error) {
                   cb(error)
                 } else {
-                  output[i]['event_skills']=results
+                  output[i]['event_skills'] = results
                   cb(null)
                 }
               })
@@ -3181,7 +3210,7 @@ module.exports = function (app, passport, swaggerSpec) {
         if (err) {
           console.log(err)
           res.status(500).send(err)
-        }else{
+        } else {
           res.send(output)
         }
       })
@@ -3208,7 +3237,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: Failed to get a users events
    */
   app.get('/getEventsAttended/:user_id', function (req, res) {
-    var output=[];
+    var output = []
     waterfall([
         function (callback) {
           connection.query(
@@ -3218,7 +3247,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 console.log(error)
                 callback(error)
               } else {
-                output=results
+                output = results
                 callback()
               }
             })
@@ -3231,7 +3260,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 if (error) {
                   cb(error)
                 } else {
-                  output[i]['event_skills']=results
+                  output[i]['event_skills'] = results
                   cb(null)
                 }
               })
@@ -3248,24 +3277,24 @@ module.exports = function (app, passport, swaggerSpec) {
         if (err) {
           console.log(err)
           res.status(500).send(err)
-        }else{
+        } else {
           res.send(output)
         }
       })
   })
   /**
    * @swagger
-   * /setUserAttended/{events_attendees_id}:
-   *   get:
+   * /setUsersAttended:
+   *   post:
    *     tags:
    *       - event
    *     description: setUserAttended
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: events_attendees_id
-   *         description:
-   *         in: path
+   *       - name: events_attendees_ids
+   *         description: Array of ids, [1,2,3]
+   *         in: body
    *         required: true
    *         type: integer
    *     responses:
@@ -3274,10 +3303,19 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: General
    */
-  app.get('/setUserAttended/:events_attendees_id', function (req, res) {
-    connection.query(
-      'UPDATE events_attendees SET events_attendees.attended=1 WHERE events_attendees.id=?',
-      [req.params.events_attendees_id], function (error) {
+  app.post('/setUsersAttended', function (req, res) {
+    async.eachOfLimit(req.body.events_attendees_ids, 1,
+      function (userId, i, cb) {
+        connection.query(
+          'UPDATE events_attendees SET events_attendees.attended=1 WHERE events_attendees.id=?',
+          [userId], function (error) {
+            if (error) {
+              cb(error)
+            } else {
+              cb(null)
+            }
+          })
+      }, function (error) {
         if (error) {
           console.log(error)
           res.status(500).send(error)
@@ -3308,7 +3346,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: General
    */
   app.get('/getUpcomingUserCreatedEvents/:user_id', function (req, res) {
-    var output=[];
+    var output = []
     waterfall([
         function (callback) {
           connection.query(
@@ -3318,7 +3356,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 console.log(error)
                 callback(error)
               } else {
-                output=results
+                output = results
                 callback()
               }
             })
@@ -3331,7 +3369,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 if (error) {
                   cb(error)
                 } else {
-                  output[i]['event_skills']=results
+                  output[i]['event_skills'] = results
                   cb(null)
                 }
               })
@@ -3348,7 +3386,7 @@ module.exports = function (app, passport, swaggerSpec) {
         if (err) {
           console.log(err)
           res.status(500).send(err)
-        }else{
+        } else {
           res.send(output)
         }
       })
@@ -3375,7 +3413,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *         description: General
    */
   app.get('/getFinishedUserCreatedEvents/:user_id', function (req, res) {
-    var output=[];
+    var output = []
     waterfall([
         function (callback) {
           connection.query(
@@ -3385,7 +3423,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 console.log(error)
                 callback(error)
               } else {
-                output=results
+                output = results
                 callback()
               }
             })
@@ -3398,7 +3436,7 @@ module.exports = function (app, passport, swaggerSpec) {
                 if (error) {
                   cb(error)
                 } else {
-                  output[i]['event_skills']=results
+                  output[i]['event_skills'] = results
                   cb(null)
                 }
               })
@@ -3416,7 +3454,7 @@ module.exports = function (app, passport, swaggerSpec) {
         if (err) {
           console.log(err)
           res.status(500).send(err)
-        }else{
+        } else {
           res.send(output)
         }
       })
@@ -3432,7 +3470,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: 	reviewer_user_id
+   *       - name:  reviewer_user_id
    *         description: ID of the user reviewing
    *         in: body
    *         type: integer
@@ -3457,7 +3495,11 @@ module.exports = function (app, passport, swaggerSpec) {
   app.post('/generateEventsReview', function (req, res) {
     connection.query(
       'INSERT INTO `events_reviews` (`id`, `reviewer_user_id`, `reviewee_user_id`, `events_id`, `skill_id`, `rating`) VALUES (NULL,?, ?, ?, ?, \'-1\')',
-      [req.body.reviewer_user_id, req.body.reviewee_user_id,req.body.events_id,req.body.skill_id],
+      [
+        req.body.reviewer_user_id,
+        req.body.reviewee_user_id,
+        req.body.events_id,
+        req.body.skill_id],
       function (error) {
         if (error) {
           console.log(error)
@@ -3477,7 +3519,7 @@ module.exports = function (app, passport, swaggerSpec) {
    *     produces:
    *       - application/json
    *     parameters:
-   *       - name: 	reviewer_user_id
+   *       - name:  reviewer_user_id
    *         description: ID of the user reviewing
    *         in: body
    *         type: integer
@@ -3508,7 +3550,12 @@ module.exports = function (app, passport, swaggerSpec) {
       'UPDATE events_reviews \n' +
       'SET events_reviews.rating = ? \n' +
       'WHERE events_reviews.reviewer_user_id=? AND events_reviews.reviewee_user_id=? AND events_reviews.events_id=? AND events_reviews.skill_id=?',
-      [req.body.rating,req.body.reviewer_user_id, req.body.reviewee_user_id,req.body.events_id,req.body.skill_id],
+      [
+        req.body.rating,
+        req.body.reviewer_user_id,
+        req.body.reviewee_user_id,
+        req.body.events_id,
+        req.body.skill_id],
       function (error) {
         if (error) {
           console.log(error)
@@ -3542,18 +3589,20 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: General
    */
-  app.get('/getUnreviewedUsers/:reviewer_user_id/:events_id', function (req, res) {
-    connection.query(
-      'SELECT events_reviews.*, skills.name FROM events_reviews INNER JOIN skills on skills.id = events_reviews.skill_id WHERE events_reviews.reviewer_user_id=? AND events_reviews.rating=-1 AND events_reviews.events_id=?',
-      [req.params.reviewer_user_id, req.params.events_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          callback(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
+  app.get('/getUnreviewedUsers/:reviewer_user_id/:events_id',
+    function (req, res) {
+      connection.query(
+        'SELECT events_reviews.*, skills.name FROM events_reviews INNER JOIN skills on skills.id = events_reviews.skill_id WHERE events_reviews.reviewer_user_id=? AND events_reviews.rating=-1 AND events_reviews.events_id=?',
+        [req.params.reviewer_user_id, req.params.events_id],
+        function (error, results) {
+          if (error) {
+            console.log(error)
+            callback(error)
+          } else {
+            res.send(results)
+          }
+        })
+    })
   /**
    * @swagger
    * /getReviewedUsers/{reviewer_user_id}/{events_id}:
@@ -3578,18 +3627,20 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: General
    */
-  app.get('/getReviewedUsers/:reviewer_user_id/:events_id', function (req, res) {
-    connection.query(
-      'SELECT events_reviews.*, skills.name FROM events_reviews INNER JOIN skills on skills.id = events_reviews.skill_id WHERE events_reviews.reviewer_user_id=? AND events_reviews.rating!=-1 AND events_reviews.events_id=?',
-      [req.params.reviewer_user_id, req.params.events_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          callback(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
+  app.get('/getReviewedUsers/:reviewer_user_id/:events_id',
+    function (req, res) {
+      connection.query(
+        'SELECT events_reviews.*, skills.name FROM events_reviews INNER JOIN skills on skills.id = events_reviews.skill_id WHERE events_reviews.reviewer_user_id=? AND events_reviews.rating!=-1 AND events_reviews.events_id=?',
+        [req.params.reviewer_user_id, req.params.events_id],
+        function (error, results) {
+          if (error) {
+            console.log(error)
+            callback(error)
+          } else {
+            res.send(results)
+          }
+        })
+    })
   /**
    * @swagger
    * /getEventsReviewedUserAverageSkillRatings/{user_id}/{events_id}:
@@ -3614,18 +3665,19 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: General
    */
-  app.get('/getEventsReviewedUserAverageRatings/:user_id/:events_id', function (req, res) {
-    connection.query(
-      'SELECT AVG(events_reviews.rating) FROM events_reviews WHERE events_reviews.reviewee_user_id=? AND events_reviews.events_id=?',
-      [req.params.user_id, req.params.events_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          callback(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
+  app.get('/getEventsReviewedUserAverageRatings/:user_id/:events_id',
+    function (req, res) {
+      connection.query(
+        'SELECT AVG(events_reviews.rating) FROM events_reviews WHERE events_reviews.reviewee_user_id=? AND events_reviews.events_id=?',
+        [req.params.user_id, req.params.events_id], function (error, results) {
+          if (error) {
+            console.log(error)
+            callback(error)
+          } else {
+            res.send(results)
+          }
+        })
+    })
   /**
    * @swagger
    * /getAllCompletedUserEvents/{user_id}:
@@ -3649,7 +3701,7 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getAllCompletedUserEvents/:user_id', function (req, res) {
     connection.query(
       'SELECT events.* FROM events INNER JOIN events_attendees ON events_attendees.events_id = events.id WHERE events.host_user_id=? and events_attendees.user_id=? and events_attendees.attended=1',
-      [req.params.user_id,req.params.user_id], function (error, results) {
+      [req.params.user_id, req.params.user_id], function (error, results) {
         if (error) {
           console.log(error)
           callback(error)
@@ -3678,18 +3730,19 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: General
    */
-  app.get('/getOverallReviewedUserAverageRatings/:user_id', function (req, res) {
-    connection.query(
-      'SELECT AVG(events_reviews.rating) FROM events_reviews WHERE events_reviews.reviewee_user_id=?',
-      [req.params.user_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          callback(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
+  app.get('/getOverallReviewedUserAverageRatings/:user_id',
+    function (req, res) {
+      connection.query(
+        'SELECT AVG(events_reviews.rating) AS averageRating, count(*) as numberOfRatings, SUM(events_reviews.rating) as totalRating FROM events_reviews WHERE events_reviews.reviewee_user_id=?',
+        [req.params.user_id], function (error, results) {
+          if (error) {
+            console.log(error)
+            callback(error)
+          } else {
+            res.send(results)
+          }
+        })
+    })
   /**
    * @swagger
    * /getOverallReviewedUserAverageSkillsRatings/{user_id}:
@@ -3710,18 +3763,19 @@ module.exports = function (app, passport, swaggerSpec) {
    *       500:
    *         description: General
    */
-  app.get('/getOverallReviewedUserAverageSkillsRatings/:user_id', function (req, res) {
-    connection.query(
-      'SELECT events_reviews.skill_id,skills.name, AVG(events_reviews.rating) FROM events_reviews INNER JOIN skills ON events_reviews.skill_id=skills.id WHERE events_reviews.reviewee_user_id=? GROUP BY events_reviews.skill_id',
-      [req.params.user_id], function (error, results) {
-        if (error) {
-          console.log(error)
-          callback(error)
-        } else {
-          res.send(results)
-        }
-      })
-  })
+  app.get('/getOverallReviewedUserAverageSkillsRatings/:user_id',
+    function (req, res) {
+      connection.query(
+        'SELECT events_reviews.skill_id,skills.name, AVG(events_reviews.rating) FROM events_reviews INNER JOIN skills ON events_reviews.skill_id=skills.id WHERE events_reviews.reviewee_user_id=? GROUP BY events_reviews.skill_id',
+        [req.params.user_id], function (error, results) {
+          if (error) {
+            console.log(error)
+            callback(error)
+          } else {
+            res.send(results)
+          }
+        })
+    })
   /**
    * @swagger
    * /getAttendees/{events_id}:

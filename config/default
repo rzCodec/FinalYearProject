@@ -1,0 +1,49 @@
+server {
+
+	listen 80;
+	listen [::]:80 default_server ipv6only=on;
+	return 301 https://$host$request_uri;
+}
+server {
+
+	listen 443;
+	server_name eternalvibes.me;
+
+	ssl on;
+	ssl_certificate /etc/letsencrypt/live/eternalvibes.me/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/eternalvibes.me/privkey.pem;
+	ssl_session_timeout 5m;
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+	ssl_prefer_server_ciphers on;
+	ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+	location / {
+
+		proxy_pass http://37.139.24.181:8080;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection 'upgrade';
+		proxy_set_header Host $host;
+		proxy_cache_bypass $http_upgrade;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header Host $http_host;
+		proxy_set_header X-NginX-Proxy true;
+	}
+	location ~ /.well-known {
+
+		allow all;
+	}
+	location /phpmyadmin {
+
+		alias /usr/share/phpmyadmin/;
+		index index.php;
+	}
+	location ~ ^/phpmyadmin.+.php$ {
+
+		fastcgi_pass 127.0.0.1:9000;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		include fastcgi_params;
+	}
+
+}
