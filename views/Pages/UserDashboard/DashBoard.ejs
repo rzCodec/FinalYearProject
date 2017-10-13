@@ -8,14 +8,7 @@
 
 <main  class=" lighten-3">
     <%-include ../../Partials/UserInfo.ejs%>
-    <div class="row" >
-
-        <div id="carTop" class="slider col s10 offset-s1" height="5%" width="10%" style="margin-top: 5%">
-            <ul class="slides" height="5%">
-
-            </ul>
-
-        </div >
+    <div class="row" style="margin-left: 17%" >
 
         <div class="col s7 offset-s1" >
             <ul id="staggered-test" >
@@ -41,82 +34,95 @@
                     </div>
                 </form>
 
-                <div id="Timeline" class="card " style="margin-top: 5%;margin-bottom: 10%; margin-left: 20%;margin-right: 20%;
+                <div id="Timeline" class="card " style="margin-top: 5%;margin-bottom: 10%;
                     background-color: transparent; border: transparent" >
                     <div >
-                        <ul id="posts" class="collection truncate" style="border: transparent">
+                        <ul id="posts" class="collection truncate collapsible"
+                            style="border: transparent; background-color: white">
                             <%UserInfo.Status.forEach(function(status)
                             {
                             if(status.user_id == UserInfo.info.id)
                             {%>
-                            <li class="collection-item avatar" style="border-bottom: groove">
-                                <div class="left-align" style="margin-top: 1%">
-                                    <img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
+                            <li class="collection-item avatar black-text"
+                                style="border-bottom: groove; background-color: white">
+                                <div class="left-align collapsible-header" style="margin-top: 1%">
+                                    <img src="images/profilePics/<%=status.user_id%>.png" alt=""
+                                         class="circle" width="50%"  height="50%">
                                     <%var theDate = new Date(status.timestamp* 1000); %>
                                     <span class="title"><%=status.firstname%> <%=status.surname%> &emsp;
-                                        @<%=status.username%>
+
                                             &emsp; &emsp; &emsp; <%= theDate.getDate()%> <%= theDate.getMonth()%>
-                                        <a class="right" data-target="statusMenu"
-                                           aria-hidden="true">
-                                                <i class="material-icons">arrow_drop_down</i>
-                                            </a>
-                                    </span>
-                                    <p>
-                                    <br>
-                                    <p class="flow-text"><%=status.status%></p>
-                                    <br>
-                                    <div class="card-action">
-                                        <a id="like<%=status.id%>"
-                                            class="waves-effect waves-light" onclick="LikeStatus(<%= status.id %>)">
-                                            <i class="material-icons brown-text left-align tooltipped"
-                                            data-tooltip="Like Post">star_border
-                                            </i>(<%=status.liked%>)
-                                        </a>
-                                        <a id="del<%=status.id%>" class="waves-effect right waves-light"
-                                           onclick="LikeStatus(<%= status.id %>)">
+                                    </span><p>@<%=status.username%></p>
+                                </div>
+                                <br>
+                                <p class="flow-text"><%=status.status%></p>
+                                <br>
+                                (<%=status.liked%>) likes
+                                <hr>
+                                <div class="collapsible-body brown-text" style="background-color: white">
+                                    <ul>
+                                        <li id="like<%=status.id%>" class="collection-item"
+                                            onclick="LikeStatus(<%= status.id %>)">
+                                            <i class="material-icons brown-text tooltipped"
+                                               data-tooltip="Like Post">star_border
+                                            </i> Like
+                                        </li>
+                                        <li id="del<%=status.id%>" class="collection-item"
+                                            onclick="LikeStatus(<%= status.id %>)">
                                             <i class="material-icons left">delete</i>
-                                        </a>
-                                    </div>
+                                            Delete
+                                        </li>
+                                        <li class="collection-item"
+                                            onclick="Tweet(<%=status.id%>)">Share on Twitter</li>
+                                        <li class="collection-item"
+                                            onclick="Facebook(<%=status.user_id%>)">Share on Facebook
+                                        </li>
+                                    </ul>
                                 </div>
                             </li>
                             <%}else
                             {%>
-                                <li class="collection-item avatar" style="border-bottom: groove">
-                                    <div class="left-align" style="margin-top: 1%;">
+                                <li class="collection-item avatar black-text"
+                                    style="border-bottom: groove; background-color: white">
+
+                                    <div class="left-align collapsible-header" style="margin-top: 1%;">
                                         <img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
                                         <%var theDate = new Date(status.timestamp* 1000); %>
                                         <span class="title"><%=status.firstname%> <%=status.surname%> &emsp;
                                             @<%=status.username%> &emsp; &emsp;&emsp;
                                             <%= theDate.getDate()%> <%= theDate.getMonth()%>
-                                            <a class="right" data-target="statusMenu"
-                                               aria-hidden="true">
-                                                <i class="material-icons">arrow_drop_down</i>
-                                            </a>
                                         </span>
-                                        <br>
-                                        <br>
-                                        <p class="flow-text"><%=status.status%></p>
                                     </div>
-                                    <div>
-                                       <a id="like<%=status.id%>"
-                                            class="waves-effect waves-light" onclick="LikeStatus(<%= status.id %>)">
-                                            <i class="material-icons brown-text left-align tooltipped"
-                                               data-tooltip="Like Post">star_border
-                                            </i>
-                                           (<%=status.liked%>)
-                                        </a>
-                                        <a id="flag<%=status.id%>" class=" right waves-effect waves-light btn_delete"
-                                            onclick="FlagStatus(<%= status.id %>)">
-                                            <i class="material-icons left brown-text tooltipped"
-                                                 data-tooltip="Report Post">
-                                                thumb_down
-                                            </i>
-                                        </a>
+                                    <br>
+                                    <p class="flow-text"><%=status.status%></p>
+                                    <br>
+                                    Likes (<%=status.liked%>)
+                                    <hr>
+                                    <div class="collapsible-body brown-text" >
+                                        <ul>
+                                            <li id="like<%=status.id%>"
+                                                class="collection-item" onclick="LikeStatus(<%= status.id %>)">
+                                                <i class="material-icons brown-text left-align tooltipped"
+                                                   data-tooltip="Like Post">star_border
+                                                </i>Like
+                                            </li>
+                                            <li class="collection-item"
+                                                onclick="flagPost(<%=status.id%>)">Report Post</li>
+                                            <li class="collection-item"
+                                                onclick="Tweet(<%=status.id%>)">Share on Twitter</li>
+                                            <li class="collection-item"
+                                                onclick="Facebook(<%=status.user_id%>)">Share on Facebook</li>
+                                            <li class="collection-item"
+                                                onclick="ReportUser(<%=status.user_id%>)">Report Post</li>
+                                            <li class="collection-item"
+                                                onclick="Unfollow(<%=status.user_id%>)">Unfollow User</li>
+                                        </ul>
                                     </div>
                                 </li>
                             <hr>
+
                             <%}})%>
-                        </ul >
+                        </ul>
                     </div >
                 </div >
 
@@ -126,26 +132,29 @@
 
         <div class="col s4" >
             <ul id="staggered-test2" >
-                <li class="" style="transform: translateX(0px); opacity: 0;" >
+                <li class="" style="transform: translateX(0px); opacity: 0; margin-bottom: 4%" >
                     <div class="card white lighten-2 with-header" >
                         <div class="card-content" >
                             <span class="card-title collection-header" >Top Artists </span >
                         </div >
-                        <ul class="collection collapsible popout " data-collapsible="accordion"
+                        <ul class="collection collapsible popout" data-collapsible="accordion"
                             style="border: transparent;" >
                             <% UserInfo.TopArtists.forEach(function (output) { %>
-                            <li class="collection-item avatar" >
+                            <li class="collection-item avatar black-text"  style="background-color: white">
                                 <%console.log(output)%>
                                 <div class="collapsible-header">
                                     <img src="images/profilePics/<%= output.id %>.png"
                                          alt="<%output.username %>" class="circle" >
                                 <span class="title" ><%= output.username %></span >
-                                    <p >Rating: <%= output.count %>
-                                    </p >
-                                </div>
 
-                                <a href="#" class="secondary-content" ><%= output.liked %></a >
-                                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                                </div>
+                                <p >Rank: <%= output.count %>
+                                </p >
+                                <div class="collapsible-body">
+                                    <span>
+                                        <a href="#" class="secondary-content" ><%= output.liked %></a >
+                                    </span>
+                                </div>
                             </li >
                             <% }); %>
                         </ul >
@@ -159,7 +168,6 @@
             </ul >
         </div >
     </div >
-
     </div >
 </main >
 <%- include ../../Partials/footer.ejs %>
