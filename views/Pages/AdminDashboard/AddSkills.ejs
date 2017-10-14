@@ -3,7 +3,7 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head>
-<body style=" background-image:url('/images/background/background3.jpg');background-size: 100%" >
+<body>
 <main>
     <%var edtSkill%>
     <div class="row" >
@@ -17,10 +17,6 @@
                     <li class="card-content">
                         <div class="collapsible-header" style="background-color: transparent">
                             <%= skill.name%>
-                        </div>
-                        <div class="collapsible-body">
-                            <input id="gen<%= skill.id%>" value="<%=skill.name%>">
-                            <a class="btn brown white-text">rename</a>
                         </div>
                     </li>
                     <%})%>

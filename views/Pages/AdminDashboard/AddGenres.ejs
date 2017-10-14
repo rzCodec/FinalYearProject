@@ -3,8 +3,7 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head>
-<body style=" background-image:url('/images/background/background3.jpg');
-background-repeat: no-repeat; background-size: 100%">
+<body>
 
 <main>
 
@@ -21,11 +20,6 @@ background-repeat: no-repeat; background-size: 100%">
                         <li class="card-content" >
                             <div class="collapsible-header" style="background-color: transparent">
                                 <%= genre.name%>
-                            </div>
-                            <div class="collapsible-body">
-                                <label><h3>Rename</h3></label>
-                                <input id="gen<%= genre.id%>" value="<%=genre.name%>">
-                                <a class="btn brown white-text">rename</a>
                             </div>
                         </li>
                     <%})%>
