@@ -73,3 +73,22 @@
         </div>
 
 </div>
+
+
+<script>
+
+    function setProfileImg(id)
+    {
+        var image = "images/profilePics/" + id + ".png";
+        $('#userImg').attr('src', image );
+    }
+    function setUsername(username)
+    {
+        $('#userName').text(username);
+    }
+    function setEmail(email)
+    {
+        $('#userEmail').text(email);
+    }
+
+</script>
