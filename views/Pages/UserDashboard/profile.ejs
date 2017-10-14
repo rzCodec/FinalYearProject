@@ -58,7 +58,7 @@
         <div class="card-content" >
 
             <%if((user.description != "nothing for now") || (user.description != null)) {%>
-            &emsp;<h4><%=user.description%></h4>
+            &emsp;<h4>"<%=user.description%>"</h4>
             </div>
             <%}%>
             <i class="small material-icons">music_note</i><%= user.genre%>
@@ -121,7 +121,11 @@
     <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%; margin-left: 25%; margin-right:30%" >
         <div >
             <ul id="posts" class="collection truncate collapsible" >
-                <% UserPosts.forEach(function (post) {
+                <% UserPosts.forEach(function (post)
+                {
+                    var msg = "Hey everyone, I think this post: '" + post.status + "' by "
+                            +  post.firstname + " " + post.surname + " aka "
+                            + post.username + " is pretty cool on Eternal Vibes";
                 %>
                 <li class="collection-item card-content avatar hoverable black-text white " >
                     <div class="collapsible-header">
@@ -134,29 +138,53 @@
                     </br>
                     <p class="flow-text"><%= post.status %></p>
                     </br>
-                    <p > <%= post.liked %> likes  &emsp; &emsp;
-                        <%= post.flag %> flags
+                    <p >
+                        <%if( post.liked  > 0)
+                        { %>
+                        (<%= post.liked %>) likes &emsp; &emsp;
+                        <%}
+                        else{%>
+                        no likes &emsp; &emsp;
+                        <%}if( post.flag  > 0){ %>
+                        <span class="red">(<%=post.flag%>) flags</span>
+                        <%}else{%>
+                        <%}%> no flags
                     </p >
                     <hr>
                     <div class="collapsible-body brown-text" style="background-color: white">
                         <ul>
-                            <a id="like<%=post.id%>" class="collection-item"
-                                onclick="LikeStatus(<%= post.id %>)">
-                                <i class="material-icons brown-text tooltipped"
-                                   data-tooltip="Like Post">star_border
-                                </i> Like
-                            </a>
-                            <a id="del<%=post.id%>" class="collection-item"
-                                onclick="LikeStatus(<%= post.id %>)">
-                                <i class="material-icons left">delete</i>
-                                Delete
-                            </a>
-                            <a class="collection-item"
-                                onclick="Tweet(<%=post.id%>)">Share on Twitter</a>
-                            <a class="collection-item"
-                                onclick="Facebook(<%=post.user_id%>)">Share on Facebook
-                            </a>
-                        </ul>
+                            <ul class="collection-item collapsible">
+                                <a id="like<%=post.id%>" class="collection-item brown-text btn-flat"
+                                       onclick="LikeStatus(<%= post.id %>)">
+                                        <i class="material-icons Small left tooltipped"
+                                           data-tooltip="Like Post">
+                                            star_border
+                                        </i>
+                                        Like
+                                    </a>
+                                </ul>
+                                <ul class="collection-item collapsible">
+                                    <a id="del<%=post.id%>" class="collection-item btn-flat red-text"
+                                       onclick="deleteStatus(<%= post.id %>)">
+                                        <i class="material-icons Small left">
+                                            delete
+                                        </i>
+                                        Delete
+                                    </a>
+                                </ul>
+                                <ul class="collection-item collapsible">
+                                    <a class="collection-item blue-text lighten-2 btn-flat"
+                                       href="https://twitter.com/intent/tweet?text=<%=msg%>">
+                                        Share on Twitter
+                                    </a>
+                                </ul>
+                                <ul class="collection-item collapsible">
+                                    <a class="collection-item blue-text darken-2 btn-flat" id="fb"
+                                       onclick="Facebook(<%=msg%>)">
+                                        Share on Facebook
+                                    </a>
+                                </ul>
+                            </ul>
                     </div>
                 </li >
                 <% }) %>
@@ -320,9 +348,7 @@
         $('.slider').slider('start');
         $('ul.tabs').tabs();
         Materialize.showStaggeredList('');
-        setProfileImg(<%=user.id%>);
-        setEmail(<%=user.email%>);
-
+        setUserID(<%=user.id%>);
         function getFollowers()
         {
             var link = "https://eternalvibes.me/getFollowing/" + user.id;

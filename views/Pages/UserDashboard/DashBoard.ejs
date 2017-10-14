@@ -11,8 +11,8 @@
     <div class="row" style="margin-left: 17%; margin-top: 1%" >
 
         <div class="col s7 offset-s1" >
-            <ul id="staggered-test" >
-                <li class="" style="transform: translateX(0px); opacity: 0; "  >
+            <ul id="staggered-test">
+                <li style="transform: translateX(0px); opacity: 0; "  >
                     <div class="card white darken-1"
                          style="background:  url('images/background/background3.jpg');background-size: cover;" >
                         <div class="card-content" >
@@ -43,8 +43,8 @@
                             <%UserInfo.Status.forEach(function(status)
                             {
                                 var msg = "Hey everyone, I think this post: '" + status.status + "' by "
-                                    +  status.firstname + " " + status.surname + " aka "
-                                    + status.username + " is pretty cool on Eternal Vibes";
+                                    +  status.firstname + " " + status.surname + " ("
+                                    + status.username + ") is pretty cool on Eternal Vibes";
                                 if(status.user_id == UserInfo.info.id)
                                 {%>
                                 <li class="collection-item avatar black-text"
@@ -52,41 +52,58 @@
                                     <div class="left-align collapsible-header" style="margin-top: 1%">
                                         <img src="images/profilePics/<%=status.user_id%>.png" alt=""
                                             class="circle" width="50%"  height="50%">
-                                        <%var theDate = new Date(status.timestamp* 1000); %>
                                         <span class="title"><%=status.firstname%> <%=status.surname%> &emsp;
                                         </span><p>@<%=status.username%></p>
-                                            &emsp; &emsp; &emsp; <%= theDate.getDate()%> <%= theDate.getMonth()%>
+                                        &emsp; &emsp; &emsp; <p id="statDate <%=status.timestamp%>" onload="setDate(<%=status.timestamp%>)"></p>
 
                                     </div>
                                     <br>
                                     <p class="flow-text"><%=status.status%></p>
                                     <br>
-                                    (<%=status.liked%>) likes
+                                    <%if( status.liked  > 0)
+                                    { %>
+                                    (<%= status.liked %>) likes &emsp; &emsp;
+                                    <%}
+                                    else{%>
+                                    no likes &emsp; &emsp;
+                                    <%}if( status.flag  > 0){ %>
+                                    <span class="red">(<%=status.flag%>) flags</span>
+                                    <%}else{%>
+                                    <%}%> no flags
                                     <hr>
-                                    <div class="collapsible-body brown-text" style="background-color: white">
+                                    <div class="collapsible-body white-text" style="background-color: white">
                                         <ul>
-                                            <li id="like<%=status.id%>"
-                                                class="collection-item brown white-text" onclick="LikeStatus(<%= status.id %>)">
-                                                <i class="material-icons Small left-align tooltipped"
-                                                   data-tooltip="Like Post">star_border
-                                                </i>Like
-                                            </li>
-                                            <li id="del<%=status.id%>" class="collection-item red white-text"
-                                                onclick="deleteStatus(<%= status.id %>)">
-                                            <i class="material-icons Small left">delete</i>
-                                            Delete
-                                            </li>
-                                            <li class="collection-item blue lighten-2 ">
-                                                <a class="white-text"
+                                            <ul class="collection-item collapsible">
+                                                <a id="like<%=status.id%>" class="collection-item brown-text btn-flat"
+                                                    onclick="likeStatus(<%= status.id %>)">
+                                                    <i class="material-icons Small left tooltipped"
+                                                    data-tooltip="Like Post">
+                                                        star_border
+                                                    </i>
+                                                    Like
+                                                </a>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a id="del<%=status.id%>" class="collection-item btn-flat red-text"
+                                                    onclick="deleteStatus(<%= status.id %>)">
+                                                        <i class="material-icons Small left">
+                                                            delete
+                                                        </i>
+                                                    Delete
+                                                </a>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a class="collection-item blue-text lighten-2 btn-flat"
                                                    href="https://twitter.com/intent/tweet?text=<%=msg%>">
                                                     Share on Twitter
                                                 </a>
-                                            </li>
-                                            <li class="collection-item blue darken-2" >
-                                                <a id="fb" class="white-text" onclick="Facebook(<%=msg%>)">
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a class="collection-item blue-text darken-2 btn-flat" id="fb"
+                                                   onclick="Facebook(<%=msg%>)">
                                                     Share on Facebook
                                                 </a>
-                                            </li>
+                                            </ul>
                                         </ul>
                                     </div>
                                 </li>
@@ -108,95 +125,115 @@
                                     <br>
                                     <p class="flow-text"><%=status.status%></p>
                                     <br>
-                                    Likes (<%=status.liked%>)
+                                    <%if( status.liked  > 0)
+                                    { %>
+                                    (<%= status.liked %>) likes &emsp; &emsp;
+                                    <%}
+                                    else{%>
+                                    no likes &emsp; &emsp;
+                                    <%}%>
                                     <hr>
                                     <div class="collapsible-body white-text" >
                                         <ul>
                                             <li class="center black-text"><h3>Post Oprions</h3></li>
-                                            <li id="like<%=status.id%>"
-                                                class="collection-item brown" onclick="LikeStatus(<%= status.id %>)">
-                                                <i class="material-icons brown-text left-align tooltipped"
-                                                   data-tooltip="Like Post">star_border
-                                                </i>Like
-                                            </li>
-                                            <li class="collection-item red">
-                                                <ul class="collapsible" data-collapsible="accordion"
-                                                    style="border: none">
-                                                    <li>
-                                                        <div  class="collapsible-header transparent">Report Post</div>
-                                                        <div class="collapsible-body">
-                                                            <ul>
-                                                                <li class="collection-item transparent">
-                                                                    <a class="popout white-text">
-                                                                        I do not like their content
-                                                                    </a>
-                                                                </li>
-                                                                <li class="collection-item transparent">
-                                                                    <a class="popout white-text">
-                                                                        They are is inappropriate
-                                                                    </a>
-                                                                </li >
-                                                                <li class="collection-item transparent">
-                                                                    <a class="popout white-text">
-                                                                        Post is spam
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
+                                            <br>
+                                            <ul class="collection-item collapsible">
+                                                <a id="like<%=status.id%>"
+                                                    class=" collection-item btn-flat brown-text"
+                                                        onclick="LikeStatus(<%= status.id %>)">
+                                                    <i class="material-icons small left-align tooltipped"
+                                                        data-tooltip="Like Post" >star_border
+                                                    </i>
+                                                    Like
+                                                </a>
+                                            </ul>
+                                            <ul class=" collection-item collapsible transparent"
+                                                data-collapsible="accordion">
+                                                <li>
+                                                    <div  class="collapsible-header red-text transparent ">
+                                                        <a class="btn-flat red-text left">
+                                                            <i class="small left material-icons right-align">
+                                                                flag
+                                                            </i>
+                                                            Report Post
+                                                        </a>
+                                                    </div>
+                                                    <div class="collapsible-body">
+                                                        <ul>
+                                                            <a class="collection-item btn-flat transparent
+                                                                btn-flat popout red-text">
+                                                                I do not like their content
+                                                            </a>
+                                                            <a class="collection-item btn-flat trannsparent
+                                                                popout red-text">
+                                                                They are is inappropriate
+                                                            </a >
+                                                            <a class="collection-item btn-flat transparent
+                                                                popout red-text">
+                                                                Post is spam
+                                                            </a>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <ul class="collapsible collection-item" data-collapsible="accordion">
+                                                <li>
+                                                    <div  class="collapsible-header transparent orange-text">
+                                                        <a class="btn-flat orange-text">
+                                                            <i class="small left material-icons left-align">
+                                                                assignment_ind
+                                                            </i>
+                                                            Report User
+                                                        </a>
 
-                                            <li class="collection-item blue lighten-2 ">
-                                                <a class="white-text"
-                                                   href="https://twitter.com/intent/tweet?text=<%=msg%>">
-                                                    Share on Twitter
+                                                    </div>
+                                                    <div class="collapsible-body">
+                                                        <ul>
+                                                            <a class="collection-item transparent btn-flat orange-text"
+                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
+                                                                    $(this).value())">
+                                                                I do not like their content
+                                                            </a>
+
+                                                            <a class="collection-item transparent btn-flat orange-text"
+                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
+                                                                    $(this).value())">
+                                                                They are is inappropriate
+                                                            </a >
+                                                            <a class="collection-item transparent btn-flat orange-text"
+                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
+                                                                    $(this).value())">
+                                                                They are posting spam
+                                                            </a>
+                                                            <a class="collection-item transparent btn-flat orange-text"
+                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
+                                                                    $(this).value())">
+                                                                Their account is hacked
+                                                            </a>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a class=" blue-text btn-flat lighten-2 "
+                                                     href="https://twitter.com/intent/tweet?text=<%=msg%>"
+                                                   style="width: 100%">
+                                                Share on Twitter
+                                            </a>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a class="collection-item blue-text darken-2 btn-flat"
+                                               id="fb" onclick="Facebook(<%=msg%>)" style="width: 100%">
+                                                Share on Facebook
                                                 </a>
-                                            </li>
-                                            <li class="collection-item blue darken-2" >
-                                                <a id="fb" class="white-text" onclick="Facebook(<%=msg%>)">
-                                                    Share on Facebook
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a id="follow<%=status.user_id%>" class="collection-item btn-flat
+                                                    brown-text" onclick="follow(<%=status.user_id%>)"
+                                                        style="width: 100%">
+                                                    Unfollow User
                                                 </a>
-                                            </li>
-                                            <li class="collection-item orange collapsible"
-                                                data-collapsible="accordion" >
-                                                <ul class="collapsible" data-collapsible="accordion"
-                                                    style="border: none">
-                                                    <li>
-                                                        <div  class="collapsible-header transparent">Report User</div>
-                                                        <div class="collapsible-body">
-                                                            <ul>
-                                                                <li class="collection-item transparent white-text">
-                                                                    <a href="" onclick="ReportUser(<%=status.user_id%>,
-                                                                            $(this).value())">
-                                                                        I do not like their content
-                                                                    </a>
-                                                                </li>
-                                                                <li class="collection-item transparent white-text">
-                                                                    <a href="" onclick="ReportUser(<%=status.user_id%>,
-                                                                            $(this).value())">
-                                                                        They are is inappropriate
-                                                                    </a>
-                                                                </li >
-                                                                <li class="collection-item transparent white-text">
-                                                                    <a href="" onclick="ReportUser(<%=status.user_id%>,
-                                                                            $(this).value())">
-                                                                        They are posting spam
-                                                                    </a>
-                                                                </li>
-                                                                <li class="collection-item transparent white-text">
-                                                                    <a href="" onclick="ReportUser(<%=status.user_id%>,
-                                                                            $(this).value())">
-                                                                        Their account is hacked
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li id="follow<%=status.user_id%>" class="collection-item brown"
-                                                onclick="follow(<%=status.user_id%>)">Unfollow User</li>
+                                            </ul>
                                         </ul>
                                     </div>
                                 </li>
@@ -262,10 +299,21 @@
         $('.carousel').carousel();
         $('.collapsible').collapsible();
         $('.materialboxed').materialbox();
-
-        setProfileImg(<%=UserInfo.info.id%>);
+        Materialize.showStaggeredList('#staggered-test');
+        Materialize.showStaggeredList('#staggered-test2');
+        setUserID(<%=UserInfo.info.id%>);
 
     });
+
+    function setDate(timestamp)
+    {
+        var theDate = new Date(timestamp * 1000);
+        var date = getMonth(theDate.getMonth()) + " " + theDate.getDay();
+        $("#statDate"+timestamp).text(date);
+        alert("this wprl;s")
+
+    }
+
 
     //CODE TO REPORT A USER
     function ReportUser(reportId, Reason)
@@ -285,7 +333,7 @@
 
                 }
         });
-        Materialize.toast('User has been Reported and will be evaluated');
+        Materialize.toast('User has been Reported and will be evaluated', 5000);
     }
 
     //CODE TO FOLLOW/UNFOLLOW A USER
@@ -303,7 +351,7 @@
 
                     }
                 });
-            Materialize.toast('User Unfollowed');
+            Materialize.toast('User Unfollowed', 5000);
             $('#follow'+unfollowID).value("Follow User");
         }
         else
@@ -318,7 +366,7 @@
 
                     }
                 });
-            Materialize.toast('User now being followed');
+            Materialize.toast('User now being followed', 5000);
             $('#follow'+unfollowID).value("Unfollow User");
         }
     }
@@ -333,8 +381,6 @@
             function(response){}
             );
     }
-  Materialize.showStaggeredList('#staggered-test');
-  Materialize.showStaggeredList('#staggered-test2');
 
 
   var ctx = document.getElementById("myChart");
