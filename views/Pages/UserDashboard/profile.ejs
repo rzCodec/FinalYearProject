@@ -309,15 +309,20 @@
 
 
 </main >
-<div class=" hide-on-med-and-down" style="margin-left: 22% "><%- include ../../Partials/footer.ejs %></div>
+<div class=" hide-on-med-and-down" style="margin-left: 22%;"><%- include ../../Partials/footer.ejs %></div>
 <div class=" hide-on-large-only"><%- include ../../Partials/footer.ejs %></div>
 <script >
 
-    $(document).ready(function(){
+    $(document).ready(function()
+    {
         $('.modal').modal();
-
         $('.slider').slider();
         $('.slider').slider('start');
+        $('ul.tabs').tabs();
+        Materialize.showStaggeredList('');
+        setProfileImg(<%=user.id%>);
+        setEmail(<%=user.email%>);
+
         function getFollowers()
         {
             var link = "https://eternalvibes.me/getFollowing/" + user.id;
@@ -333,7 +338,7 @@
         var settings = {
             "async": true,
             "crossDomain": true,
-            "url": "https://eternalvibes.me/getFriends/303346737",
+            "url": "https://eternalvibes.me/getFriends/<%=user.id%>",
             "method": "GET",
             "headers": {
                 "cache-control": "no-cache",
@@ -394,19 +399,6 @@
 
 
 
-  $('#Timeline').click(getPosts())
-  $('#Attended').click(getAttended())
-  $('#Upcoming').click(getUpcoming())
-
-  $(document).ready(function () {
-
-  })
-  $(document).ready(function () {
-    $('ul.tabs').tabs('select_tab', '');
-    $('ul.tabs').tabs();
-    $('#numPosts').text(UserPosts.length);
-  })
-  Materialize.showStaggeredList('')
 
 </script >
 </body >
