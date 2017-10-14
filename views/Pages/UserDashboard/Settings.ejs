@@ -1,203 +1,176 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head >
-
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
-<body >
-
+<body>
 <%- include ./partials/nav.ejs %>
-<div >
-    <ul id="slide-out" class="tabs center-align" >
-        <li id="personalSettings" class="tab col s3" ><a href="#personal" >Personal Settings</a ></li >
-        <li id="password" class="tab col s3" ><a href="#passwords" >Change Password</a ></li >
-        <li id="genreAndSkill" class="tab col s3" ><a href="#genreAndSkills" >Genre and Skills</a ></li >
-    </ul >
+    <div class="center header card-content rectangle" style="width:100% ;height:300px;
+            background: url('images/background/background4.jpg'); background-size: cover;">
+    </div>
+    <div style="margin-top: 5%;margin-left: 15%">
+        <ul id="slide-out" class="tabs center-align brown-text" >
+            <li id="personalSettings" class="tab col s3" ><a href="#personal" >Personal Settings</a ></li >
+            <li id="password" class="tab col s3" ><a href="#passwords" >Change Password</a ></li >
+            <li id="genreAndSkill" class="tab col s3" ><a href="#genreAndSkills" >Genre and Skills</a ></li >
+        </ul >
 
-    <div id="personal" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
-        <div class='container center-align' >
+        <div id="personal" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
+            <div class='container center-align' >
 
-            <div class="card white darken-1" >
+                <div class="card white darken-1" >
 
-                <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
-                    <span class="card-title" ><h1 >Personal Settings</h1 ></span >
-                    <span class="card-title" >What personal information do you want to change?</span >
-                    <%console.log(user)%>
-                    <div class="input-field col s6 center-align" >
-                        <label for="firstname" >First Name</label >
-                        <input id="firstname" value="<%=user.firstname%>" name="firstname" type="text" data-error=".errorTxt1" >
-                        <div class="errorTxt1" ></div >
+                    <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
+                        <span class="card-title" ><h1 >Personal Settings</h1 ></span >
+                        <span class="card-title" >What personal information do you want to change?</span >
+                        <%console.log(user)%>
+                        <div class="input-field col s6 center-align" >
+                            <label for="firstname" >First Name</label >
+                            <input id="firstname" value="<%=user.firstname%>" name="firstname"
+                                   type="text" data-error=".errorTxt1" >
+                        </div >
+
+                        <div class="input-field col s6 center-align" >
+                            <label for="surname" >Surname</label >
+                            <input id="surname" value="<%=user.surname%>" name="surname"
+                                   type="text" data-error=".errorTxt22" >
+                            <div class="errorTxt22" ></div >
+                        </div >
+
+                        <div class="input-field col s12" >
+                            <textarea id="description" value="<%=user.description%>" name="description"
+                                      class="materialize-textarea validate" data-error=".errorTxt7" >
+                            </textarea >
+                            <label for="description" >Description</label >
+                        </div >
+
+                        <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
+                        <a href="/dashboard" class="btn btn-default right-align" onclick="updateInfo()" >Save</a >
                     </div >
-
-                    <div class="input-field col s6 center-align" >
-                        <label for="surname" >Surname</label >
-                        <input id="surname" value="<%=user.surname%>" name="surname" type="text" data-error=".errorTxt22" >
-                        <div class="errorTxt22" ></div >
-                    </div >
-
-                    <div class="input-field col s12" >
-                        <textarea id="description" value="<%=user.description%>" name="description" class="materialize-textarea validate"
-                                  data-error=".errorTxt7" ></textarea >
-                        <label for="description" >Description</label >
-                        <div class="errorTxt7" ></div >
-                    </div >
-
-                    <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
-                    <a href="/dashboard" class="btn btn-default right-align" onclick="updateInfo()" >Save</a >
                 </div >
             </div >
         </div >
-    </div >
 
-    <div id="passwords" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
-        <div class='container center-align' >
 
-            <div class="card white darken-1" >
+        <div id="passwords" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
+            <div class='container center-align' >
 
-                <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
-                    <span class="card-title" ><h1 >Change Password</h1 ></span >
-                    <span class="card-title" >Change Your Password</span >
+                <div class="card white darken-1" >
 
-                    <div class="input-field col s6 center-align" >
-                        <label for="Current Password" >Current Password</label >
-                        <input id="current" type="password" data-error=".errorTxt1" >
-                        <div class="errorTxt1" ></div >
-                    </div >
+                    <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
+                        <span class="card-title" ><h1 >Change Password</h1 ></span >
+                        <span class="card-title" >Change Your Password</span >
 
-                    <div class="input-field col s6 center-align" >
+                        <div class="input-field col s6 center-align" >
+                            <label for="Current Password" >Current Password</label >
+                            <input id="current" type="password" data-error=".errorTxt1" >
+                        </div >
+
+                        <div class="input-field col s6 center-align" >
                         <label for="newPass" >New Password</label >
                         <input id="newPass" type="password" data-error=".errorTxt22" >
-                        <div class="errorTxt22" ></div >
-                    </div >
 
-                    <div class="input-field col s12" >
-                        <textarea id="confirm" type="password" class="materialize-textarea validate"
+                        </div >
+
+                        <div class="input-field col s12" >
+                            <textarea id="confirm" type="password" class="materialize-textarea validate"
                                   data-error=".errorTxt7" ></textarea >
-                        <label for="confirm" >Confirm</label >
-                        <div class="errorTxt7" ></div >
+                            <label for="confirm" >Confirm</label >
+
+                        </div >
+
+                        <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
+                        <a href="/dashboard" class="btn btn-default right-align" onclick="updatePassword()">Save</a >
                     </div >
-
-                    <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
-                    <a href="/dashboard" class="btn btn-default right-align" onclick="updatePassword()">Save</a >
                 </div >
             </div >
         </div >
-    </div >
 
-    <div id="genreAndSkills" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
-        <div class='container center-align' >
+        <div id="genreAndSkills" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
+            <div class='container center-align' >
 
-            <div class="card white darken-1" >
+                <div class="card white darken-1" >
 
-                <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
-                    <span class="card-title" ><h1 >Genre and Skill</h1 ></span >
-                    <span class="card-title" >Update Your Genre and Skills</span >
-                    <div class="input-field col s12">
+                    <div class="card-content center-align" style="margin-right: 15%; margin-left: 15%" >
+                        <span class="card-title" ><h1 >Genre and Skill</h1 ></span >
+                        <span class="card-title" >Update Your Genre and Skills</span >
+                        <div class="input-field col s12">
+                            <script src="javascripts/Genre.js" src="javascripts/materialize.js" type="text/javascript">
 
-                        <select>
-                            <option value="" disabled selected>Choose your Genre</option>
-                            <option value="1">Rock</option>
-                            <option value="3">Pop</option>
-                            <option value="2">Rap</option>
-                            <option value="0">Jazz</option>
-                            <option value="5">House</option>
-                            <option value="4">Indie</option>
-                            <option value="6">Trap</option>
-                            <option value="7">EDM</option>
-                            <option value="8">Shoegaze</option>
-                            <option value="9">Instrumental</option>
-                        </select>
-                        <label>Genre</label>
-                    </div>
+                            </script>
+                            <select id="genres">
+                                <option value="" disabled selected>Choose your Genre</option>
+                            </select>
+                            <label>Genre</label>
+                        </div>
 
-                    <div class="input-field col s12">
-                        <select multiple>
-                            <option value="" disabled selected>Choose your Skills</option>
-                            <option value="7" cted>Backup vocalist</option>
-                            <option value="0" >DJ</option>
-                            <option value="9">Drummer</option>
-                            <option value="13">Event Management</option>
-                            <option value="12">Flute</option>
-                            <option value="8">Guitarist</option>
-                            <option value="2">Mixer</option>
-                            <option value="23">Music Critic</option>
-                            <option value="11">Piano</option>
-                            <option value="5">Rapper</option>
-                            <option value="10">Saxophone</option>
-                            <option value="4">Singer</option>
-                            <option value="1">Song writer</option>
-                            <option value="19">Sound Engineer</option>
-                            <option value="6">Vocalist</option>
-                            <option value="3">Producer</option>
-                        </select>
-                        <label>Skills</label>
-                    </div>
+                        <div class="input-field col s12">
+                            <select multiple id="sSkills">
+                                <option value="" disabled selected>Choose your Skills</option>
+                                <option>Test</option>
+                            </select>
+                            <label>Skills</label>
+                        </div>
 
-                    <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
-                    <a href="/dashboard" class="btn btn-default right-align" onclick="updateInfo()" >Save</a >
+                        <a href="/dashboard" class="btn btn-default left-align red" >Cancel</a >
+                        <a href="/dashboard" class="btn btn-default right-align" onclick="updateInfo()" >Save</a >
+                    </div >
                 </div >
             </div >
         </div >
-    </div >
-
-
+    </div>
 </div >
 </main >
-<%- include ../../Partials/footer.ejs %>
-<script >
-    var sSkills, Genres;
+<div class=" hide-on-med-and-down" style="margin-left: 22% "><%- include ../../Partials/footer.ejs %></div>
+<div class=" hide-on-large-only"><%- include ../../Partials/footer.ejs %></div>
+<script>
+
+    $(document).ready(function()
+    {
+        setProfileImg();
 
 
-
-    $(document).ready(function() {
+        //
         $('select').material_select();
-        getSkills();
 
+        //getSkills();
+        //API CALL USED TO GET SKILLS TWO DIFFERENT METHODS TRIED
+        // cODE DOWN HERE MAKES THE PAGE LOAD FOREVER
+        /*function getSkills()
+        {
+
+            $.ajax(
+            {
+                type: "GET",
+                async: true,
+                url: "https://eternalvibes.me/getSkills",
+                success: function(data) {  return data; alert('works'); },
+                error: Materialize("Cannot Get Skills, Api call not working", 5000)
+            });
+
+            var settings =
+                {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "https://eternalvibes.me/getSkills",
+                    "method": "GET"
+                }
+
+            $.ajax(settings).done(function (response)
+            {
+                alert("Api call does not send back anything");
+            });
+        }*/
 
     });
-
-    function getSkills()
+    //LOAD SIDE NAV PROFILE PICTURE
+    function setProfileImg()
     {
-        $.ajax({
-            type: "GET",
-            url: "https://eternalvibes.me/getSkills",
-            cache: false,
-            dataType: "jsonp",
-            success: function (data){
-                Materialize.toast(data, 500);
-                sSkills = data;
-            },
-            error: function (data) {
-                console.log("error");
-                sSkills = data;
-            }})
-            .then(function(){
-                return sSkills;
-            });
-        Materialize.toast("this function works" + sSkills,5000);
+        var image = "images/profilePics/<%=user.id%>.png";
+        $('#userImg').attr('src', image );
     }
 
-
-    function getGenres()
-    {
-        $.ajax({
-            type: "GET",
-            url: "https://eternalvibes.me/getGenres",
-            cache: false,
-            dataType: "jsonp",
-            success: function (data){
-                console.log(data);
-                genres = data;
-            },
-            error: function (data) {
-                console.log("error");
-                genres = data;
-            }})
-            .then(function(){
-                return genres;
-            });
-    }
-
+//FUNCTIONALITY TO UPDATE USER INFORMATION
     function updateInfo()
     {
         $.post("https://www.eternalvibes.me/updateUserInfo",
@@ -215,21 +188,7 @@
             });
     }
 
-    function updatePassword()
-    {
-        $.post("https://eternalvibes.me/updatePassword",
-            {
-                currentPass: $("#current").value(),
-                NewPass: $("#newPass").value()
-
-            },
-            function (data)
-            {
-
-            });
-    }
-
-
+    //FUNCTIONALITY TO UPDATE SKILLS
     function updateGenre_Skills(id, genre, skills)
     {
         $.post("https://eternalvibes.me/updateUserSkills",
@@ -245,7 +204,7 @@
         $.post("https://eternalvibes.me/updateUserInfo",
             {
                 Id: id,
-                gebre_id: $("#genre").value()
+                genre_id: $("#genre").value()
 
             },
             function (data)
@@ -254,40 +213,10 @@
             });
     }
 
-  Materialize.showStaggeredList('#staggered-test')
-  $('#personalsettings').click('#personal');
-    $("#formValidate").validate({
-        rules:
-            {
-            firstname: {
-                required: true,
-                minlength: 2
-            },
-            surname: {
-                required: true,
-                minlength: 2
-            },
-            password: {
-                required: true,
-                minlength: 5
-            },
-            confirmpassword: {
-                required: true,
-                minlength: 5,
-                equalTo: "#password"
-            }
-        },
-        errorElement: 'div',
-        errorPlacement: function (error, element) {
-            var placement = $(element).data('error');
-            if (placement) {
-                $(placement).append(error)
-            } else {
-                error.insertAfter(element);
-            }
-        }
-    });
+
 </script >
+
+
 
 </body >
 </html >

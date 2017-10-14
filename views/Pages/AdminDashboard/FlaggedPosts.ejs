@@ -4,6 +4,7 @@
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
 <body  >
+<%-include ../../Partials/UserInfo.ejs%>
 <main>
     <div class="row brown-text text-darken-5" >
         <%- include ./partials/nav.ejs %>
@@ -38,20 +39,18 @@
 <%- include ../../Partials/footer.ejs %>
 <script >
 
-    var postCount = 0;
-    function getSkills()
-    {
-        flaggedPosts.forEach(post)
+    $(document).ready(function(){
+        if(info.admin == 0)
         {
-            postCount ++;
+            history.back();
         }
-        $('#numPosts').textContent = postCount;
-    }
-    $('#numPosts').onClick(getSkills());
+    });
+
+    var postCount = 0;
 
     Materialize.showStaggeredList('#FlaggedPosts');
-    function deleteStatus (id) {
-
+    function deleteStatus (id)
+    {
 
         $.post("https://www.eternalvibes.me/deleteStatus",
             {
@@ -84,7 +83,7 @@
 
     }
 
-    $(".button-collapse").sideNav();
+
 
 </script >
 

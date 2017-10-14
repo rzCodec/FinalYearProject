@@ -5,121 +5,279 @@
 </head >
 <body >
 <%- include ./partials/nav.ejs %>
-<main >
-    <div class="row" >
+
+<main  class=" lighten-3">
+    <%-include ../../Partials/UserInfo.ejs%>
+    <div class="row" style="margin-left: 17%; margin-top: 1%" >
+
         <div class="col s7 offset-s1" >
-            <ul id="staggered-test" >
-                <li class="" style="transform: translateX(0px); opacity: 0;" >
-                    <div class="card white darken-1" >
+            <ul id="staggered-test">
+                <li style="transform: translateX(0px); opacity: 0; "  >
+                    <div class="card white darken-1"
+                         style="background:  url('images/background/background3.jpg');background-size: cover;" >
                         <div class="card-content" >
-                        <span class="card-title center-align" >
-                            <%console.log(UserInfo.info)%>
-                            <img class="circle" src="/images/profilePics/<%= UserInfo.info.id %>.png"  alt=""
-                                 width="64" height="64" >
-                            <br>
-                            <br>
-                            <p ><%= UserInfo.info.firstname %>  <%= UserInfo.info.surname %>
-                            </p >
-                        </span >
-                            <p class="center"> <%= UserInfo.info.username%> </p>
-                            <br>
-                            <i class="left small material-icons">music_note</i><%= UserInfo.info.genre%>
-                            &emsp;<div><i class="left small material-icons">insert_link</i>
-                                <a href="<%= UserInfo.info.song_link%>"><%= UserInfo.info.song_link%></a></div>
-                            <br>
-                            <i class="left small material-icons">location_on</i><%= UserInfo.info.city%>
-                            <br>
-                            <br>
-                            <span class="center">Followers:4 &emsp;&emsp; Following:3</span>
+
+                            <span class="card-title center-align" >
+                            <a href="/profile"><img class="circle" src="images/profilePics/<%=UserInfo.info.id%>.png"
+                                style="height: 15%;width:15%;border-color: red; border: groove"></a>
+                                <h2 id=" Welcoming">Welcome <%=UserInfo.info.firstname%> <%=UserInfo.info.surname%></h2>
+                            </span>
                         </div >
                     </div >
                 </li >
+
                 <form class="card ">
 
-                    <div class="card-content input-field">
-                        <i class="material-icons prefix">border_color</i>
-                        <textarea id="txtPost" class="materialize-textarea" placeholder="What's the vibe?"></textarea>
-                        <div class="collapsed"><a id="post" class="btn waves-effect waves-light disabled" type="submit" name="action">Post
-                                <i class="material-icons right">send</i>
-                            </a>
-                        </div>
-
+                    <div class="card-content input-field modal-trigger" data-target="PostStatus">
+                        <i class="left material-icons">border_color</i>
+                        What's the vibe? Share with your friends...
                     </div>
-
                 </form>
-                <div id="Timeline" class="col s12 card " style="margin-top: 5%;margin-bottom: 10%" >
+
+                <div id="Timeline" class="card " style="margin-top: 5%;margin-bottom: 10%;
+                    background-color: transparent; border: transparent" >
                     <div >
-                        <ul id="posts" class="collection truncate" >
-                            <%UserInfo.Status.forEach(function(status){
-                            if(status.user_id == UserInfo.info.id)
-                            {%>
-                            <li class="collection-item avatar card-content">
-                                <div><img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
-                                    <span class="title"><%=status.username%></span>
-                                    <p>
-                                    <p>
+                        <ul id="posts" class="collection truncate collapsible"
+                            data-collapsible="accordion" style="border: transparent; background-color: white">
+                            <!--  DISPLAY FOLLOWING'S POSTS AND USER POSTS AND DIFFERENTIATE BETWEEN THEM -->
+                            <%UserInfo.Status.forEach(function(status)
+                            {
+                                var msg = "Hey everyone, I think this post: '" + status.status + "' by "
+                                    +  status.firstname + " " + status.surname + " ("
+                                    + status.username + ") is pretty cool on Eternal Vibes";
+                                if(status.user_id == UserInfo.info.id)
+                                {%>
+                                <li class="collection-item avatar black-text"
+                                    style="border-bottom: groove; background-color: white">
+                                    <div class="left-align collapsible-header" style="margin-top: 1%">
+                                        <img src="images/profilePics/<%=status.user_id%>.png" alt=""
+                                            class="circle" width="50%"  height="50%">
+                                        <span class="title"><%=status.firstname%> <%=status.surname%> &emsp;
+                                        </span><p>@<%=status.username%></p>
+                                        &emsp; &emsp; &emsp; <p id="statDate <%=status.timestamp%>" onload="setDate(<%=status.timestamp%>)"></p>
+
+                                    </div>
+                                    <br>
                                     <p class="flow-text"><%=status.status%></p>
-                                </div>
-                                <a id="del<%=status.id%>"
-                                   class="waves-effect right waves-light"
-                                   onclick="LikeStatus(<%= status.id %>)">
-                                    <i class="material-icons left">delete</i>
-                                </a>
-                            </li>
-                            <%}else
+                                    <br>
+                                    <%if( status.liked  > 0)
+                                    { %>
+                                    (<%= status.liked %>) likes &emsp; &emsp;
+                                    <%}
+                                    else{%>
+                                    no likes &emsp; &emsp;
+                                    <%}if( status.flag  > 0){ %>
+                                    <span class="red">(<%=status.flag%>) flags</span>
+                                    <%}else{%>
+                                    <%}%> no flags
+                                    <hr>
+                                    <div class="collapsible-body white-text" style="background-color: white">
+                                        <ul>
+                                            <ul class="collection-item collapsible">
+                                                <a id="like<%=status.id%>" class="collection-item brown-text btn-flat"
+                                                    onclick="likeStatus(<%= status.id %>)">
+                                                    <i class="material-icons Small left tooltipped"
+                                                    data-tooltip="Like Post">
+                                                        star_border
+                                                    </i>
+                                                    Like
+                                                </a>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a id="del<%=status.id%>" class="collection-item btn-flat red-text"
+                                                    onclick="deleteStatus(<%= status.id %>)">
+                                                        <i class="material-icons Small left">
+                                                            delete
+                                                        </i>
+                                                    Delete
+                                                </a>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a class="collection-item blue-text lighten-2 btn-flat"
+                                                   href="https://twitter.com/intent/tweet?text=<%=msg%>">
+                                                    Share on Twitter
+                                                </a>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a class="collection-item blue-text darken-2 btn-flat" id="fb"
+                                                   onclick="Facebook(<%=msg%>)">
+                                                    Share on Facebook
+                                                </a>
+                                            </ul>
+                                        </ul>
+                                    </div>
+                                </li>
+                            <%}
+                            else
                             {%>
-                                <li class="collection-item avatar card-content">
-                                    <div>
+                            <!-- CUSTOM OPTIONS FOR POSTS THAT ARENT FROM THE USER SUCH AS UNFOLLOW, REPORTING -->
+                                <li class="collection-item avatar black-text"
+                                    style="border-bottom: groove; background-color: white">
+
+                                    <div class="left-align collapsible-header" style="margin-top: 1%;">
                                         <img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
                                         <%var theDate = new Date(status.timestamp* 1000); %>
-                                        <span class="title"><%=status.username%> &emsp; &emsp; &emsp;
-                                            &emsp; &emsp; &emsp; <%= theDate.toDateString()%>
+                                        <span class="title"><%=status.firstname%> <%=status.surname%> &emsp;
+                                            @<%=status.username%> &emsp; &emsp;&emsp;
+                                            <%= theDate.getDate()%> <%= theDate.getMonth()%>
                                         </span>
-                                        <br>
-                                        <br>
-                                        <p class="flow-text"><%=status.status%></p>
                                     </div>
-                                    <a id="like<%=status.id%>"
-                                       class="waves-effect waves-light" onclick="LikeStatus(<%= status.id %>)">
-                                        <i class="material-icons brown-text left-align tooltipped" data-tooltip="Like Post">
-                                            star_border</i>(<%=status.liked%>)
-                                    </a>
-                                    <a id="flag<%=status.id%>" class=" right waves-effect waves-light btn_delete"
-                                       onclick="FlagStatus(<%= status.id %>)">
-                                        <i class="material-icons left brown-text tooltipped"
-                                           data-tooltip="Report Post">thumb_down</i>
-                                    </a>
+                                    <br>
+                                    <p class="flow-text"><%=status.status%></p>
+                                    <br>
+                                    <%if( status.liked  > 0)
+                                    { %>
+                                    (<%= status.liked %>) likes &emsp; &emsp;
+                                    <%}
+                                    else{%>
+                                    no likes &emsp; &emsp;
+                                    <%}%>
+                                    <hr>
+                                    <div class="collapsible-body white-text" >
+                                        <ul>
+                                            <li class="center black-text"><h3>Post Oprions</h3></li>
+                                            <br>
+                                            <ul class="collection-item collapsible">
+                                                <a id="like<%=status.id%>"
+                                                    class=" collection-item btn-flat brown-text"
+                                                        onclick="LikeStatus(<%= status.id %>)">
+                                                    <i class="material-icons small left-align tooltipped"
+                                                        data-tooltip="Like Post" >star_border
+                                                    </i>
+                                                    Like
+                                                </a>
+                                            </ul>
+                                            <ul class=" collection-item collapsible transparent"
+                                                data-collapsible="accordion">
+                                                <li>
+                                                    <div  class="collapsible-header red-text transparent ">
+                                                        <a class="btn-flat red-text left">
+                                                            <i class="small left material-icons right-align">
+                                                                flag
+                                                            </i>
+                                                            Report Post
+                                                        </a>
+                                                    </div>
+                                                    <div class="collapsible-body">
+                                                        <ul>
+                                                            <a class="collection-item btn-flat transparent
+                                                                btn-flat popout red-text">
+                                                                I do not like their content
+                                                            </a>
+                                                            <a class="collection-item btn-flat trannsparent
+                                                                popout red-text">
+                                                                They are is inappropriate
+                                                            </a >
+                                                            <a class="collection-item btn-flat transparent
+                                                                popout red-text">
+                                                                Post is spam
+                                                            </a>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <ul class="collapsible collection-item" data-collapsible="accordion">
+                                                <li>
+                                                    <div  class="collapsible-header transparent orange-text">
+                                                        <a class="btn-flat orange-text">
+                                                            <i class="small left material-icons left-align">
+                                                                assignment_ind
+                                                            </i>
+                                                            Report User
+                                                        </a>
+
+                                                    </div>
+                                                    <div class="collapsible-body">
+                                                        <ul>
+                                                            <a class="collection-item transparent btn-flat orange-text"
+                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
+                                                                    $(this).value())">
+                                                                I do not like their content
+                                                            </a>
+
+                                                            <a class="collection-item transparent btn-flat orange-text"
+                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
+                                                                    $(this).value())">
+                                                                They are is inappropriate
+                                                            </a >
+                                                            <a class="collection-item transparent btn-flat orange-text"
+                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
+                                                                    $(this).value())">
+                                                                They are posting spam
+                                                            </a>
+                                                            <a class="collection-item transparent btn-flat orange-text"
+                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
+                                                                    $(this).value())">
+                                                                Their account is hacked
+                                                            </a>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a class=" blue-text btn-flat lighten-2 "
+                                                     href="https://twitter.com/intent/tweet?text=<%=msg%>"
+                                                   style="width: 100%">
+                                                Share on Twitter
+                                            </a>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a class="collection-item blue-text darken-2 btn-flat"
+                                               id="fb" onclick="Facebook(<%=msg%>)" style="width: 100%">
+                                                Share on Facebook
+                                                </a>
+                                            </ul>
+                                            <ul class="collection-item collapsible">
+                                                <a id="follow<%=status.user_id%>" class="collection-item btn-flat
+                                                    brown-text" onclick="follow(<%=status.user_id%>)"
+                                                        style="width: 100%">
+                                                    Unfollow User
+                                                </a>
+                                            </ul>
+                                        </ul>
+                                    </div>
                                 </li>
+                            <hr>
                             <%}})%>
-                        </ul >
+                        </ul>
                     </div >
                 </div >
+
             </ul >
         </div >
+
+<!-- DISPLAYS TOP ARTISTS AND GENRE STATISTICS TO THE USER -->
         <div class="col s4" >
             <ul id="staggered-test2" >
-                <li class="" style="transform: translateX(0px); opacity: 0;" >
-                    <div class="card white lighten-2" >
-                        <div class="card-content" >
-		<span class="card-title" >Top Artists </span >
+                <li class="" style="transform: translateX(0px); opacity: 0; margin-bottom: 4%" >
+                    <div class="card white lighten-2 with-header" >
+                        <div class="card-content" style="margin-bottom: 10%">
+                            <span class="card-title collection-header" >Top Artists </span >
                         </div >
-                        <ul class="collection" >
+                        <ul class="collection collapsible popout" data-collapsible="accordion"
+                            style="border: transparent;" >
                             <% UserInfo.TopArtists.forEach(function (output) { %>
-                            <li class="collection-item avatar" >
+                            <li class="collection-item avatar black-text"  style="background-color: white">
                                 <%console.log(output)%>
-                                <img src="images/profilePics/<%= output.id %>.png"  alt="images/profilePics/<%= output.id %>.png"
-                                     class="circle" >
+                                <div class="collapsible-header">
+                                    <img src="images/profilePics/<%= output.id %>.png"
+                                         alt="<%output.username %>" class="circle" >
                                 <span class="title" ><%= output.username %></span >
-                                <p >Rating: <%= output.count %>
+
+                                </div>
+                                <p >Rank: <%= output.count %>
                                 </p >
-                                <a href="#" class="secondary-content" ><%= output.liked %></a >
+                                <div class="collapsible-body">
+                                    <span>
+                                        <a href="#" class="secondary-content" ><%= output.liked %></a >
+                                    </span>
+                                </div>
                             </li >
                             <% }); %>
                         </ul >
                     </div >
                     <div class="card white lighten-2" >
                         <div class="card-content white-text" >
-
                             <canvas id="myChart" width="400" height="400" ></canvas >
                         </div >
                     </div >
@@ -127,17 +285,102 @@
             </ul >
         </div >
     </div >
+    </div >
 </main >
-<%- include ../../Partials/footer.ejs %>
+<div class=" hide-on-med-and-down" style="margin-left: 22% "><%- include ../../Partials/footer.ejs %></div>
+<div class=" hide-on-large-only"><%- include ../../Partials/footer.ejs %></div>
 
 <script >
-  Materialize.showStaggeredList('#staggered-test');
-  Materialize.showStaggeredList('#staggered-test2');
-  $('txtPost').onclick(function ()
-  {
 
-          $('#post').disabled(false);
-  });
+    var userID = <%=UserInfo.info.id%>;
+    $(document).ready(function(){
+        $('.modal').modal();
+        $('.slider').slider();
+        $('.carousel').carousel();
+        $('.collapsible').collapsible();
+        $('.materialboxed').materialbox();
+        Materialize.showStaggeredList('#staggered-test');
+        Materialize.showStaggeredList('#staggered-test2');
+        setUserID(<%=UserInfo.info.id%>);
+
+    });
+
+    function setDate(timestamp)
+    {
+        var theDate = new Date(timestamp * 1000);
+        var date = getMonth(theDate.getMonth()) + " " + theDate.getDay();
+        $("#statDate"+timestamp).text(date);
+        alert("this wprl;s")
+
+    }
+
+
+    //CODE TO REPORT A USER
+    function ReportUser(reportId, Reason)
+    {
+
+        $.post("https://eternalvibes.me/reportUser",
+            {
+                userThatReported: userID,
+                userThatGotReported:reportId,
+                reason: Reason
+            },
+            function (data)
+            {
+                console.log("Data: " + data);
+                if(data == 200)
+                {
+
+                }
+        });
+        Materialize.toast('User has been Reported and will be evaluated', 5000);
+    }
+
+    //CODE TO FOLLOW/UNFOLLOW A USER
+    function follow(followID)
+    {
+        if($('#follow'+followID).value() === "Unfollow User")
+        {
+            var link = "https://eternalvibes.me/stopFollowing/" + userID + "/" + followID;
+            $.get(link,
+                function (data)
+                {
+                    console.log("Data: " + data);
+                    if (data == 200)
+                    {
+
+                    }
+                });
+            Materialize.toast('User Unfollowed', 5000);
+            $('#follow'+unfollowID).value("Follow User");
+        }
+        else
+        {
+            var link = "https://eternalvibes.me/followUser/" + userID + "/" + followID;
+            $.get(link,
+                function (data)
+                {
+                    console.log("Data: " + data);
+                    if(data == 200)
+                    {
+
+                    }
+                });
+            Materialize.toast('User now being followed', 5000);
+            $('#follow'+unfollowID).value("Unfollow User");
+        }
+    }
+
+    //SHARE A POST ON FACEBOOK
+    function Facebook(cptn)
+    {
+        FB.ui({
+                method: 'feed',
+                link: 'https://eternalvibes.me',
+                caption: cptn},
+            function(response){}
+            );
+    }
 
 
   var ctx = document.getElementById("myChart");
