@@ -3,9 +3,10 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
-<body class="center brown-text text-darken-2">
+<body class="brown-text text-darken-2">
+<%-include ../../Partials/UserInfo.ejs%>
 <main >
-    <div class="row center-align" >
+    <div class="row" >
         <%- include ./partials/nav.ejs %>
 
         <!--FlaggedUsers Tab-->
@@ -37,6 +38,13 @@
 <%- include ../../Partials/footer.ejs %>
 <script >
     Materialize.showStaggeredList('#FlaggedUsers');
+
+    $(document).ready(function(){
+        if(info.admin == 0)
+        {
+            history.back();
+        }
+    });
 
     function banUser (id) {
 

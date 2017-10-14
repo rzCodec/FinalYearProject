@@ -1,13 +1,135 @@
-<nav class="white" role="navigation" >
-    <div class="nav-wrapper container" >
-        <a href="/dashboard" class="brand-logo brown-text" ><i class="material-icons" >cloud</i >ETERNAL VIBES</a >
-        <ul class="right hide-on-med-and-down" >
-            <li ><a onClick="history.go(0)" VALUE="Refresh" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Refresh" ><i class="material-icons" >refresh</i ></a ></li >
-            <li ><a brown-text text-darken-5 href="/profile"  class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Profile" > <i class="left material-icons" >assignment_ind</i ></a ></li >
-            <li ><a brown-text text-darken-5 href="/settings"  class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Settings" > <i class="left material-icons" >settings</i ></a ></li >
-            <li ><a brown-text text-darken-5 href="/logout"  class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Logout" > <i class="left material-icons" >power_settings_new</i ></a ></li >
-        </ul >
+<!--<ul id="dropdn" class="dropdown-content" style="margin-top:7%; width:150px;">
+    <li>
+        <div class="userView">
+            <div class="background">
 
+            </div>
+            <a href="#!user"><img class="circle" src="images/empty.png" width="5%" height="5%">
+                Username</a>
+            <a href="#"><span class="white-text name">Username</span></a>
+            <a href=""><span class="white-text email">followerss</span></a>
+            <a href="#"><span class="white-text email">followerss</span></a>
+        </div>
+    </li>
+    <li class="divider"></li>
+    <li >
+        <a brown-text text-darken-5 href="/profile"  class="tooltipped" data-position="bottom"
+           data-delay="50" data-tooltip="Profile" >
+            <i class="left material-icons" >assignment_ind</i > Profile
+        </a >
+    </li >
+    <li class="divider"></li>
+    <li >
+        <a brown-text text-darken-5 href="/settings"  class="tooltipped" data-position="bottom"
+           data-delay="50" data-tooltip="Settings" >
+            <i class="left material-icons" >settings</i > Settings
+        </a >
+    </li >
+
+    <li >
+        <a brown-text text-darken-5  class="tooltipped" data-position="bottom"
+           data-delay="50" data-tooltip="Night Mode" >
+            <i class="left material-icons" >power_settings_new</i > Night Mode
+        </a >
+    </li >
+
+    <li class="divider"></li>
+
+    <li >
+        <a brown-text text-darken-5 href="/logout"  class="tooltipped" data-position="bottom"
+           data-delay="50" data-tooltip="Logout" >
+            <i class="left material-icons" >power_settings_new</i > Logout
+        </a >
+    </li >
+</ul>
+
+
+
+<nav id="navbar" class="red lighten-1 white-text">
+    <div class="nav-wrapper " >
+        <a href="/dashboard" class="brand-logo left white-text" ><i class="material-icons" >cloud</i >Eternal Vibes</a >
+            <ul class="right" style="margin-left: 20%">
+
+                <li>
+                    <a href="/dashboard" class="tooltipped "
+                       data-position="bottom" data-delay="50" data-tooltip="Home" >
+                        <i class="material-icons" >home</i >
+                    </a >
+                </li>
+                <div>
+                    <a  class="btn orange modal-trigger right" data-target="PostStatus" >Post</a >
+                    <img class="dropdown-button circle right" data-activates="dropdn"
+                         src="images/empty.png" alt="" style="width:8%; height:8%; margin-right: 3%">
+                </div>
+            </ul>
     </div >
 
-</nav >
+</nav >-->
+
+
+<ul id="slide-out" acti class="side-nav right fixed ">
+    <li >
+        <div class="userView" >
+            <div class="background" >
+                <img src="images/background/background1.jpg" >
+            </div >
+            <a href="" >
+                <img class="circle materialboxed" src="images/empty.png" ></a >
+            <a href="#!name" ><span class="white-text name" >username</span ></a >
+            <a href="#!email" ><span class="white-text email" >email</span ></a >
+        </div >
+    </li >
+
+    <li >
+        <a href="/dashboard" class="tooltipped "
+           data-position="bottom" data-delay="50" data-tooltip="Home" >
+            <i class="material-icons" >home</i > Home
+        </a >
+    </li >
+    <li >
+        <a brown-text text-darken-5 href="/profile"  class="tooltipped" data-position="bottom"
+           data-delay="50" data-tooltip="Profile" >
+            <i class="left material-icons" >assignment_ind</i > Profile
+        </a>
+    </li >
+
+    <li >
+        <div class="divider" ></div >
+    </li >
+    <li >
+        <a brown-text text-darken-5 href="/settings"  class="tooltipped" data-position="bottom"
+           data-delay="50" data-tooltip="Settings" >
+            <i class="left material-icons" >settings</i > Settings
+        </a >
+    </li >
+    <li class='active' >
+        <a brown-text text-darken-5  class="tooltipped" data-position="bottom"
+           data-delay="50" data-tooltip="Night Mode" >
+            <i class="left material-icons" >brightness_medium</i > Night Mode
+        </a >
+    </li >
+    <li >
+        <div class="divider" ></div >
+    </li >
+    <li ><a class="brown-text text-darken-5" href="/logout" >
+            <i class="material-icons right" >power_settings_new</i >Logout</a >
+    </li >
+
+</ul >
+
+
+<script>
+    var navbar = document.getElementById("navbar");
+    var sticky = navbar.offsetTop;
+    $(document).ready(function()
+    {
+        $(".dropdown-button").dropdown();
+    });
+    function myFunction() {
+        if (window.scrollY >= sticky) {
+            navbar.classList.add("sticky")
+        } else {
+            navbar.classList.remove("sticky");
+        }
+    }
+</script>

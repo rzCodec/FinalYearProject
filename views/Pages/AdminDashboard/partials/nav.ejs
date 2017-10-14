@@ -1,73 +1,93 @@
-<div id="to-top" ><i class="fa fa-caret-square-o-down" aria-hidden="true" ></i ></div >
-<nav class="white" role="navigation" >
+<!--<div id="to-top" ><i class="fa fa-caret-square-o-down" aria-hidden="true" ></i ></div >
+<nav class="orange" role="navigation" >
     <div class="nav-wrapper container" >
+
         <a class="left brand-logo brown-text" href="/profile">
             <img height="15%" width="15%" src="images/profilePics/<%= info.id %>.png" alt=""
                  class="circle">   <%= info.username %></a>
-        <!-- <a href="/" class="brand-logo brown-text" ><i class="material-icons" >cloud</i >ETERNAL VIBES</a > -->
-        <ul class="right hide-on-med-and-down ">
-            <li id="flPosts" >
-                <a class="brown-text text-darken-5" href="/FlaggedPosts">
-                    <i class="small left material-icons right-align brown-text text-darken-5 ">feedback</i>Flagged Posts
-                    <span id="numPosts" class="new badge"></span></a></li>
+        <a href="/" class="brand-logo brown-text" ><i class="material-icons" >cloud</i >ETERNAL VIBES</a > -->
+<!--  <ul class="right hide-on-med-and-down ">
+     <li id="flPosts" >
+         <a class=" text-darken-5" href="/FlaggedPosts">
+             <i class="small left material-icons right-align text-darken-5 ">feedback</i>Flagged Posts
+             <span id="numPosts" class="new badge"></span></a></li>
 
-            <li id="flUsers">
-                <a class="brown-text text-darken-5" href="/FlaggedUsers">
-                    <i class="small left material-icons left-align brown-text text-darken-5">assignment_ind</i>Flagged Users
-                    <span id="numUsers" class="new badge"></span></a></li>
+     <li id="flUsers">
+         <a class=" text-darken-5" href="/FlaggedUsers">
+             <i class="small left material-icons left-align  text-darken-5">assignment_ind</i>Flagged Users
+             <span id="numUsers" class="new badge"></span></a></li>
 
-            <li id="Genre">
-                <a class="brown-text text-darken-5" href="/AddGenres">
-                    <i class="small left material-icons right-align">library_music</i>Add Genres</a></li>
+     <li id="Genre">
+         <a class=" text-darken-5" href="/AddGenres">
+             <i class="small left material-icons right-align">library_music</i>Add Genres</a></li>
 
-            <li id="Skills">
-                <a class="modal-trigger brown-text text-darken-5" href="/AddSkills">
-                    <i class="small left material-icons right-align brown-text text-darken-5">palette</i>Add Skills</a></li>
+     <li id="Skills">
+         <a class=" text-darken-5" href="/AddSkills">
+             <i class="small left material-icons right-align text-darken-5">palette</i>Add Skills</a></li>
 
-            <li id="Reports">
-                <a class="brown-text text-darken-5" href="/reports">
-                    <i class="small left material-icons right-align brown-text text-darken-5">assessment</i>Reports</a></li>
-            <li id="Logout">
-                <a class="brown-text text-darken-5" href="/logout">
-                    <i class="small left material-icons right-align brown-text text-darken-5">power_settings_new</i></a></li>
+     <li id="Reports">
+         <a class=" text-darken-5" href="/reports">
+             <i class="small left material-icons right-align text-darken-5">assessment</i>Reports</a></li>
+     <li id="Logout">
+         <a class=" text-darken-5" href="/logout">
+             <i class="small left material-icons right-align text-darken-5">power_settings_new</i></a></li>
+
+ </ul>
+</div >
 
 
-        </ul>
-    </div >
-</nav >
+</nav > -->
 <!-- Menu Design for Tablets and Phone screen -->
-<div class="col s3 row hide-on-large-only" style="margin-left: 7%" >
-    <a href="#" data-activates="slide-out" class="button-collapse"><i class="large material-icons" >menu</i ></a >
-    <ul id="slide-out" class="side-nav" >
+
+
+
+    <ul id="slide-out" acti class="side-nav right fixed"  >
         <li >
             <div class="userView" >
                 <div class="background" >
                     <img src="images/background/background1.jpg" >
                 </div >
-                <a href="#!user" >
-                    <img class="circle" src="images/profilePics/<%= info.id %>.png" ></a >
+                <a >
+                    <img class="circle materialboxed" src="images/profilePics/<%= info.id %>.png" ></a >
                 <a href="#!name" ><span class="white-text name" ><%= info.username %></span ></a >
                 <a href="#!email" ><span class="white-text email" ><%= info.email %></span ></a >
             </div >
         </li >
-
         <li ><a class="subheader"  ><i class="material-icons right" >thumbs_up_down</i >Flagged</a ></li >
-        <li ><a class="brown-text text-darken-5" id="flagUsers" class="tab" href="/FlaggedUsers" onclick="Materialize.showStaggeredList('#fUserList')" >Flagged Users</a ></li >
-        <li ><a class="brown-text text-darken-5" id="flagPosts" class="tab" href="#FlaggedPosts" onclick="Materialize.showStaggeredList('#fPostList')" >Flagged Posts</a ></li >
+        <li ><a class="brown-text text-darken-5" id="flagUsers" class="tab" href="/FlaggedUsers"
+                onclick="Materialize.showStaggeredList('#fUserList')" >
+                <i class="small left material-icons left-align  text-darken-5">assignment_ind</i>Flagged Users
+            </a >
+        </li >
+        <li ><a class="brown-text text-darken-5" id="flagPosts" class="tab" href="/FlaggedPosts"
+                onclick="Materialize.showStaggeredList('#fPostList')" >
+                <i class="small left material-icons right-align text-darken-5 ">feedback</i>
+                Flagged Posts</a >
+        </li >
         <li >
             <div class="divider" ></div >
         </li >
-        <li ><a class="brown-text text-darken-5" href="/AddSkills" class="tab" onclick="Materialize.showStaggeredList('#AddSkill')" >Add Skills</a ></li >
-        <li class='active' ><a class="brown-text text-darken-5" href="/AddGenre" onclick="Materialize.showStaggeredList('#AddGenre')">
-                Add Genres</a ></li >
-        <li ><a href="/reports" >Reports</a ></li >
+        <li >
+            <a class="brown-text text-darken-5" href="/AddSkills" class="tab"
+               onclick="Materialize.showStaggeredList('#AddSkill')" >
+                <i class="small left material-icons right-align text-darken-5">palette</i>
+                Add Skills</a >
+        </li >
+        <li class='active' >
+            <a class="brown-text text-darken-5" href="/AddGenres" onclick="Materialize.showStaggeredList('#AddGenre')">
+                <i class="small left material-icons right-align">library_music</i>Add Genres</a >
+        </li >
+        <li ><a href="/reports" >
+                <i class="small left material-icons right-align text-darken-5">assessment</i>Reports</a >
+        </li >
         <li >
             <div class="divider" ></div >
         </li >
-        <li ><a class="brown-text text-darken-5" href="/logout" ><i class="material-icons right" >power_settings_new</i >Logout</a ></li >
+        <li ><a class="brown-text text-darken-5" href="/logout" >
+                <i class="material-icons right" >power_settings_new</i >Logout</a >
+        </li >
 
     </ul >
-</div>
 
 
 <!-- Menu Design for laptop and computer screen -->
@@ -101,6 +121,7 @@
 </ul>
 -->
 <script>
+    $(".button-collapse").sideNav();
 
 
 </script>

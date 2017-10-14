@@ -3,23 +3,22 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head>
-<body >
+<body>
 <main>
+    <%var edtSkill%>
     <div class="row" >
         <%- include ./partials/nav.ejs %>
         <div  class="center col s4 offset-s4 " style="margin-top: 5%">
             <h2 align="center">Available Skills</h2>
-            <div id='sList' class="card" style="margin-top: 5%">
-                <ul id="skills" class=" card-content" >
-                    <%skills.forEach(function(skill)
+            <div id='sList' style="margin-top: 5%">
+                <ul class="card collapsible popout" style="background-color: transparent" >
+                    <% skills.forEach(function(skill)
                     {%>
-                    <li class="center waves-effect waves-teal card-content" >
-                        <a id="skill<%= skill.id%>" class="btn-flat modal-trigger" data-target="edtSkill">
+                    <li class="card-content">
+                        <div class="collapsible-header" style="background-color: transparent">
                             <%= skill.name%>
-                        </a>
-
+                        </div>
                     </li>
-                    <br>
                     <%})%>
                 </ul>
 
@@ -32,10 +31,6 @@
              <i class="material-icons">add</i>
          </a>
     </div>
-
-
-
-
 
     <div id="addskill" class="modal bottom-sheet">
         <div class="modal-content center">
@@ -58,6 +53,10 @@
 
     $(document).ready(function(){
         $('.modal').modal();
+        if(info.admin == 0)
+        {
+            history.back();
+        }
     });
 
 
@@ -93,6 +92,7 @@
             materialize.toast(skill + " has been added", 500);
 
         }
+        $('#add_genre').reset();
         $('#sList').reload(true);
     }
 
@@ -103,7 +103,7 @@
 </script>
 <script src="javascripts/Skills.js" src="javascripts/materialize.js" type="text/javascript">
 
-    var skills = Skills.getSkills();
+
 
 
 
