@@ -51,26 +51,6 @@
 
     });
 
-    var genres;
-    function getGenres()
-    {
-        $.ajax({
-            type: "GET",
-            url: "https://eternalvibes.me/getGenres",
-            cache: false,
-            dataType: "jsonp",
-            success: function (data){
-                console.log(data);
-                genres = data;
-            },
-            error: function (data) {
-                console.log("error");
-                genres = data;
-            }})
-            .then(function(){
-                return genres;
-            });
-    }
 
     function addGenre()
     {
@@ -98,6 +78,16 @@
 
     };
 
+    Materialize.showStaggeredList('#gList');
+
 </script>
+<script src="javascripts/Genre.js" src="javascripts/materialize.js" type="text/javascript">
+
+    var genres = Genres.getGenres();
+
+
+
+</script>
+
 
 </html>
