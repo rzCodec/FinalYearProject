@@ -60,7 +60,7 @@
             <form class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                        <textarea id="textarea1" class="materialize-textarea focus rounded white black-text"
+                        <textarea id="statusMsg" class="materialize-textarea focus rounded white black-text"
                                   placeholder="What's the vibe?" style="border: groove; border-radius: 10px;
                                    height: 50%; border-color: red; font-size: 120%">
                         </textarea>
@@ -68,7 +68,9 @@
                 </div>
             </form>
             <div class="modal-fixed-footer">
-                <a class="btn rounded red white-text right modal-close" style="border-radius: 10px;">Post</a>
+                <a id="postStat" class="btn rounded red white-text right modal-close" onclick="postStatus()"
+                   style="border-radius: 10px;">Post
+                </a>
             </div>
         </div>
 
@@ -77,9 +79,43 @@
 
 <script>
 
-    function setProfileImg(id)
+    var userID;
+    function setUserID(id)
     {
-        var image = "images/profilePics/" + id + ".png";
+        userID = id;
+        setProfileImg();
+        $('#statusMsg').val("");
+    }
+
+    function postStatus ()
+    {
+        var status = $('#statusMsg').val();
+        if(status != "" || status.truncate(status,status.length) != "" || status != null ||
+            status.truncate(status,status.length) != null )
+        {
+            $.post("https://eternalvibes.me/setStatus",
+                {
+                    user: userID,
+                    status:status,
+                    estraInfo: new Date().getDate()
+                },
+                function (data)
+                {
+                    console.log("Data: " + data);
+                });
+            Materialize.toast('New status Has been Posted', 5000);
+            $('#statusMsg').val("");
+            $("#Timeline").load(location.href + " #Timeline");
+            $("#posts").load(location.href + " #posts");
+        }else
+        {
+            Materialize.toast("Your vibe cannot be nothing", 5000)
+        }
+
+    }
+    function setProfileImg()
+    {
+        var image = "images/profilePics/" + userID + ".png";
         $('#userImg').attr('src', image );
     }
     function setUsername(username)
@@ -89,6 +125,86 @@
     function setEmail(email)
     {
         $('#userEmail').text(email);
+    }
+
+    function getMonth(id)
+    {
+        var month
+        switch(id)
+        {
+            case 0 :
+                month= "Jan"
+                break;
+            case 1 :
+                month= "Feb"
+                break;
+            case 2 :
+                month= "Mar"
+                break;
+            case 3 :
+                month= "Apr"
+                break;
+            case 4 :
+                month= "May"
+                break;
+            case 5 :
+                month= "Jun"
+                break;
+            case 6 :
+                month= "Jul"
+                break;
+            case 7 :
+                month= "Aug"
+                break;
+            case 8 :
+                month= "Sep"
+                break;
+            case 9 :
+                month= "Oct"
+                break;
+            case 10 :
+                month= "Nov"
+                break;
+            case 11 :
+                month= "Dec"
+                break;
+
+            default:
+                month= "January"
+                break;
+        }
+        return month;
+    }
+
+    function deleteStatus (id)
+    {
+
+        $.post("https://www.eternalvibes.me/deleteStatus",
+            {
+                statusId: id
+            },
+            function (data) {
+                console.log("Data: " + data);
+                if(data == 200)
+                {
+                    Materialize.toast('Removed Post', 500);
+                    location.reload();
+                }
+            });
+    }
+
+    function likeStatus(id)
+    {
+        var link = "https://www.eternalvibes.me/likeStatus/" + userID + "/" + id;
+        $.post(link,
+            function (data) {
+                console.log("Data: " + data);
+                if(data == 200)
+                {
+                    Materialize.toast('Removed Post', 500);
+                    location.reload();
+                }
+            });
     }
 
 </script>
