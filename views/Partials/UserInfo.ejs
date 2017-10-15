@@ -56,7 +56,7 @@
            style="margin-right: 4%; font-size: 100%"><i class="material-icons">close</i></a>
         <h3 style="margin-bottom: 2%;">Post A Status</h3>
     </div>
-        <div  class=" center-align card-content" style="margin-top: 2%; margin-left: 4%; margin-right: 4% ">
+        <div  class=" offset-l2 card-content" style="margin-top: 2%; margin-left: 4%; margin-right: 4% ">
             <form class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
@@ -68,9 +68,11 @@
                 </div>
             </form>
             <div class="modal-fixed-footer">
-                <a id="postStat" class="btn rounded red white-text right modal-close" onclick="postStatus()"
-                   style="border-radius: 10px;">Post
-                </a>
+                <div>
+                    <a id="postStat" class="btn rounded red white-text right modal-close" onclick="postStatus()"
+                       style="border-radius: 10px;">Post</a>
+                </div>
+
             </div>
         </div>
 
@@ -105,8 +107,7 @@
                 });
             Materialize.toast('New status Has been Posted', 5000);
             $('#statusMsg').val("");
-            $("#Timeline").load(location.href + " #Timeline");
-            $("#posts").load(location.href + " #posts");
+            location.reload();
         }else
         {
             Materialize.toast("Your vibe cannot be nothing", 5000)
@@ -120,60 +121,11 @@
     }
     function setUsername(username)
     {
-        $('#userName').text(username);
+        $('#userName').attr('text',username);
     }
     function setEmail(email)
     {
-        $('#userEmail').text(email);
-    }
-
-    function getMonth(id)
-    {
-        var month
-        switch(id)
-        {
-            case 0 :
-                month= "Jan"
-                break;
-            case 1 :
-                month= "Feb"
-                break;
-            case 2 :
-                month= "Mar"
-                break;
-            case 3 :
-                month= "Apr"
-                break;
-            case 4 :
-                month= "May"
-                break;
-            case 5 :
-                month= "Jun"
-                break;
-            case 6 :
-                month= "Jul"
-                break;
-            case 7 :
-                month= "Aug"
-                break;
-            case 8 :
-                month= "Sep"
-                break;
-            case 9 :
-                month= "Oct"
-                break;
-            case 10 :
-                month= "Nov"
-                break;
-            case 11 :
-                month= "Dec"
-                break;
-
-            default:
-                month= "January"
-                break;
-        }
-        return month;
+        $('#userEmail').attr('text',email);
     }
 
     function deleteStatus (id)
@@ -201,7 +153,7 @@
                 console.log("Data: " + data);
                 if(data == 200)
                 {
-                    Materialize.toast('Removed Post', 500);
+                    Materialize.toast('Post Liked', 500);
                     location.reload();
                 }
             });

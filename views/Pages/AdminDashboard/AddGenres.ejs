@@ -3,23 +3,25 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head>
-<body>
+<body class="grey lighten-3">
 
 <main>
 
     <div class="row" >
         <%- include ./partials/nav.ejs %>
-        <div  class="center col s4 offset-s4 " style="margin-top: 5%">
-            <h2 class="card-title" align="center">Available Genres</h2>
+        <div class="center header card-content rectangle" style="width:100% ;height:200px;
+            background: url('images/background/background4.jpg'); background-size: cover;">
+        <div  class="center col s4 offset-s5 " style="margin-top: 18%;">
+            <h2 class="card-title orange-text" align="center">Available Genres</h2>
 
-            <div id='gList' style="margin-top: 5%">
+            <div id='gList' style="margin-top: 7%">
 
                 <ul class="card collapsible popout" style="background-color: transparent">
                     <% genres.forEach(function(genre)
                     {%>
-                        <li class="card-content" >
-                            <div class="collapsible-header" style="background-color: transparent">
-                                <%= genre.name%>
+                        <li class="card-content white" >
+                            <div class="collapsible-header">
+                                <blockquote><strong><%= genre.name%></strong></blockquote>
                             </div>
                         </li>
                     <%})%>
@@ -30,10 +32,11 @@
     </div>
 
     <div class="fixed-action-btn">
-        <a id="add" data-target="addGenre" class="btn-floating btn-large waves-effect waves-light red">
+        <a id="add" data-target="addGenre" class="btn-floating btn-large modal-trigger waves-effect waves-light red">
             <i class="material-icons">add</i>
         </a>
     </div>
+
     <div id="addGenre" class="modal bottom-sheet">
         <div class="modal-content center">
             <h2 class="brown-text modal-ux-header">Add Genre</h2>

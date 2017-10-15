@@ -3,32 +3,39 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
-<body class="brown-text text-darken-2">
+<body class="grey lighten-3">
 <%-include ../../Partials/UserInfo.ejs%>
 <main >
     <div class="row" >
         <%- include ./partials/nav.ejs %>
-
+        <div class="center header card-content rectangle" style="width:100% ;height:200px;
+            background: url('images/background/background4.jpg'); background-size: cover;">
         <!--FlaggedUsers Tab-->
-        <div id="FlaggedUsers" class="col s6 offset-s3" style="margin-top: 5%">
-            <h2 align="center">Flagged Users</h2>
+        <div id="FlaggedUsers" class="col s6 offset-s4" style="margin-top: 18%">
+            <h2 class="orange-text" align="center">Flagged Users</h2>
             <div>
                 <ul id="fUserList" class="collection truncate">
                     <% console.log(flaggedUsers);
-                    flaggedUsers.forEach(function (user) { %>
-                    <li class="collection-item avatar">
-                        <div card white darken-4><img src="images/profilePics/<%= user.userId %>.png" alt="" class="circle">
-                            <span class="title"> <h3><%=user.username%> </h3></span>
-                            <p>Reason for flag: <%=user.reason%></p>
-
-                        </br>
-                        <a class="waves-effect waves-light btn" onclick="pardonUser(<%= user.userThatGotReported %>)">
-                            <i class="material-icons left">thumb_up</i>Pardon</a>
-                        <a class="waves-effect waves-light btn red" onclick="banUser(<%= user.userThatGotReported %>)">
-                            <i class="material-icons left">thumb_down</i>Ban</a>
-                        </div>
-                    </li>
-                    <% }) %>
+                        if(flaggedUsers.length > 0)
+                        {
+                            flaggedUsers.forEach(function (user) { %>
+                            <li class="collection-item avatar">
+                                <div card white darken-4>
+                                    <img src="images/profilePics/<%= user.userId %>.png" alt="" class="circle">
+                                    <span class="title"> <h3><%=user.username%> </h3></span>
+                                    <p>Reason for flag: <%=user.reason%></p>
+                                </br>
+                                    <a class="waves-effect waves-light btn" onclick="pardonUser(<%= user.userThatGotReported %>)">
+                                        <i class="material-icons left">thumb_up</i>Pardon
+                                    </a>
+                                    <a class="waves-effect waves-light btn red" onclick="banUser(<%= user.userThatGotReported %>)">
+                                        <i class="material-icons left">thumb_down</i>Ban
+                                    </a>
+                                </div>
+                            </li>
+                    <% })}else {%>
+                        <h1 class="grey-text darken-2">No Flagged Users Available</h1>
+                    <%} %>
                 </ul>
             </div>
         </div>

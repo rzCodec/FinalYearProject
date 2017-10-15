@@ -3,24 +3,65 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
-<body >
+<body class="grey lighten-3" >
 <%- include ./partials/nav.ejs %>
 
-<main  class=" lighten-3">
+<main>
     <%-include ../../Partials/UserInfo.ejs%>
     <div class="row" style="margin-left: 17%; margin-top: 1%" >
 
         <div class="col s7 offset-s1" >
             <ul id="staggered-test">
                 <li style="transform: translateX(0px); opacity: 0; "  >
-                    <div class="card white darken-1"
+                    <div id="header" class="card white darken-1"
                          style="background:  url('images/background/background3.jpg');background-size: cover;" >
                         <div class="card-content" >
 
                             <span class="card-title center-align" >
                             <a href="/profile"><img class="circle" src="images/profilePics/<%=UserInfo.info.id%>.png"
                                 style="height: 15%;width:15%;border-color: red; border: groove"></a>
-                                <h2 id=" Welcoming">Welcome <%=UserInfo.info.firstname%> <%=UserInfo.info.surname%></h2>
+                                <% function greeting()
+                                {
+                                    var date = new Date();
+                                    var welcoming;
+                                    switch(date.getUTCHours())
+                                    {
+                                        case 0:
+                                        case 1:
+                                        case 2:
+                                        case 3:
+                                        case 4:
+                                        case 5:
+                                            return "Welcome ";
+                                            break;
+                                        case 6:
+                                        case 7:
+                                        case 8:
+                                        case 9:
+                                        case 10:
+                                        case 11:
+                                            return "Good Morning ";
+                                            break;
+                                        case 12:
+                                        case 13:
+                                        case 14:
+                                        case 15:
+                                        case 16:
+                                        case 17:
+                                            return "Good Day ";
+                                            break;
+                                        case 18:
+                                        case 19:
+                                        case 20:
+                                        case 21:
+                                        case 22:
+                                        case 23:
+                                            return "Good Evening ";
+                                            break;
+                                    }
+                                } %>
+                                <h2 id=" Welcoming" class="orange-text">
+                                     <%=greeting() %> <%=UserInfo.info.firstname%> <%=UserInfo.info.surname%></h2>
                             </span>
                         </div >
                     </div >
@@ -28,8 +69,8 @@
 
                 <form class="card ">
 
-                    <div class="card-content input-field modal-trigger" data-target="PostStatus">
-                        <i class="left material-icons">border_color</i>
+                    <div class="card-content input-field modal-trigger grey-text" data-target="PostStatus">
+                        <i class="left material-icons black-text">border_color</i>
                         What's the vibe? Share with your friends...
                     </div>
                 </form>
@@ -45,6 +86,51 @@
                                 var msg = "Hey everyone, I think this post: '" + status.status + "' by "
                                     +  status.firstname + " " + status.surname + " ("
                                     + status.username + ") is pretty cool on Eternal Vibes";
+
+                                function getdate(timestamp) {
+                                    var date = new Date(timestamp *1000);
+                                    var postdate;
+                                    switch (date.getUTCMonth()) {
+                                        case 0:
+                                            postdate = "Jan" + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 1:
+                                            postdate = "Feb " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 2:
+                                            postdate = "Mar " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 3:
+                                            postdate = "Apr " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 4:
+                                            postdate = "May " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 5:
+                                            postdate = "Jun " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 6:
+                                            postdate = "Jul " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 7:
+                                            postdate = "Aug " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 8:
+                                            postdate = "Sep " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 9:
+                                            postdate = "Oct " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 10:
+                                            postdate = "Nov " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            break;
+                                        case 11:
+                                            postdate = "Dec " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            break;
+                                    }
+                                    return postdate;
+                                }
+
                                 if(status.user_id == UserInfo.info.id)
                                 {%>
                                 <li class="collection-item avatar black-text"
@@ -52,24 +138,36 @@
                                     <div class="left-align collapsible-header" style="margin-top: 1%">
                                         <img src="images/profilePics/<%=status.user_id%>.png" alt=""
                                             class="circle" width="50%"  height="50%">
-                                        <span class="title"><%=status.firstname%> <%=status.surname%> &emsp;
-                                        </span><p>@<%=status.username%></p>
-                                        &emsp; &emsp; &emsp; <p id="statDate <%=status.timestamp%>" onload="setDate(<%=status.timestamp%>)"></p>
+                                        <span class="title">
+                                            <strong>
+                                                <%=status.firstname%> <%=status.surname%>
+                                            </strong>
+                                            &emsp;
+                                        </span>
+                                        <p>@<%=status.username%></p>
+                                        &emsp; &emsp; &emsp; <p > <%=getdate(status.timestamp)%></p>
 
                                     </div>
                                     <br>
-                                    <p class="flow-text"><%=status.status%></p>
+                                    <blockquote><p class="flow-text"><%=status.status%></p></blockquote>
                                     <br>
-                                    <%if( status.liked  > 0)
-                                    { %>
-                                    (<%= status.liked %>) likes &emsp; &emsp;
-                                    <%}
-                                    else{%>
-                                    no likes &emsp; &emsp;
-                                    <%}if( status.flag  > 0){ %>
-                                    <span class="red">(<%=status.flag%>) flags</span>
-                                    <%}else{%>
-                                    <%}%> no flags
+                                    <p>
+                                        <strong>
+                                        <%if( status.liked  > 0)
+                                        { %>
+                                            <%= status.liked %> likes &emsp; &emsp;
+                                        <%}
+                                        else
+                                        {%>
+                                            no likes &emsp; &emsp;
+                                            <%}if( status.flag  > 0){ %>
+                                            <span class="red"><%=status.flag%> flags</span>
+                                        <%}else
+                                        {%>
+                                            no flags
+                                        <%}%>
+                                        </strong>
+                                    </p>
                                     <hr>
                                     <div class="collapsible-body white-text" style="background-color: white">
                                         <ul>
@@ -116,15 +214,18 @@
 
                                     <div class="left-align collapsible-header" style="margin-top: 1%;">
                                         <img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
-                                        <%var theDate = new Date(status.timestamp* 1000); %>
-                                        <span class="title"><%=status.firstname%> <%=status.surname%> &emsp;
+                                        <span class="title">
+                                            <strong>
+                                                <%=status.firstname%> <%=status.surname%>
+                                            </strong> &emsp;
                                             @<%=status.username%> &emsp; &emsp;&emsp;
-                                            <%= theDate.getDate()%> <%= theDate.getMonth()%>
+                                            <%= getdate(status.timestamp)%>
                                         </span>
                                     </div>
                                     <br>
-                                    <p class="flow-text"><%=status.status%></p>
+                                    <blockquote><p class="flow-text"><%=status.status%></p></blockquote>
                                     <br>
+                                    <p>
                                     <%if( status.liked  > 0)
                                     { %>
                                     (<%= status.liked %>) likes &emsp; &emsp;
@@ -132,6 +233,7 @@
                                     else{%>
                                     no likes &emsp; &emsp;
                                     <%}%>
+                                    </p>
                                     <hr>
                                     <div class="collapsible-body white-text" >
                                         <ul>
@@ -247,15 +349,17 @@
         </div >
 
 <!-- DISPLAYS TOP ARTISTS AND GENRE STATISTICS TO THE USER -->
-        <div class="col s4" >
+        <div class="col s4" style="margin-top: 15%;" >
             <ul id="staggered-test2" >
-                <li class="" style="transform: translateX(0px); opacity: 0; margin-bottom: 4%" >
-                    <div class="card white lighten-2 with-header" >
-                        <div class="card-content" style="margin-bottom: 10%">
-                            <span class="card-title collection-header" >Top Artists </span >
+                <li class="" style="transform: translateX(0px); opacity: 0;" >
+                    <div class="card lighten-2 with-header" style="background-color:transparent;margin-bottom: 10%" >
+                        <div class="card-content" >
+                            <span class="card-title collection-header orange-text" >
+                                Top Artists
+                            </span >
                         </div >
                         <ul class="collection collapsible popout" data-collapsible="accordion"
-                            style="border: transparent;" >
+                            style="border: transparent; margin-bottom: 10%" >
                             <% UserInfo.TopArtists.forEach(function (output) { %>
                             <li class="collection-item avatar black-text"  style="background-color: white">
                                 <%console.log(output)%>
@@ -276,7 +380,7 @@
                             <% }); %>
                         </ul >
                     </div >
-                    <div class="card white lighten-2" >
+                    <div class="card white lighten-2" style="margin-top: 5%">
                         <div class="card-content white-text" >
                             <canvas id="myChart" width="400" height="400" ></canvas >
                         </div >
@@ -302,17 +406,7 @@
         Materialize.showStaggeredList('#staggered-test');
         Materialize.showStaggeredList('#staggered-test2');
         setUserID(<%=UserInfo.info.id%>);
-
     });
-
-    function setDate(timestamp)
-    {
-        var theDate = new Date(timestamp * 1000);
-        var date = getMonth(theDate.getMonth()) + " " + theDate.getDay();
-        $("#statDate"+timestamp).text(date);
-        alert("this wprl;s")
-
-    }
 
 
     //CODE TO REPORT A USER
