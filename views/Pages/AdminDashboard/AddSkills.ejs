@@ -3,20 +3,22 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head>
-<body>
+<body class="grey lighten-3">
 <main>
     <%var edtSkill%>
     <div class="row" >
         <%- include ./partials/nav.ejs %>
-        <div  class="center col s4 offset-s4 " style="margin-top: 5%">
-            <h2 align="center">Available Skills</h2>
-            <div id='sList' style="margin-top: 5%">
-                <ul class="card collapsible popout" style="background-color: transparent" >
+        <div class="center header card-content rectangle" style="width:100% ;height:200px;
+            background: url('images/background/background4.jpg'); background-size: cover;">
+        <div  class="center col s4 offset-s5 " style="margin-top: 18%">
+            <h2 class="orange-text" align="center">Available Skills</h2>
+            <div id='sList' style="margin-top: 7%">
+                <ul class="card collapsible popout"style="background-color: transparent" >
                     <% skills.forEach(function(skill)
                     {%>
-                    <li class="card-content">
-                        <div class="collapsible-header" style="background-color: transparent">
-                            <%= skill.name%>
+                    <li class="card-content white">
+                        <div class="collapsible-header">
+                            <blockquote><strong><%= skill.name%></strong></blockquote>
                         </div>
                     </li>
                     <%})%>
@@ -27,7 +29,7 @@
     </div>
 
     <div class="fixed-action-btn">
-         <a id="add" data-target="addskill" class="btn-floating btn-large waves-effect waves-light red">
+         <a id="add" data-target="addskill" class="btn-floating modal-trigger btn-large waves-effect waves-light red">
              <i class="material-icons">add</i>
          </a>
     </div>
