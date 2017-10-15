@@ -3,16 +3,16 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
-<body>
+<body class="grey lighten-3">
 <%- include ./partials/nav.ejs %>
     <div class="center header card-content rectangle" style="width:100% ;height:300px;
             background: url('images/background/background4.jpg'); background-size: cover;">
     </div>
     <div style="margin-top: 5%;margin-left: 15%">
-        <ul id="slide-out" class="tabs center-align brown-text" >
-            <li id="personalSettings" class="tab col s3" ><a href="#personal" >Personal Settings</a ></li >
-            <li id="password" class="tab col s3" ><a href="#passwords" >Change Password</a ></li >
-            <li id="genreAndSkill" class="tab col s3" ><a href="#genreAndSkills" >Genre and Skills</a ></li >
+        <ul id="slide-out" class="tabs center-align orange-text" >
+            <li id="personalSettings" class="tab col s3 orange-text" ><a href="#personal" >Personal Settings</a ></li >
+            <li id="password" class="tab col s3 orange-text" ><a href="#passwords" >Change Password</a ></li >
+            <li id="genreAndSkill" class="tab col s3 orange-text" ><a href="#genreAndSkills" >Genre and Skills</a ></li >
         </ul >
 
         <div id="personal" class="col s12 center-align" style="margin-bottom:7%; margin-top: 3%" >
@@ -100,6 +100,10 @@
                             </script>
                             <select id="genres">
                                 <option value="" disabled selected>Choose your Genre</option>
+                                <%genres.forEach(function(genre)
+                                {%>
+                                <option value="<%=genre.id%>"><%=genre.name%></option>
+                                <%});%>
                             </select>
                             <label>Genre</label>
                         </div>
@@ -107,7 +111,21 @@
                         <div class="input-field col s12">
                             <select multiple id="sSkills">
                                 <option value="" disabled selected>Choose your Skills</option>
-                                <option>Test</option>
+                                <%
+                                skills.forEach(function(skill)
+                                {
+                                    user.skillset.forEach(function(id)
+                                    {
+                                        if(skill.id == id)
+                                        {%>
+                                            <option value="<%=skill.id%>" selected><%=skill.name%></option>
+                                        <%}
+                                        else
+                                        {%>
+                                        <option value="<%=skill.id%>"><%=skill.name%></option>
+                                <%}
+                                })
+                                });%>
                             </select>
                             <label>Skills</label>
                         </div>
@@ -132,35 +150,6 @@
 
         //
         $('select').material_select();
-
-        //getSkills();
-        //API CALL USED TO GET SKILLS TWO DIFFERENT METHODS TRIED
-        // cODE DOWN HERE MAKES THE PAGE LOAD FOREVER
-        /*function getSkills()
-        {
-
-            $.ajax(
-            {
-                type: "GET",
-                async: true,
-                url: "https://eternalvibes.me/getSkills",
-                success: function(data) {  return data; alert('works'); },
-                error: Materialize("Cannot Get Skills, Api call not working", 5000)
-            });
-
-            var settings =
-                {
-                    "async": true,
-                    "crossDomain": true,
-                    "url": "https://eternalvibes.me/getSkills",
-                    "method": "GET"
-                }
-
-            $.ajax(settings).done(function (response)
-            {
-                alert("Api call does not send back anything");
-            });
-        }*/
 
     });
     //LOAD SIDE NAV PROFILE PICTURE
