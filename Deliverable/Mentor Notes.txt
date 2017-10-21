@@ -1,6 +1,11 @@
-13 October 2017 Mentor Notes
+Updated Mentor Notes
+21 October 2017 Mentor Notes
 
-** Website **
+** Slides **
+- Move the slides as you present to show relevant information.
+- Make use of keycards (should contain bullet points to glance at and remember what you want to say.)
+
+** Website UI**
 - Text a bit narrow and washed out, perhaps a larger font or bold style could help
 - Available skills are a bit difficult to read, make use of correct colour contrasts and backgrounds
 
@@ -8,4 +13,13 @@
 - Should be able to see all skills on the x-axis
 - Set time frames between multiple months/weeks/days 
   such as clicking a start date and end date and then showing reports/stats between those two dates
-- Have an option to convert the reports to a pdf file for easier reading, sharing and printing 
+- Have an option (like a button) to convert the reports to a pdf file for easier reading, sharing and printing 
+- Show a user's rating for each event that has finished by using a line graph. This report shows a musician's performance and credibility.
+- Show event history for a specific user, try sorting the history by a specific skill that the user can click on.
+  For example, only show all event history that has the only has the Drummer skill.
+  
+  Sort event history by other attributes like event visibility (public, private, etc)
+  
+- Show a bar graph that can be ordered such as the most common skills all users have to the least common skills and vice-versa.
+- You can show a user's followers and show which skill is the most common among the followers.
+- Show the top 5% or 10% of all users in the system with the highest overall skill ratings
