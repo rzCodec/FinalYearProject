@@ -8,23 +8,31 @@
 <main >
     <div class="row" >
         <%- include ./partials/nav.ejs %>
-        <div class="center header card-content rectangle" style="width:100% ;height:200px;
+        <div class=" header card-content rectangle" style="width:100% ;height:200px;
             background: url('images/background/background4.jpg'); background-size: cover;" >
             <!--FlaggedUsers Tab-->
+            <a href="#" data-activates="slide-out" class=" hide-on-large-only
+                                right-aligned large btn-floating button-collapse"
+               style="margin-top: 2%">
+                <i class="material-icons">menu</i>
+            </a>
             <div id="FlaggedUsers" class="col s6 offset-s4" style="margin-top: 18%" >
-                <h2 class="orange-text" align="center" >Flagged Users</h2 >
+                <h2 class="center orange-text" align="center" >Flagged Users</h2 >
                 <div >
                     <ul id="fUserList" class="collection truncate" >
-                        <%
+                        <% console.log(flaggedUsers);
                         if(flaggedUsers.length > 0)
                         {
                         flaggedUsers.forEach(function (user) { %>
                         <li class="collection-item avatar" >
                             <div card white darken-4 >
-                                <img src="images/profilePics/<%= user.userId %>.png" alt="" class="circle" >
-                                <span class="title" > <h3 ><%= user.username %> </h3 ></span >
-                                <p >Reason for flag: <%= user.reason %></p >
-                                </br>
+                                    <img src="images/profilePics/<%= user.userThatGotReported %>.png" alt="" class="circle" >
+                                    <span class="title" > <h3 ><%= user.username %> </h3 ></span >
+                                <br>
+                               <blockquote> <strong>Reason for flag:</strong> <%= user.reason %></blockquote>
+
+                                <hr>
+                                <div class="card-action">
                                 <a class="waves-effect waves-light btn"
                                    onclick="pardonUser(<%= user.userThatGotReported %>)" >
                                     <i class="material-icons left" >thumb_up</i >Pardon
@@ -33,6 +41,7 @@
                                    onclick="banUser(<%= user.userThatGotReported %>)" >
                                     <i class="material-icons left" >thumb_down</i >Ban
                                 </a >
+                                </div>
                             </div >
                         </li >
                         <% })}else { %>
