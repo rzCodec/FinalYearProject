@@ -5,40 +5,37 @@
 </head >
 <body class="grey lighten-3" >
 <%- include ./partials/nav.ejs %>
-<main>
+
+<main >
+    <%- include ../../Partials/UserInfo.ejs %>
     <div class="row" style="margin-left: 17%; margin-top: 1%" >
 
         <div class="col s7 offset-s1" >
-            <ul id="staggered-test">
-                <li style="transform: translateX(0px); opacity: 0; "  >
+            <ul id="staggered-test" >
+                <li style="transform: translateX(0px); opacity: 0; " >
                     <div id="header" class="card white darken-1"
                          style="background:  url('images/background/background3.jpg');background-size: cover;" >
-
                         <div class="card-content" >
+
                             <a href="#" data-activates="slide-out" class=" hide-on-large-only
-            right-aligned large btn-floating button-collapse"
+                                right-aligned large btn-floating button-collapse"
                                style="margin-top: 2%">
                                 <i class="material-icons">menu</i>
                             </a>
+
                             <span class="card-title center-align" >
-                            <a href="/profile">
-                                <img class="circle" src="images/profilePics/<%=UserInfo.info.id%>.png"
-                                style="height: 20%;width:25%;border-color: red; border: groove"></a>
-                                <% function greeting()
-                                {
+                            <a href="/profile" ><img class="circle" src="images/profilePics/<%= UserInfo.info.id %>.png"
+                                                     style="height: 15%;width:15%;border-color: red; border: groove" ></a >
+                                <% function greeting () {
                                     var date = new Date();
                                     var welcoming;
-                                    switch(date.getHours())
-                                    {
+                                    switch (date.getUTCHours()) {
                                         case 0:
                                         case 1:
                                         case 2:
                                         case 3:
                                         case 4:
                                         case 5:
-                                        case 21:
-                                        case 22:
-                                        case 23:
                                             return "Welcome ";
                                             break;
                                         case 6:
@@ -53,34 +50,31 @@
                                         case 13:
                                         case 14:
                                         case 15:
-                                            return "Good Afternoon ";
-                                            break;
                                         case 16:
                                         case 17:
                                             return "Good Day ";
                                             break;
                                         case 18:
-
                                         case 19:
                                         case 20:
+                                        case 21:
+                                        case 22:
+                                        case 23:
                                             return "Good Evening ";
                                             break;
-
                                     }
                                 } %>
-
-                            </span>
+                            </span >
                         </div >
                     </div >
                 </li >
 
-
-
-                    <div class="card-content" >
-                        <h2 id=" Welcoming" class="orange-text text-darken-4 center">
-                            <%=greeting() %> <%=UserInfo.info.firstname%> <%=UserInfo.info.surname%>
-                        </h2>
-                    </div>
+                <div class="card white" style="background:
+                url('images/background/background3.jpg');background-size: cover;" >
+                    <h2 id=" Welcoming" class="orange-text text-darken-3 center">
+                        <%=greeting() %> <%=UserInfo.info.firstname%> <%=UserInfo.info.surname%>
+                    </h2>
+                </div>
 
                 <div id="Timeline" class="card " style="margin-top: 5%;margin-bottom: 10%;
                     background-color: transparent; border: transparent" >
@@ -88,16 +82,51 @@
                         <ul id="posts" class="collection truncate collapsible"
                             data-collapsible="accordion" style="border: transparent; background-color: white">
                             <!--  DISPLAY FOLLOWING'S POSTS AND USER POSTS AND DIFFERENTIATE BETWEEN THEM -->
-                            <%UserInfo.Status.forEach(function(status)
-                            {
-                                var msg = "Hey everyone, I think this post: '" + status.status + "' by "
-                                    +  status.firstname + " " + status.surname + " ("
-                                    + status.username + ") is pretty cool on Eternal Vibes";
+                            <%if(UserInfo.Status.length == 0)
+                            {%>
+                            <div>
 
-                                function getdate(timestamp) {
+                                <div class="card col s4 slider" >
+                                    <ul class="slides">
+                                        <li>
+                                            <img src="/images/adverts//Ad4.jpeg">
+                                        </li>
+                                        <li>
+                                            <img src="/images/adverts/Ad5.jpeg">
+                                        </li>
+                                        <li>
+                                            <img src="/images/adverts/Ad3.jpg">
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="card col s4 ">
+                                    <div class="card-content">
+                                        <div class="center">
+                                            <strong>Start connecting with people and create events.</strong>
+                                            <br>
+                                            Get the app to create your first event.
+                                            <br>
+                                            <a href="https://play.google.com/store?hl=en" >
+                                                <img alt="Get it on Google Play"
+                                                     src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
+                                                     width='200' height='70' >
+                                            </a >
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <%}
+                            else {
+                            UserInfo.Status.forEach(function(status)
+                            {
+                                function getdate(timestamp)
+                                {
                                     var date = new Date(timestamp *1000);
                                     var postdate;
-                                    switch (date.getMonth()) {
+                                    switch (date.getMonth())
+                                    {
                                         case 0:
                                             postdate = "Jan" + date.getDay() +1 + " " + date.toLocaleTimeString();
                                             break;
@@ -138,77 +167,76 @@
                                     return postdate;
                                 }
 
-                                if(status.user_id == UserInfo.info.id)
-                                {%>
-                                <li class="collection-item avatar black-text"
-                                    style="border-bottom: groove; background-color: white">
-                                    <div class="left-align collapsible-header" style="margin-top: 1%">
-                                        <img src="images/profilePics/<%=status.user_id%>.png" alt=""
-                                            class="circle" width="50%"  height="50%" style="border: groove; border-color: red">
-                                        <span class="title">
+                            if(status.user_id == UserInfo.info.id)
+                            {%>
+                            <li class="collection-item avatar black-text"
+                                style="border-bottom: groove; background-color: white">
+                                <div class="left-align collapsible-header" style="margin-top: 1%">
+                                    <img src="images/profilePics/<%=status.user_id%>.png" alt=""
+                                         class="circle" width="50%"  height="50%" style="border: groove">
+                                    <span class="title">
                                             <strong>
                                                 <%=status.firstname%> <%=status.surname%>
                                             </strong>
                                             &emsp;
                                         </span>
-                                        <p>@<%=status.username%></p>
-                                        &emsp; &emsp; &emsp; <p > <%=getdate(status.timestamp)%></p>
+                                    <p>@<%=status.username%></p>
+                                    &emsp; &emsp; &emsp; <p > <%=getdate(status.timestamp)%></p>
 
-                                    </div>
-                                    <br>
-                                    <blockquote><p class="flow-text"><%=status.status%></p></blockquote>
-                                    <br>
-                                    <p>
-                                        <strong>
+                                </div>
+                                <br>
+                                <blockquote><p class="flow-text"><%=status.status%></p></blockquote>
+                                <br>
+                                <div class="card-action">
+                                    <strong>
                                         <%if( status.liked  > 0)
                                         { %>
-                                            <%= status.liked %> likes &emsp; &emsp;
+                                        <%= status.liked %> likes &emsp; &emsp;
                                         <%}
                                         else
                                         {%>
-                                            no likes &emsp; &emsp;
-                                            <%}if( status.flag  > 0){ %>
-                                            <span class="red"><%=status.flag%> flags</span>
-                                        <%}else
-                                        {%>
-                                            no flags
+                                        no likes &emsp; &emsp;
                                         <%}%>
-                                        </strong>
-                                    </p>
-                                </li>
+                                    </strong>
+                                </div>
+                            </li>
                             <%}
                             else
                             {%>
                             <!-- CUSTOM OPTIONS FOR POSTS THAT ARENT FROM THE USER SUCH AS UNFOLLOW, REPORTING -->
-                                <li class="collection-item avatar black-text"
-                                    style="border-bottom: groove; background-color: white">
-                                    <div class="left-align collapsible-header" style="margin-top: 1%;">
-                                        <a>
-                                            <img src="images/profilePics/<%=status.user_id%>.png" alt=""
+                            <li class="collection-item avatar black-text"
+                                style="border-bottom: groove; background-color: white">
+                                <div class="left-align collapsible-header" style="margin-top: 1%;">
+                                    <a>
+                                        <img src="images/profilePics/<%=status.user_id%>.png" alt=""
                                              class="circle">
-                                        </a>
-                                        <span class="title">
+                                    </a>
+                                    <span class="title">
                                             <strong>
                                                 <%=status.firstname%> <%=status.surname%>
                                             </strong> &emsp;
                                             @<%=status.username%> &emsp; &emsp;&emsp;
-                                            <%= getdate(status.timestamp)%>
+                                        <%= getdate(status.timestamp)%>
                                         </span>
-                                    </div>
-                                    <br>
-                                    <blockquote><p class="flow-text"><%=status.status%></p></blockquote>
-                                    <br>
-                                    <p>
+                                </div>
+                                <br>
+                                <blockquote><p class="flow-text"><%=status.status%></p></blockquote>
+                                <br>
+                                <p>
+                                <div class="card-action">
+                                    <strong>
                                     <%if( status.liked  > 0)
                                     { %>
-                                    (<%= status.liked %>) likes &emsp; &emsp;
+                                    <%= status.liked %> likes &emsp; &emsp;
                                     <%}
                                     else{%>
                                     no likes &emsp; &emsp;
                                     <%}%>
-                                    </p>
-                                </li>
-                            <%}})%>
+                                    </strong>
+                                </div>
+                                </p>
+                            </li>
+                            <%}})}%>
                         </ul>
                     </div >
                 </div >
@@ -216,39 +244,44 @@
             </ul >
         </div >
 
-<!-- DISPLAYS TOP ARTISTS AND GENRE STATISTICS TO THE USER -->
-        <div class="col s4" style="margin-top: 15%;" >
+        <!-- DISPLAYS TOP ARTISTS AND GENRE STATISTICS TO THE USER -->
+        <div class="col s4"  >
             <ul id="staggered-test2" >
                 <li class="" style="transform: translateX(0px); opacity: 0;" >
-                    <div class="card lighten-2 with-header" style="background-color:transparent;margin-bottom: 10%" >
+                    <div class="card lighten-2 with-header" style="background-color:transparent;margin-bottom: 10%; " >
                         <div class="card-content" >
-                            <span class="card-title collection-header center orange-text text-darken-2" >
+                            <span class="card-title collection-header orange-text" >
                                 Top Artists
                             </span >
                         </div >
                         <ul class="collection collapsible popout" data-collapsible="accordion"
-                            style="border: transparent; margin-bottom: 10%" >
+                            style="border: transparent; margin-bottom: 10%; padding-bottom: 20px" >
                             <% UserInfo.TopArtists.forEach(function (output) { %>
-                            <li class="collection-item avatar black-text"  style="background-color: white">
-                                <%console.log(output)%>
-                                <div class="collapsible-header">
+                            <li class="collection-item avatar black-text" style="background-color: white" >
+                                <% console.log(output) %>
+                                <div class="collapsible-header" >
                                     <img src="images/profilePics/<%= output.id %>.png"
-                                         alt="<%output.username %>" class="circle" >
-                                <span class="title" ><%= output.username %></span >
-
-                                </div>
-                                <p >Rank: <%= output.count %>
+                                         alt="<% output.username %>" class="circle" >
+                                    <span class="title" ><%= output.username %></span >
+                                </div >
+                                <p >Rating: <%= output.count %>
                                 </p >
-                                <div class="collapsible-body">
-                                    <span>
+                                <div class="collapsible-body" >
+                                    <span >
                                         <a href="#" class="secondary-content" ><%= output.liked %></a >
-                                    </span>
-                                </div>
+                                    </span >
+                                </div >
                             </li >
                             <% }); %>
                         </ul >
                     </div >
-                    <div class="card white lighten-2" style="margin-top: 5%">
+
+                    <div class="card with-header" style="margin-top: 5%" >
+                        <div class="card-content center" >
+                            <span class="card-title collection-header orange-text darken-4" >
+                                Number of Users Per Genre
+                            </span >
+                        </div >
                         <div class="card-content white-text" >
                             <canvas id="myChart" width="400" height="400" ></canvas >
                         </div >
@@ -259,106 +292,31 @@
     </div >
     </div >
 </main >
-<div class=" hide-on-med-and-down" style="margin-left: 22% "><%- include ../../Partials/footer.ejs %></div>
-<div class=" hide-on-large-only"><%- include ../../Partials/footer.ejs %></div>
+
 
 <script >
 
-    var userID = <%=UserInfo.info.id%>;
-    $(document).ready(function(){
-        $('.modal').modal();
-        $('.slider').slider();
-        $('.carousel').carousel();
-        $('.collapsible').collapsible();
-        $('.materialboxed').materialbox();
-        Materialize.showStaggeredList('#staggered-test');
-        Materialize.showStaggeredList('#staggered-test2');
-        setUserID(<%=UserInfo.info.id%>);
-    });
+  var userID = <%= UserInfo.info.id %>
+  $(document).ready(function () {
+    $('.modal').modal();
+    $('.slider').slider();
+    $('.carousel').carousel();
+    $('.collapsible').collapsible();
+    $('.materialboxed').materialbox();
+    Materialize.showStaggeredList('#staggered-test');
+    Materialize.showStaggeredList('#staggered-test2');
+    setUserID(<%= UserInfo.info.id %>);
+  })
 
-
-    //CODE TO REPORT A USER
-    function ReportUser(reportId, Reason)
-    {
-
-        $.post("https://eternalvibes.me/reportUser",
-            {
-                userThatReported: userID,
-                userThatGotReported:reportId,
-                reason: Reason
-            },
-            function (data)
-            {
-                console.log("Data: " + data);
-                if(data == 200)
-                {
-
-                }
-        });
-        Materialize.toast('User has been Reported and will be evaluated', 5000);
-    }
-
-    //CODE TO FOLLOW/UNFOLLOW A USER
-    function follow(followID)
-    {
-        var link = "https://eternalvibes.me/stopFollowing/" + userID + "/" + followID;
-        $.get("https://eternalvibes.me/stopFollowing/" + userID + "/" + followID,
-        function (data)
-        {
-            console.log("Data: " + data);
-            if (data == 200)
-            {
-                Materialize.toast('User Unfollowed', 5000);
-            }
-            else
-            {
-                Materialize.toast('User Unfollowed', 5000);
-            }
-        });
-        /*if($('#follow'+followID).value() === "Unfollow User")
-        {
-
-            Materialize.toast('User Unfollowed', 5000);
-
-        }
-        else
-        {
-            var link = "https://eternalvibes.me/followUser/" + userID + "/" + followID;
-            $.get(link,
-                function (data)
-                {
-                    console.log("Data: " + data);
-                    if(data == 200)
-                    {
-                        Materialize.toast('User now being followed', 5000);
-                    }
-                });
-
-            $('#follow'+unfollowID).value("Unfollow User");
-        }*/
-    }
-
-    //SHARE A POST ON FACEBOOK
-    function Facebook(cptn)
-    {
-        FB.ui({
-                method: 'feed',
-                link: 'https://eternalvibes.me',
-                caption: cptn},
-            function(response){}
-            );
-    }
-
-
-  var ctx = document.getElementById("myChart");
-  var label = [];
-  var count = [];
-  var colours = [];
+  var ctx = document.getElementById('myChart')
+  var label = []
+  var count = []
+  var colours = []
 
   <% UserInfo.TopGenres.forEach(function (output) { %>
-  label.push("<%= output.name %>");
-  count.push(<%= output.count %>);
-  colours.push(hexToRGB('#' + intToRGB(hashCode('<%= output.name %>')), 0.7));
+  label.push('<%= output.name %>')
+  count.push(<%= output.count %>)
+  colours.push(hexToRGB('#' + intToRGB(hashCode('<%= output.name %>')), 0.7))
   <% }); %>
 
   var myChart = new Chart(ctx, {
@@ -368,10 +326,10 @@
       datasets: [
         {
           data: count,
-          backgroundColor: colours
-        }]
-    }
-  });
+          backgroundColor: colours,
+        }],
+    },
+  })
 
   function hashCode (str) { // java String#hashCode
     var hash = 0
@@ -398,7 +356,6 @@
       return 'rgb(' + r + ', ' + g + ', ' + b + ')'
     }
   }
-
 
 </script >
 
