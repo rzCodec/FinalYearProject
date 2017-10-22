@@ -84,6 +84,9 @@
 <%- include ../../Partials/footer.ejs %>
 <script >
   $(document).ready(function () {
+      $('.slider').slider();
+      $('.slider').slider('start');
+      $('.slider').slider('next');
     $("#formValidate").validate({
       rules: {
         username: {
