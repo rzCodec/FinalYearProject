@@ -2,10 +2,11 @@
 <html lang="en" >
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js" ></script >
 </head >
 <body class="grey lighten-3" >
 <main >
-    <div class="row" >
+    <div id="reportPage" class="row" >
         <%- include ./partials/nav.ejs %>
         <div class="center header card-content rectangle" style="width:100% ;height:200px;
             background: url('images/background/background4.jpg'); background-size: cover;" >
@@ -121,7 +122,7 @@
                                 </h4 >
                             </li >
                             <li class="collection-header" >
-                                <h4 ><h1 id="signups" class="left-align" >Planned
+                                <h4 ><h1 id="upcomingEvents" class="left-align" >Planned
                                         events: <%= Reports.events24.count %></h1 >
 
                                 </h4 >
@@ -152,6 +153,9 @@
                         </ul >
                     </li >
                 </ul >
+                <button type="button" id="download-pdf" >
+                    Download PDF
+                </button >
             </div >
 
         </div >
@@ -458,9 +462,9 @@
       $('#signups').html("Signups: " + data.signups)
       $('#upcomingEvents').html("Upcoming Events: " + data.upcomingEvents)
       $('#finishedEvents').html("Finished Events: " + data.finishedEvents)
-      if(data.eventsAverageRate===null){
+      if (data.eventsAverageRate === null) {
         $('#eventsAverageRate').html("Events Average Ratings: " + 0)
-      }else{
+      } else {
         $('#eventsAverageRate').html("Events Average Ratings: " + data.eventsAverageRate)
       }
 
@@ -488,6 +492,46 @@
   var yyyy = today.getFullYear();
   picker.set('select', [yyyy, mm, dd])
 
+  document.getElementById('download-pdf').addEventListener("click", downloadPDF);
+
+  function downloadPDF () {
+
+    var canvas = document.querySelector('#myChartEventsPerDay');
+    var canvasImg = canvas.toDataURL("image/PNG");
+
+    var canvas2 = document.querySelector('#myChart');
+    var canvasImg2 = canvas2.toDataURL("image/PNG");
+
+    var canvas3 = document.querySelector('#myChartLocationSpread');
+    var canvasImg3 = canvas3.toDataURL("image/PNG");
+
+    var canvas4 = document.querySelector('#myChartSkills');
+    var canvasImg4 = canvas4.toDataURL("image/PNG");
+
+    var canvas5 = document.querySelector('#myChartSignup');
+    var canvasImg5 = canvas5.toDataURL("image/PNG");
+
+    var canvas6 = document.querySelector('#myChartPostsPerDay');
+    var canvasImg6 = canvas6.toDataURL("image/PNG");
+
+    var doc = new jsPDF();
+
+    doc.addImage(canvasImg, 'PNG', 10, 10, 100, 100,"a","FAST");
+    doc.addImage(canvasImg2, 'PNG', 10, 100, 100, 100,"ab","FAST");
+    doc.addImage(canvasImg3, 'PNG', 10, 200, 100, 100,"ac","FAST");
+    doc.addPage();
+    doc.addImage(canvasImg4, 'PNG', 10, 10, 100, 100,"ad","FAST");
+    doc.addImage(canvasImg5, 'PNG', 10, 100, 100, 100,"ae","FAST");
+    doc.addImage(canvasImg6, 'PNG', 10, 200, 100, 100,"fa","FAST");
+    doc.addPage();
+    doc.text(10, 10, $('#signups').text());
+    doc.text(10, 40, $('#upcomingEvents').text());
+    doc.text(10, 70, $('#finishedEvents').text());
+    doc.text(10, 100, $('#eventsAverageRate').text());
+    doc.text(10, 130, $('#followers').text());
+    doc.text(10, 160, $('#friends').text());
+    doc.save('canvas.pdf');
+  }
 </script >
 <script >
   Materialize.showStaggeredList('#staggered-test')
