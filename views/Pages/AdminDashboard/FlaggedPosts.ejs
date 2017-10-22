@@ -12,9 +12,13 @@
             background: url('images/background/background4.jpg'); background-size: cover;" >
         </div >
         <!-- Information displayed in each tab-->
+        <a href="#" data-activates="slide-out" class=" hide-on-large-only
+                                right-aligned large btn-floating button-collapse"
+           style="margin-top: 2%">
+            <i class="material-icons">menu</i>
+        </a>
         <div id="FlaggedPosts" class=" col s6 offset-s4 " style="margin-top: 4%" >
             <h2 class="orange-text" align="center" >Flagged Posts</h2 >
-            </br>
             <div >
                 <ul id="fPostList" class="collection truncate collapsible popout"
                     data-collapsible="accordion" >
@@ -25,7 +29,8 @@
                     { %>
                     <li id="post<%= post.status_id %>" name="post<%= post.status_id %>" class="collection-item avatar" >
                         <div class=" card-title white darken-4" >
-                            <img src="images/profilePics/<%= post.user_id %>.png" alt="" class="circle" width="60%" height="60%" >
+                            <img src="images/profilePics/<%= post.user_id %>.png" alt="" class="circle" width="60%"
+                                 height="60%" >
                             <span > <h3 ><%= post.username %> </h3 ></span >
                         </div >
                         <div >
@@ -73,16 +78,15 @@
 
     </div >
 </main >
-<%- include ../../Partials/footer.ejs %>
+
 <script >
 
   $(document).ready(function () {
-    if (info.admin == 0) {
+    if (info.admin === 0) {
       history.back()
     }
   })
 
-  var postCount = 0
 
   Materialize.showStaggeredList('#FlaggedPosts')
 
@@ -92,13 +96,10 @@
       {
         statusId: id,
       },
-      function (data) {
-        console.log('Data: ' + data)
-        if (data == 200) {
-          Materialize.toast('Removed Post', 500)
-          location.reload()
-        }
-        $('#post'+id).html('')
+      function () {
+        Materialize.toast('Removed Post', 500)
+        location.reload()
+
       })
   }
 
@@ -108,13 +109,10 @@
       {
         statusId: id,
       },
-      function (data) {
-        console.log('Data: ' + data)
-        if (data == 200) {
-          Materialize.toast('Pardoned Post', 500)
-          location.reload()
-        }
-        $('#post'+id).html('')
+      function () {
+        Materialize.toast('Pardoned Post', 500)
+        location.reload()
+
       })
 
   }
