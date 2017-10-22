@@ -23,8 +23,13 @@
                 <img class="circle center" src="images/profilePics/<%= user.id %>.png" alt=""
                      style="width:40%;height:40%; margin-top: 20%" >
             </div >
-
         </div >
+
+        <a href="#" data-activates="slide-out" class=" hide-on-large-only
+            right-aligned large btn-floating button-collapse"
+           style="margin-top: 2%">
+            <i class="material-icons">menu</i>
+        </a>
 
         <div class="card-title center-align hide-on-med-and-down" style="margin-top: 10%;" >
             <div class="center" style="display: inline-block" >
@@ -75,7 +80,8 @@
 
             <% skills.forEach(function (skill) {
             %>
-            <div class=" small center chip" style="margin-top: 1%" >
+            <div class="center chip" style="margin-top: 1%" >
+                <img src="images/profilePics/<%= user.id %>.png" alt="">
                 <%= skill.name %>
             </div >
             <% }) %>
@@ -87,9 +93,9 @@
 
                 <li id="Posts" class="tab col s3" >
                     <a href="#Timeline" onclick="Materialize.showStaggeredList('#Timeline')" class="center-block" >
-                        <i class="small material-icons right-align" >dehaze</i >Timeline
+                        Timeline
                         <% if(UserPosts.length > 0){ %>
-                        <span id="numPosts" class="badge" ><%= UserPosts.length %></span >
+                        <span id="numPosts" class=" blue badge white-text" ><%= UserPosts.length %></span >
                         <% } %>
                     </a >
                 </li >
@@ -98,14 +104,18 @@
                     <a href="#AttendedEvents" onclick="Materialize.showStaggeredList('#AttendedEvents')" >
                         Events Attended
                         <% if(UserFinishedEvents.length > 0){ %>
-                        <span id="numUsers" class="badge blue" > <%= UserFinishedEvents.length %></span >
+                        <span id="numUsers" class="badge blue white-text" > <%= UserFinishedEvents.length %></span >
                         <% } %>
                     </a >
                 </li >
 
                 <li id="Upcoming" class="tab col s3" >
                     <a href="#UpcomingEvents" onclick="Materialize.showStaggeredList('#UpcomingEvents')" >
-                        Upcoming Events</a >
+                        Upcoming Events
+                        <% if(UserUpcomingEvents.length > 0){ %>
+                        <span id="numUsers" class="badge blue white-text" > <%= UserUpcomingEvents.length %></span >
+                        <% } %>
+                    </a >
                 </li >
 
             </ul >
@@ -114,172 +124,197 @@
 
     </div >
 
+    <%
+    function getdate(timestamp) {
+        var date = new Date(timestamp);
+        var postdate;
+        switch (date.getUTCMonth()) {
+            case 0:
+                postdate = "Jan" + date.getDay() +1 + " " + date.toLocaleTimeString();
+                break;
+            case 1:
+                postdate = "Feb " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                break;
+            case 2:
+                postdate = "Mar " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                break;
+            case 3:
+                postdate = "Apr " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                break;
+            case 4:
+                postdate = "May " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                break;
+            case 5:
+                postdate = "Jun " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                break;
+            case 6:
+                postdate = "Jul " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                break;
+            case 7:
+                postdate = "Aug " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                break;
+            case 8:
+                postdate = "Sep " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
+                break;
+            case 9:
+                postdate = "Oct " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                break;
+            case 10:
+                postdate = "Nov " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                break;
+            case 11:
+                postdate = "Dec " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                break;
+        }
+        return postdate;
+    }
+    %>
+
+
     <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%; margin-left: 27%; margin-right:27%" >
         <div >
             <ul id="posts" class="collection truncate collapsible" >
                 <% if(UserPosts.length > 0){
                 UserPosts.forEach(function (post)
-                {
-                    var msg = "Hey everyone, I think this post: '" + post.status + "' by "
-                            + user.firstname + " " + user.surname + " ( "
-                            + user.username + ") is pretty cool on Eternal Vibes https://eternalvibes.me";
-                %>
+                { %>
                 <li class="collection-item card-content avatar hoverable black-text white " >
-                    <div class="collapsible-header" >
+                    <div class="collapsible-header">
                         <img src="images/profilePics/<%= post.user_id %>.png"
                              alt="<%= user.username %>" width="100" height="100" class="circle" >
-                        <%
-                            function getdate (timestamp) {
-                                var date = new Date(timestamp);
-                                var postdate;
-                                switch (date.getUTCMonth()) {
-                                    case 0:
-                                        postdate = "Jan" + date.getDay() + 1 + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 1:
-                                        postdate = "Feb " + date.getDay() + 1 + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 2:
-                                        postdate = "Mar " + date.getDay() + 1 + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 3:
-                                        postdate = "Apr " + date.getDay() + 1 + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 4:
-                                        postdate = "May " + date.getDay() + 1 + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 5:
-                                        postdate = "Jun " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 6:
-                                        postdate = "Jul " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 7:
-                                        postdate = "Aug " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 8:
-                                        postdate = "Sep " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 9:
-                                        postdate = "Oct " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 10:
-                                        postdate = "Nov " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
-                                        break;
-                                    case 11:
-                                        postdate = "Dec " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
-                                        break;
-                                }
-                                return postdate;
-                            }
-                            var theDate = getdate(post.timestamp * 1000);
-                        %>
-                        <blockquote >
-                            <strong ><%= user.firstname %> <%= user.surname %></strong > &emsp; <%= user.username %>
-                            &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;<%= theDate %>
-                            </br>
-                            </br>
-                            <p class="flow-text" ><%= post.status %></p >
-                        </blockquote >
-                    </div >
-
-                    <p >
-                        <% if( post.liked > 0)
+                        <%var theDate = getdate(post.timestamp * 1000);%>
+                        <strong><%= user.firstname %> <%= user.surname %></strong> &emsp; <%= user.username %>
+                        &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;<%= theDate%>
+                    </div>
+                    <br>
+                    <br>
+                    <blockquote>
+                        <p class="flow-text"><%= post.status %></p>
+                    </blockquote>
+                    <div class="card-action">
+                        <strong>
+                        <%if( post.liked  > 0)
                         { %>
-                        (<%= post.liked %>) likes &emsp; &emsp;
-                        <% }
-                        else{ %>
+                        <%= post.liked %> likes &emsp; &emsp;
+                        <%}
+                        else{%>
                         no likes &emsp; &emsp;
-                        <% }if( post.flag > 0){ %>
-                        <span class="red" >(<%= post.flag %>) flags</span >
-                        <% }else{ %>
-                        <% } %>
-                    </p >
-                    <hr >
-
+                        <%}%>
+                        </strong>
+                    </div >
                 </li >
                 <% })
-                }else{ %>
-                <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%" >
-                    <div class="card-content" >
-                        <div class="center" >
-                            <strong >Start connecting with people and create events.</strong >
-                            <br >
+                }else{%>
+                <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%">
+                    <div class="card-content">
+                        <div class="center">
+                            <strong>Start connecting with people and create events.</strong>
+                            <br>
                             Get the app to create your first event.
-                            <br >
+                            <br>
                             <a href="https://play.google.com/store?hl=en" >
                                 <img alt="Get it on Google Play"
                                      src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
                                      width='200' height='70' >
                             </a >
-                        </div >
-                    </div >
-                </div >
-                <% } %>
+                        </div>
+                    </div>
+                </div>
+                <%}%>
             </ul >
         </div >
     </div >
 
     <div id="UpcomingEvents" class="col s12 offset-l2"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 25%; margin-right:10%" >
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 25%; margin-right:27%" >
         <div >
             <ul id="posts" class="collection truncate collapsible popout" data-collapsible="accordion" >
-                <% if(UserUpcomingEvents == null || UserUpcomingEvents == "")
+                <% console.log(UserUpcomingEvents);
+                if(UserUpcomingEvents == null || UserUpcomingEvents == "")
                 { %>
-                <div >
-                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%" >
-                        <div class="card-content" >
-                            <div class="center" >
-                                <strong >Start connecting with people and create events.</strong >
-                                <br >
+                <div>
+                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%">
+                        <div class="card-content">
+                            <div class="center">
+                                <strong>Start connecting with people and create events.</strong>
+                                <br>
                                 Get the app to create your first event.
-                                <br >
+                                <br>
                                 <a href="https://play.google.com/store?hl=en" >
                                     <img alt="Get it on Google Play"
                                          src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
                                          width='200' height='70' >
                                 </a >
-                            </div >
-                        </div >
-                    </div >
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="card col s4 slider" style="width: 50% ;height: 50%" >
-                        <ul class="slides" >
-                            <li >
-                                <img src="/images/Ad.jpg" >
-                            </li >
-                            <li >
-                                <img src="/images/Ad2.jpg" >
-                            </li >
-                        </ul >
+                    <div class="card col s4 slider" style="width: 50% ;height: 50%">
+                        <ul class="slides">
+                            <li>
+                                <img src="/images/Ad.jpg">
+                            </li>
+                            <li>
+                                <img src="/images/Ad2.jpg">
+                            </li>
+                        </ul>
 
-                    </div >
+                    </div>
 
-                </div >
-                <% }else
+                </div>
+                <%}else
                 {
                 UserUpcomingEvents.forEach(function (event)
-                { %>
-                <li class="collection-item avatar" >
-                    <div class="collapsible-header" >
-                        <img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png" class="circle" >
-                        <span class="title" >Title: <%= event.title %></span >
-                        <p ><%= event.description %></p >
-                        <div id="finDetails" class="collapsible-body" >
-                            <div >
-                                <div class="card-content" >
-                                    Event Details
-                                    Event Date
-                                    Overall Ratig for event
-                                    <br >
-                                    Users: + Skill and Rating
-                                    <br >
-                                    Comments ordered by User
-                                </div >
-                            </div >
-                        </div >
+                {%>
+                <li class="collection-item avatar white black-text" >
+                    <div class="collapsible-header">
+                        <img src="/images/profilePics/<%= event.host_user_id %>.png" alt="<%= event.title %>"
+                             class="circle" >
+                        <span class="title" >
+                            <h4><%= event.title %></h4>
+                        </span >
                     </div >
+                    <br>
+                    <blockquote ><%= event.description %></blockquote >
+                    <div id="finDetails" class="collapsible-body white black-text">
+                        <div>
+                            <%
+                                var eventcreated = getdate(event.createdTimestamp);
+                                var eventdate= getdate(event.date);
+                            %>
+                            <div class="card-content black-text white">
+                                <ul class="collection">
+                                    <li class="collection-item">
+                                        <strong> Date Created: </strong> <%=eventcreated%>
+                                    </li>
+                                    <li class="collection-item">
+                                        <strong>Date of Event: </strong><%=eventdate%>
+                                    </li>
+                                    <li class="collection-item">
+                                        <strong>Duration: </strong><%=event.duration%> min
+                                    </li>
+                                    <li class="collection-item">
 
+
+                                        <%if(event.event_skills.length > 0)
+                                        {%>
+                                        <strong class="collection-header">Skills Required:</strong>
+                                        <ul class="collection">
+                                            <%event.event_skills.forEach(function(skill)
+                                            {%>
+                                            <li class="collection-item"><%= skill.name%></li>
+
+                                            <%})%></ul>
+
+                                        <%}else{%>
+                                        <strong class="collection-header">Skills Required:</strong> TBA
+                                        <%}%>
+
+                                    </li>
+                                    <br>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </li >
                 <% })} %>
             </ul >
@@ -287,72 +322,89 @@
     </div >
 
     <div id="AttendedEvents" class="col s12 modal-trigger"
-         style="margin-top: 5%;margin-bottom: 10%; margin-left: 25%; margin-right:10%" >
+         style="margin-top: 5%;margin-bottom: 10%; margin-left: 25%; margin-right:27%" >
         <div >
             <ul id="posts" class="collection truncate collapsible popout" data-collapsible="accordion" >
                 <%
-                if(UserFinishedEvents == null || UserFinishedEvents == "")
-                { %>
-                <div >
-                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 5%" >
-                        <div class="card-content" >
-                            <div class="center" >
-                                <strong >Start connecting with people and create events.</strong >
-                                <br >
+                if(UserFinishedEvents.length == 0 )
+                {%>
+                <div>
+                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 5%">
+                        <div class="card-content">
+                            <div class="center">
+                                <strong>Start connecting with people and create events.</strong>
+                                <br>
                                 Get the app to create your first event.
-                                <br >
+                                <br>
                                 <a href="https://play.google.com/store?hl=en" >
                                     <img alt="Get it on Google Play"
                                          src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
                                          width='200' height='70' >
                                 </a >
-                            </div >
+                            </div>
 
-                        </div >
-                    </div >
+                        </div>
+                    </div>
 
-                    <div class="card col s4 slider" style="width: 50% ;height: 50%;" >
-                        <ul class="slides" >
-                            <li >
-                                <img src="/images/Ad.jpg" >
-                            </li >
-                            <li >
-                                <img src="/images/Ad2.jpg" >
-                            </li >
-                        </ul >
+                    <div class="card col s4 slider" style="width: 50% ;height: 50%;">
+                        <ul class="slides">
+                            <li>
+                                <img src="/images/Ad.jpg">
+                            </li>
+                            <li>
+                                <img src="/images/Ad2.jpg">
+                            </li>
+                        </ul>
 
-                    </div >
+                    </div>
 
-                </div >
+                </div>
 
-                <% }
+                <%}
                 else
                 {
                 UserFinishedEvents.forEach(function (event)
                 { %>
-                <li class="collection-item avatar" >
-                    <div class="collapsible-header" >,
-                        <img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png"
+                <li class="collection-item avatar white black-text" >
+                    <div class="collapsible-header">
+                        <img src="/images/profilePics/<%= event.host_user_id %>.png" alt="<%= event.title %>"
                              class="circle" >
-                        <span class="title" >Title: <%= event.title %></span >
-                        <p ><%= event.description %></p >
+                        <span class="title" >
+                            <h4><%= event.title %></h4>
+                        </span >
                     </div >
-
-                    <div id="finDetails" class="collapsible-body" >
-                        <div >
-                            <div class="card-content" >
-
-                                Event Details
-                                Date of Event:
-                                Overall Ratig for event
-                                <br >
-                                Users: + Skill and Rating
-                                <br >
-                                Comments ordered by User
-                            </div >
-                        </div >
-
-                    </div >
+                    <br>
+                    <blockquote ><%= event.description %></blockquote >
+                    <div id="finDetails" class="collapsible-body white black-text">
+                        <div>
+                            <%
+                                var eventcreated = getdate(event.createdTimestamp);
+                                var eventdate= getdate(event.date);
+                            %>
+                            <div class="card-content black-text white">
+                                <ul class="collection">
+                                    <li class="collection-item">
+                                        <strong>Date Created: </strong> <%=eventcreated%>
+                                    </li>
+                                    <li class="collection-item">
+                                        <strong>Date of Event: </strong><%=eventdate%>
+                                    </li>
+                                    <li class="collection-item">
+                                        <strong>Duration: </strong><%=event.duration%> min
+                                    </li>
+                                    <li class="collection-item">
+                                        <strong class="collection-header">Skills Required:</strong>
+                                        <ul class="collection">
+                                            <%event.event_skills.forEach(function(skill){%>
+                                            <li class="collection-item"><%= skill.name%></li>
+                                            <%})%>
+                                        </ul>
+                                    </li>
+                                    <br>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
                 </li >
                 <% })} %>
@@ -365,75 +417,16 @@
 <script >
 
   $(document).ready(function () {
-    setUserID(<%= user.id %>)
+    setUserID(<%= user.id %>);
     $('.modal').modal()
     $('.slider').slider()
     $('.slider').slider('start')
     $('.slider').slider('next')
     $('ul.tabs').tabs()
-    Materialize.showStaggeredList('')
+    Materialize.showStaggeredList('');
+    Materialize.fadeInImage('');
 
-    function getFollowers () {
-      var link = 'https://eternalvibes.me/getFollowing/' + user.id
-      $.get(link, function (data) {
-
-      }).then(function () {
-        return 'hello'
-      })
-    }
-
-    alert(getFollowing())
-
-    var settings = {
-      'async': true,
-      'crossDomain': true,
-      'url': "https://eternalvibes.me/getFriends/<%= user.id %>',
-      'method': 'GET',
-      'headers': {
-        'cache-control': 'no-cache',
-      },
-    }
-
-    $.ajax(settings).done(function (response) {
-      numFollowers = response
-      alert(response)
     })
-  })
-
-  var numFollowers, numFollowing
-
-  var settings = {
-    'async': true,
-    'crossDomain': true,
-    'url': 'https://eternalvibes.me/getFriends/303346737',
-    'method': 'GET',
-    'headers': {
-      'cache-control': 'no-cache',
-    },
-  }
-
-  $.ajax(settings).done(function (response) {
-    numFollowers = response
-    alert(response)
-  })
-
-  function getFollowing () {
-    $.ajax({
-      type: 'GET',
-      url: 'https://eternalvibes.me/getFollowing/',
-      cache: false,
-      data: user.id,
-      dataType: 'jsonp',
-      success: function (data) {
-        numFollowing = data
-      },
-      error: function (data) {
-        numFollowing = data
-      },
-    }).then(function () {
-      return numFollowing
-    })
-  }
 
 </script >
 </body >
