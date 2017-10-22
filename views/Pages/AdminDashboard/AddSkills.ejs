@@ -16,7 +16,7 @@
                     <% skills.forEach(function(skill)
                     { %>
                     <li class="collection-item dismissable" >
-                        <div ><%= skill.name %><a href="#!" class="secondary-content" ><i
+                        <div ><%= skill.name %><a onclick="deleteSkill(<%= skill.id %>)" class="secondary-content" ><i
                                         class="material-icons" >clear</i ></a ></div >
                     </li >
                     <% }) %>
@@ -45,14 +45,39 @@
                 </div >
             </div >
         </div >
-
+    </div>
 </main >
 </body >
 <script >
 
+  function deleteSkill (skillId) {
+
+    $.post("https://eternalvibes.me/deleteSkill",
+      {
+        skillId: skillId
+      },
+      function () {
+        location.reload();
+        Materialize.toast('Banned User', 500);
+      });
+  }
+
+  function addSkill () {
+    var skillName =$('#add_skill').val()
+    $.post("https://eternalvibes.me/addSkill",
+      {
+        skillName: skillName
+      },
+      function (data) {
+        console.log("Data: " + data);
+        location.reload();
+        Materialize.toast('Added skill', 500);
+      });
+  }
+
   $(document).ready(function () {
     $('.modal').modal()
-    if (info.admin == 0) {
+    if (info.admin === 0) {
       history.back()
     }
   })
@@ -61,36 +86,11 @@
     $('#addskill').modal('open')
   })
 
-  function addSkill () {
-    //Skills.addSkill($('#add_skill').val());
-    skill = $('#add_skill').val()
-    console.log('this skill' + skill)
-    if (skill == '') {
-      materialize.toast('please enter a skill', 5000)
-    }
-    else {
-      $.post('https://www.eternalvibes.me/addSkill',
-        {
-          skillName: skill,
-        },
-        function (data) {
-          console.log('Data: ' + data)
-          if (data == 200) {
-
-          }
-        })
-      materialize.toast(skill + ' has been added', 500)
-
-    }
-    $('#add_genre').reset()
-    $('#sList').reload(true)
-  }
 
   Materialize.showStaggeredList('#sList')
 
 </script >
-<script src="javascripts/Skills.js" src="javascripts/materialize.js" type="text/javascript" >
 
-</script >
+
 
 </html >

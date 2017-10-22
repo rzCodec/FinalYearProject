@@ -308,7 +308,7 @@ module.exports = function (app, passport, swaggerSpec) {
             UserUpcomingEvents: UserUpcomingEvents,
             noFollowing: noFollowing,
             noFollowed: noFollowed,
-            skills:skills,
+            skills: skills,
           })
         }
       })
@@ -879,10 +879,36 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       })
   })
+  app.post('/deleteGenre', function (req, res) {
+    connection.query(
+      'DELETE FROM genres WHERE genres.id=?',
+      [req.body.genreId],
+      function (error) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
   app.post('/addSkill', function (req, res) {
     connection.query(
       'INSERT INTO `skills` (`id`, `name`) VALUES (NULL, ?)',
       [req.body.skillName],
+      function (error) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+  })
+  app.post('/deleteSkill', function (req, res) {
+    connection.query(
+      'DELETE FROM skills WHERE skills.id=?',
+      [req.body.skillId],
       function (error) {
         if (error) {
           console.log(error)
@@ -3869,6 +3895,258 @@ module.exports = function (app, passport, swaggerSpec) {
         }
       })
   })
+  app.get('/monthly/:month', function (req, res) {
+    var Reports = {
+      usersWeek1: null,
+      usersWeek2: null,
+      usersWeek3: null,
+      usersWeek4: null,
+      eventsWeek1: null,
+      eventsWeek2: null,
+      eventsWeek3: null,
+      eventsWeek4: null,
+      postsWeek1: null,
+      postsWeek2: null,
+      postsWeek3: null,
+      postsWeek4: null,
+    }
+    parallel([
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-604800000*' +
+            req.params.month +
+            ') AND join_timestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+            (req.params.month - 1) + ')',
+            function (error1, results1) {
+              Reports.usersWeek1 = results1[0].count
+              connection.query(
+                'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1209600000*' +
+                req.params.month +
+                ') AND join_timestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+                (req.params.month - 1) + ')',
+                function (error2, results2) {
+                  Reports.usersWeek2 = results2[0].count - Reports.usersWeek1
+                  connection.query(
+                    'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1814400000*' +
+                    req.params.month +
+                    ') AND join_timestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+                    (req.params.month - 1) + ')',
+                    function (error3, results3) {
+                      Reports.usersWeek3 = results3[0].count -
+                        Reports.usersWeek2 - Reports.usersWeek1
+                      connection.query(
+                        'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2419200000*' +
+                        req.params.month +
+                        ') AND join_timestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+                        (req.params.month - 1) + ')',
+                        function (error4, results4) {
+                          if (error4) {
+                            console.log(error4)
+                          } else {
+                            Reports.usersWeek4 = results4[0].count -
+                              Reports.usersWeek3 - Reports.usersWeek2 -
+                              Reports.usersWeek1
+                            callback()
+                          }
+                        })
+                    })
+                })
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM status_list WHERE status_list.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-604800000*' +
+            req.params.month +
+            ') AND status_list.timestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+            (req.params.month - 1) + ')',
+            function (error1, results1) {
+              Reports.postsWeek1 = results1[0].count
+              connection.query(
+                'SELECT COUNT(*) AS count FROM status_list WHERE status_list.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1209600000*' +
+                req.params.month +
+                ') AND status_list.timestamp  < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+                (req.params.month - 1) + ')',
+                function (error2, results2) {
+                  Reports.postsWeek2 = results2[0].count - Reports.postsWeek1
+                  connection.query(
+                    'SELECT COUNT(*) AS count FROM status_list WHERE status_list.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1814400000*' +
+                    req.params.month +
+                    ') AND status_list.timestamp  < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+                    (req.params.month - 1) + ')',
+                    function (error3, results3) {
+                      Reports.postsWeek3 = results3[0].count -
+                        Reports.postsWeek2 - Reports.postsWeek1
+                      connection.query(
+                        'SELECT COUNT(*) AS count FROM status_list WHERE status_list.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2419200000*' +
+                        req.params.month +
+                        ') AND status_list.timestamp  < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+                        (req.params.month - 1) + ')',
+                        function (error4, results4) {
+                          if (error4) {
+                            console.log(error4)
+                          } else {
+                            Reports.postsWeek4 = results4[0].count -
+                              Reports.postsWeek3 - Reports.postsWeek2 -
+                              Reports.postsWeek1
+                            callback()
+                          }
+                        })
+                    })
+                })
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM events WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-604800000*' +
+            req.params.month +
+            ') AND events.createdTimestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+            (req.params.month - 1) + ')',
+            function (error1, results1) {
+              Reports.eventsWeek1 = results1[0].count
+              connection.query(
+                'SELECT COUNT(*) AS count FROM events WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1209600000*' +
+                req.params.month +
+                ') AND events.createdTimestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+                (req.params.month - 1) + ')',
+                function (error2, results2) {
+                  Reports.eventsWeek2 = results2[0].count - Reports.eventsWeek1
+                  connection.query(
+                    'SELECT COUNT(*) AS count FROM events WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-1814400000*' +
+                    req.params.month +
+                    ') AND events.createdTimestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+                    (req.params.month - 1) + ')',
+                    function (error3, results3) {
+                      Reports.eventsWeek3 = results3[0].count -
+                        Reports.eventsWeek2 - Reports.eventsWeek1
+                      connection.query(
+                        'SELECT COUNT(*) AS count FROM events WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2419200000*' +
+                        req.params.month +
+                        ') AND events.createdTimestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-2629746000*' +
+                        (req.params.month - 1) + ')',
+                        function (error4, results4) {
+                          if (error4) {
+                            console.log(error4)
+                          } else {
+                            Reports.eventsWeek4 = results4[0].count -
+                              Reports.eventsWeek3 - Reports.eventsWeek2 -
+                              Reports.eventsWeek1
+                            callback()
+                          }
+                        })
+                    })
+                })
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log(Reports)
+          res.json(Reports)
+        }
+      })
+  })
+  app.get('/daily/:daysAgo', function (req, res) {
+    var Reports = {
+      signups: null,
+      upcomingEvents: null,
+      finishedEvents: null,
+      eventsAverageRate: null,
+      followers: null,
+      friends: null,
+    }
+    parallel([
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `users` WHERE join_timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*'+(req.params.daysAgo ) + ') AND join_timestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*' + (req.params.daysAgo - 1) + ')',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.signups = results[0].count
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `events` WHERE createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*'+(req.params.daysAgo ) + ') AND createdTimestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*' + (req.params.daysAgo - 1) + ')',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.upcomingEvents = results[0].count
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `events` WHERE createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*'+(req.params.daysAgo ) + ') AND createdTimestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*' + (req.params.daysAgo - 1) + ')',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                var upcoming = results[0].count
+                connection.query(
+                  'SELECT COUNT(*) AS count FROM `events` WHERE createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*'+(req.params.daysAgo ) + ') AND createdTimestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*' + (req.params.daysAgo - 1) + ')',
+                  function (error, results) {
+                    if (error) {
+                      console.log(error)
+                    } else {
+                      Reports.finishedEvents = results[0].count - upcoming
+                      callback()
+                    }
+                  })
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT AVG(events_reviews.rating) AS count FROM `events_reviews` INNER JOIN events on events.id=events_reviews.events_id WHERE events.createdTimestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*'+(req.params.daysAgo ) + ') AND events_reviews.rating!=-1 AND events.createdTimestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*' + (req.params.daysAgo - 1) + ')',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.eventsAverageRate = results[0].count
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `followers` WHERE followers.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*'+(req.params.daysAgo ) + ') AND followers.timestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*' + (req.params.daysAgo - 1) + ')',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.followers = results[0].count
+                callback()
+              }
+            })
+        },
+        function (callback) {
+          connection.query(
+            'SELECT COUNT(*) AS count FROM `friends` WHERE friends.timestamp > (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*'+(req.params.daysAgo ) + ') AND friends.timestamp < (ROUND(UNIX_TIMESTAMP(CURTIME(4)) * 1000)-86400000*' + (req.params.daysAgo - 1) + ')',
+            function (error, results) {
+              if (error) {
+                console.log(error)
+              } else {
+                Reports.friends = results[0].count
+                callback()
+              }
+            })
+        },
+      ],
+      function (err) {
+        if (err) {
+          console.log(err)
+        } else {
+          res.json(Reports)
+        }
+      })
+  })
 
   app.post('/deleteStatus', function (req, res) {
     waterfall([
@@ -3998,7 +4276,7 @@ module.exports = function (app, passport, swaggerSpec) {
     waterfall([
         function (callback) {
           connection.query(
-            'SELECT * FROM `user_reports` WHERE user_reports.userThatGotReported=?',
+            'DELETE FROM `user_reports` WHERE user_reports.userThatGotReported=?',
             [req.body.userId], function (error) {
               if (error) {
                 console.log(error)
