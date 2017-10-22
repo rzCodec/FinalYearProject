@@ -199,6 +199,9 @@ module.exports = function (app, passport, swaggerSpec) {
     var UserFinishedEvents
     var UserUpcomingEvents
     var UserPosts
+    var noFollowing
+    var noFollowed
+    var skills
     parallel([
         function (callback) {
           request({
@@ -253,6 +256,46 @@ module.exports = function (app, passport, swaggerSpec) {
               }
             })
         },
+        function (callback) {
+          request({
+            url: website + '/getFollowing/' + req.user.id,
+            json: true,
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error)
+              callback(error)
+            }
+            noFollowing = body
+            callback(null)
+          })
+        },
+        function (callback) {
+          request({
+            url: website + '/getFollowed/' + req.user.id,
+            json: true,
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error)
+              callback(error)
+            }
+            noFollowed = body
+            callback(null)
+          })
+        },
+        function (callback) {
+          request({
+            url: website + '/getUserInfo/' + req.user.id,
+            json: true,
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error)
+              callback(error)
+            }
+            console.log(body.skillset)
+            skills = body.skillset
+            callback(null)
+          })
+        },
       ],
       function (err) {
         if (err) {
@@ -263,6 +306,9 @@ module.exports = function (app, passport, swaggerSpec) {
             UserFinishedEvents: UserFinishedEvents,
             UserPosts: UserPosts,
             UserUpcomingEvents: UserUpcomingEvents,
+            noFollowing: noFollowing,
+            noFollowed: noFollowed,
+            skills:skills,
           })
         }
       })
@@ -377,8 +423,8 @@ module.exports = function (app, passport, swaggerSpec) {
     var UserInfo = {
       info: {},
     }
-    var skills;
-    var genres;
+    var skills
+    var genres
     parallel([
         function (callback) {
           request({
@@ -425,7 +471,10 @@ module.exports = function (app, passport, swaggerSpec) {
           console.log(err)
         } else {
           res.render('Pages/UserDashboard/Settings.ejs',
-            {user: req.user, userInfo: UserInfo, skills:skills, genres:genres},
+            {
+              user: req.user, userInfo: UserInfo, skills: skills,
+              genres: genres,
+            },
             function (err, html) {
               if (err) console.log(err)
               else res.send(html)
@@ -1315,6 +1364,18 @@ module.exports = function (app, passport, swaggerSpec) {
   app.get('/getFollowing/:userID', function (req, res) {
     connection.query(
       'SELECT followers.liked_id, users.username FROM `followers` INNER JOIN users on users.id=followers.liked_id WHERE followers.user_id = ? AND users.is_banned != 1',
+      [req.params.userID], function (error, results) {
+        if (error) {
+          console.log(error)
+          res.status(500).send(error)
+        } else {
+          res.send(results)
+        }
+      })
+  })
+  app.get('/getFollowed/:userID', function (req, res) {
+    connection.query(
+      'SELECT followers.user_id, users.username FROM `followers` INNER JOIN users on users.id=followers.user_id WHERE followers.liked_id = ? AND users.is_banned != 1',
       [req.params.userID], function (error, results) {
         if (error) {
           console.log(error)

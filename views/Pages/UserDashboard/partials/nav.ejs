@@ -66,17 +66,14 @@
 
 </nav >-->
 
-
-<ul id="slide-out" acti class="side-nav right fixed ">
+<ul id="slide-out" acti class="side-nav right fixed " >
     <li >
         <div class="userView" >
             <div class="background" >
                 <img src="images/background/background1.jpg" >
             </div >
             <a href="" >
-                <img class="circle materialboxed" src="images/empty.png" ></a >
-            <a href="#!name" ><span class="white-text name" >username</span ></a >
-            <a href="#!email" ><span class="white-text email" >email</span ></a >
+                <img class="circle materialboxed" ></a >
         </div >
     </li >
 
@@ -87,25 +84,19 @@
         </a >
     </li >
     <li >
-        <a brown-text text-darken-5 href="/profile"  class="tooltipped" data-position="bottom"
+        <a brown-text text-darken-5 href="/profile" class="tooltipped" data-position="bottom"
            data-delay="50" data-tooltip="Profile" >
             <i class="left material-icons" >assignment_ind</i > Profile
-        </a>
+        </a >
     </li >
 
     <li >
         <div class="divider" ></div >
     </li >
     <li >
-        <a brown-text text-darken-5 href="/settings"  class="tooltipped" data-position="bottom"
+        <a brown-text text-darken-5 href="/settings" class="tooltipped" data-position="bottom"
            data-delay="50" data-tooltip="Settings" >
             <i class="left material-icons" >settings</i > Settings
-        </a >
-    </li >
-    <li class='active' >
-        <a brown-text text-darken-5  class="tooltipped" data-position="bottom"
-           data-delay="50" data-tooltip="Night Mode" >
-            <i class="left material-icons" >brightness_medium</i > Night Mode
         </a >
     </li >
     <li >
@@ -117,19 +108,18 @@
 
 </ul >
 
+<script >
+  var navbar = document.getElementById('navbar')
+  var sticky = navbar.offsetTop
+  $(document).ready(function () {
+    $('.dropdown-button').dropdown()
+  })
 
-<script>
-    var navbar = document.getElementById("navbar");
-    var sticky = navbar.offsetTop;
-    $(document).ready(function()
-    {
-        $(".dropdown-button").dropdown();
-    });
-    function myFunction() {
-        if (window.scrollY >= sticky) {
-            navbar.classList.add("sticky")
-        } else {
-            navbar.classList.remove("sticky");
-        }
+  function myFunction () {
+    if (window.scrollY >= sticky) {
+      navbar.classList.add('sticky')
+    } else {
+      navbar.classList.remove('sticky')
     }
-</script>
+  }
+</script >

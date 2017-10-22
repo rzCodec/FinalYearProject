@@ -3,322 +3,281 @@
 <head >
     <%
     user = user[0]
-    console.log(user);
     %>
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
 <body class="grey lighten-3" >
 <%- include ./partials/nav.ejs %>
-<%-include ../../Partials/UserInfo.ejs%>
-<main>
+<%- include ../../Partials/UserInfo.ejs %>
+<main >
 
-    <div class="center">
+    <div class="center" >
         <div class="center header card-content rectangle" style="width:100% ;height:300px;
-            background: url('images/background/background4.jpg'); background-size: cover;">
+            background: url('images/background/background4.jpg'); background-size: cover;" >
 
-            <div class="center-align hide-on-med-and-down">
+            <div class="center-align hide-on-med-and-down" >
                 <img class="circle center" src="images/profilePics/<%= user.id %>.png" alt=""
-                     style="width:20%;height:20%;border: solid red; margin-top: 10%">
-            </div>
-            <div class="center-align hide-on-large-only">
+                     style="width:20%;height:20%; margin-top: 10%" >
+            </div >
+            <div class="center-align hide-on-large-only" >
                 <img class="circle center" src="images/profilePics/<%= user.id %>.png" alt=""
-                     style="width:40%;height:40%;border: solid red; margin-top: 20%">
-            </div>
+                     style="width:40%;height:40%; margin-top: 20%" >
+            </div >
 
-        </div>
+        </div >
 
         <div class="card-title center-align hide-on-med-and-down" style="margin-top: 10%;" >
-            <div class="center" style="display: inline-block">
-                <h2 style="display: inline-block"><%= user.firstname %> <%= user.surname %></h2>
+            <div class="center" style="display: inline-block" >
+                <h2 style="display: inline-block" ><%= user.firstname %> <%= user.surname %></h2 >
                 <h4 >@<%= user.username %></h4 >
-            </div><a href="/settings" class=" tooltipped button transparent rounded red"
-                     data-position="bottom" data-delay="50" data-tooltip="Settings"
-                     style="border: groove; border-radius: 25px; ">edit settings
-            </a>
-
+            </div >
 
         </div >
         <div class="card-title center-align hide-on-large-only" style="margin-top: 25%;" >
-            <h2 class="center" ><%= user.firstname %> <%= user.surname %></h2>
+            <h2 class="center" ><%= user.firstname %> <%= user.surname %></h2 >
             <h4 class="center" >@<%= user.username %></h4 >
             <a href="/settings" class="tooltipped right-aligned"
-               data-position="bottom" data-delay="50" data-tooltip="Settings">
-                <i class="medium material-icons">settings_applications</i>
-            </a>
+               data-position="bottom" data-delay="50" data-tooltip="Settings" >
+                <i class="medium material-icons" >settings_applications</i >
+            </a >
         </div >
-        <div class="card center" style="margin-top: 1%; border-top: groove; margin-right: 25%; margin-left: 25%;">
-        <p class="center-align">
-            <a data-target="followers"  class="modal-trigger btn-flat" style="font-size: 90%">Followers: 4</a>
+        <div class="card center" style="margin-top: 1%; border-top: groove; margin-right: 25%; margin-left: 25%;" >
+            <p class="center-align" >
+            <div data-target="followers" class="modal-trigger btn-flat" style="font-size: 90%" >
+                Followers: <%= noFollowed.length %></div >
             &emsp;&emsp;
-            <a data-target="following" class="btn-flat modal-trigger" style="font-size: 90%">Following: 3</a>
+            <div data-target="following" class="btn-flat modal-trigger" style="font-size: 90%" >
+                Following: <%= noFollowing.length %></div >
 
-             </p>
-        </div>
-    <div class="card white darken-1" style="margin-top:2%; margin-right: 25%; margin-left: 25%;" >
-        <div class="card-content" >
+            </p>
+        </div >
+        <div class="card white darken-1" style="margin-top:2%; margin-right: 25%; margin-left: 25%;" >
+            <div class="card-content" >
 
-            <%if((user.description != "nothing for now") || (user.description != null)) {%>
-            &emsp;<h4>"<%=user.description%>"</h4>
-            </div>
-            <%}%>
-            <i class="small material-icons">music_note</i><%= user.genre%>
-            <%if(user.song_link != null)
-            {%>
-            <div>
-            <i class="small material-icons">insert_link</i>
-                <a href="<%= user.song_link%>"><%= user.song_link%></a></div>
-            <%}%>
-            <br>
-            <i class="small material-icons">location_on</i><%= user.city%>
-            <br>
-            <br>
+                <% if((user.description != "nothing for now") || (user.description != null)) { %>
+                &emsp;<h4 >"<%= user.description %>"</h4 >
+            </div >
+            <% } %>
+            <i class="small material-icons" >music_note</i ><%= user.genre %>
+            <% if(user.song_link != null)
+            { %>
+            <div >
+                <i class="small material-icons" >insert_link</i >
+                <a href="<%= user.song_link %>" ><%= user.song_link %></a ></div >
+            <% } %>
+            <br >
+            <i class="small material-icons" >location_on</i ><%= user.city %>
+            <br >
+            <br >
         </div >
 
-        <div class="card center" style="margin-top: 1%; border-top: groove; margin-right: 25%; margin-left: 25%;">
-            <% for(i=0; i < 5; i++)
-            {%>
-            <div class=" small center chip" style="margin-top: 1%">
-                <img src="images/profilePics/<%= user.id %>.png" alt="<%=user.username%>">
-                Skill Name
-            </div>
-            <%}%>
-        </div>
+        <div class="card center" style="margin-top: 1%; border-top: groove; margin-right: 25%; margin-left: 25%;" >
 
-        <div class="card center" style="margin-top: 1%; border-top: groove; margin-right: 25%; margin-left: 25%;">
-        <ul class="tabs tabs-fixed-width"  >
+            <% skills.forEach(function (skill) {
+            %>
+            <div class=" small center chip" style="margin-top: 1%" >
+                <%= skill.name %>
+            </div >
+            <% }) %>
 
-            <li id="Posts" class="tab col s3" >
-                <a href="#Timeline" onclick="Materialize.showStaggeredList('#Timeline')" class="center-block">
-                    <i class="small material-icons right-align" >dehaze</i >Timeline
-                    <%if(UserPosts.length > 0){%>
-                    <span id="numPosts" class="badge" ><%=UserPosts.length%></span >
-                    <%}%>
-                </a >
-            </li >
+        </div >
 
-            <li id="Attended" class="tab col s3" >
-                <a href="#AttendedEvents" onclick="Materialize.showStaggeredList('#AttendedEvents')" >
-                    Events Attended
-                    <%if(UserFinishedEvents.length > 0){%>
-                    <span id="numUsers" class="badge blue" > <%= UserFinishedEvents.length%></span >
-                    <%}%>
-                </a >
-            </li >
+        <div class="card center" style="margin-top: 1%; border-top: groove; margin-right: 25%; margin-left: 25%;" >
+            <ul class="tabs tabs-fixed-width" >
 
-            <li id="Upcoming" class="tab col s3" >
-                <a href="#UpcomingEvents" onclick="Materialize.showStaggeredList('#UpcomingEvents')" >
-                    Upcoming Events</a >
-            </li >
+                <li id="Posts" class="tab col s3" >
+                    <a href="#Timeline" onclick="Materialize.showStaggeredList('#Timeline')" class="center-block" >
+                        <i class="small material-icons right-align" >dehaze</i >Timeline
+                        <% if(UserPosts.length > 0){ %>
+                        <span id="numPosts" class="badge" ><%= UserPosts.length %></span >
+                        <% } %>
+                    </a >
+                </li >
 
-        </ul >
-        </div>
-        <br>
+                <li id="Attended" class="tab col s3" >
+                    <a href="#AttendedEvents" onclick="Materialize.showStaggeredList('#AttendedEvents')" >
+                        Events Attended
+                        <% if(UserFinishedEvents.length > 0){ %>
+                        <span id="numUsers" class="badge blue" > <%= UserFinishedEvents.length %></span >
+                        <% } %>
+                    </a >
+                </li >
+
+                <li id="Upcoming" class="tab col s3" >
+                    <a href="#UpcomingEvents" onclick="Materialize.showStaggeredList('#UpcomingEvents')" >
+                        Upcoming Events</a >
+                </li >
+
+            </ul >
+        </div >
+        <br >
 
     </div >
-
-
-
 
     <div id="Timeline" class="col s12" style="margin-top: 5%;margin-bottom: 10%; margin-left: 27%; margin-right:27%" >
         <div >
             <ul id="posts" class="collection truncate collapsible" >
                 <% if(UserPosts.length > 0){
-                    UserPosts.forEach(function (post)
-                    {
-                        var msg = "Hey everyone, I think this post: '" + post.status + "' by "
-                            +  user.firstname + " " + user.surname + " ( "
+                UserPosts.forEach(function (post)
+                {
+                    var msg = "Hey everyone, I think this post: '" + post.status + "' by "
+                            + user.firstname + " " + user.surname + " ( "
                             + user.username + ") is pretty cool on Eternal Vibes https://eternalvibes.me";
                 %>
                 <li class="collection-item card-content avatar hoverable black-text white " >
-                    <div class="collapsible-header">
+                    <div class="collapsible-header" >
                         <img src="images/profilePics/<%= post.user_id %>.png"
                              alt="<%= user.username %>" width="100" height="100" class="circle" >
                         <%
-                        function getdate(timestamp) {
-                            var date = new Date(timestamp);
-                            var postdate;
-                            switch (date.getUTCMonth()) {
-                                case 0:
-                                    postdate = "Jan" + date.getDay() +1 + " " + date.toLocaleTimeString();
-                                    break;
-                                case 1:
-                                    postdate = "Feb " + date.getDay() +1 + " " + date.toLocaleTimeString();
-                                    break;
-                                case 2:
-                                    postdate = "Mar " + date.getDay() +1 + " " + date.toLocaleTimeString();
-                                    break;
-                                case 3:
-                                    postdate = "Apr " + date.getDay() +1 + " " + date.toLocaleTimeString();
-                                    break;
-                                case 4:
-                                    postdate = "May " + date.getDay() +1 + " " + date.toLocaleTimeString();
-                                    break;
-                                case 5:
-                                    postdate = "Jun " + (date.getDay() +1) + " " + date.toLocaleTimeString();
-                                    break;
-                                case 6:
-                                    postdate = "Jul " + (date.getDay() +1) + " " + date.toLocaleTimeString();
-                                    break;
-                                case 7:
-                                    postdate = "Aug " + (date.getDay() +1) + " " + date.toLocaleTimeString();
-                                    break;
-                                case 8:
-                                    postdate = "Sep " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
-                                    break;
-                                case 9:
-                                    postdate = "Oct " + (date.getDay() +1) + " " + date.toLocaleTimeString();
-                                    break;
-                                case 10:
-                                    postdate = "Nov " + (date.getDay() +1) + " " + date.toLocaleTimeString();
-                                    break;
-                                case 11:
-                                    postdate = "Dec " + (date.getDay() +1) + " " + date.toLocaleTimeString();
-                                    break;
+                            function getdate (timestamp) {
+                                var date = new Date(timestamp);
+                                var postdate;
+                                switch (date.getUTCMonth()) {
+                                    case 0:
+                                        postdate = "Jan" + date.getDay() + 1 + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 1:
+                                        postdate = "Feb " + date.getDay() + 1 + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 2:
+                                        postdate = "Mar " + date.getDay() + 1 + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 3:
+                                        postdate = "Apr " + date.getDay() + 1 + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 4:
+                                        postdate = "May " + date.getDay() + 1 + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 5:
+                                        postdate = "Jun " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 6:
+                                        postdate = "Jul " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 7:
+                                        postdate = "Aug " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 8:
+                                        postdate = "Sep " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 9:
+                                        postdate = "Oct " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 10:
+                                        postdate = "Nov " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
+                                        break;
+                                    case 11:
+                                        postdate = "Dec " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
+                                        break;
+                                }
+                                return postdate;
                             }
-                            return postdate;
-                        }
-                        var theDate = getdate(post.timestamp * 1000);
+                            var theDate = getdate(post.timestamp * 1000);
                         %>
-                        <blockquote>
-                            <strong><%= user.firstname %> <%= user.surname %></strong> &emsp; <%= user.username %>
-                        &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;<%= theDate%>
+                        <blockquote >
+                            <strong ><%= user.firstname %> <%= user.surname %></strong > &emsp; <%= user.username %>
+                            &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;<%= theDate %>
                             </br>
                             </br>
-                            <p class="flow-text"><%= post.status %></p>
-                        </blockquote>
-                    </div>
+                            <p class="flow-text" ><%= post.status %></p >
+                        </blockquote >
+                    </div >
 
-                    <p>
-                        <%if( post.liked  > 0)
+                    <p >
+                        <% if( post.liked > 0)
                         { %>
                         (<%= post.liked %>) likes &emsp; &emsp;
-                        <%}
-                        else{%>
+                        <% }
+                        else{ %>
                         no likes &emsp; &emsp;
-                        <%}if( post.flag  > 0){ %>
-                        <span class="red">(<%=post.flag%>) flags</span>
-                        <%}else{%>
-                        <%}%> no flags
+                        <% }if( post.flag > 0){ %>
+                        <span class="red" >(<%= post.flag %>) flags</span >
+                        <% }else{ %>
+                        <% } %>
                     </p >
-                    <hr>
+                    <hr >
 
-                    <div class="collapsible-body brown-text" style="background-color: white">
-                        <ul>
-                            <ul class="collection-item collapsible">
-                                <a id="like<%=post.id%>" class="collection-item brown-text btn-flat"
-                                   onclick="LikeStatus(<%= post.id %>)">
-                                    <i class="material-icons Small left tooltipped"
-                                       data-tooltip="Like Post">
-                                        star_border
-                                    </i>
-                                    Like
-                                </a>
-                            </ul>
-                            <ul class="collection-item collapsible">
-                                <a id="del<%=post.id%>" class="collection-item btn-flat red-text"
-                                   onclick="deleteStatus(<%= post.id %>)">
-                                    <i class="material-icons Small left">
-                                        delete
-                                    </i>
-                                    Delete
-                                </a>
-                            </ul>
-                            <ul class="collection-item collapsible">
-                                <a class="collection-item blue-text lighten-2 btn-flat"
-                                   href="https://twitter.com/intent/tweet?text=<%=msg%>">
-                                    Share on Twitter
-                                </a>
-                            </ul>
-                            <ul class="collection-item collapsible">
-                                <a class="collection-item blue-text darken-2 btn-flat" id="fb"
-                                   onclick="Facebook(<%=msg%>)">
-                                    Share on Facebook
-                                </a>
-                            </ul>
-                        </ul>
-                    </div>
                 </li >
                 <% })
-                }else{%>
-                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%">
-                        <div class="card-content">
-                            <div class="center">
-                                <strong>Start connecting with people and create events.</strong>
-                                <br>
-                                Get the app to create your first event.
-                                <br>
-                                <a href="https://play.google.com/store?hl=en" >
+                }else{ %>
+                <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%" >
+                    <div class="card-content" >
+                        <div class="center" >
+                            <strong >Start connecting with people and create events.</strong >
+                            <br >
+                            Get the app to create your first event.
+                            <br >
+                            <a href="https://play.google.com/store?hl=en" >
                                 <img alt="Get it on Google Play"
                                      src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
                                      width='200' height='70' >
-                                </a >
-                            </div>
-                        </div>
-                    </div>
-                <%}%>
+                            </a >
+                        </div >
+                    </div >
+                </div >
+                <% } %>
             </ul >
         </div >
     </div >
-
 
     <div id="UpcomingEvents" class="col s12 offset-l2"
          style="margin-top: 5%;margin-bottom: 10%; margin-left: 25%; margin-right:10%" >
         <div >
             <ul id="posts" class="collection truncate collapsible popout" data-collapsible="accordion" >
-                <%if(UserUpcomingEvents == null || UserUpcomingEvents == "")
+                <% if(UserUpcomingEvents == null || UserUpcomingEvents == "")
                 { %>
-                <div>
-                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%">
-                        <div class="card-content">
-                            <div class="center">
-                                <strong>Start connecting with people and create events.</strong>
-                                <br>
+                <div >
+                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 10%" >
+                        <div class="card-content" >
+                            <div class="center" >
+                                <strong >Start connecting with people and create events.</strong >
+                                <br >
                                 Get the app to create your first event.
-                                <br>
+                                <br >
                                 <a href="https://play.google.com/store?hl=en" >
                                     <img alt="Get it on Google Play"
                                          src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
                                          width='200' height='70' >
                                 </a >
-                            </div>
-                        </div>
-                    </div>
+                            </div >
+                        </div >
+                    </div >
 
-                    <div class="card col s4 slider" style="width: 50% ;height: 50%">
-                        <ul class="slides">
-                            <li>
-                                <img src="/images/Ad.jpg">
-                            </li>
-                            <li>
-                                <img src="/images/Ad2.jpg">
-                            </li>
-                        </ul>
+                    <div class="card col s4 slider" style="width: 50% ;height: 50%" >
+                        <ul class="slides" >
+                            <li >
+                                <img src="/images/Ad.jpg" >
+                            </li >
+                            <li >
+                                <img src="/images/Ad2.jpg" >
+                            </li >
+                        </ul >
 
-                    </div>
+                    </div >
 
-                </div>
-                <%}else
-                    {
-                        UserUpcomingEvents.forEach(function (event)
-                {%>
+                </div >
+                <% }else
+                {
+                UserUpcomingEvents.forEach(function (event)
+                { %>
                 <li class="collection-item avatar" >
                     <div class="collapsible-header" >
                         <img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png" class="circle" >
                         <span class="title" >Title: <%= event.title %></span >
                         <p ><%= event.description %></p >
-                        <div id="finDetails" class="collapsible-body">
-                            <div>
-                                <div class="card-content">
+                        <div id="finDetails" class="collapsible-body" >
+                            <div >
+                                <div class="card-content" >
                                     Event Details
                                     Event Date
                                     Overall Ratig for event
-                                    <br>
+                                    <br >
                                     Users: + Skill and Rating
-                                    <br>
+                                    <br >
                                     Comments ordered by User
-                                </div>
-                            </div>
-                        </div>
+                                </div >
+                            </div >
+                        </div >
                     </div >
 
                 </li >
@@ -327,74 +286,73 @@
         </div >
     </div >
 
-
     <div id="AttendedEvents" class="col s12 modal-trigger"
          style="margin-top: 5%;margin-bottom: 10%; margin-left: 25%; margin-right:10%" >
         <div >
             <ul id="posts" class="collection truncate collapsible popout" data-collapsible="accordion" >
-                <% console.log(UserFinishedEvents);
+                <%
                 if(UserFinishedEvents == null || UserFinishedEvents == "")
-                {%>
-                <div>
-                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 5%">
-                        <div class="card-content">
-                            <div class="center">
-                                <strong>Start connecting with people and create events.</strong>
-                                <br>
+                { %>
+                <div >
+                    <div class="card col s4 right" style="margin-top: 15%; margin-right: 5%" >
+                        <div class="card-content" >
+                            <div class="center" >
+                                <strong >Start connecting with people and create events.</strong >
+                                <br >
                                 Get the app to create your first event.
-                                <br>
+                                <br >
                                 <a href="https://play.google.com/store?hl=en" >
                                     <img alt="Get it on Google Play"
                                          src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
                                          width='200' height='70' >
                                 </a >
-                            </div>
+                            </div >
 
-                        </div>
-                    </div>
+                        </div >
+                    </div >
 
-                    <div class="card col s4 slider" style="width: 50% ;height: 50%;">
-                        <ul class="slides">
-                            <li>
-                                <img src="/images/Ad.jpg">
-                            </li>
-                            <li>
-                                <img src="/images/Ad2.jpg">
-                            </li>
-                        </ul>
+                    <div class="card col s4 slider" style="width: 50% ;height: 50%;" >
+                        <ul class="slides" >
+                            <li >
+                                <img src="/images/Ad.jpg" >
+                            </li >
+                            <li >
+                                <img src="/images/Ad2.jpg" >
+                            </li >
+                        </ul >
 
-                    </div>
+                    </div >
 
-                </div>
+                </div >
 
-                <%}
+                <% }
                 else
-                    {
-                        UserFinishedEvents.forEach(function (event)
+                {
+                UserFinishedEvents.forEach(function (event)
                 { %>
                 <li class="collection-item avatar" >
-                    <div class="collapsible-header">,
+                    <div class="collapsible-header" >,
                         <img src="/images/profilePics/<%= event.user_id %>.png" alt="images/empty.png"
                              class="circle" >
                         <span class="title" >Title: <%= event.title %></span >
                         <p ><%= event.description %></p >
                     </div >
 
-                    <div id="finDetails" class="collapsible-body">
-                        <div>
-                            <div class="card-content">
+                    <div id="finDetails" class="collapsible-body" >
+                        <div >
+                            <div class="card-content" >
 
                                 Event Details
                                 Date of Event:
                                 Overall Ratig for event
-                                <br>
+                                <br >
                                 Users: + Skill and Rating
-                                <br>
+                                <br >
                                 Comments ordered by User
-                            </div>
-                        </div>
+                            </div >
+                        </div >
 
-                    </div>
+                    </div >
 
                 </li >
                 <% })} %>
@@ -402,100 +360,80 @@
         </div >
     </div >
 
-
-
-
-
 </main >
-<div class=" hide-on-med-and-down" style="margin-left: 22%;"><%- include ../../Partials/footer.ejs %></div>
-<div class=" hide-on-large-only"><%- include ../../Partials/footer.ejs %></div>
+
 <script >
 
-    $(document).ready(function()
-    {
-        setUserID(<%=user.id%>);
-        $('.modal').modal();
-        $('.slider').slider();
-        $('.slider').slider('start');
-        $('.slider').slider('next');
-        $('ul.tabs').tabs();
-        Materialize.showStaggeredList('');
-        function getFollowers()
-        {
-            var link = "https://eternalvibes.me/getFollowing/" + user.id;
-            $.get(link,function(data){
+  $(document).ready(function () {
+    setUserID(<%= user.id %>)
+    $('.modal').modal()
+    $('.slider').slider()
+    $('.slider').slider('start')
+    $('.slider').slider('next')
+    $('ul.tabs').tabs()
+    Materialize.showStaggeredList('')
 
-            }).then(function(){
-                return "hello";
-            });
-        }
-        alert(getFollowing());
+    function getFollowers () {
+      var link = 'https://eternalvibes.me/getFollowing/' + user.id
+      $.get(link, function (data) {
 
+      }).then(function () {
+        return 'hello'
+      })
+    }
 
-        var settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": "https://eternalvibes.me/getFriends/<%=user.id%>",
-            "method": "GET",
-            "headers": {
-                "cache-control": "no-cache",
-            }
-        }
-
-        $.ajax(settings).done(function (response)
-        {
-            numFollowers = response;
-            alert(response);
-        });
-    });
-
-    var numFollowers, numFollowing;
-
+    alert(getFollowing())
 
     var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://eternalvibes.me/getFriends/303346737",
-        "method": "GET",
-        "headers": {
-            "cache-control": "no-cache",
-        }
+      'async': true,
+      'crossDomain': true,
+      'url': "https://eternalvibes.me/getFriends/<%= user.id %>',
+      'method': 'GET',
+      'headers': {
+        'cache-control': 'no-cache',
+      },
     }
 
-    $.ajax(settings).done(function (response)
-    {
-        numFollowers = response;
-        alert(response);
-    });
+    $.ajax(settings).done(function (response) {
+      numFollowers = response
+      alert(response)
+    })
+  })
 
+  var numFollowers, numFollowing
 
+  var settings = {
+    'async': true,
+    'crossDomain': true,
+    'url': 'https://eternalvibes.me/getFriends/303346737',
+    'method': 'GET',
+    'headers': {
+      'cache-control': 'no-cache',
+    },
+  }
 
-    function getFollowing()
-    {
-        $.ajax({
-            type: "GET",
-            url: "https://eternalvibes.me/getFollowing/",
-            cache: false,
-            data:user.id,
-            dataType: "jsonp",
-            success: function (data)
-            {
-                console.log(data);
-                numFollowing = data;
-            },
-            error: function (data)
-            {
-                console.log("error");
-                numFollowing = data;
-            }}).then(function()
-        {
-            return numFollowing;
-        });
-    }
+  $.ajax(settings).done(function (response) {
+    numFollowers = response
+    alert(response)
+  })
 
-
-
-
+  function getFollowing () {
+    $.ajax({
+      type: 'GET',
+      url: 'https://eternalvibes.me/getFollowing/',
+      cache: false,
+      data: user.id,
+      dataType: 'jsonp',
+      success: function (data) {
+        numFollowing = data
+      },
+      error: function (data) {
+        numFollowing = data
+      },
+    }).then(function () {
+      return numFollowing
+    })
+  }
 
 </script >
 </body >
