@@ -6,26 +6,24 @@
 <body class="grey lighten-3" >
 <%- include ./partials/nav.ejs %>
 
-<main>
-    <%-include ../../Partials/UserInfo.ejs%>
+<main >
+    <%- include ../../Partials/UserInfo.ejs %>
     <div class="row" style="margin-left: 17%; margin-top: 1%" >
 
         <div class="col s7 offset-s1" >
-            <ul id="staggered-test">
-                <li style="transform: translateX(0px); opacity: 0; "  >
+            <ul id="staggered-test" >
+                <li style="transform: translateX(0px); opacity: 0; " >
                     <div id="header" class="card white darken-1"
                          style="background:  url('images/background/background3.jpg');background-size: cover;" >
                         <div class="card-content" >
 
                             <span class="card-title center-align" >
-                            <a href="/profile"><img class="circle" src="images/profilePics/<%=UserInfo.info.id%>.png"
-                                style="height: 15%;width:15%;border-color: red; border: groove"></a>
-                                <% function greeting()
-                                {
+                            <a href="/profile" ><img class="circle" src="images/profilePics/<%= UserInfo.info.id %>.png"
+                                                     style="height: 15%;width:15%;border-color: red; border: groove" ></a >
+                                <% function greeting () {
                                     var date = new Date();
                                     var welcoming;
-                                    switch(date.getUTCHours())
-                                    {
+                                    switch (date.getUTCHours()) {
                                         case 0:
                                         case 1:
                                         case 2:
@@ -60,327 +58,318 @@
                                             break;
                                     }
                                 } %>
-                                <h2 id=" Welcoming" class="orange-text">
-                                     <%=greeting() %> <%=UserInfo.info.firstname%> <%=UserInfo.info.surname%></h2>
-                            </span>
+                                <h2 id=" Welcoming" class="orange-text" >
+                                     <%= greeting() %> <%= UserInfo.info.firstname %> <%= UserInfo.info.surname %></h2 >
+                            </span >
                         </div >
                     </div >
                 </li >
-
-                <form class="card ">
-
-                    <div class="card-content input-field modal-trigger grey-text" data-target="PostStatus">
-                        <i class="left material-icons black-text">border_color</i>
-                        What's the vibe? Share with your friends...
-                    </div>
-                </form>
 
                 <div id="Timeline" class="card " style="margin-top: 5%;margin-bottom: 10%;
                     background-color: transparent; border: transparent" >
                     <div >
                         <ul id="posts" class="collection truncate collapsible"
-                            data-collapsible="accordion" style="border: transparent; background-color: white">
+                            data-collapsible="accordion" style="border: transparent; background-color: white" >
                             <!--  DISPLAY FOLLOWING'S POSTS AND USER POSTS AND DIFFERENTIATE BETWEEN THEM -->
-                            <%UserInfo.Status.forEach(function(status)
+                            <% UserInfo.Status.forEach(function(status)
                             {
                                 var msg = "Hey everyone, I think this post: '" + status.status + "' by "
-                                    +  status.firstname + " " + status.surname + " ("
-                                    + status.username + ") is pretty cool on Eternal Vibes";
+                                        + status.firstname + " " + status.surname + " ("
+                                        + status.username + ") is pretty cool on Eternal Vibes";
 
-                                function getdate(timestamp) {
-                                    var date = new Date(timestamp *1000);
+                                function getdate (timestamp) {
+                                    var date = new Date(timestamp * 1000);
                                     var postdate;
                                     switch (date.getUTCMonth()) {
                                         case 0:
-                                            postdate = "Jan" + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            postdate = "Jan" + date.getDay() + 1 + " " + date.toLocaleTimeString();
                                             break;
                                         case 1:
-                                            postdate = "Feb " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            postdate = "Feb " + date.getDay() + 1 + " " + date.toLocaleTimeString();
                                             break;
                                         case 2:
-                                            postdate = "Mar " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            postdate = "Mar " + date.getDay() + 1 + " " + date.toLocaleTimeString();
                                             break;
                                         case 3:
-                                            postdate = "Apr " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            postdate = "Apr " + date.getDay() + 1 + " " + date.toLocaleTimeString();
                                             break;
                                         case 4:
-                                            postdate = "May " + date.getDay() +1 + " " + date.toLocaleTimeString();
+                                            postdate = "May " + date.getDay() + 1 + " " + date.toLocaleTimeString();
                                             break;
                                         case 5:
-                                            postdate = "Jun " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            postdate = "Jun " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
                                             break;
                                         case 6:
-                                            postdate = "Jul " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            postdate = "Jul " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
                                             break;
                                         case 7:
-                                            postdate = "Aug " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            postdate = "Aug " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
                                             break;
                                         case 8:
                                             postdate = "Sep " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
                                             break;
                                         case 9:
-                                            postdate = "Oct " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            postdate = "Oct " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
                                             break;
                                         case 10:
-                                            postdate = "Nov " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            postdate = "Nov " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
                                             break;
                                         case 11:
-                                            postdate = "Dec " + (date.getDay() +1) + " " + date.toLocaleTimeString();
+                                            postdate = "Dec " + (date.getDay() + 1) + " " + date.toLocaleTimeString();
                                             break;
                                     }
                                     return postdate;
                                 }
 
-                                if(status.user_id == UserInfo.info.id)
-                                {%>
-                                <li class="collection-item avatar black-text"
-                                    style="border-bottom: groove; background-color: white">
-                                    <div class="left-align collapsible-header" style="margin-top: 1%">
-                                        <img src="images/profilePics/<%=status.user_id%>.png" alt=""
-                                            class="circle" width="50%"  height="50%">
-                                        <span class="title">
-                                            <strong>
-                                                <%=status.firstname%> <%=status.surname%>
-                                            </strong>
+                            if(status.user_id == UserInfo.info.id)
+                            { %>
+                            <li class="collection-item avatar black-text"
+                                style="border-bottom: groove; background-color: white" >
+                                <div class="left-align collapsible-header" style="margin-top: 1%" >
+                                    <img src="images/profilePics/<%= status.user_id %>.png" alt=""
+                                         class="circle" width="50%" height="50%" >
+                                    <span class="title" >
+                                            <strong >
+                                                <%= status.firstname %> <%= status.surname %>
+                                            </strong >
                                             &emsp;
-                                        </span>
-                                        <p>@<%=status.username%></p>
-                                        &emsp; &emsp; &emsp; <p > <%=getdate(status.timestamp)%></p>
+                                        </span >
+                                    <p >@<%= status.username %></p >
+                                    &emsp; &emsp; &emsp; <p > <%= getdate(status.timestamp) %></p >
 
-                                    </div>
-                                    <br>
-                                    <blockquote><p class="flow-text"><%=status.status%></p></blockquote>
-                                    <br>
-                                    <p>
-                                        <strong>
-                                        <%if( status.liked  > 0)
+                                </div >
+                                <br >
+                                <blockquote ><p class="flow-text" ><%= status.status %></p ></blockquote >
+                                <br >
+                                <p >
+                                    <strong >
+                                        <% if( status.liked > 0)
                                         { %>
-                                            <%= status.liked %> likes &emsp; &emsp;
-                                        <%}
+                                        <%= status.liked %> likes &emsp; &emsp;
+                                        <% }
                                         else
-                                        {%>
-                                            no likes &emsp; &emsp;
-                                            <%}if( status.flag  > 0){ %>
-                                            <span class="red"><%=status.flag%> flags</span>
-                                        <%}else
-                                        {%>
-                                            no flags
-                                        <%}%>
-                                        </strong>
-                                    </p>
-                                    <hr>
-                                    <div class="collapsible-body white-text" style="background-color: white">
-                                        <ul>
-                                            <ul class="collection-item collapsible">
-                                                <a id="like<%=status.id%>" class="collection-item brown-text btn-flat"
-                                                    onclick="likeStatus(<%= status.id %>)">
-                                                    <i class="material-icons Small left tooltipped"
-                                                    data-tooltip="Like Post">
-                                                        star_border
-                                                    </i>
-                                                    Like
-                                                </a>
-                                            </ul>
-                                            <ul class="collection-item collapsible">
-                                                <a id="del<%=status.id%>" class="collection-item btn-flat red-text"
-                                                    onclick="deleteStatus(<%= status.id %>)">
-                                                        <i class="material-icons Small left">
-                                                            delete
-                                                        </i>
-                                                    Delete
-                                                </a>
-                                            </ul>
-                                            <ul class="collection-item collapsible">
-                                                <a class="collection-item blue-text lighten-2 btn-flat"
-                                                   href="https://twitter.com/intent/tweet?text=<%=msg%>">
-                                                    Share on Twitter
-                                                </a>
-                                            </ul>
-                                            <ul class="collection-item collapsible">
-                                                <a class="collection-item blue-text darken-2 btn-flat" id="fb"
-                                                   onclick="Facebook(<%=msg%>)">
-                                                    Share on Facebook
-                                                </a>
-                                            </ul>
-                                        </ul>
-                                    </div>
-                                </li>
-                            <%}
+                                        { %>
+                                        no likes &emsp; &emsp;
+                                        <% }if( status.flag > 0){ %>
+                                        <span class="red" ><%= status.flag %> flags</span >
+                                        <% }else
+                                        { %>
+                                        no flags
+                                        <% } %>
+                                    </strong >
+                                </p >
+                                <hr >
+                                <div class="collapsible-body white-text" style="background-color: white" >
+                                    <ul >
+                                        <ul class="collection-item collapsible" >
+                                            <a id="like<%= status.id %>" class="collection-item brown-text btn-flat"
+                                               onclick="likeStatus(<%= status.id %>)" >
+                                                <i class="material-icons Small left tooltipped"
+                                                   data-tooltip="Like Post" >
+                                                    star_border
+                                                </i >
+                                                Like
+                                            </a >
+                                        </ul >
+                                        <ul class="collection-item collapsible" >
+                                            <a id="del<%= status.id %>" class="collection-item btn-flat red-text"
+                                               onclick="deleteStatus(<%= status.id %>)" >
+                                                <i class="material-icons Small left" >
+                                                    delete
+                                                </i >
+                                                Delete
+                                            </a >
+                                        </ul >
+                                        <ul class="collection-item collapsible" >
+                                            <a class="collection-item blue-text lighten-2 btn-flat"
+                                               href="https://twitter.com/intent/tweet?text=<%= msg %>" >
+                                                Share on Twitter
+                                            </a >
+                                        </ul >
+                                        <ul class="collection-item collapsible" >
+                                            <a class="collection-item blue-text darken-2 btn-flat" id="fb"
+                                               onclick="Facebook(<%= msg %>)" >
+                                                Share on Facebook
+                                            </a >
+                                        </ul >
+                                    </ul >
+                                </div >
+                            </li >
+                            <% }
                             else
-                            {%>
+                            { %>
                             <!-- CUSTOM OPTIONS FOR POSTS THAT ARENT FROM THE USER SUCH AS UNFOLLOW, REPORTING -->
-                                <li class="collection-item avatar black-text"
-                                    style="border-bottom: groove; background-color: white">
+                            <li class="collection-item avatar black-text"
+                                style="border-bottom: groove; background-color: white" >
 
-                                    <div class="left-align collapsible-header" style="margin-top: 1%;">
-                                        <img src="images/profilePics/<%=status.user_id%>.png" alt="" class="circle">
-                                        <span class="title">
-                                            <strong>
-                                                <%=status.firstname%> <%=status.surname%>
-                                            </strong> &emsp;
-                                            @<%=status.username%> &emsp; &emsp;&emsp;
-                                            <%= getdate(status.timestamp)%>
-                                        </span>
-                                    </div>
-                                    <br>
-                                    <blockquote><p class="flow-text"><%=status.status%></p></blockquote>
-                                    <br>
-                                    <p>
-                                    <%if( status.liked  > 0)
+                                <div class="left-align collapsible-header" style="margin-top: 1%;" >
+                                    <img src="images/profilePics/<%= status.user_id %>.png" alt="" class="circle" >
+                                    <span class="title" >
+                                            <strong >
+                                                <%= status.firstname %> <%= status.surname %>
+                                            </strong > &emsp;
+                                            @<%= status.username %> &emsp; &emsp;&emsp;
+                                        <%= getdate(status.timestamp) %>
+                                        </span >
+                                </div >
+                                <br >
+                                <blockquote ><p class="flow-text" ><%= status.status %></p ></blockquote >
+                                <br >
+                                <p >
+                                    <% if( status.liked > 0)
                                     { %>
                                     (<%= status.liked %>) likes &emsp; &emsp;
-                                    <%}
-                                    else{%>
+                                    <% }
+                                    else{ %>
                                     no likes &emsp; &emsp;
-                                    <%}%>
-                                    </p>
-                                    <hr>
-                                    <div class="collapsible-body white-text" >
-                                        <ul>
-                                            <li class="center black-text"><h3>Post Oprions</h3></li>
-                                            <br>
-                                            <ul class="collection-item collapsible">
-                                                <a id="like<%=status.id%>"
-                                                    class=" collection-item btn-flat brown-text"
-                                                        onclick="LikeStatus(<%= status.id %>)">
-                                                    <i class="material-icons small left-align tooltipped"
-                                                        data-tooltip="Like Post" >star_border
-                                                    </i>
-                                                    Like
-                                                </a>
-                                            </ul>
-                                            <ul class=" collection-item collapsible transparent"
-                                                data-collapsible="accordion">
-                                                <li>
-                                                    <div  class="collapsible-header red-text transparent ">
-                                                        <a class="btn-flat red-text left">
-                                                            <i class="small left material-icons right-align">
-                                                                flag
-                                                            </i>
-                                                            Report Post
-                                                        </a>
-                                                    </div>
-                                                    <div class="collapsible-body">
-                                                        <ul>
-                                                            <a class="collection-item btn-flat transparent
-                                                                btn-flat popout red-text">
-                                                                I do not like their content
-                                                            </a>
-                                                            <a class="collection-item btn-flat trannsparent
-                                                                popout red-text">
-                                                                They are is inappropriate
-                                                            </a >
-                                                            <a class="collection-item btn-flat transparent
-                                                                popout red-text">
-                                                                Post is spam
-                                                            </a>
-                                                        </ul>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                            <ul class="collapsible collection-item" data-collapsible="accordion">
-                                                <li>
-                                                    <div  class="collapsible-header transparent orange-text">
-                                                        <a class="btn-flat orange-text">
-                                                            <i class="small left material-icons left-align">
-                                                                assignment_ind
-                                                            </i>
-                                                            Report User
-                                                        </a>
+                                    <% } %>
+                                </p >
+                                <hr >
+                                <div class="collapsible-body white-text" >
+                                    <ul >
+                                        <li class="center black-text" ><h3 >Post Oprions</h3 ></li >
+                                        <br >
+                                        <ul class="collection-item collapsible" >
+                                            <a id="like<%= status.id %>"
+                                               class=" collection-item btn-flat brown-text"
+                                               onclick="LikeStatus(<%= status.id %>)" >
+                                                <i class="material-icons small left-align tooltipped"
+                                                   data-tooltip="Like Post" >star_border
+                                                </i >
+                                                Like
+                                            </a >
+                                        </ul >
+                                        <ul class=" collection-item collapsible transparent"
+                                            data-collapsible="accordion" >
+                                            <li >
+                                                <div class="collapsible-header red-text transparent " >
+                                                    <a class="btn-flat red-text left" >
+                                                        <i class="small left material-icons right-align" >
+                                                            flag
+                                                        </i >
+                                                        Report Post
+                                                    </a >
+                                                </div >
+                                                <div class="collapsible-body" >
+                                                    <ul >
+                                                        <a class="collection-item btn-flat transparent
+                                                                btn-flat popout red-text" >
+                                                            I do not like their content
+                                                        </a >
+                                                        <a class="collection-item btn-flat trannsparent
+                                                                popout red-text" >
+                                                            They are is inappropriate
+                                                        </a >
+                                                        <a class="collection-item btn-flat transparent
+                                                                popout red-text" >
+                                                            Post is spam
+                                                        </a >
+                                                    </ul >
+                                                </div >
+                                            </li >
+                                        </ul >
+                                        <ul class="collapsible collection-item" data-collapsible="accordion" >
+                                            <li >
+                                                <div class="collapsible-header transparent orange-text" >
+                                                    <a class="btn-flat orange-text" >
+                                                        <i class="small left material-icons left-align" >
+                                                            assignment_ind
+                                                        </i >
+                                                        Report User
+                                                    </a >
 
-                                                    </div>
-                                                    <div class="collapsible-body">
-                                                        <ul>
-                                                            <a class="collection-item transparent btn-flat orange-text"
-                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
-                                                                    $(this).value())">
-                                                                I do not like their content
-                                                            </a>
+                                                </div >
+                                                <div class="collapsible-body" >
+                                                    <ul >
+                                                        <a class="collection-item transparent btn-flat orange-text"
+                                                           href="#" onclick="ReportUser(<%= status.user_id %>,
+                                                                $(this).value())" >
+                                                            I do not like their content
+                                                        </a >
 
-                                                            <a class="collection-item transparent btn-flat orange-text"
-                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
-                                                                    $(this).value())">
-                                                                They are is inappropriate
-                                                            </a >
-                                                            <a class="collection-item transparent btn-flat orange-text"
-                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
-                                                                    $(this).value())">
-                                                                They are posting spam
-                                                            </a>
-                                                            <a class="collection-item transparent btn-flat orange-text"
-                                                               href="#" onclick="ReportUser(<%=status.user_id%>,
-                                                                    $(this).value())">
-                                                                Their account is hacked
-                                                            </a>
-                                                        </ul>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                            <ul class="collection-item collapsible">
-                                                <a class=" blue-text btn-flat lighten-2 "
-                                                     href="https://twitter.com/intent/tweet?text=<%=msg%>"
-                                                   style="width: 100%">
+                                                        <a class="collection-item transparent btn-flat orange-text"
+                                                           href="#" onclick="ReportUser(<%= status.user_id %>,
+                                                                $(this).value())" >
+                                                            They are is inappropriate
+                                                        </a >
+                                                        <a class="collection-item transparent btn-flat orange-text"
+                                                           href="#" onclick="ReportUser(<%= status.user_id %>,
+                                                                $(this).value())" >
+                                                            They are posting spam
+                                                        </a >
+                                                        <a class="collection-item transparent btn-flat orange-text"
+                                                           href="#" onclick="ReportUser(<%= status.user_id %>,
+                                                                $(this).value())" >
+                                                            Their account is hacked
+                                                        </a >
+                                                    </ul >
+                                                </div >
+                                            </li >
+                                        </ul >
+                                        <ul class="collection-item collapsible" >
+                                            <a class=" blue-text btn-flat lighten-2 "
+                                               href="https://twitter.com/intent/tweet?text=<%= msg %>"
+                                               style="width: 100%" >
                                                 Share on Twitter
-                                            </a>
-                                            </ul>
-                                            <ul class="collection-item collapsible">
-                                                <a class="collection-item blue-text darken-2 btn-flat"
-                                               id="fb" onclick="Facebook(<%=msg%>)" style="width: 100%">
+                                            </a >
+                                        </ul >
+                                        <ul class="collection-item collapsible" >
+                                            <a class="collection-item blue-text darken-2 btn-flat"
+                                               id="fb" onclick="Facebook(<%= msg %>)" style="width: 100%" >
                                                 Share on Facebook
-                                                </a>
-                                            </ul>
-                                            <ul class="collection-item collapsible">
-                                                <a id="follow<%=status.user_id%>" class="collection-item btn-flat
-                                                    brown-text" onclick="follow(<%=status.user_id%>)"
-                                                        style="width: 100%">
-                                                    Unfollow User
-                                                </a>
-                                            </ul>
-                                        </ul>
-                                    </div>
-                                </li>
-                            <hr>
-                            <%}})%>
-                        </ul>
+                                            </a >
+                                        </ul >
+                                        <ul class="collection-item collapsible" >
+                                            <a id="follow<%= status.user_id %>" class="collection-item btn-flat
+                                                    brown-text" onclick="follow(<%= status.user_id %>)"
+                                               style="width: 100%" >
+                                                Unfollow User
+                                            </a >
+                                        </ul >
+                                    </ul >
+                                </div >
+                            </li >
+                            <hr >
+                            <% }}) %>
+                        </ul >
                     </div >
                 </div >
 
             </ul >
         </div >
 
-<!-- DISPLAYS TOP ARTISTS AND GENRE STATISTICS TO THE USER -->
-        <div class="col s4" style="margin-top: 15%;" >
+        <!-- DISPLAYS TOP ARTISTS AND GENRE STATISTICS TO THE USER -->
+        <div class="col s4"  >
             <ul id="staggered-test2" >
                 <li class="" style="transform: translateX(0px); opacity: 0;" >
-                    <div class="card lighten-2 with-header" style="background-color:transparent;margin-bottom: 10%" >
+                    <div class="card lighten-2 with-header" style="background-color:transparent;margin-bottom: 10%; " >
                         <div class="card-content" >
                             <span class="card-title collection-header orange-text" >
                                 Top Artists
                             </span >
                         </div >
                         <ul class="collection collapsible popout" data-collapsible="accordion"
-                            style="border: transparent; margin-bottom: 10%" >
+                            style="border: transparent; margin-bottom: 10%; padding-bottom: 20px" >
                             <% UserInfo.TopArtists.forEach(function (output) { %>
-                            <li class="collection-item avatar black-text"  style="background-color: white">
-                                <%console.log(output)%>
-                                <div class="collapsible-header">
+                            <li class="collection-item avatar black-text" style="background-color: white" >
+                                <% console.log(output) %>
+                                <div class="collapsible-header" >
                                     <img src="images/profilePics/<%= output.id %>.png"
-                                         alt="<%output.username %>" class="circle" >
-                                <span class="title" ><%= output.username %></span >
-
-                                </div>
-                                <p >Rank: <%= output.count %>
+                                         alt="<% output.username %>" class="circle" >
+                                    <span class="title" ><%= output.username %></span >
+                                </div >
+                                <p >Rating: <%= output.count %>
                                 </p >
-                                <div class="collapsible-body">
-                                    <span>
+                                <div class="collapsible-body" >
+                                    <span >
                                         <a href="#" class="secondary-content" ><%= output.liked %></a >
-                                    </span>
-                                </div>
+                                    </span >
+                                </div >
                             </li >
                             <% }); %>
                         </ul >
                     </div >
-                    <div class="card white lighten-2" style="margin-top: 5%">
+                    <div class="card lighten-2 with-header" style="margin-top: 5%" >
                         <div class="card-content white-text" >
                             <canvas id="myChart" width="400" height="400" ></canvas >
                         </div >
@@ -391,101 +380,88 @@
     </div >
     </div >
 </main >
-<div class=" hide-on-med-and-down" style="margin-left: 22% "><%- include ../../Partials/footer.ejs %></div>
-<div class=" hide-on-large-only"><%- include ../../Partials/footer.ejs %></div>
+
 
 <script >
 
-    var userID = <%=UserInfo.info.id%>;
-    $(document).ready(function(){
-        $('.modal').modal();
-        $('.slider').slider();
-        $('.carousel').carousel();
-        $('.collapsible').collapsible();
-        $('.materialboxed').materialbox();
-        Materialize.showStaggeredList('#staggered-test');
-        Materialize.showStaggeredList('#staggered-test2');
-        setUserID(<%=UserInfo.info.id%>);
-    });
+  var userID = <%= UserInfo.info.id %>
+  $(document).ready(function () {
+    $('.modal').modal()
+    $('.slider').slider()
+    $('.carousel').carousel()
+    $('.collapsible').collapsible()
+    $('.materialboxed').materialbox()
+    Materialize.showStaggeredList('#staggered-test')
+    Materialize.showStaggeredList('#staggered-test2')
+    setUserID(<%= UserInfo.info.id %>)
+  })
 
+  //CODE TO REPORT A USER
+  function ReportUser (reportId, Reason) {
 
-    //CODE TO REPORT A USER
-    function ReportUser(reportId, Reason)
-    {
+    $.post('https://eternalvibes.me/reportUser',
+      {
+        userThatReported: userID,
+        userThatGotReported: reportId,
+        reason: Reason,
+      },
+      function (data) {
+        console.log('Data: ' + data)
+        if (data == 200) {
 
-        $.post("https://eternalvibes.me/reportUser",
-            {
-                userThatReported: userID,
-                userThatGotReported:reportId,
-                reason: Reason
-            },
-            function (data)
-            {
-                console.log("Data: " + data);
-                if(data == 200)
-                {
-
-                }
-        });
-        Materialize.toast('User has been Reported and will be evaluated', 5000);
-    }
-
-    //CODE TO FOLLOW/UNFOLLOW A USER
-    function follow(followID)
-    {
-        if($('#follow'+followID).value() === "Unfollow User")
-        {
-            var link = "https://eternalvibes.me/stopFollowing/" + userID + "/" + followID;
-            $.get(link,
-                function (data)
-                {
-                    console.log("Data: " + data);
-                    if (data == 200)
-                    {
-
-                    }
-                });
-            Materialize.toast('User Unfollowed', 5000);
-            $('#follow'+unfollowID).value("Follow User");
         }
-        else
-        {
-            var link = "https://eternalvibes.me/followUser/" + userID + "/" + followID;
-            $.get(link,
-                function (data)
-                {
-                    console.log("Data: " + data);
-                    if(data == 200)
-                    {
+      })
+    Materialize.toast('User has been Reported and will be evaluated', 5000)
+  }
 
-                    }
-                });
-            Materialize.toast('User now being followed', 5000);
-            $('#follow'+unfollowID).value("Unfollow User");
-        }
+  //CODE TO FOLLOW/UNFOLLOW A USER
+  function follow (followID) {
+    if ($('#follow' + followID).value() === 'Unfollow User') {
+      var link = 'https://eternalvibes.me/stopFollowing/' + userID + '/' + followID
+      $.get(link,
+        function (data) {
+          console.log('Data: ' + data)
+          if (data == 200) {
+
+          }
+        })
+      Materialize.toast('User Unfollowed', 5000)
+      $('#follow' + unfollowID).value('Follow User')
     }
+    else {
+      var link = 'https://eternalvibes.me/followUser/' + userID + '/' + followID
+      $.get(link,
+        function (data) {
+          console.log('Data: ' + data)
+          if (data == 200) {
 
-    //SHARE A POST ON FACEBOOK
-    function Facebook(cptn)
-    {
-        FB.ui({
-                method: 'feed',
-                link: 'https://eternalvibes.me',
-                caption: cptn},
-            function(response){}
-            );
+          }
+        })
+      Materialize.toast('User now being followed', 5000)
+      $('#follow' + unfollowID).value('Unfollow User')
     }
+  }
 
+  //SHARE A POST ON FACEBOOK
+  function Facebook (cptn) {
+    FB.ui({
+        method: 'feed',
+        link: 'https://eternalvibes.me',
+        caption: cptn,
+      },
+      function (response) {}
+    )
+  }
 
-  var ctx = document.getElementById("myChart");
-  var label = [];
-  var count = [];
-  var colours = [];
+  var ctx = document.getElementById('myChart')
+  var label = []
+  var count = []
+  var colours = []
 
   <% UserInfo.TopGenres.forEach(function (output) { %>
-  label.push("<%= output.name %>");
-  count.push(<%= output.count %>);
-  colours.push(hexToRGB('#' + intToRGB(hashCode('<%= output.name %>')), 0.7));
+  label.push('<%= output.name %>')
+  count.push(<%= output.count %>)
+  colours.push(hexToRGB('#' + intToRGB(hashCode('<%= output.name %>')), 0.7))
   <% }); %>
 
   var myChart = new Chart(ctx, {
@@ -495,10 +471,10 @@
       datasets: [
         {
           data: count,
-          backgroundColor: colours
-        }]
-    }
-  });
+          backgroundColor: colours,
+        }],
+    },
+  })
 
   function hashCode (str) { // java String#hashCode
     var hash = 0
@@ -525,7 +501,6 @@
       return 'rgb(' + r + ', ' + g + ', ' + b + ')'
     }
   }
-
 
 </script >
 

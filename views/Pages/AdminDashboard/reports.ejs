@@ -194,8 +194,12 @@
       },
     },
   })
-
+  myChart4.data.labels[0]="Dog";
+  myChart4.update();
+  console.log(myChart4)
   var ctx5 = document.getElementById('myChartEventsPerDay').getContext('2d')
+
+  
   var myChart5 = new Chart(ctx5, {
     type: 'bar',
     data: {

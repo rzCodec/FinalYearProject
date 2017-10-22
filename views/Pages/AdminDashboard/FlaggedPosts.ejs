@@ -1,127 +1,123 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:width="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:width="http://www.w3.org/1999/xhtml" >
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
 <body class="grey lighten-3" >
-<%-include ../../Partials/UserInfo.ejs%>
-<main>
+<%- include ../../Partials/UserInfo.ejs %>
+<main >
     <div class="row" >
         <%- include ./partials/nav.ejs %>
         <div class="center header card-content rectangle" style="width:100% ;height:200px;
-            background: url('images/background/background4.jpg'); background-size: cover;">
-        </div>
+            background: url('images/background/background4.jpg'); background-size: cover;" >
+        </div >
         <!-- Information displayed in each tab-->
         <div id="FlaggedPosts" class=" col s6 offset-s4 " style="margin-top: 4%" >
-            <h2 class="orange-text" align="center">Flagged Posts</h2>
+            <h2 class="orange-text" align="center" >Flagged Posts</h2 >
             </br>
-            <div>
-                <ul id="fPostList"  class="collection truncate collapsible popout"
-                    data-collapsible="accordion"  >
+            <div >
+                <ul id="fPostList" class="collection truncate collapsible popout"
+                    data-collapsible="accordion" >
                     <% console.log(flaggedPosts);
-                        if(flaggedPosts.length > 0)
-                        {
-                            flaggedPosts.forEach(function (post)
-                    {%>
-                    <li  id="post<%=post.status_id%>" name="post<%=post.status_id%>" class="collection-item avatar">
+                    if(flaggedPosts.length > 0)
+                    {
+                    flaggedPosts.forEach(function (post)
+                    { %>
+                    <li id="post<%= post.status_id %>" name="post<%= post.status_id %>" class="collection-item avatar" >
                         <div class=" card-title white darken-4" >
-                            <img src="images/profilePics/<%=post.user_id%>.png" alt=""
-                                 class="circle" width="60%"  height="60%">
-                            <span> <h3><%=post.username%> </h3></span>
-                        </div>
-                        <div>
-                            <hr>
-                            <blockquote>
-                                <p>Message: <%=post.status%></p>
+                            <img src="images/profilePics/<%= post.user_id %>.png" alt="" class="circle" width="60%" height="60%" >
+                            <span > <h3 ><%= post.username %> </h3 ></span >
+                        </div >
+                        <div >
+                            <hr >
+                            <blockquote >
+                                <p >Message: <%= post.status %></p >
 
-                                <br>
-                                <strong>Reason for flag:</strong> <%=post.reason%>
-                                <br>
-                                <br>
+                                <br >
+                                <strong >Reason for flag:</strong > <%= post.reason %>
+                                <br >
+                                <br >
                                 <% if(post.liked > 0)
-                                {%>
-                                    <strong>
-                                        Likes (<%=post.liked%>) Flags (<%=post.flags%>)
-                                    </strong>
-                                    <br>
-                                <%} else {%>
-                                <strong>no likes &emsp; &emsp; Flags (<%=post.flags%>)</strong>
-                                <%}%>
+                                { %>
+                                <strong >
+                                    Likes (<%= post.liked %>)
+                                </strong >
+                                <br >
+                                <% } else { %>
+                                <strong >no likes &emsp; &emsp; Flags (<%= post.flags %>)</strong >
+                                <% } %>
 
-                            </blockquote>
-                            <br>
-                            <div>
-                                <a id="par<%=post.status_id%>" name="pardon<%=post.status_id%>"
+                            </blockquote >
+                            <br >
+                            <div >
+                                <a id="par<%= post.status_id %>" name="pardon<%= post.status_id %>"
                                    class="waves-effect waves-light btn btn_pardon"
-                                   onclick="pardonStatus(<%= post.status_id %>)">
-                                    <i class="material-icons left">thumb_up</i>Pardon</a>
-                                <a id="rem<%=post.status_id%>" name="remove<%=post.status_id%>"
+                                   onclick="pardonStatus(<%= post.status_id %>)" >
+                                    <i class="material-icons left" >thumb_up</i >Pardon</a >
+                                <a id="rem<%= post.status_id %>" name="remove<%= post.status_id %>"
                                    class="waves-effect waves-light right btn red btn_delete"
-                                   onclick="deleteStatus(<%= post.status_id %>)">
-                                    <i class="material-icons left">thumb_down</i>Remove</a>
-                            </div>
+                                   onclick="deleteStatus(<%= post.status_id %>)" >
+                                    <i class="material-icons left" >thumb_down</i >Remove</a >
+                            </div >
 
-                        </div>
-                    </li>
+                        </div >
+                    </li >
                     <% })}else{ %>
 
-                    <h1 class="grey-text darken-2">No Flagged Posts Available</h1>
-                    <%}%>
+                    <h1 class="grey-text darken-2" >No Flagged Posts Available</h1 >
+                    <% } %>
 
-                </ul>
-            </div>
-        </div>
+                </ul >
+            </div >
+        </div >
 
     </div >
 </main >
 <%- include ../../Partials/footer.ejs %>
 <script >
 
-    $(document).ready(function(){
-        if(info.admin == 0)
-        {
-            history.back();
+  $(document).ready(function () {
+    if (info.admin == 0) {
+      history.back()
+    }
+  })
+
+  var postCount = 0
+
+  Materialize.showStaggeredList('#FlaggedPosts')
+
+  function deleteStatus (id) {
+
+    $.post('https://www.eternalvibes.me/deleteStatus',
+      {
+        statusId: id,
+      },
+      function (data) {
+        console.log('Data: ' + data)
+        if (data == 200) {
+          Materialize.toast('Removed Post', 500)
+          location.reload()
         }
-    });
+        $('#post'+id).html('')
+      })
+  }
 
-    var postCount = 0;
+  function pardonStatus (id) {
 
-    Materialize.showStaggeredList('#FlaggedPosts');
-    function deleteStatus (id)
-    {
+    $.post('https://www.eternalvibes.me/pardonStatus',
+      {
+        statusId: id,
+      },
+      function (data) {
+        console.log('Data: ' + data)
+        if (data == 200) {
+          Materialize.toast('Pardoned Post', 500)
+          location.reload()
+        }
+        $('#post'+id).html('')
+      })
 
-        $.post("https://www.eternalvibes.me/deleteStatus",
-            {
-                statusId: id
-            },
-            function (data) {
-                console.log("Data: " + data);
-                if(data == 200)
-                {
-                    Materialize.toast('Removed Post', 500);
-                    location.reload();
-                }
-            });
-    }
-
-    function pardonStatus (id) {
-
-        $.post("https://www.eternalvibes.me/pardonStatus",
-            {
-                statuId: id
-            },
-            function (data) {
-                console.log("Data: " + data);
-                if(data == 200)
-                {
-                    Materialize.toast('Pardoned Post', 500);
-                    location.reload();
-                }
-            });
-
-    }
-
-
+  }
 
 </script >
 
