@@ -70,10 +70,10 @@
                     <img src="images/adverts/eternalvibesmobile1.png">
                 </li>
                 <li>
-                    <img src="images/eternalvibesmobile2.png">
+                    <img src="images/adverts/eternalvibesmobile2.png">
                 </li>
                 <li>
-                    <img src="images/eternalvibesmobile3.png">
+                    <img src="images/adverts/eternalvibesmobile3.png">
                 </li>
             </ul>
 
@@ -84,6 +84,9 @@
 <%- include ../../Partials/footer.ejs %>
 <script >
   $(document).ready(function () {
+      $('.slider').slider();
+      $('.slider').slider('start');
+      $('.slider').slider('next');
     $("#formValidate").validate({
       rules: {
         username: {
