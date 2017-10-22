@@ -3,120 +3,159 @@
 <head >
     <%- include ../../Partials/AboveFold.ejs %>
 </head >
-<body class="grey lighten-3">
+<body class="grey lighten-3" >
 <main >
     <div class="row" >
         <%- include ./partials/nav.ejs %>
         <div class="center header card-content rectangle" style="width:100% ;height:200px;
-            background: url('images/background/background4.jpg'); background-size: cover;">
-        <div class="center-align col s8 offset-s3" style="margin-top: 18%" >
-            <div class="" >
-                <h2 class="center-align orange-text" style='width:100%;' >Reports</h2 >
+            background: url('images/background/background4.jpg'); background-size: cover;" >
+            <div class="center-align col s8 offset-s3" style="margin-top: 10%" >
+                <div class="" >
+                    <h2 class="center-align orange-text" style='width:100%;' >Overall</h2 >
+                </div >
+
+                <ul id="staggered-test" style="margin-top: 5%" >
+                    <li class="" style="transform: translateX(0px); opacity: 0; " >
+                        <div class="row" >
+                            <div class="col s6 container" >
+                                <div class="card white darken-4 black-text" >
+                                    <div class="card-content" >
+                                        <h1 class="center-align" >Spread of genres</h1 >
+                                        <canvas id="myChart" width="200" height="200" ></canvas >
+                                    </div >
+                                </div >
+                            </div >
+                            <div class="col s6 container" >
+                                <div class="card white darken-4 black-text" >
+                                    <div class="card-content" >
+                                        <h1 class="center-align" >Location spread</h1 >
+                                        <canvas id="myChartLocationSpread" width="400" height="400" ></canvas >
+                                    </div >
+                                </div >
+                            </div >
+                        </div >
+                    </li >
+                    <li class="" style="transform: translateX(0px); opacity: 0; " >
+                        <div class="row" >
+                            <div class="col s1 container" >
+                            </div >
+                            <div class="col s10 container" >
+                                <div class="card white darken-4 black-text" >
+                                    <div class="card-content" >
+                                        <h1 class="center-align" >Spread of skills</h1 >
+                                        <canvas id="myChartSkills" width="400" height="400" ></canvas >
+                                    </div >
+                                </div >
+                            </div >
+                            <div class="col s1 container" >
+                            </div >
+                        </div >
+                    </li >
+                    <div class="" >
+                        <h2 class="center-align orange-text" style='width:100%;' >Monthly</h2 >
+                    </div >
+                    <li class="" style="transform: translateX(0px); opacity: 0; " >
+                        <div class="chip" >
+                            <a onclick="dothis(4)" style="cursor: pointer" >
+                                3 months ago
+                            </a >
+                        </div >
+
+                        <div class="chip" >
+                            <a onclick="dothis(3)" style="cursor: pointer" >
+                                2 months ago
+                            </a >
+                        </div >
+                        <div class="chip" >
+                            <a onclick="dothis(2)" style="cursor: pointer" >
+                                1 month ago
+                            </a >
+                        </div >
+                        <div class="chip" >
+                            <a onclick="dothis(1)" style="cursor: pointer" >
+                                This month
+                            </a >
+                        </div >
+                        <div class="row" >
+
+                            <div class="col s4 container" >
+                                <div class="card white darken-4 black-text" >
+                                    <div class="card-content" >
+                                        <h1 class="center-align" >Signups</h1 >
+                                        <canvas id="myChartSignup" width="400" height="400" ></canvas >
+                                    </div >
+                                </div >
+                            </div >
+                            <div class="col s4 container" >
+                                <div class="card white darken-4 black-text" >
+                                    <div class="card-content" >
+                                        <h1 class="center-align" >Posts</h1 >
+                                        <canvas id="myChartPostsPerDay" width="400" height="400" ></canvas >
+                                    </div >
+                                </div >
+                            </div >
+                            <div class="col s4 container" >
+                                <div class="card white darken-4 black-text" >
+                                    <div class="card-content" >
+                                        <h1 class="center-align" >Events</h1 >
+                                        <canvas id="myChartEventsPerDay" width="400" height="400" ></canvas >
+                                    </div >
+                                </div >
+                            </div >
+                        </div >
+                    </li >
+                    <div class="" >
+                        <h2 class="center-align orange-text" style='width:100%;' >Daily</h2 >
+                    </div >
+                    <div class="row" >
+                        <div class="col s4 offset-s4" >
+                            <div >Pick the day</div >
+                            <input type="text" class="datepicker" >
+                        </div >
+                    </div >
+                    <li class="" style="transform: translateX(0px); opacity: 0; " >
+                        <ul class="collection with-header" >
+                            <li class="collection-header" >
+                                <h4 ><h1 id="signups" class="left-align" >Signups: <%= Reports.users24.count %></h1 >
+
+                                </h4 >
+                            </li >
+                            <li class="collection-header" >
+                                <h4 ><h1 id="signups" class="left-align" >Planned
+                                        events: <%= Reports.events24.count %></h1 >
+
+                                </h4 >
+                            </li >
+                            <li class="collection-header" >
+                                <h4 ><h1 id="finishedEvents" class="left-align" >Finished
+                                        events: <%= Reports.events24.count %></h1 >
+
+                                </h4 >
+                            </li >
+                            <li class="collection-header" >
+                                <h4 ><h1 id="eventsAverageRate" class="left-align" >Events average
+                                        rate: <%= Reports.events24.count %></h1 >
+
+                                </h4 >
+                            </li >
+                            <li class="collection-header" >
+                                <h4 ><h1 id="followers" class="left-align" >
+                                        Followers: <%= Reports.events24.count %></h1 >
+
+                                </h4 >
+                            </li >
+                            <li class="collection-header" >
+                                <h4 ><h1 id="friends" class="left-align" >Friends: <%= Reports.events24.count %></h1 >
+
+                                </h4 >
+                            </li >
+                        </ul >
+                    </li >
+                </ul >
             </div >
-            <ul id="staggered-test" style="margin-top: 5%" >
-                <li class="" style="transform: translateX(0px); opacity: 0; " >
-                    <div class="row" >
-                        <div class="col s6 container" >
-                            <div class="card white darken-4 black-text" >
-                                <div class="card-content" >
-                                    <h1 class="center-align">Spread of genres</h1 >
-                                    <canvas id="myChart" width="200" height="200" ></canvas >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="col s6 container" >
-                            <div class="card white darken-4 black-text" >
-                                <div class="card-content" >
-                                    <h1 class="center-align">Location spread</h1 >
-                                    <canvas id="myChartLocationSpread" width="400" height="400" ></canvas >
-                                </div >
-                            </div >
-                        </div >
-                    </div >
-                </li >
-                <li class="" style="transform: translateX(0px); opacity: 0; " >
-                    <div class="row" >
-                        <div class="col s1 container" >
-                        </div >
-                        <div class="col s10 container" >
-                            <div class="card white darken-4 black-text" >
-                                <div class="card-content" >
-                                    <h1 class="center-align">Spread of skills</h1 >
-                                    <canvas id="myChartSkills" width="400" height="400" ></canvas >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="col s1 container" >
-                        </div >
-                    </div >
-                </li >
 
-                <li class="" style="transform: translateX(0px); opacity: 0; " >
-                    <div class="row" >
-                        <div class="col s4 container" >
-                            <div class="card white darken-4 black-text" >
-                                <div class="card-content" >
-                                    <h1 class="center-align">Signups per week</h1 >
-                                    <canvas id="myChartSignup" width="400" height="400" ></canvas >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="col s4 container" >
-                            <div class="card white darken-4 black-text" >
-                                <div class="card-content" >
-                                    <h1 class="center-align">Posts per week</h1 >
-                                    <canvas id="myChartPostsPerDay" width="400" height="400" ></canvas >
-                                </div >
-                            </div >
-                        </div >
-                        <div class="col s4 container" >
-                            <div class="card white darken-4 black-text" >
-                                <div class="card-content" >
-                                    <h1 class="center-align">Events per week</h1 >
-                                    <canvas id="myChartEventsPerDay" width="400" height="400" ></canvas >
-                                </div >
-                            </div >
-                        </div >
-                    </div >
-                </li >
-
-                <li class="" style="transform: translateX(0px); opacity: 0; " >
-                    <div class="row" >
-                        <div class="col s4 container" >
-                            <div class="card white darken-4 black-text" >
-                                <div class="card-content" >
-                                    <h1 class="center-align">Daily # of Signups</h1 >
-                                    <br >
-                                    <%= Reports.users24.count %>
-                                </div >
-                            </div >
-                        </div >
-                        <div class="col s4 container" >
-                            <div class="card white darken-4 black-text" >
-                                <div class="card-content" >
-                                    <h1 class="center-align">Daily # of Events created</h1 >
-                                    <br >
-                                    <%= Reports.events24.count %>
-                                </div >
-                            </div >
-                        </div >
-                        <div class="col s4 container" >
-                            <div class="card white darken-4 black-text" >
-                                <div class="card-content" >
-                                    <h1 class="center-align">Daily # of Logins</h1 >
-                                    <br >
-                                    <%= Reports.usersLogin24.count %>
-                                </div >
-                            </div >
-                        </div >
-                    </div >
-                </li >
-            </ul >
         </div >
-
-    </div >
 </main >
-<%- include ../../Partials/footer.ejs %>
 <script >
 
   var ctx2 = document.getElementById('myChartSignup').getContext('2d')
@@ -194,12 +233,8 @@
       },
     },
   })
-  myChart4.data.labels[0]="Dog";
-  myChart4.update();
-  console.log(myChart4)
-  var ctx5 = document.getElementById('myChartEventsPerDay').getContext('2d')
 
-  
+  var ctx5 = document.getElementById('myChartEventsPerDay').getContext('2d')
   var myChart5 = new Chart(ctx5, {
     type: 'bar',
     data: {
@@ -236,6 +271,27 @@
       },
     },
   })
+
+  function dothis (id) {
+    var url = "https://eternalvibes.me/monthly/" + id
+    $.get(url, function (data) {
+
+      myChart2.data.datasets[0].data = [data.usersWeek1, data.usersWeek2, data.usersWeek3, data.usersWeek4];
+      myChart4.data.datasets[0].data = [data.postsWeek1, data.postsWeek2, data.postsWeek3, data.postsWeek4];
+      myChart5.data.datasets[0].data = [data.eventsWeek1, data.eventsWeek2, data.eventsWeek3, data.eventsWeek4];
+      myChart5.data.labels[0] = id
+
+      myChart5.update();
+      myChart4.update();
+      myChart2.update();
+    }).done(function () {
+
+    }).fail(function (response) {
+      console.log('Error: ' + response.responseText);
+    });
+  }
+
+  dothis(1);
 
   var ctx = document.getElementById('myChart').getContext('2d')
   var myChart = new Chart(ctx, {
@@ -276,12 +332,25 @@
     },
   })
 
+  <% function abbreviate (str1) {
+      var matches = str1.match(/\b(\w)/g);
+      return (matches.join(''));
+
+  } %>
   var ctx6 = document.getElementById('myChartLocationSpread').getContext('2d')
   var myChart6 = new Chart(ctx6, {
-    type: 'bar',
+    type: 'horizontalBar',
     data: {
       labels: [<% Reports.cities.forEach(function (city) { %>
-        '<%= city.name %>',
+          <% var name = city.name;
+              console.log(city)
+              if (name !== null) {
+
+                  name = name.substring(0, name.indexOf(",") + 2) + abbreviate(name.substring(name.indexOf(",")))
+                  console.log(name)
+              }
+          %>
+        '<%= name %>',
           <% }) %>],
       datasets: [
         {
@@ -316,7 +385,7 @@
 
   var ctx7 = document.getElementById('myChartSkills').getContext('2d')
   var myChart7 = new Chart(ctx7, {
-    type: 'bar',
+    type: 'horizontalBar',
     data: {
       labels: [<% Reports.skills.forEach(function (skill) { %>
         '<%= skill.name %>',
@@ -377,6 +446,47 @@
       return 'rgb(' + r + ', ' + g + ', ' + b + ')'
     }
   }
+
+  $('.datepicker').on('change', function () {
+    var t = $('.datepicker').val()
+    var mydate = new Date(t);
+    var nowDaye = new Date();
+    var numberOfDays = Math.ceil((nowDaye - mydate) / 8.64e7);
+    var url = "https://eternalvibes.me/daily/" + numberOfDays
+    $.get(url, function (data) {
+
+      $('#signups').html("Signups: " + data.signups)
+      $('#upcomingEvents').html("Upcoming Events: " + data.upcomingEvents)
+      $('#finishedEvents').html("Finished Events: " + data.finishedEvents)
+      if(data.eventsAverageRate===null){
+        $('#eventsAverageRate').html("Events Average Ratings: " + 0)
+      }else{
+        $('#eventsAverageRate').html("Events Average Ratings: " + data.eventsAverageRate)
+      }
+
+      $('#followers').html("Followers: " + data.followers)
+      $('#friends').html("Friends: " + data.friends)
+    }).done(function () {
+
+    }).fail(function (response) {
+      console.log('Error: ' + response.responseText);
+    });
+  });
+  var $input = $('.datepicker').pickadate({
+    selectMonths: true,
+    selectYears: 1,
+    today: 'Today',
+    clear: 'Clear',
+    close: 'Ok',
+    closeOnSelect: false,
+    max: new Date()
+  });
+  var picker = $input.pickadate('picker')
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth();
+  var yyyy = today.getFullYear();
+  picker.set('select', [yyyy, mm, dd])
 
 </script >
 <script >
