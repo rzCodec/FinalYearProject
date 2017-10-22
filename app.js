@@ -37,7 +37,11 @@ var options = {
   apis: ['./routes/index.js'],
 }
 var swaggerSpec = swaggerJSDoc(options)
-
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 var options2 = {
   dotfiles: 'ignore',
   etag: false,
