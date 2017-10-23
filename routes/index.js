@@ -4217,7 +4217,7 @@ module.exports = function (app, passport, swaggerSpec) {
     waterfall([
         function (callback) {
           connection.query(
-            'SELECT * FROM `status_reports` WHERE status_reports.status_id=?',
+            'DELETE FROM `status_reports` WHERE status_reports.status_id=?',
             [req.body.statusId], function (error) {
               if (error) {
                 console.log(error)
